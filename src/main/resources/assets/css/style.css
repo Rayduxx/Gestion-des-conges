@@ -1,4 +1,86 @@
-@font-face {
+.pane-clr{
+    -fx-background-color: #112349;
+}
+.pane1{
+     -fx-background-color: rgba(255, 255, 255, 0.24);
+ }
+.grad-bg{
+    -fx-background-color: linear-gradient(to top right, rgba(17, 35, 73, 0.2), rgba(17, 35, 73, 0.13));
+}
+.btn-primary {
+    -fx-background-color: linear-gradient(#112349, #1a3766);
+    -fx-background-radius: 5;
+    -fx-padding: 10 20;
+    -fx-font-size: 14px;
+    -fx-text-fill: white;
+    -fx-effect: dropshadow(gaussian, rgba(0, 0, 0, 0.5), 10, 0.2, 0, 0);
+    -fx-border-color: #1a3766;
+    -fx-border-width: 1;
+    -fx-border-radius: 5;
+    -fx-cursor: hand;
+    -fx-font-family: "Roboto";
+    -fx-font-weight: bold;
+}
+
+.btn-primary:hover {
+    -fx-background-color: linear-gradient(#1a3766, #112349);
+}
+
+.btn-primary:pressed {
+    -fx-background-color: #0d1d33;
+}
+.table-view {
+    -fx-background-color: white;
+    /*-fx-border-color: #112349;
+    -fx-border-width: 1;
+    -fx-border-radius: 5;
+    -fx-effect: dropshadow(gaussian, rgba(0, 0, 0, 0.5), 10, 0.2, 0, 0);*/
+}
+
+.table-view .column-header-background {
+    -fx-background-color: linear-gradient(#112349, #1a3766);
+    -fx-border-color: #112349;
+    -fx-border-width: 0 0 1 0;
+    -fx-text-fill: white;
+}
+
+.table-view .column-header, .table-view .filler {
+    -fx-background-color: transparent;
+}
+
+.table-view .column-header .label {
+    -fx-text-fill: white;
+    -fx-font-weight: bold;
+    -fx-padding: 5 10;
+    -fx-font-family: "Arial";
+}
+
+.table-view .table-row-cell {
+    -fx-border-color: transparent transparent #112349 transparent;
+}
+
+.table-view .table-row-cell:filled:selected, .table-view .table-row-cell:filled:selected:hover {
+    -fx-background-color: linear-gradient(#1a3766, #112349);
+    -fx-text-fill: white;
+}
+
+.table-view .table-cell {
+    -fx-padding: 5 10;
+    -fx-text-fill: #112349;
+    -fx-font-family: "Arial";
+}
+
+.table-view .table-cell:selected {
+    -fx-background-color: linear-gradient(#1a3766, #112349);
+    -fx-text-fill: white;
+}
+
+.table-view .table-cell:hover {
+    -fx-background-color: rgba(17, 35, 73, 0.1);
+}
+
+
+/*@font-face {
     -fx-font-family: "Roboto";
 }
 
@@ -90,4 +172,4 @@
 }
 .hboxcard{
     -fx-background-image:url("/assets/cardbg.png"); ;
-}
+}*/
