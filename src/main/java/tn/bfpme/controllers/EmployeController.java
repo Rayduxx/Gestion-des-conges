@@ -19,7 +19,7 @@ public class EmployeController {
             Stage stage = (Stage) ((Node) actionEvent.getSource()).getScene().getWindow();
             Scene scene = new Scene(root);
             stage.setScene(scene);
-            stage.setTitle(" Demande de Congé ");
+            stage.setTitle("Demande de Congé");
             stage.show();
         } catch (IOException e) {
             e.printStackTrace();
@@ -34,7 +34,7 @@ public class EmployeController {
             Stage stage = (Stage) ((Node) actionEvent.getSource()).getScene().getWindow();
             Scene scene = new Scene(root);
             stage.setScene(scene);
-            stage.setTitle(" Historique des Congés ");
+            stage.setTitle("Historique des Congés");
             stage.show();
         } catch (IOException e) {
             e.printStackTrace();
