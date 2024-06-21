@@ -9,7 +9,6 @@ public class Utilisateur {
     private Role role;
     private String image;
     private int soldeConge;
-
     public static Utilisateur Current_User;
 
     public Utilisateur() {}
