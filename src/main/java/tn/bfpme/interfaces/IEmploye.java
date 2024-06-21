@@ -1,4 +1,6 @@
 package tn.bfpme.interfaces;
 
-public interface IUser {
+public interface IEmploye {
+
+
 }
