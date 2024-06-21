@@ -8,7 +8,7 @@ public class Employe extends Utilisateur {
         super();
     }
 
-    public Employe(int idEmploye, Departement departement, int idUser, String nom, String prenom, String email, String mdp, String role, String image, int soldeConge) {
+    public Employe(int idEmploye, Departement departement, int idUser, String nom, String prenom, String email, String mdp, Role role, String image, int soldeConge) {
         super(idUser, nom, prenom, email, mdp, role, image, soldeConge);
         this.idEmploye = idEmploye;
         this.departement = departement;
