@@ -6,13 +6,15 @@ public class Utilisateur {
     private String prenom;
     private String email;
     private String mdp;
-    private String role;
+    private Role role;
     private String image;
     private int soldeConge;
 
+    public static Utilisateur Current_User;
+
     public Utilisateur() {}
 
-    public Utilisateur(int idUser, String nom, String prenom, String email, String mdp, String role, String image, int soldeConge) {
+    public Utilisateur(int idUser, String nom, String prenom, String email, String mdp, Role role, String image, int soldeConge) {
         this.idUser = idUser;
         this.nom = nom;
         this.prenom = prenom;
@@ -63,11 +65,11 @@ public class Utilisateur {
         this.mdp = mdp;
     }
 
-    public String getRole() {
+    public Role getRole() {
         return role;
     }
 
-    public void setRole(String role) {
+    public void setRole(Role role) {
         this.role = role;
     }
 
@@ -87,6 +89,14 @@ public class Utilisateur {
         this.soldeConge = soldeConge;
     }
 
+    public static Utilisateur getCurrent_User() {
+        return Current_User;
+    }
+
+    public static void setCurrent_User(Utilisateur Current_User) {
+        Utilisateur.Current_User = Current_User;
+    }
+
     @Override
     public String toString() {
         return "Utilisateur{" +
@@ -95,7 +105,7 @@ public class Utilisateur {
                 ", prenom='" + prenom + '\'' +
                 ", email='" + email + '\'' +
                 ", mdp='" + mdp + '\'' +
-                ", role='" + role + '\'' +
+                ", role=" + role +
                 ", image='" + image + '\'' +
                 ", soldeConge=" + soldeConge +
                 '}';
