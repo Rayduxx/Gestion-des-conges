@@ -27,12 +27,12 @@
       </Pane>
       <Pane layoutX="28.0" layoutY="131.0" prefHeight="677.0" prefWidth="1277.0" styleClass="pane1">
          <children>
-            <ImageView fitHeight="118.0" fitWidth="205.0" layoutX="48.0" layoutY="32.0" pickOnBounds="true" preserveRatio="true">
+            <ImageView fitHeight="118.0" fitWidth="205.0" layoutX="81.0" layoutY="51.0" pickOnBounds="true" preserveRatio="true">
                <image>
                   <Image url="@assets/imgs/278898897_102014832502188_7162741113201583044_n.jpg" />
                </image>
             </ImageView>
-            <GridPane layoutX="178.0" layoutY="32.0" prefHeight="90.0" prefWidth="185.0">
+            <GridPane layoutX="211.0" layoutY="51.0" prefHeight="90.0" prefWidth="185.0">
               <columnConstraints>
                 <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0" />
               </columnConstraints>
@@ -59,7 +59,7 @@
                   </Label>
                </children>
             </GridPane>
-            <Label layoutX="48.0" layoutY="186.0" prefHeight="36.0" prefWidth="356.0" text="Solde restant: 3">
+            <Label layoutX="81.0" layoutY="185.0" prefHeight="36.0" prefWidth="356.0" text="Solde restant: 30">
                <font>
                   <Font name="Roboto Regular" size="14.0" />
                </font>
