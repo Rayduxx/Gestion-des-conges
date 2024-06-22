@@ -183,6 +183,12 @@
     -fx-background-color: linear-gradient(#1a3766, #112349);
     -fx-text-fill: white;
 }
+.seperator {
+    visibility: hidden;
+
+
+}
+
 /*@font-face {
     -fx-font-family: "Roboto";
 }

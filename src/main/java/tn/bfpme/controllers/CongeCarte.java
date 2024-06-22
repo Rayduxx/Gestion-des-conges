@@ -48,6 +48,7 @@ public class CongeCarte {
         cardDatedeb.setText(String.valueOf(conge.getDateDebut()));
         cardDatefin.setText(String.valueOf(conge.getDateFin()));
         cardDescription.setText(String.valueOf(conge.getDescription()));
+        cardStatus.setText(String.valueOf(conge.getStatut()));
         Card.setStyle("-fx-border-radius: 5px;-fx-border-color:#808080");
 
         cUser =conge.getIdUser();

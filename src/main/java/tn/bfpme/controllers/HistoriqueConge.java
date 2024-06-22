@@ -4,8 +4,10 @@ import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.fxml.Initializable;
 import javafx.geometry.Insets;
+import javafx.scene.layout.ColumnConstraints;
 import javafx.scene.layout.GridPane;
 import javafx.scene.layout.Pane;
+import javafx.scene.layout.Priority;
 import tn.bfpme.models.Conge;
 import tn.bfpme.services.ServiceConge;
 
@@ -26,8 +28,12 @@ public class HistoriqueConge implements Initializable {
     @FXML
     private GridPane congeContainer;
     public void load() {
-        int column =1;
-        int row = 1;
+        ColumnConstraints columnConstraints = new ColumnConstraints();
+        columnConstraints.setHgrow(Priority.ALWAYS);
+        congeContainer.getColumnConstraints().add(columnConstraints);
+        congeContainer.setVgap(4);
+        congeContainer.setPadding(new Insets(4));
+        int row = 0;
         try {
             for (Conge conge : CongeS.afficher()) {
                 FXMLLoader fxmlLoader = new FXMLLoader();
@@ -35,12 +41,13 @@ public class HistoriqueConge implements Initializable {
                 Pane CardBox = fxmlLoader.load();
                 CongeCarte cardC = fxmlLoader.getController();
                 cardC.setData(conge);
-                if (row == 1) {
 
-                    ++row;
-                }
-                congeContainer.add(CardBox, column , row);
-                GridPane.setMargin(CardBox, new Insets(10));
+                congeContainer.add(CardBox, 0 , row++);
+                GridPane.setMargin(CardBox, new Insets(4, 4, 4, 4));
+                CardBox.setMaxWidth(Double.MAX_VALUE);
+                congeContainer.setColumnSpan(CardBox, GridPane.REMAINING);
+                GridPane.setHalignment(CardBox, javafx.geometry.HPos.CENTER);
+
             }
         } catch (IOException e) {
             e.printStackTrace();
