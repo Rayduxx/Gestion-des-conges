@@ -30,8 +30,18 @@ public class ServiceConge {
                 conge.setIdConge(rs.getInt("ID_Conge"));
                 conge.setDateDebut(rs.getDate("DateDebut").toLocalDate());
                 conge.setDateFin(rs.getDate("DateFin").toLocalDate());
-                conge.setTypeConge(TypeConge.valueOf(rs.getString("TypeConge").toUpperCase())); // Ensure the enum value is in the correct format
-                conge.setStatut(Statut.valueOf(rs.getString("Statut").toUpperCase())); // Ensure the enum value is in the correct format
+                try {
+                    conge.setTypeConge(TypeConge.valueOf(rs.getString("TypeConge")));
+                } catch (IllegalArgumentException e) {
+                    System.out.println("Unknown TypeConge value: " + rs.getString("TypeConge"));
+                    continue;
+                }
+                try {
+                    conge.setStatut(Statut.valueOf(rs.getString("Statut")));
+                } catch (IllegalArgumentException e) {
+                    System.out.println("Unknown Statut value: " + rs.getString("Statut"));
+                    continue;
+                }
                 conge.setIdUser(rs.getInt("ID_User"));
                 conge.setFile(rs.getString("file"));
                 conge.setDescription(rs.getString("description"));
