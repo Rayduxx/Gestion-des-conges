@@ -1,5 +1,5 @@
 package tn.bfpme.models;
 
 public enum Statut {
-    EN_ATTENTE, APPROUVE, REJETE;
+    Approuvé, Rejeté, En_Attente;
 }

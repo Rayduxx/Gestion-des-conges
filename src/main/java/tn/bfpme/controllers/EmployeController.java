@@ -12,7 +12,7 @@ import java.io.IOException;
 
 public class EmployeController {
     @FXML
-    void DemanderConge(ActionEvent actionEvent) {
+    public void DemanderConge(ActionEvent actionEvent) {
         try {
             FXMLLoader loader = new FXMLLoader(getClass().getResource("/DemandeConge.fxml"));
             Parent root = loader.load();
@@ -27,7 +27,7 @@ public class EmployeController {
     }
 
     @FXML
-    void HistoriqueConge(ActionEvent actionEvent) {
+    public void HistoriqueConge(ActionEvent actionEvent) {
         try {
             FXMLLoader loader = new FXMLLoader(getClass().getResource("/HistoriqueConge.fxml"));
             Parent root = loader.load();

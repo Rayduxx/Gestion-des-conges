@@ -1,5 +1,6 @@
 package tn.bfpme.models;
 
 public enum Departement {
-    RH, IT, SECURITE, MARKETING, ADMINISTRATION, FINANCE, DataScience;
+
+    IT, RH, Finance, Sécurité, Datascience, Administration, Marketing;
 }
