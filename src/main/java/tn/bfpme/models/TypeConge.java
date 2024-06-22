@@ -1,6 +1,6 @@
 package tn.bfpme.models;
 
 public enum TypeConge {
-   Annuel, Exceptionel, Maladie, Maternité, Sous_solde;
+   Annuel, Exceptionnel, Maladie, Maternité, Sous_solde;
 
 }

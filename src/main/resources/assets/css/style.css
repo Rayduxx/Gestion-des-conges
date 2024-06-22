@@ -33,6 +33,7 @@
     -fx-shape: "M 0 0 L 4 4 L 8 0 Z";
     -fx-background-insets: 0;
 }
+
 .btn-primary {
     -fx-background-color: linear-gradient(#112349, #1a3766);
     -fx-background-radius: 5;
@@ -47,6 +48,30 @@
     -fx-font-family: "Roboto";
     -fx-font-weight: bold;
 }
+.btn-secondary {
+    -fx-background-color: linear-gradient(#E9A91F, #D88A1A); /* Adjusted to a darker shade */
+    -fx-background-radius: 5;
+    /*-fx-padding: 10 20;*/
+    /*-fx-font-size: 14px;*/
+    -fx-text-fill: white;
+    -fx-effect: dropshadow(gaussian, rgba(0, 0, 0, 0.5), 10, 0.2, 0, 0);
+    -fx-border-color: #D88A1A; /* Adjusted to match the darker shade */
+    -fx-border-width: 1;
+    -fx-border-radius: 5;
+    -fx-cursor: hand;
+    -fx-font-family: "Roboto";
+    -fx-font-weight: bold;
+}
+
+.btn-secondary:hover {
+    -fx-background-color: linear-gradient(#D88A1A, #E9A91F); /* Reverse the gradient for hover effect */
+}
+
+.btn-secondary:pressed {
+    -fx-background-color: #B77814; /* A further darker shade for pressed state */
+}
+
+
 .combo-box .list-cell:filled:selected, .combo-box .list-cell:filled:selected:hover {
     -fx-background-color: linear-gradient(#1a3766, #112349);
     -fx-text-fill: white;

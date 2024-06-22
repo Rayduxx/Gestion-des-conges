@@ -11,9 +11,9 @@
 <?import javafx.scene.layout.Pane?>
 <?import javafx.scene.text.Font?>
 
-<AnchorPane prefHeight="830.0" prefWidth="1340.0" styleClass="grad-bg" stylesheets="@assets/css/style.css" xmlns="http://javafx.com/javafx/21" xmlns:fx="http://javafx.com/fxml/1" fx:controller="tn.bfpme.controllers.HistoriqueConge">
-<children>
-    <Pane prefHeight="104.0" prefWidth="1340.0" styleClass="pane-clr" stylesheets="@assets/css/style.css">
+<AnchorPane prefHeight="830.0" prefWidth="1340.0" styleClass="grad-bg" stylesheets="@assets/css/style.css" xmlns="http://javafx.com/javafx/21" xmlns:fx="http://javafx.com/fxml/1" fx:controller="tn.bfpme.controllers.HistoriqueCongeController">
+   <children>
+      <Pane prefHeight="104.0" prefWidth="1340.0" styleClass="pane-clr" stylesheets="@assets/css/style.css">
          <children>
             <ImageView fitHeight="81.0" fitWidth="93.0" layoutX="14.0" layoutY="12.0" pickOnBounds="true" preserveRatio="true">
                <image>
@@ -21,8 +21,8 @@
                </image>
             </ImageView>
          </children>
-    </Pane>
-    <Pane layoutX="28.0" layoutY="131.0" prefHeight="677.0" prefWidth="1277.0" styleClass="pane1">
+      </Pane>
+      <Pane layoutX="28.0" layoutY="131.0" prefHeight="677.0" prefWidth="1277.0" styleClass="pane1">
          <children>
             <ScrollPane layoutX="16.0" layoutY="186.0" prefHeight="473.0" prefWidth="1245.0">
                <content>
@@ -75,5 +75,5 @@
                </children>
             </HBox>
          </children></Pane>
-</children>
+   </children>
 </AnchorPane>
