@@ -23,6 +23,7 @@ public class LoginController {
     @FXML
     void Login(ActionEvent event) {
 <<<<<<< HEAD
+<<<<<<< HEAD
         String qry = "SELECT * FROM `utilisateur` WHERE `Email`=? AND `MDP`=?";
         cnx = MyDataBase.getInstance().getCnx();
         try {
@@ -34,9 +35,11 @@ public class LoginController {
             if (rs.next()) {
                         CurUser = new Utilisateur(rs.getInt("ID_User"), rs.getString("Nom"), rs.getString("Prenom"), rs.getString("Email"), rs.getString("MDP"), Role.valueOf(rs.getString("Role")), rs.getString("Image"),rs.getInt("Solde_congé"));
                 Utilisateur.setCurrent_User(CurUser);
-                /*SessionManager.getInstace(rs.getInt("ID_User"), rs.getString("Nom"), rs.getString("Prenom"), rs.getString("Email"), Role.valueOf(rs.getString("Role")), rs.getString("Image"),rs.getInt("Solde_congé"));*/
+                SessionManager.getInstace(rs.getInt("ID_User"), rs.getString("Nom"), rs.getString("Prenom"), rs.getString("Email"), Role.valueOf(rs.getString("Role")), rs.getString("Image"),rs.getInt("Solde_congé"));*/
                 try {
 =======
+=======
+>>>>>>> Branch-Ala
             Connection cnx = MyDataBase.getInstance().getCnx();
             String qry = "SELECT * FROM `utilisateur` WHERE `Email`=? AND `MDP`=?";
             try {
@@ -47,6 +50,9 @@ public class LoginController {
                 if (rs.next()) {
                     Utilisateur ConnectedUser = new Utilisateur(rs.getInt("ID_User"),rs.getString("Nom"), rs.getString("Prenom"), rs.getString("Email"), rs.getString("MDP"), Role.valueOf(rs.getString("Role")), rs.getString("Image"), rs.getInt("Solde_congé"));
                     SessionManager.getInstace(rs.getInt("ID_User"), rs.getString("Nom"), rs.getString("Prenom"), rs.getString("Email"), Role.valueOf(rs.getString("Role")), rs.getString("Image"), rs.getInt("Solde_congé"), Departement.RH);
+<<<<<<< HEAD
+>>>>>>> Branch-Ala
+=======
 >>>>>>> Branch-Ala
                     FXMLLoader loader = new FXMLLoader(getClass().getResource("/profile.fxml"));
                     Parent root = loader.load();
