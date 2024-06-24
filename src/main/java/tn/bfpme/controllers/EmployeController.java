@@ -14,6 +14,7 @@ import javafx.scene.control.MenuItem;
 import javafx.scene.image.ImageView;
 import javafx.stage.Stage;
 import tn.bfpme.models.Departement;
+import tn.bfpme.models.Utilisateur;
 import tn.bfpme.utils.SessionManager;
 
 import java.io.IOException;
@@ -55,7 +56,6 @@ public class EmployeController implements Initializable {
 
 
     }
-
     @FXML
     public void DemanderConge(ActionEvent actionEvent) {
         try {
