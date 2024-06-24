@@ -99,13 +99,6 @@ public class LoginController {
                 stage.setScene(scene);
                 stage.setTitle("Profile");
                 stage.show();
-
-                System.out.println(SessionManager.getInstance().getNom());
-                System.out.println(SessionManager.getInstance().getPrenom());
-                System.out.println(SessionManager.getInstance().getEmail());
-                System.out.println(SessionManager.getInstance().getDepartement());
-                System.out.println(SessionManager.getInstance().getSoldeConge());
-                System.out.println(ConnectedUser);
             } else {
                 System.out.println("Login failed: Invalid email or password.");
             }

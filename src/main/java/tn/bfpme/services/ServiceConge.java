@@ -56,7 +56,7 @@ public class ServiceConge implements IConge<Conge> {
 
     @Override
     public void Add(Conge conge) {
-        String qry = "INSERT INTO `conge`(`DateDebut`, `DateFin`, `TypeCongé`, `Statut`, `ID_User`, `file`, `description`) VALUES (?,?,?,?,?,?,?)";
+        String qry = "INSERT INTO `conge`(`DateDebut`, `DateFin`, `TypeConge`, `Statut`, `ID_User`, `file`, `description`) VALUES (?,?,?,?,?,?,?)";
         try {
             PreparedStatement stm = cnx.prepareStatement(qry);
             stm.setDate(1, Date.valueOf(conge.getDateDebut()));

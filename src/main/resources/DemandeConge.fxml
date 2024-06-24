@@ -118,7 +118,7 @@
                         <Font name="Roboto Regular" size="15.0" />
                      </font>
                   </Label>
-                  <TextField disable="true" layoutX="483.0" layoutY="350.0" onAction="#EXP_Doc_Link" prefHeight="28.0" prefWidth="312.0" />
+                  <TextField fx:id="EXP_Doc_Link" disable="true" layoutX="483.0" layoutY="350.0" prefHeight="28.0" prefWidth="312.0" />
                   <Button layoutX="440.0" layoutY="457.0" mnemonicParsing="false" onAction="#EXP_Demander" prefHeight="41.0" prefWidth="196.0" styleClass="btn-primary" text="Demander" textAlignment="CENTER">
                      <font>
                         <Font name="Roboto Regular" size="14.0" />
