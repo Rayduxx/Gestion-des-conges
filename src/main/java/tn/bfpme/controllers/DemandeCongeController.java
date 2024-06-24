@@ -4,7 +4,11 @@ import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
+import javafx.fxml.FXMLLoader;
 import javafx.fxml.Initializable;
+import javafx.scene.Node;
+import javafx.scene.Parent;
+import javafx.scene.Scene;
 import javafx.scene.control.*;
 import javafx.scene.layout.Pane;
 import javafx.stage.FileChooser;
@@ -38,12 +42,31 @@ public class DemandeCongeController implements Initializable{
     @FXML private Pane paneMaternite;
     @FXML private Pane paneNaissance;
     @FXML private Pane paneGrossesse;
+    @FXML
+    private Button settingsButton;
+    private ContextMenu contextMenu;
     private final ServiceConge CongeS = new ServiceConge();
     ObservableList<String> CongeList = FXCollections.observableArrayList("Annuel", "Exeptionnel", "Maladie", "Sous-Solde", "Maternité");
     @Override
     public void initialize(URL url, ResourceBundle resourceBundle) {
         cb_typeconge.setValue("Selectioner type");
         cb_typeconge.setItems(CongeList);
+        contextMenu = new ContextMenu();
+
+        // Add menu items to the context menu
+        MenuItem profileItem = new MenuItem("Profile");
+        MenuItem infoItem = new MenuItem("Info");
+        MenuItem suppressionItem = new MenuItem("Supprimer Compte");
+        MenuItem logoutItem = new MenuItem("Déconnexion");
+
+        contextMenu.getItems().addAll(profileItem, infoItem, suppressionItem, logoutItem);
+
+        // Show the context menu directly under the settings button
+        settingsButton.setOnAction(event -> {
+            double screenX = settingsButton.localToScreen(settingsButton.getBoundsInLocal()).getMinX()-70;
+            double screenY = settingsButton.localToScreen(settingsButton.getBoundsInLocal()).getMaxY()+10;
+            contextMenu.show(settingsButton, screenX, screenY);
+        });
     }
     @FXML
     void TypeSelec(ActionEvent event) {
@@ -265,5 +288,36 @@ public class DemandeCongeController implements Initializable{
                 e.printStackTrace();
             }
         }
+    }
+    @FXML
+    public void Demander(ActionEvent actionEvent) {
+        try {
+            FXMLLoader loader = new FXMLLoader(getClass().getResource("/DemandeConge.fxml"));
+            Parent root = loader.load();
+            Stage stage = (Stage) ((Node) actionEvent.getSource()).getScene().getWindow();
+            Scene scene = new Scene(root);
+            stage.setScene(scene);
+            stage.setTitle("Demande congé");
+            stage.show();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+
+    }
+
+    @FXML
+    public void Historique(ActionEvent actionEvent) {
+        try {
+            FXMLLoader loader = new FXMLLoader(getClass().getResource("/HistoriqueConge.fxml"));
+            Parent root = loader.load();
+            Stage stage = (Stage) ((Node) actionEvent.getSource()).getScene().getWindow();
+            Scene scene = new Scene(root);
+            stage.setScene(scene);
+            stage.setTitle("Historique congé");
+            stage.show();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+
     }
 }
