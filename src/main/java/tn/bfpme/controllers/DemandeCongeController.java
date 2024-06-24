@@ -120,8 +120,7 @@ public class DemandeCongeController implements Initializable{
     @FXML private DatePicker ANL_DD;
     @FXML private DatePicker ANL_DF;
     @FXML private TextArea ANL_Desc;
-    @FXML
-    void ANL_Demander(ActionEvent event) {
+    @FXML void ANL_Demander(ActionEvent event) {
         LocalDate DD = ANL_DD.getValue();
         LocalDate DF = ANL_DF.getValue();
         String DESC = ANL_Desc.getText();
@@ -139,8 +138,7 @@ public class DemandeCongeController implements Initializable{
         String DOCLINK = EXP_Doc_Link.getText();
         CongeS.Add(new Conge(0, DD, DF, TypeConge.Exceptionnel, Statut.En_Attente, SessionManager.getInstance().getId_user(),DOCLINK, DESC));
     }
-    @FXML
-    void EXP_Doc_Imp(ActionEvent event) {
+    @FXML void EXP_Doc_Imp(ActionEvent event) {
         String documentPath = null;
         FileChooser fileChooser = new FileChooser();
         fileChooser.setTitle("Choisir votre document justicatif");
@@ -169,16 +167,14 @@ public class DemandeCongeController implements Initializable{
     @FXML private DatePicker MAL_DF;
     @FXML private TextArea MAL_Desc;
     @FXML private TextField MAL_Doc_Link;
-    @FXML
-    void MAL_Demander(ActionEvent event) {
+    @FXML void MAL_Demander(ActionEvent event) {
         LocalDate DD = MAL_DD.getValue();
         LocalDate DF = MAL_DF.getValue();
         String DESC = MAL_Desc.getText();
         String DOCLINK = MAL_Doc_Link.getText();
         CongeS.Add(new Conge(0, DD, DF, TypeConge.Maladie, Statut.En_Attente, SessionManager.getInstance().getId_user(), DOCLINK, DESC));
     }
-    @FXML
-    void MAL_Doc_Imp(ActionEvent event) {
+    @FXML void MAL_Doc_Imp(ActionEvent event) {
         String documentPath = null;
         FileChooser fileChooser = new FileChooser();
         fileChooser.setTitle("Choisir votre certificat medicale");
@@ -206,8 +202,7 @@ public class DemandeCongeController implements Initializable{
     @FXML private DatePicker SS_DD;
     @FXML private DatePicker SS_DF;
     @FXML private TextArea SS_Desc;
-    @FXML
-    void SS_Demander(ActionEvent event) {
+    @FXML void SS_Demander(ActionEvent event) {
         LocalDate DD = SS_DD.getValue();
         LocalDate DF = SS_DF.getValue();
         String DESC = SS_Desc.getText();
@@ -218,16 +213,14 @@ public class DemandeCongeController implements Initializable{
     @FXML private DatePicker GRO_DF;
     @FXML private TextArea GRO_Desc;
     @FXML private TextField GRO_Doc_Link;
-    @FXML
-    void GRO_Demander(ActionEvent event) {
+    @FXML void GRO_Demander(ActionEvent event) {
         LocalDate DD = GRO_DD.getValue();
         LocalDate DF = GRO_DF.getValue();
         String DESC = GRO_Desc.getText();
         String DOCLINK = GRO_Desc.getText();
         CongeS.Add(new Conge(0, DD, DF, TypeConge.Sous_solde, Statut.En_Attente, SessionManager.getInstance().getId_user(), DOCLINK, DESC));
     }
-    @FXML
-    void GRO_Doc_Imp(ActionEvent event) {
+    @FXML void GRO_Doc_Imp(ActionEvent event) {
         String documentPath = null;
         FileChooser fileChooser = new FileChooser();
         fileChooser.setTitle("Choisir votre certificat medicale de grossesse");
@@ -245,7 +238,7 @@ public class DemandeCongeController implements Initializable{
                 Files.copy(selectedFile.toPath(), destinationPath, StandardCopyOption.REPLACE_EXISTING);
                 documentPath = destinationPath.toString();
                 System.out.println("Certicat uploaded successfully: " + documentPath);
-                EXP_Doc_Link.setText(fileName);
+                GRO_Doc_Link.setText(fileName);
             } catch (IOException e) {
                 e.printStackTrace();
             }
@@ -256,16 +249,14 @@ public class DemandeCongeController implements Initializable{
     @FXML private DatePicker NAI_DF;
     @FXML private TextArea NAI_Desc;
     @FXML private TextField NAI_Doc_Link;
-    @FXML
-    void NAI_Demander(ActionEvent event) {
+    @FXML void NAI_Demander(ActionEvent event) {
         LocalDate DD = NAI_DD.getValue();
         LocalDate DF = NAI_DF.getValue();
         String DESC = NAI_Desc.getText();
         String DOCLINK = NAI_Doc_Link.getText();
         CongeS.Add(new Conge(0, DD, DF, TypeConge.Sous_solde, Statut.En_Attente, SessionManager.getInstance().getId_user(), DOCLINK, DESC));
     }
-    @FXML
-    void NAI_Doc_Imp(ActionEvent event) {
+    @FXML void NAI_Doc_Imp(ActionEvent event) {
         String documentPath = null;
         FileChooser fileChooser = new FileChooser();
         fileChooser.setTitle("Choisir votre certificat medicale de naissance");
