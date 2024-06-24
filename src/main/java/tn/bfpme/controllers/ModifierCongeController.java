@@ -45,17 +45,13 @@ public class ModifierCongeController {
 
     @FXML
     void modifier_conge(ActionEvent actionEvent) {
-
         LocalDate startDate = modif_datedeb.getValue();
         LocalDate endDate = modif_datefin.getValue();
         String description = modif_description.getText();
         if (startDate != null && endDate != null && !description.isEmpty()) {
-
             conge.setDateDebut(startDate);
             conge.setDateFin(endDate);
             conge.setDescription(description);
-
-            // Update the conge in the database
             CongeS.updateConge(conge);
             text_info.setText("Modification effectuée");
             Stage stage = (Stage) modif_datedeb.getScene().getWindow();

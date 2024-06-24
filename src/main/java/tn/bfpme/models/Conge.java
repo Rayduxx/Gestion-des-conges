@@ -1,5 +1,6 @@
 package tn.bfpme.models;
 
+import java.sql.Date;
 import java.time.LocalDate;
 
 public class Conge {
@@ -14,7 +15,7 @@ public class Conge {
 
     public Conge() {}
 
-    public Conge(int idConge, LocalDate dateDebut, LocalDate dateFin, TypeConge typeConge, Statut statut, int idUser) {
+    public Conge(int idConge, LocalDate dateDebut, LocalDate dateFin, TypeConge typeConge, Statut statut, int idUser, String file, String description) {
         this.idConge = idConge;
         this.dateDebut = dateDebut;
         this.dateFin = dateFin;

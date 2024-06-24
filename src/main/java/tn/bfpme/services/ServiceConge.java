@@ -27,8 +27,8 @@ public class ServiceConge implements IConge<Conge> {
             while (rs.next()) {
                 Conge conge = new Conge();
                 conge.setIdConge(rs.getInt("ID_Conge"));
-                conge.setDateDebut(rs.getDate("DateDebut").toLocalDate());
-                conge.setDateFin(rs.getDate("DateFin").toLocalDate());
+                conge.setDateDebut(rs.getDate("DateDebut"));
+                conge.setDateFin(rs.getDate("DateFin"));
                 try {
                     conge.setTypeConge(TypeConge.valueOf(rs.getString("TypeConge")));
                 } catch (IllegalArgumentException e) {
@@ -51,6 +51,25 @@ public class ServiceConge implements IConge<Conge> {
         }
         return conges;
     }
+
+    @Override
+    public void Add(Conge conge) {
+        String qry = "INSERT INTO `conge`(`DateDebut`, `DateFin`, `TypeCongé`, `Statut`, `ID_User`, `file`, `description`) VALUES (?,?,?,?,?,?,?)";
+        try {
+            PreparedStatement stm = cnx.prepareStatement(qry);
+            stm.setDate(1, conge.getDateDebut());
+            stm.setDate(2, conge.getDateFin());
+            stm.setString(3, String.valueOf(conge.getTypeConge()));
+            stm.setString(4, String.valueOf(conge.getStatut()));
+            stm.setInt(5, conge.getIdUser());
+            stm.setString(6, conge.getFile());
+            stm.setString(7, conge.getDescription());
+            stm.executeUpdate();
+        } catch (SQLException e) {
+            System.out.println(e.getMessage());
+        }
+    }
+
     @Override
     public void updateConge(Conge conge) {
         try {

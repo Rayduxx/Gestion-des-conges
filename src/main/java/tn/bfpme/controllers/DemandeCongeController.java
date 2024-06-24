@@ -5,90 +5,265 @@ import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
-import javafx.scene.control.ComboBox;
+import javafx.scene.control.*;
 import javafx.scene.layout.Pane;
+import javafx.stage.FileChooser;
+import javafx.stage.Stage;
+import tn.bfpme.models.Conge;
+import tn.bfpme.models.Statut;
+import tn.bfpme.models.TypeConge;
+import tn.bfpme.services.ServiceConge;
+import tn.bfpme.utils.SessionManager;
 
+import java.io.File;
+import java.io.FileNotFoundException;
+import java.io.IOException;
 import java.net.URL;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
+import java.nio.file.StandardCopyOption;
+import java.util.UUID;
+import java.time.LocalDate;
 import java.util.ResourceBundle;
 
 public class DemandeCongeController implements Initializable{
-
-        @FXML
-        private ResourceBundle resources;
-        @FXML
-        private URL location;
-        @FXML
-        private ComboBox<String> cb_typeconge;
-        @FXML
-        private Pane paneAnnuel;
-        @FXML
-        private Pane paneExeptionnel;
-        @FXML
-        private Pane paneMaladie;
-        @FXML
-        private Pane paneSousSolde;
-        @FXML
-        private Pane paneMaternite;
-        @FXML
-        private Pane paneNaissance;
-        @FXML
-        private Pane paneGrossesse;
-
-        ObservableList<String> CongeList = FXCollections.observableArrayList("Annuel", "Exeptionnel", "Maladie", "Sous-Solde", "Maternité");
-        @Override
-        public void initialize(URL url, ResourceBundle resourceBundle) {
-            cb_typeconge.setValue("Selectioner type");
-            cb_typeconge.setItems(CongeList);
+    @FXML private ResourceBundle resources;
+    @FXML private URL location;
+    @FXML private ComboBox<String> cb_typeconge;
+    @FXML private Pane paneAnnuel;
+    @FXML private Pane paneExeptionnel;
+    @FXML private Pane paneMaladie;
+    @FXML private Pane paneSousSolde;
+    @FXML private Pane paneMaternite;
+    @FXML private Pane paneNaissance;
+    @FXML private Pane paneGrossesse;
+    private final ServiceConge CongeS = new ServiceConge();
+    ObservableList<String> CongeList = FXCollections.observableArrayList("Annuel", "Exeptionnel", "Maladie", "Sous-Solde", "Maternité");
+    @Override
+    public void initialize(URL url, ResourceBundle resourceBundle) {
+        cb_typeconge.setValue("Selectioner type");
+        cb_typeconge.setItems(CongeList);
+    }
+    @FXML
+    void TypeSelec(ActionEvent event) {
+        if (cb_typeconge.getValue().equals("Annuel")) {
+            paneAnnuel.setVisible(true);
+            paneExeptionnel.setVisible(false);
+            paneMaladie.setVisible(false);
+            paneSousSolde.setVisible(false);
+            paneMaternite.setVisible(false);
         }
-        @FXML
-        void TypeSelec(ActionEvent event) {
-            if (cb_typeconge.getValue().equals("Annuel")) {
-                paneAnnuel.setVisible(true);
-                paneExeptionnel.setVisible(false);
-                paneMaladie.setVisible(false);
-                paneSousSolde.setVisible(false);
-                paneMaternite.setVisible(false);
-            }
-            if (cb_typeconge.getValue().equals("Exeptionnel")) {
-                paneAnnuel.setVisible(false);
-                paneExeptionnel.setVisible(true);
-                paneMaladie.setVisible(false);
-                paneSousSolde.setVisible(false);
-                paneMaternite.setVisible(false);
-            }
-            if (cb_typeconge.getValue().equals("Maladie")) {
-                paneAnnuel.setVisible(false);
-                paneExeptionnel.setVisible(false);
-                paneMaladie.setVisible(true);
-                paneSousSolde.setVisible(false);
-                paneMaternite.setVisible(false);
-            }
-            if (cb_typeconge.getValue().equals("Sous-Solde")) {
-                paneAnnuel.setVisible(false);
-                paneExeptionnel.setVisible(false);
-                paneMaladie.setVisible(false);
-                paneSousSolde.setVisible(true);
-                paneMaternite.setVisible(false);
-            }
-            if (cb_typeconge.getValue().equals("Maternité")) {
-                paneAnnuel.setVisible(false);
-                paneExeptionnel.setVisible(false);
-                paneMaladie.setVisible(false);
-                paneSousSolde.setVisible(false);
-                paneMaternite.setVisible(true);
+        if (cb_typeconge.getValue().equals("Exeptionnel")) {
+            paneAnnuel.setVisible(false);
+            paneExeptionnel.setVisible(true);
+            paneMaladie.setVisible(false);
+            paneSousSolde.setVisible(false);
+            paneMaternite.setVisible(false);
+        }
+        if (cb_typeconge.getValue().equals("Maladie")) {
+            paneAnnuel.setVisible(false);
+            paneExeptionnel.setVisible(false);
+            paneMaladie.setVisible(true);
+            paneSousSolde.setVisible(false);
+            paneMaternite.setVisible(false);
+        }
+        if (cb_typeconge.getValue().equals("Sous-Solde")) {
+            paneAnnuel.setVisible(false);
+            paneExeptionnel.setVisible(false);
+            paneMaladie.setVisible(false);
+            paneSousSolde.setVisible(true);
+            paneMaternite.setVisible(false);
+        }
+        if (cb_typeconge.getValue().equals("Maternité")) {
+            paneAnnuel.setVisible(false);
+            paneExeptionnel.setVisible(false);
+            paneMaladie.setVisible(false);
+            paneSousSolde.setVisible(false);
+            paneMaternite.setVisible(true);
+        }
+    }
+    @FXML
+    void switchGrossesse(ActionEvent event) {
+        paneGrossesse.setVisible(true);
+        paneNaissance.setVisible(false);
+    }
+    @FXML
+    void switchNaissance(ActionEvent event) {
+        paneNaissance.setVisible(true);
+        paneGrossesse.setVisible(false);
+    }
+    /*  Demande Congé Annuel */
+    @FXML private DatePicker ANL_DD;
+    @FXML private DatePicker ANL_DF;
+    @FXML private TextArea ANL_Desc;
+    @FXML
+    void ANL_Demander(ActionEvent event) {
+        LocalDate DD = ANL_DD.getValue();
+        LocalDate DF = ANL_DF.getValue();
+        String DESC = ANL_Desc.getText();
+        CongeS.Add(new Conge(0, DD, DF, TypeConge.Annuel, Statut.En_Attente, SessionManager.getId_user(),"", DESC));
+    }
+    /*  Demande Congé Exeptionnel */
+    @FXML private DatePicker EXP_DD;
+    @FXML private DatePicker EXP_DF;
+    @FXML private TextArea EXP_Desc;
+    @FXML private TextField EXP_Doc_Link;
+    @FXML void EXP_Demander(ActionEvent event) {
+        LocalDate DD = EXP_DD.getValue();
+        LocalDate DF = EXP_DF.getValue();
+        String DESC = EXP_Desc.getText();
+        String DOCLINK = EXP_Doc_Link.getText();
+        CongeS.Add(new Conge(0, DD, DF, TypeConge.Exceptionnel, Statut.En_Attente, SessionManager.getId_user(),DOCLINK, DESC));
+    }
+    @FXML
+    void EXP_Doc_Imp(ActionEvent event) {
+        String documentPath = null;
+        FileChooser fileChooser = new FileChooser();
+        fileChooser.setTitle("Choisir votre document justicatif");
+        fileChooser.getExtensionFilters().addAll(new FileChooser.ExtensionFilter("Fichier", "*.pdf", "*.docx"));
+        Stage stage = (Stage) EXP_DD.getScene().getWindow();
+        File selectedFile = fileChooser.showOpenDialog(stage);
+        if (selectedFile != null) {
+            try {
+                Path destinationFolder = Paths.get("src/main/resources/assets/files");
+                if (!Files.exists(destinationFolder)) {
+                    Files.createDirectories(destinationFolder);
+                }
+                String fileName = UUID.randomUUID().toString() + "_" + selectedFile.getName();
+                Path destinationPath = destinationFolder.resolve(fileName);
+                Files.copy(selectedFile.toPath(), destinationPath, StandardCopyOption.REPLACE_EXISTING);
+                documentPath = destinationPath.toString();
+                System.out.println("Document uploaded successfully: " + documentPath);
+                EXP_Doc_Link.setText(fileName);
+            } catch (IOException e) {
+                e.printStackTrace();
             }
         }
-        @FXML
-        void switchGrossesse(ActionEvent event) {
-            paneGrossesse.setVisible(true);
-            paneNaissance.setVisible(false);
+    }
+    /*  Demande Congé Maladie */
+    @FXML private DatePicker MAL_DD;
+    @FXML private DatePicker MAL_DF;
+    @FXML private TextArea MAL_Desc;
+    @FXML private TextField MAL_Doc_Link;
+    @FXML
+    void MAL_Demander(ActionEvent event) {
+        LocalDate DD = MAL_DD.getValue();
+        LocalDate DF = MAL_DF.getValue();
+        String DESC = MAL_Desc.getText();
+        String DOCLINK = MAL_Doc_Link.getText();
+        CongeS.Add(new Conge(0, DD, DF, TypeConge.Maladie, Statut.En_Attente, SessionManager.getId_user(), DOCLINK, DESC));
+    }
+    @FXML
+    void MAL_Doc_Imp(ActionEvent event) {
+        String documentPath = null;
+        FileChooser fileChooser = new FileChooser();
+        fileChooser.setTitle("Choisir votre certificat medicale");
+        fileChooser.getExtensionFilters().addAll(new FileChooser.ExtensionFilter("Fichier", "*.pdf", "*.docx"));
+        Stage stage = (Stage) EXP_DD.getScene().getWindow();
+        File selectedFile = fileChooser.showOpenDialog(stage);
+        if (selectedFile != null) {
+            try {
+                Path destinationFolder = Paths.get("src/main/resources/assets/files");
+                if (!Files.exists(destinationFolder)) {
+                    Files.createDirectories(destinationFolder);
+                }
+                String fileName = UUID.randomUUID().toString() + "_" + selectedFile.getName();
+                Path destinationPath = destinationFolder.resolve(fileName);
+                Files.copy(selectedFile.toPath(), destinationPath, StandardCopyOption.REPLACE_EXISTING);
+                documentPath = destinationPath.toString();
+                System.out.println("Certicat uploaded successfully: " + documentPath);
+                EXP_Doc_Link.setText(fileName);
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
         }
-
-        @FXML
-        void switchNaissance(ActionEvent event) {
-            paneNaissance.setVisible(true);
-            paneGrossesse.setVisible(false);
+    }
+    /*  Demande Congé Sous-Solde */
+    @FXML private DatePicker SS_DD;
+    @FXML private DatePicker SS_DF;
+    @FXML private TextArea SS_Desc;
+    @FXML
+    void SS_Demander(ActionEvent event) {
+        LocalDate DD = SS_DD.getValue();
+        LocalDate DF = SS_DF.getValue();
+        String DESC = SS_Desc.getText();
+        CongeS.Add(new Conge(0, DD, DF, TypeConge.Sous_solde, Statut.En_Attente, SessionManager.getId_user(), "", DESC));
+    }
+    /*  Demande Congé Maternité (GROSSESSE) */
+    @FXML private DatePicker GRO_DD;
+    @FXML private DatePicker GRO_DF;
+    @FXML private TextArea GRO_Desc;
+    @FXML private TextField GRO_Doc_Link;
+    @FXML
+    void GRO_Demander(ActionEvent event) {
+        LocalDate DD = GRO_DD.getValue();
+        LocalDate DF = GRO_DF.getValue();
+        String DESC = GRO_Desc.getText();
+        String DOCLINK = GRO_Desc.getText();
+        CongeS.Add(new Conge(0, DD, DF, TypeConge.Sous_solde, Statut.En_Attente, SessionManager.getId_user(), DOCLINK, DESC));
+    }
+    @FXML
+    void GRO_Doc_Imp(ActionEvent event) {
+        String documentPath = null;
+        FileChooser fileChooser = new FileChooser();
+        fileChooser.setTitle("Choisir votre certificat medicale de grossesse");
+        fileChooser.getExtensionFilters().addAll(new FileChooser.ExtensionFilter("Fichier", "*.pdf", "*.docx"));
+        Stage stage = (Stage) EXP_DD.getScene().getWindow();
+        File selectedFile = fileChooser.showOpenDialog(stage);
+        if (selectedFile != null) {
+            try {
+                Path destinationFolder = Paths.get("src/main/resources/assets/files");
+                if (!Files.exists(destinationFolder)) {
+                    Files.createDirectories(destinationFolder);
+                }
+                String fileName = UUID.randomUUID().toString() + "_" + selectedFile.getName();
+                Path destinationPath = destinationFolder.resolve(fileName);
+                Files.copy(selectedFile.toPath(), destinationPath, StandardCopyOption.REPLACE_EXISTING);
+                documentPath = destinationPath.toString();
+                System.out.println("Certicat uploaded successfully: " + documentPath);
+                EXP_Doc_Link.setText(fileName);
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
         }
-
-
+    }
+    /*  Demande Congé Maternité (NAISSANCE) */
+    @FXML private DatePicker NAI_DD;
+    @FXML private DatePicker NAI_DF;
+    @FXML private TextArea NAI_Desc;
+    @FXML private TextField NAI_Doc_Link;
+    @FXML
+    void NAI_Demander(ActionEvent event) {
+        LocalDate DD = NAI_DD.getValue();
+        LocalDate DF = NAI_DF.getValue();
+        String DESC = NAI_Desc.getText();
+        String DOCLINK = NAI_Doc_Link.getText();
+        CongeS.Add(new Conge(0, DD, DF, TypeConge.Sous_solde, Statut.En_Attente, SessionManager.getId_user(), DOCLINK, DESC));
+    }
+    @FXML
+    void NAI_Doc_Imp(ActionEvent event) {
+        String documentPath = null;
+        FileChooser fileChooser = new FileChooser();
+        fileChooser.setTitle("Choisir votre certificat medicale de naissance");
+        fileChooser.getExtensionFilters().addAll(new FileChooser.ExtensionFilter("Fichier", "*.pdf", "*.docx"));
+        Stage stage = (Stage) EXP_DD.getScene().getWindow();
+        File selectedFile = fileChooser.showOpenDialog(stage);
+        if (selectedFile != null) {
+            try {
+                Path destinationFolder = Paths.get("src/main/resources/assets/files");
+                if (!Files.exists(destinationFolder)) {
+                    Files.createDirectories(destinationFolder);
+                }
+                String fileName = UUID.randomUUID().toString() + "_" + selectedFile.getName();
+                Path destinationPath = destinationFolder.resolve(fileName);
+                Files.copy(selectedFile.toPath(), destinationPath, StandardCopyOption.REPLACE_EXISTING);
+                documentPath = destinationPath.toString();
+                System.out.println("Certicat uploaded successfully: " + documentPath);
+                EXP_Doc_Link.setText(fileName);
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+        }
+    }
 }
