@@ -1,5 +1,6 @@
 package tn.bfpme.controllers;
 
+import javafx.application.Platform;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
@@ -13,6 +14,7 @@ import javafx.scene.layout.ColumnConstraints;
 import javafx.scene.layout.GridPane;
 import javafx.scene.layout.Pane;
 import javafx.scene.layout.Priority;
+import javafx.stage.Modality;
 import javafx.stage.Stage;
 import tn.bfpme.models.Conge;
 import tn.bfpme.services.ServiceConge;
@@ -252,13 +254,25 @@ public class HistoriqueCongeController implements Initializable  {
         try {
             FXMLLoader loader = new FXMLLoader(getClass().getResource("/SupressionCompte.fxml"));
             Parent root = loader.load();
-            // Get the stage from the current context menu's owner window
+            Stage suppressionStage = new Stage();
+            suppressionStage.setTitle("Suppression User");
+            suppressionStage.setScene(new Scene(root));
+
+
             MenuItem menuItem = (MenuItem) actionEvent.getSource();
-            Stage stage = (Stage) menuItem.getParentPopup().getOwnerWindow();
-            Scene scene = new Scene(root);
-            stage.setScene(scene);
-            stage.setTitle("Profile");
-            stage.show();
+            Stage ownerStage = (Stage) menuItem.getParentPopup().getOwnerWindow();
+
+
+            suppressionStage.initOwner(ownerStage);
+            suppressionStage.initModality(Modality.WINDOW_MODAL);
+
+
+            suppressionStage.show();
+            Platform.runLater(() -> {
+                suppressionStage.setX(ownerStage.getX() + (ownerStage.getWidth() - suppressionStage.getWidth()) / 2);
+                suppressionStage.setY(ownerStage.getY() + (ownerStage.getHeight() - suppressionStage.getHeight()) / 2);
+            });
+
         } catch (IOException e) {
             e.printStackTrace();
         }
