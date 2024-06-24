@@ -17,6 +17,7 @@ import tn.bfpme.models.Conge;
 import tn.bfpme.models.Statut;
 import tn.bfpme.models.TypeConge;
 import tn.bfpme.services.ServiceConge;
+import tn.bfpme.utils.MyDataBase;
 import tn.bfpme.utils.SessionManager;
 
 import java.io.File;
@@ -27,6 +28,10 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.nio.file.StandardCopyOption;
+import java.sql.Connection;
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
+import java.sql.SQLException;
 import java.util.UUID;
 import java.time.LocalDate;
 import java.util.ResourceBundle;
@@ -46,6 +51,7 @@ public class DemandeCongeController implements Initializable{
     private Button settingsButton;
     private ContextMenu contextMenu;
     private final ServiceConge CongeS = new ServiceConge();
+    Connection cnx = MyDataBase.getInstance().getCnx();
     ObservableList<String> CongeList = FXCollections.observableArrayList("Annuel", "Exeptionnel", "Maladie", "Sous-Solde", "Maternité");
     @Override
     public void initialize(URL url, ResourceBundle resourceBundle) {
@@ -124,7 +130,49 @@ public class DemandeCongeController implements Initializable{
         LocalDate DD = ANL_DD.getValue();
         LocalDate DF = ANL_DF.getValue();
         String DESC = ANL_Desc.getText();
-        CongeS.Add(new Conge(0, DD, DF, TypeConge.Annuel, Statut.En_Attente, SessionManager.getInstance().getId_user(),"", DESC));
+        if (ANL_DD.getValue() == null || ANL_DF.getValue() == null || ANL_Desc.getText().isEmpty()) {
+            Alert alert = new Alert(Alert.AlertType.ERROR);
+            alert.setTitle("Erreur");
+            alert.setHeaderText("Champs requis non remplis");
+            alert.setContentText("Veuillez remplir toutes les informations nécessaires.");
+            alert.showAndWait();
+            return;
+        }
+        if (DD == null || DF == null || DF == DD || DD.isAfter(DF)) {
+            Alert alert = new Alert(Alert.AlertType.ERROR);
+            alert.setTitle("Erreur");
+            alert.setHeaderText("Dates invalides");
+            alert.setContentText("La date de début doit être antérieure et différent à la date de fin.");
+            alert.showAndWait();
+            return;
+        }
+        String qry = "SELECT `Solde_congé` FROM `utilisateur` WHERE `ID_User`=?";
+        try {
+            PreparedStatement pstm = cnx.prepareStatement(qry);
+            pstm.setInt(1, SessionManager.getInstance().getId_user());
+            ResultSet rs = pstm.executeQuery();
+            if (rs.next() ){
+                if (rs.getInt("Solde_congé") > 0){
+                    CongeS.Add(new Conge(0, DD, DF, TypeConge.Annuel, Statut.En_Attente, SessionManager.getInstance().getId_user(),"", DESC));
+                    String qry2 = "UPDATE `utilisateur` SET `Solde_congé`=? WHERE `ID_User`=?";
+                    PreparedStatement stm = cnx.prepareStatement(qry2);
+                    int NewSolde = rs.getInt("Solde_congé") - 1;
+                    stm.setInt(1, NewSolde);
+                    stm.setInt(2, SessionManager.getInstance().getId_user());
+                    stm.executeUpdate();
+                }else{
+                    Alert alert = new Alert(Alert.AlertType.ERROR);
+                    alert.setTitle("Erreur");
+                    alert.setHeaderText("Votre solde est dépassé pour cette année.");
+                    alert.setContentText("Vous pouvez demander un congé sous-solde si nécessaire.");
+                    alert.showAndWait();
+                    paneAnnuel.setVisible(false);
+                    paneSousSolde.setVisible(true);
+                }
+            }
+        } catch (SQLException ex) {
+            ex.printStackTrace();
+        }
     }
     /*  Demande Congé Exeptionnel */
     @FXML private DatePicker EXP_DD;
@@ -136,6 +184,30 @@ public class DemandeCongeController implements Initializable{
         LocalDate DF = EXP_DF.getValue();
         String DESC = EXP_Desc.getText();
         String DOCLINK = EXP_Doc_Link.getText();
+        if (EXP_DD.getValue() == null || EXP_DF.getValue() == null || EXP_Desc.getText().isEmpty()) {
+            Alert alert = new Alert(Alert.AlertType.ERROR);
+            alert.setTitle("Erreur");
+            alert.setHeaderText("Champs requis non remplis");
+            alert.setContentText("Veuillez remplir toutes les informations nécessaires.");
+            alert.showAndWait();
+            return;
+        }
+        if (EXP_Doc_Link.getText().isEmpty()) {
+            Alert alert = new Alert(Alert.AlertType.ERROR);
+            alert.setTitle("Erreur");
+            alert.setHeaderText("Document manquant");
+            alert.setContentText("vous devez importer le document justificatif.");
+            alert.showAndWait();
+            return;
+        }
+        if (DD == null || DF == null || DF == DD || DD.isAfter(DF)) {
+            Alert alert = new Alert(Alert.AlertType.ERROR);
+            alert.setTitle("Erreur");
+            alert.setHeaderText("Dates invalides");
+            alert.setContentText("La date de début doit être antérieure et différent à la date de fin.");
+            alert.showAndWait();
+            return;
+        }
         CongeS.Add(new Conge(0, DD, DF, TypeConge.Exceptionnel, Statut.En_Attente, SessionManager.getInstance().getId_user(),DOCLINK, DESC));
     }
     @FXML void EXP_Doc_Imp(ActionEvent event) {
@@ -172,6 +244,30 @@ public class DemandeCongeController implements Initializable{
         LocalDate DF = MAL_DF.getValue();
         String DESC = MAL_Desc.getText();
         String DOCLINK = MAL_Doc_Link.getText();
+        if (MAL_DD.getValue() == null || MAL_DF.getValue() == null || MAL_Desc.getText().isEmpty()) {
+            Alert alert = new Alert(Alert.AlertType.ERROR);
+            alert.setTitle("Erreur");
+            alert.setHeaderText("Champs requis non remplis");
+            alert.setContentText("Veuillez remplir toutes les informations nécessaires.");
+            alert.showAndWait();
+            return;
+        }
+        if (MAL_Doc_Link.getText().isEmpty()) {
+            Alert alert = new Alert(Alert.AlertType.ERROR);
+            alert.setTitle("Erreur");
+            alert.setHeaderText("Certificat médical manquant");
+            alert.setContentText("vous devez importer le certificat médical.");
+            alert.showAndWait();
+            return;
+        }
+        if (DD == null || DF == null || DF == DD || DD.isAfter(DF)) {
+            Alert alert = new Alert(Alert.AlertType.ERROR);
+            alert.setTitle("Erreur");
+            alert.setHeaderText("Dates invalides");
+            alert.setContentText("La date de début doit être antérieure et différent à la date de fin.");
+            alert.showAndWait();
+            return;
+        }
         CongeS.Add(new Conge(0, DD, DF, TypeConge.Maladie, Statut.En_Attente, SessionManager.getInstance().getId_user(), DOCLINK, DESC));
     }
     @FXML void MAL_Doc_Imp(ActionEvent event) {
@@ -206,6 +302,22 @@ public class DemandeCongeController implements Initializable{
         LocalDate DD = SS_DD.getValue();
         LocalDate DF = SS_DF.getValue();
         String DESC = SS_Desc.getText();
+        if (SS_DD.getValue() == null || SS_DF.getValue() == null || SS_Desc.getText().isEmpty()) {
+            Alert alert = new Alert(Alert.AlertType.ERROR);
+            alert.setTitle("Erreur");
+            alert.setHeaderText("Champs requis non remplis");
+            alert.setContentText("Veuillez remplir toutes les informations nécessaires.");
+            alert.showAndWait();
+            return;
+        }
+        if (DD == null || DF == null || DF == DD || DD.isAfter(DF)) {
+            Alert alert = new Alert(Alert.AlertType.ERROR);
+            alert.setTitle("Erreur");
+            alert.setHeaderText("Dates invalides");
+            alert.setContentText("La date de début doit être antérieure et différent à la date de fin.");
+            alert.showAndWait();
+            return;
+        }
         CongeS.Add(new Conge(0, DD, DF, TypeConge.Sous_solde, Statut.En_Attente, SessionManager.getInstance().getId_user(), "", DESC));
     }
     /*  Demande Congé Maternité (GROSSESSE) */
@@ -217,7 +329,31 @@ public class DemandeCongeController implements Initializable{
         LocalDate DD = GRO_DD.getValue();
         LocalDate DF = GRO_DF.getValue();
         String DESC = GRO_Desc.getText();
-        String DOCLINK = GRO_Desc.getText();
+        String DOCLINK = GRO_Doc_Link.getText();
+        if (GRO_DD.getValue() == null || GRO_DF.getValue() == null || GRO_Desc.getText().isEmpty()) {
+            Alert alert = new Alert(Alert.AlertType.ERROR);
+            alert.setTitle("Erreur");
+            alert.setHeaderText("Champs requis non remplis");
+            alert.setContentText("Veuillez remplir toutes les informations nécessaires.");
+            alert.showAndWait();
+            return;
+        }
+        if (GRO_Doc_Link.getText().isEmpty()) {
+            Alert alert = new Alert(Alert.AlertType.ERROR);
+            alert.setTitle("Erreur");
+            alert.setHeaderText("Certificat médical manquant");
+            alert.setContentText("vous devez importer le certificat médical de grossesse.");
+            alert.showAndWait();
+            return;
+        }
+        if (DD == null || DF == null || DF == DD || DD.isAfter(DF)) {
+            Alert alert = new Alert(Alert.AlertType.ERROR);
+            alert.setTitle("Erreur");
+            alert.setHeaderText("Dates invalides");
+            alert.setContentText("La date de début doit être antérieure et différent à la date de fin.");
+            alert.showAndWait();
+            return;
+        }
         CongeS.Add(new Conge(0, DD, DF, TypeConge.Sous_solde, Statut.En_Attente, SessionManager.getInstance().getId_user(), DOCLINK, DESC));
     }
     @FXML void GRO_Doc_Imp(ActionEvent event) {
@@ -254,6 +390,30 @@ public class DemandeCongeController implements Initializable{
         LocalDate DF = NAI_DF.getValue();
         String DESC = NAI_Desc.getText();
         String DOCLINK = NAI_Doc_Link.getText();
+        if (NAI_DD.getValue() == null || NAI_DF.getValue() == null || NAI_Desc.getText().isEmpty()) {
+            Alert alert = new Alert(Alert.AlertType.ERROR);
+            alert.setTitle("Erreur");
+            alert.setHeaderText("Champs requis non remplis");
+            alert.setContentText("Veuillez remplir toutes les informations nécessaires.");
+            alert.showAndWait();
+            return;
+        }
+        if (NAI_Doc_Link.getText().isEmpty()) {
+            Alert alert = new Alert(Alert.AlertType.ERROR);
+            alert.setTitle("Erreur");
+            alert.setHeaderText("Certificat médical manquant");
+            alert.setContentText("vous devez importer le certificat médical de naissance.");
+            alert.showAndWait();
+            return;
+        }
+        if (DD == null || DF == null || DF == DD || DD.isAfter(DF)) {
+            Alert alert = new Alert(Alert.AlertType.ERROR);
+            alert.setTitle("Erreur");
+            alert.setHeaderText("Dates invalides");
+            alert.setContentText("La date de début doit être antérieure et différent à la date de fin.");
+            alert.showAndWait();
+            return;
+        }
         CongeS.Add(new Conge(0, DD, DF, TypeConge.Sous_solde, Statut.En_Attente, SessionManager.getInstance().getId_user(), DOCLINK, DESC));
     }
     @FXML void NAI_Doc_Imp(ActionEvent event) {
@@ -280,8 +440,9 @@ public class DemandeCongeController implements Initializable{
             }
         }
     }
-    @FXML
-    public void Demander(ActionEvent actionEvent) {
+
+
+    @FXML public void Demander(ActionEvent actionEvent) {
         try {
             FXMLLoader loader = new FXMLLoader(getClass().getResource("/DemandeConge.fxml"));
             Parent root = loader.load();
@@ -293,11 +454,9 @@ public class DemandeCongeController implements Initializable{
         } catch (IOException e) {
             e.printStackTrace();
         }
-
     }
 
-    @FXML
-    public void Historique(ActionEvent actionEvent) {
+    @FXML public void Historique(ActionEvent actionEvent) {
         try {
             FXMLLoader loader = new FXMLLoader(getClass().getResource("/HistoriqueConge.fxml"));
             Parent root = loader.load();
@@ -309,6 +468,6 @@ public class DemandeCongeController implements Initializable{
         } catch (IOException e) {
             e.printStackTrace();
         }
-
     }
+
 }
