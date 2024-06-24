@@ -11,6 +11,7 @@ import javafx.scene.control.Label;
 import javafx.scene.image.ImageView;
 import javafx.stage.Stage;
 import tn.bfpme.models.Departement;
+import tn.bfpme.models.Utilisateur;
 import tn.bfpme.utils.SessionManager;
 
 import java.io.IOException;
@@ -31,7 +32,6 @@ public class EmployeController implements Initializable {
         CU_nomprenom.setText(SessionManager.getNom()+" "+SessionManager.getPrenom());
         CU_solde.setText(String.valueOf(SessionManager.getSoldeConge()));
     }
-
     @FXML
     public void DemanderConge(ActionEvent actionEvent) {
         try {

@@ -53,7 +53,7 @@ public class SessionManager {
     public static void setRole(Role role) {SessionManager.role = role;}
 
     public static Departement getDepartement() {return departement;}
-    public static void setImage(Departement departement) {SessionManager.departement = departement;}
+    public static void setDepartement(Departement departement) {SessionManager.departement = departement;}
 
     public static String getImage() {return image;}
     public static void setImage(String image) {SessionManager.image = image;}
@@ -71,5 +71,4 @@ public class SessionManager {
         role= Role.valueOf("");
         image="";
     }
-
 }
