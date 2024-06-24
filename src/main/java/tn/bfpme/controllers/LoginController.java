@@ -30,45 +30,52 @@ public class LoginController {
             stm.setString(2, LoginMDP.getText());
             ResultSet rs = stm.executeQuery();
             if (rs.next()) {
-                Utilisateur ConnectedUser = new Utilisateur(rs.getInt("ID_User"),rs.getString("Nom"), rs.getString("Prenom"), rs.getString("Email"), rs.getString("MDP"), Role.valueOf(rs.getString("Role")), rs.getString("Image"), rs.getInt("Solde_congé"));
-                SessionManager.getInstance(rs.getInt("ID_User"), rs.getString("Nom"), rs.getString("Prenom"), rs.getString("Email"), Role.valueOf(rs.getString("Role")), rs.getString("Image"), rs.getInt("Solde_congé"), Departement.RH);
-                FXMLLoader loader = new FXMLLoader(getClass().getResource("/profile.fxml"));
-                Parent root = loader.load();
-                Stage stage = (Stage) ((Node) event.getSource()).getScene().getWindow();
-                Scene scene = new Scene(root);
-                stage.setScene(scene);
-                stage.setTitle("Profile");
-                stage.show();
+                Utilisateur ConnectedUser = new Utilisateur(rs.getInt("ID_User"), rs.getString("Nom"), rs.getString("Prenom"), rs.getString("Email"), rs.getString("MDP"), Role.valueOf(rs.getString("Role")), rs.getString("Image"), rs.getInt("Solde_congé"));
+                SessionManager.getInstance(rs.getInt("ID_User"), rs.getString("Nom"), rs.getString("Prenom"), rs.getString("Email"), Role.valueOf(rs.getString("Role")), rs.getString("Image"), rs.getInt("Solde_congé"), null);
+
                 // Check if user is an employee
-                String qry2 = "SELECT * FROM `employe` WHERE `ID_User`=?";
+                String qry2 = "SELECT `ID_Employé`, `Departement`, `ID_User` FROM `employe` WHERE `ID_User`=?";
                 PreparedStatement stm2 = cnx.prepareStatement(qry2);
                 stm2.setInt(1, rs.getInt("ID_User"));
                 ResultSet rs2 = stm2.executeQuery();
                 if (rs2.next()) {
-                    Employe curEmp = new Employe(rs2.getInt("ID_Employé"), Departement.valueOf(rs2.getString("Departement")), ConnectedUser);
+                    Employe curEmp = new Employe(
+                            rs2.getInt("ID_Employé"),
+                            Departement.valueOf(rs2.getString("Departement")),
+                            ConnectedUser
+                    );
                     Employe.setCurrent_Emp(curEmp);
                     SessionManager.getInstance().setDepartement(Departement.valueOf(rs2.getString("Departement")));
+                    System.out.println(Departement.valueOf(rs2.getString("Departement")));
                 }
 
                 // Check if user is a department head
-                String qry3 = "SELECT * FROM `chef_departement` WHERE `ID_User`=?";
+                String qry3 = "SELECT `ID_ChefDep`, `Departement`, `ID_User` FROM `chef_departement` WHERE `ID_User`=?";
                 PreparedStatement stm3 = cnx.prepareStatement(qry3);
                 stm3.setInt(1, rs.getInt("ID_User"));
                 ResultSet rs3 = stm3.executeQuery();
                 if (rs3.next()) {
-                    ChefDepartement curChefDep = new ChefDepartement(rs3.getInt("ID_ChefDep"), Departement.valueOf(rs3.getString("Departement")), ConnectedUser);
+                    ChefDepartement curChefDep = new ChefDepartement(
+                            rs3.getInt("ID_ChefDep"),
+                            Departement.valueOf(rs3.getString("Departement")),
+                            ConnectedUser
+                    );
                     ChefDepartement.setCurrent_ChefDep(curChefDep);
                     SessionManager.getInstance().setDepartement(Departement.valueOf(rs3.getString("Departement")));
                 }
 
                 // Check if user is a chief of administration
-                String qry4 = "SELECT * FROM `chef_aadministration` WHERE `ID_User`=?";
+                String qry4 = "SELECT * FROM `chef_administration` WHERE `ID_User`=?";
                 PreparedStatement stm4 = cnx.prepareStatement(qry4);
                 stm4.setInt(1, rs.getInt("ID_User"));
                 ResultSet rs4 = stm4.executeQuery();
-                if (rs4.next()) {ChefAdministration curChefAdm = new ChefAdministration(rs4.getInt("ID_ChefAdmin"), ConnectedUser);
+                if (rs4.next()) {
+                    ChefAdministration curChefAdm = new ChefAdministration(
+                            rs4.getInt("ID_ChefAdmin"),
+                            ConnectedUser
+                    );
                     ChefAdministration.setCurrent_ChefAdm(curChefAdm);
-                    SessionManager.getInstance().setDepartement(Departement.valueOf(rs4.getString("Departement")));
+                    SessionManager.getInstance().setDepartement(Departement.Administration);
                 }
 
                 // Check if user is an IT admin
@@ -77,17 +84,21 @@ public class LoginController {
                 stm5.setInt(1, rs.getInt("ID_User"));
                 ResultSet rs5 = stm5.executeQuery();
                 if (rs5.next()) {
-                    AdminIT curAdm = new AdminIT(rs5.getInt("ID_Admin"), ConnectedUser);
+                    AdminIT curAdm = new AdminIT(
+                            rs5.getInt("ID_Admin"),
+                            ConnectedUser
+                    );
                     AdminIT.setCurrent_Adm(curAdm);
-                    SessionManager.getInstance().setDepartement(Departement.valueOf(rs5.getString("Departement")));
+                    SessionManager.getInstance().setDepartement(Departement.IT);
                 }
 
-                System.out.println(SessionManager.getInstance().getNom());
-                System.out.println(SessionManager.getInstance().getPrenom());
-                System.out.println(SessionManager.getInstance().getEmail());
-                System.out.println(SessionManager.getInstance().getDepartement());
-                System.out.println(SessionManager.getInstance().getSoldeConge());
-                System.out.println(ConnectedUser);
+                FXMLLoader loader = new FXMLLoader(getClass().getResource("/profile.fxml"));
+                Parent root = loader.load();
+                Stage stage = (Stage) ((Node) event.getSource()).getScene().getWindow();
+                Scene scene = new Scene(root);
+                stage.setScene(scene);
+                stage.setTitle("Profile");
+                stage.show();
             } else {
                 System.out.println("Login failed: Invalid email or password.");
             }
@@ -95,4 +106,5 @@ public class LoginController {
             ex.printStackTrace();
         }
     }
+
 }
