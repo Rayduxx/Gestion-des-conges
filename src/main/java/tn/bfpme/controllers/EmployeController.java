@@ -25,6 +25,7 @@ public class EmployeController implements Initializable {
     @FXML private Label CU_dep;
     @FXML private Label CU_email;
     @FXML private Label CU_nomprenom;
+    @FXML private Label CU_role;
     @FXML private ImageView CU_pdp;
     @FXML private Label CU_solde;
     private ContextMenu contextMenu;
@@ -36,7 +37,7 @@ public class EmployeController implements Initializable {
         CU_dep.setText(String.valueOf(SessionManager.getInstance().getDepartement()));
         CU_email.setText(SessionManager.getInstance().getEmail());
         CU_nomprenom.setText(SessionManager.getInstance().getNom()+" "+SessionManager.getInstance().getPrenom());
-        CU_nomprenom.setText(SessionManager.getInstance().getNom()+" "+SessionManager.getInstance().getPrenom());
+        CU_role.setText(String.valueOf(SessionManager.getInstance().getRole()));
         CU_solde.setText(String.valueOf(SessionManager.getInstance().getSoldeConge()));
         contextMenu = new ContextMenu();
 

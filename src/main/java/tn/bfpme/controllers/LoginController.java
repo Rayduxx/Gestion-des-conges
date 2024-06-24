@@ -32,7 +32,7 @@ public class LoginController {
             if (rs.next()) {
                 Utilisateur ConnectedUser = new Utilisateur(rs.getInt("ID_User"), rs.getString("Nom"), rs.getString("Prenom"), rs.getString("Email"), rs.getString("MDP"), Role.valueOf(rs.getString("Role")), rs.getString("Image"), rs.getInt("Solde_congé"));
                 SessionManager.getInstance(rs.getInt("ID_User"), rs.getString("Nom"), rs.getString("Prenom"), rs.getString("Email"), Role.valueOf(rs.getString("Role")), rs.getString("Image"), rs.getInt("Solde_congé"),rs.getString("MDP"), null);
-
+                System.out.println(SessionManager.getInstance().getRole());
                 // Check if user is an employee
                 String qry2 = "SELECT `ID_Employé`, `Departement`, `ID_User` FROM `employe` WHERE `ID_User`=?";
                 PreparedStatement stm2 = cnx.prepareStatement(qry2);
