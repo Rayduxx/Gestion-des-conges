@@ -33,10 +33,10 @@ public class EmployeController implements Initializable {
 
     @Override
     public void initialize(URL url, ResourceBundle resourceBundle) {
-        CU_dep.setText(String.valueOf(SessionManager.getDepartement()));
-        CU_email.setText(SessionManager.getEmail());
-        CU_nomprenom.setText(SessionManager.getNom()+" "+SessionManager.getPrenom());
-        CU_solde.setText(String.valueOf(SessionManager.getSoldeConge()));
+        CU_dep.setText(String.valueOf(SessionManager.getInstance().getDepartement()));
+        CU_email.setText(SessionManager.getInstance().getEmail());
+        CU_nomprenom.setText(SessionManager.getInstance().getNom()+" "+SessionManager.getInstance().getPrenom());
+        CU_solde.setText(String.valueOf(SessionManager.getInstance().getSoldeConge()));
         contextMenu = new ContextMenu();
 
         // Add menu items to the context menu
