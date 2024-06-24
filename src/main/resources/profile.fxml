@@ -27,7 +27,7 @@
       </Pane>
       <Pane layoutX="28.0" layoutY="131.0" prefHeight="677.0" prefWidth="1277.0" styleClass="pane1">
          <children>
-            <ImageView fitHeight="118.0" fitWidth="205.0" layoutX="81.0" layoutY="51.0" pickOnBounds="true" preserveRatio="true">
+            <ImageView fx:id="CU_pdp" fitHeight="118.0" fitWidth="205.0" layoutX="81.0" layoutY="51.0" pickOnBounds="true" preserveRatio="true">
                <image>
                   <Image url="@assets/imgs/278898897_102014832502188_7162741113201583044_n.jpg" />
                </image>
@@ -42,24 +42,24 @@
                 <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
               </rowConstraints>
                <children>
-                  <Label prefHeight="36.0" prefWidth="356.0" text="Ala Moussa">
+                  <Label fx:id="CU_nomprenom" prefHeight="36.0" prefWidth="356.0" text="Ala Moussa">
                      <font>
                         <Font name="Roboto Regular" size="14.0" />
                      </font>
                   </Label>
-                  <Label prefHeight="36.0" prefWidth="356.0" text="alamousssa1@gmail.com" GridPane.rowIndex="1">
+                  <Label fx:id="CU_email" prefHeight="36.0" prefWidth="356.0" text="alamousssa1@gmail.com" GridPane.rowIndex="1">
                      <font>
                         <Font name="Roboto Regular" size="14.0" />
                      </font>
                   </Label>
-                  <Label prefHeight="36.0" prefWidth="356.0" text="Dep. Sécutié" GridPane.rowIndex="2">
+                  <Label fx:id="CU_dep" prefHeight="36.0" prefWidth="356.0" text="Dep. Sécutié" GridPane.rowIndex="2">
                      <font>
                         <Font name="Roboto Regular" size="14.0" />
                      </font>
                   </Label>
                </children>
             </GridPane>
-            <Label layoutX="81.0" layoutY="185.0" prefHeight="36.0" prefWidth="356.0" text="Solde restant: 30">
+            <Label fx:id="CU_solde" layoutX="81.0" layoutY="185.0" prefHeight="36.0" prefWidth="356.0" text="Solde restant: 30">
                <font>
                   <Font name="Roboto Regular" size="14.0" />
                </font>

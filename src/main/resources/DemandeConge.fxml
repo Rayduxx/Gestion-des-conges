@@ -43,9 +43,9 @@
             </HBox>
             <Pane fx:id="paneExeptionnel" layoutX="102.0" layoutY="91.0" prefHeight="541.0" prefWidth="1076.0" styleClass="pane2" visible="false">
                <children>
-                  <DatePicker layoutX="483.0" layoutY="118.0" prefHeight="34.0" prefWidth="250.0" />
-                  <DatePicker layoutX="483.0" layoutY="188.0" prefHeight="34.0" prefWidth="250.0" />
-                  <TextArea layoutX="483.0" layoutY="252.0" prefHeight="81.0" prefWidth="312.0" />
+                  <DatePicker fx:id="EXP_DD" layoutX="483.0" layoutY="118.0" prefHeight="34.0" prefWidth="250.0" />
+                  <DatePicker fx:id="EXP_DF" layoutX="483.0" layoutY="188.0" prefHeight="34.0" prefWidth="250.0" />
+                  <TextArea fx:id="EXP_Desc" layoutX="483.0" layoutY="252.0" prefHeight="81.0" prefWidth="312.0" />
                   <Label layoutX="301.0" layoutY="118.0" prefHeight="40.0" prefWidth="125.0" text="Date debut : ">
                      <font>
                         <Font name="Roboto Regular" size="15.0" />
@@ -71,13 +71,13 @@
                         <Font name="Roboto Regular" size="15.0" />
                      </font>
                   </Label>
-                  <TextField disable="true" layoutX="483.0" layoutY="350.0" prefHeight="28.0" prefWidth="312.0" />
-                  <Button layoutX="440.0" layoutY="457.0" mnemonicParsing="false" prefHeight="41.0" prefWidth="196.0" styleClass="btn-primary" text="Demander" textAlignment="CENTER">
+                  <TextField fx:id="EXP_Doc_Link" disable="true" layoutX="483.0" layoutY="350.0" prefHeight="28.0" prefWidth="312.0" />
+                  <Button layoutX="440.0" layoutY="457.0" mnemonicParsing="false" onAction="#EXP_Demander" prefHeight="41.0" prefWidth="196.0" styleClass="btn-primary" text="Demander" textAlignment="CENTER">
                      <font>
                         <Font name="Roboto Regular" size="14.0" />
                      </font>
                   </Button>
-                  <Button layoutX="806.0" layoutY="350.0" mnemonicParsing="false" prefHeight="28.0" prefWidth="117.0" styleClass="btn-primary" text="Importer" textAlignment="CENTER">
+                  <Button layoutX="806.0" layoutY="350.0" mnemonicParsing="false" onAction="#EXP_Doc_Imp" prefHeight="28.0" prefWidth="117.0" styleClass="btn-primary" text="Importer" textAlignment="CENTER">
                      <font>
                         <Font name="Roboto Regular" size="13.0" />
                      </font>
@@ -91,9 +91,9 @@
                         <Font name="Roboto Regular" size="17.0" />
                      </font>
                   </Label>
-                  <DatePicker layoutX="483.0" layoutY="118.0" prefHeight="34.0" prefWidth="250.0" />
-                  <DatePicker layoutX="483.0" layoutY="188.0" prefHeight="34.0" prefWidth="250.0" />
-                  <TextArea layoutX="483.0" layoutY="252.0" prefHeight="104.0" prefWidth="312.0" />
+                  <DatePicker fx:id="ANL_DD" layoutX="483.0" layoutY="118.0" prefHeight="34.0" prefWidth="250.0" />
+                  <DatePicker fx:id="ANL_DF" layoutX="483.0" layoutY="188.0" prefHeight="34.0" prefWidth="250.0" />
+                  <TextArea fx:id="ANL_Desc" layoutX="483.0" layoutY="252.0" prefHeight="104.0" prefWidth="312.0" />
                   <Label layoutX="301.0" layoutY="118.0" prefHeight="40.0" prefWidth="125.0" text="Date debut : ">
                      <font>
                         <Font name="Roboto Regular" size="15.0" />
@@ -109,7 +109,7 @@
                         <Font name="Roboto Regular" size="15.0" />
                      </font>
                   </Label>
-                  <Button layoutX="441.0" layoutY="456.0" mnemonicParsing="false" prefHeight="41.0" prefWidth="196.0" styleClass="btn-primary" text="Demander" textAlignment="CENTER">
+                  <Button layoutX="441.0" layoutY="456.0" mnemonicParsing="false" onAction="#ANL_Demander" prefHeight="41.0" prefWidth="196.0" styleClass="btn-primary" text="Demander" textAlignment="CENTER">
                      <font>
                         <Font name="Roboto Regular" size="14.0" />
                      </font>
@@ -118,9 +118,9 @@
             </Pane>
             <Pane fx:id="paneMaladie" layoutX="102.0" layoutY="91.0" prefHeight="541.0" prefWidth="1076.0" styleClass="pane2" visible="false">
                <children>
-                  <DatePicker layoutX="483.0" layoutY="118.0" prefHeight="34.0" prefWidth="250.0" />
-                  <DatePicker layoutX="483.0" layoutY="188.0" prefHeight="34.0" prefWidth="250.0" />
-                  <TextArea layoutX="483.0" layoutY="252.0" prefHeight="81.0" prefWidth="312.0" />
+                  <DatePicker fx:id="MAL_DD" layoutX="483.0" layoutY="118.0" prefHeight="34.0" prefWidth="250.0" />
+                  <DatePicker fx:id="MAL_DF" layoutX="483.0" layoutY="188.0" prefHeight="34.0" prefWidth="250.0" />
+                  <TextArea fx:id="MAL_Desc" layoutX="483.0" layoutY="252.0" prefHeight="81.0" prefWidth="312.0" />
                   <Label layoutX="301.0" layoutY="118.0" prefHeight="40.0" prefWidth="125.0" text="Date debut : ">
                      <font>
                         <Font name="Roboto Regular" size="15.0" />
@@ -136,7 +136,7 @@
                         <Font name="Roboto Regular" size="15.0" />
                      </font>
                   </Label>
-                  <Button layoutX="440.0" layoutY="458.0" mnemonicParsing="false" prefHeight="41.0" prefWidth="196.0" styleClass="btn-primary" text="Demander" textAlignment="CENTER">
+                  <Button layoutX="440.0" layoutY="458.0" mnemonicParsing="false" onAction="#MAL_Demander" prefHeight="41.0" prefWidth="196.0" styleClass="btn-primary" text="Demander" textAlignment="CENTER">
                      <font>
                         <Font name="Roboto Regular" size="14.0" />
                      </font>
@@ -151,8 +151,8 @@
                         <Font name="Roboto Regular" size="15.0" />
                      </font>
                   </Label>
-                  <TextField disable="true" layoutX="483.0" layoutY="350.0" prefHeight="28.0" prefWidth="312.0" />
-                  <Button layoutX="805.0" layoutY="350.0" mnemonicParsing="false" prefHeight="28.0" prefWidth="117.0" styleClass="btn-primary" text="Importer" textAlignment="CENTER">
+                  <TextField fx:id="MAL_Doc_Link" disable="true" layoutX="483.0" layoutY="350.0" prefHeight="28.0" prefWidth="312.0" />
+                  <Button layoutX="805.0" layoutY="350.0" mnemonicParsing="false" onAction="#MAL_Doc_Imp" prefHeight="28.0" prefWidth="117.0" styleClass="btn-primary" text="Importer" textAlignment="CENTER">
                      <font>
                         <Font name="Roboto Regular" size="13.0" />
                      </font>
@@ -161,9 +161,9 @@
             </Pane>
             <Pane fx:id="paneSousSolde" layoutX="102.0" layoutY="91.0" prefHeight="541.0" prefWidth="1076.0" styleClass="pane1" visible="false">
                <children>
-                  <DatePicker layoutX="483.0" layoutY="118.0" prefHeight="34.0" prefWidth="250.0" />
-                  <DatePicker layoutX="483.0" layoutY="188.0" prefHeight="34.0" prefWidth="250.0" />
-                  <TextArea layoutX="483.0" layoutY="252.0" prefHeight="81.0" prefWidth="312.0" />
+                  <DatePicker fx:id="SS_DD" layoutX="483.0" layoutY="118.0" prefHeight="34.0" prefWidth="250.0" />
+                  <DatePicker fx:id="SS_DF" layoutX="483.0" layoutY="188.0" prefHeight="34.0" prefWidth="250.0" />
+                  <TextArea fx:id="SS_Desc" layoutX="483.0" layoutY="252.0" prefHeight="81.0" prefWidth="312.0" />
                   <Label layoutX="301.0" layoutY="118.0" prefHeight="40.0" prefWidth="125.0" text="Date debut : ">
                      <font>
                         <Font name="Roboto Regular" size="15.0" />
@@ -179,7 +179,7 @@
                         <Font name="Roboto Regular" size="15.0" />
                      </font>
                   </Label>
-                  <Button layoutX="440.0" layoutY="458.0" mnemonicParsing="false" prefHeight="41.0" prefWidth="196.0" styleClass="btn-primary" text="Demander" textAlignment="CENTER">
+                  <Button layoutX="440.0" layoutY="458.0" mnemonicParsing="false" onAction="#SS_Demander" prefHeight="41.0" prefWidth="196.0" styleClass="btn-primary" text="Demander" textAlignment="CENTER">
                      <font>
                         <Font name="Roboto Regular" size="14.0" />
                      </font>
@@ -214,9 +214,9 @@
                   </HBox>
                   <Pane fx:id="paneGrossesse" layoutX="269.0" layoutY="132.0" prefHeight="405.0" prefWidth="539.0" visible="false">
                      <children>
-                        <DatePicker layoutX="236.0" layoutY="57.0" prefHeight="34.0" prefWidth="250.0" />
-                        <DatePicker layoutX="236.0" layoutY="107.0" prefHeight="34.0" prefWidth="250.0" />
-                        <TextArea layoutX="236.0" layoutY="161.0" prefHeight="81.0" prefWidth="250.0" />
+                        <DatePicker fx:id="GRO_DD" layoutX="236.0" layoutY="57.0" prefHeight="34.0" prefWidth="250.0" />
+                        <DatePicker fx:id="GRO_DF" layoutX="236.0" layoutY="107.0" prefHeight="34.0" prefWidth="250.0" />
+                        <TextArea fx:id="GRO_Desc" layoutX="236.0" layoutY="161.0" prefHeight="81.0" prefWidth="250.0" />
                         <Label layoutX="54.0" layoutY="57.0" prefHeight="40.0" prefWidth="125.0" text="Date debut : ">
                            <font>
                               <Font name="Roboto Regular" size="15.0" />
@@ -237,8 +237,8 @@
                               <Font name="Roboto Regular" size="15.0" />
                            </font>
                         </Label>
-                        <TextField disable="true" layoutX="236.0" layoutY="258.0" prefHeight="28.0" prefWidth="250.0" />
-                        <Button layoutX="369.0" layoutY="302.0" mnemonicParsing="false" prefHeight="28.0" prefWidth="117.0" styleClass="btn-primary" text="Importer" textAlignment="CENTER">
+                        <TextField fx:id="GRO_Doc_Link" disable="true" layoutX="236.0" layoutY="258.0" prefHeight="28.0" prefWidth="250.0" />
+                        <Button layoutX="369.0" layoutY="302.0" mnemonicParsing="false" onAction="#GRO_Doc_Imp" prefHeight="28.0" prefWidth="117.0" styleClass="btn-primary" text="Importer" textAlignment="CENTER">
                            <font>
                               <Font name="Roboto Regular" size="13.0" />
                            </font>
@@ -248,7 +248,7 @@
                               <Font name="Roboto Regular" size="17.0" />
                            </font>
                         </Label>
-                        <Button layoutX="170.0" layoutY="354.0" mnemonicParsing="false" prefHeight="41.0" prefWidth="196.0" styleClass="btn-primary" text="Demander" textAlignment="CENTER">
+                        <Button layoutX="170.0" layoutY="354.0" mnemonicParsing="false" onAction="#GRO_Demander" prefHeight="41.0" prefWidth="196.0" styleClass="btn-primary" text="Demander" textAlignment="CENTER">
                            <font>
                               <Font name="Roboto Regular" size="14.0" />
                            </font>
@@ -257,9 +257,9 @@
                   </Pane>
                   <Pane fx:id="paneNaissance" layoutX="269.0" layoutY="132.0" prefHeight="405.0" prefWidth="539.0" visible="false">
                      <children>
-                        <DatePicker layoutX="236.0" layoutY="57.0" prefHeight="34.0" prefWidth="250.0" />
-                        <DatePicker layoutX="236.0" layoutY="107.0" prefHeight="34.0" prefWidth="250.0" />
-                        <TextArea layoutX="236.0" layoutY="161.0" prefHeight="81.0" prefWidth="250.0" />
+                        <DatePicker fx:id="NAI_DD" layoutX="236.0" layoutY="57.0" prefHeight="34.0" prefWidth="250.0" />
+                        <DatePicker fx:id="NAI_DF" layoutX="236.0" layoutY="107.0" prefHeight="34.0" prefWidth="250.0" />
+                        <TextArea fx:id="NAI_Desc" layoutX="236.0" layoutY="161.0" prefHeight="81.0" prefWidth="250.0" />
                         <Label layoutX="54.0" layoutY="57.0" prefHeight="40.0" prefWidth="125.0" text="Date debut : ">
                            <font>
                               <Font name="Roboto Regular" size="15.0" />
@@ -280,8 +280,8 @@
                               <Font name="Roboto Regular" size="15.0" />
                            </font>
                         </Label>
-                        <TextField disable="true" layoutX="236.0" layoutY="258.0" prefHeight="28.0" prefWidth="250.0" />
-                        <Button layoutX="369.0" layoutY="302.0" mnemonicParsing="false" prefHeight="28.0" prefWidth="117.0" styleClass="btn-primary" text="Importer" textAlignment="CENTER">
+                        <TextField fx:id="NAI_Doc_Link" disable="true" layoutX="236.0" layoutY="258.0" prefHeight="28.0" prefWidth="250.0" />
+                        <Button layoutX="369.0" layoutY="302.0" mnemonicParsing="false" onAction="#NAI_Doc_Imp" prefHeight="28.0" prefWidth="117.0" styleClass="btn-primary" text="Importer" textAlignment="CENTER">
                            <font>
                               <Font name="Roboto Regular" size="13.0" />
                            </font>
@@ -291,7 +291,7 @@
                               <Font name="Roboto Regular" size="17.0" />
                            </font>
                         </Label>
-                        <Button layoutX="170.0" layoutY="354.0" mnemonicParsing="false" prefHeight="41.0" prefWidth="196.0" styleClass="btn-primary" text="Demander" textAlignment="CENTER">
+                        <Button layoutX="170.0" layoutY="354.0" mnemonicParsing="false" onAction="#NAI_Demander" prefHeight="41.0" prefWidth="196.0" styleClass="btn-primary" text="Demander" textAlignment="CENTER">
                            <font>
                               <Font name="Roboto Regular" size="14.0" />
                            </font>
