@@ -125,7 +125,7 @@ public class DemandeCongeController implements Initializable{
         LocalDate DD = ANL_DD.getValue();
         LocalDate DF = ANL_DF.getValue();
         String DESC = ANL_Desc.getText();
-        CongeS.Add(new Conge(0, DD, DF, TypeConge.Annuel, Statut.En_Attente, SessionManager.getId_user(),"", DESC));
+        CongeS.Add(new Conge(0, DD, DF, TypeConge.Annuel, Statut.En_Attente, SessionManager.getInstance().getId_user(),"", DESC));
     }
     /*  Demande Congé Exeptionnel */
     @FXML private DatePicker EXP_DD;
@@ -137,7 +137,7 @@ public class DemandeCongeController implements Initializable{
         LocalDate DF = EXP_DF.getValue();
         String DESC = EXP_Desc.getText();
         String DOCLINK = EXP_Doc_Link.getText();
-        CongeS.Add(new Conge(0, DD, DF, TypeConge.Exceptionnel, Statut.En_Attente, SessionManager.getId_user(),DOCLINK, DESC));
+        CongeS.Add(new Conge(0, DD, DF, TypeConge.Exceptionnel, Statut.En_Attente, SessionManager.getInstance().getId_user(),DOCLINK, DESC));
     }
     @FXML
     void EXP_Doc_Imp(ActionEvent event) {
@@ -175,7 +175,7 @@ public class DemandeCongeController implements Initializable{
         LocalDate DF = MAL_DF.getValue();
         String DESC = MAL_Desc.getText();
         String DOCLINK = MAL_Doc_Link.getText();
-        CongeS.Add(new Conge(0, DD, DF, TypeConge.Maladie, Statut.En_Attente, SessionManager.getId_user(), DOCLINK, DESC));
+        CongeS.Add(new Conge(0, DD, DF, TypeConge.Maladie, Statut.En_Attente, SessionManager.getInstance().getId_user(), DOCLINK, DESC));
     }
     @FXML
     void MAL_Doc_Imp(ActionEvent event) {
@@ -211,7 +211,7 @@ public class DemandeCongeController implements Initializable{
         LocalDate DD = SS_DD.getValue();
         LocalDate DF = SS_DF.getValue();
         String DESC = SS_Desc.getText();
-        CongeS.Add(new Conge(0, DD, DF, TypeConge.Sous_solde, Statut.En_Attente, SessionManager.getId_user(), "", DESC));
+        CongeS.Add(new Conge(0, DD, DF, TypeConge.Sous_solde, Statut.En_Attente, SessionManager.getInstance().getId_user(), "", DESC));
     }
     /*  Demande Congé Maternité (GROSSESSE) */
     @FXML private DatePicker GRO_DD;
@@ -224,7 +224,7 @@ public class DemandeCongeController implements Initializable{
         LocalDate DF = GRO_DF.getValue();
         String DESC = GRO_Desc.getText();
         String DOCLINK = GRO_Desc.getText();
-        CongeS.Add(new Conge(0, DD, DF, TypeConge.Sous_solde, Statut.En_Attente, SessionManager.getId_user(), DOCLINK, DESC));
+        CongeS.Add(new Conge(0, DD, DF, TypeConge.Sous_solde, Statut.En_Attente, SessionManager.getInstance().getId_user(), DOCLINK, DESC));
     }
     @FXML
     void GRO_Doc_Imp(ActionEvent event) {
@@ -262,7 +262,7 @@ public class DemandeCongeController implements Initializable{
         LocalDate DF = NAI_DF.getValue();
         String DESC = NAI_Desc.getText();
         String DOCLINK = NAI_Doc_Link.getText();
-        CongeS.Add(new Conge(0, DD, DF, TypeConge.Sous_solde, Statut.En_Attente, SessionManager.getId_user(), DOCLINK, DESC));
+        CongeS.Add(new Conge(0, DD, DF, TypeConge.Sous_solde, Statut.En_Attente, SessionManager.getInstance().getId_user(), DOCLINK, DESC));
     }
     @FXML
     void NAI_Doc_Imp(ActionEvent event) {

@@ -3,72 +3,115 @@ package tn.bfpme.utils;
 import tn.bfpme.models.Departement;
 import tn.bfpme.models.Role;
 
-import java.sql.Date;
-
 public class SessionManager {
     private static SessionManager instance;
 
-    private static int id_user;
-    private static String nom;
-    private static String prenom;
-    private static String email;
-    private static Role role;
-    private static String image;
-    private static int soldeConge;
-    private static Departement departement;
+    private int id_user;
+    private String nom;
+    private String prenom;
+    private String email;
+    private Role role;
+    private String image;
+    private int soldeConge;
+    private Departement departement;
 
-    private SessionManager(int id_user , String nom , String prenom , String email, Role role, String image, int soldeConge, Departement departement) {
-        SessionManager.id_user=id_user;
-        SessionManager.nom=nom;
-        SessionManager.prenom=prenom;
-        SessionManager.soldeConge=soldeConge;
-        SessionManager.email=email;
-        SessionManager.role=role;
-        SessionManager.image=image;
-        SessionManager.departement=departement;
+    private SessionManager(int id_user, String nom, String prenom, String email, Role role, String image, int soldeConge, Departement departement) {
+        this.id_user = id_user;
+        this.nom = nom;
+        this.prenom = prenom;
+        this.email = email;
+        this.role = role;
+        this.image = image;
+        this.soldeConge = soldeConge;
+        this.departement = departement;
     }
-    public static SessionManager getInstace(int id_user , String nom , String prenom , String email , Role role, String image, int soldeConge, Departement departement) {
-        if(instance == null) {
-            instance = new SessionManager(id_user, nom , prenom, email, role, image, soldeConge, departement);
+
+    public static SessionManager getInstance(int id_user, String nom, String prenom, String email, Role role, String image, int soldeConge, Departement departement) {
+        if (instance == null) {
+            instance = new SessionManager(id_user, nom, prenom, email, role, image, soldeConge, departement);
         }
         return instance;
     }
 
-    public static SessionManager getInstance() {return instance;}
-    public static void setInstance(SessionManager instance) {SessionManager.instance = instance;}
+    public static SessionManager getInstance() {
+        if (instance == null) {
+            throw new IllegalStateException("SessionManager is not initialized. Call getInstance(int, String, String, String, Role, String, int, Departement) first.");
+        }
+        return instance;
+    }
 
-    public static int getId_user() {return id_user;}
-    public static void setId_user(int id_user) {SessionManager.id_user = id_user;}
+    public int getId_user() {
+        return id_user;
+    }
 
-    public static String getNom() {return nom;}
-    public static void setNom(String nom) {SessionManager.nom = nom;}
+    public void setId_user(int id_user) {
+        this.id_user = id_user;
+    }
 
-    public static String getPrenom() {return prenom;}
-    public static void setPrenom(String prenom) {SessionManager.prenom = prenom;}
+    public String getNom() {
+        return nom;
+    }
 
-    public static String getEmail() {return email;}
-    public static void setEmail(String email) {SessionManager.email = email;}
+    public void setNom(String nom) {
+        this.nom = nom;
+    }
 
-    public static Role getRole() {return role;}
-    public static void setRole(Role role) {SessionManager.role = role;}
+    public String getPrenom() {
+        return prenom;
+    }
 
-    public static Departement getDepartement() {return departement;}
-    public static void setDepartement(Departement departement) {SessionManager.departement = departement;}
+    public void setPrenom(String prenom) {
+        this.prenom = prenom;
+    }
 
-    public static String getImage() {return image;}
-    public static void setImage(String image) {SessionManager.image = image;}
+    public String getEmail() {
+        return email;
+    }
 
+    public void setEmail(String email) {
+        this.email = email;
+    }
 
-    public static int getSoldeConge() {return soldeConge;}
-    public static void setsoldeConge(int soldeConge) {SessionManager.soldeConge  = soldeConge;}
+    public Role getRole() {
+        return role;
+    }
 
-    public static void cleanUserSession() {
-        id_user=0;
-        nom="";
-        prenom="";
-        soldeConge=0;
-        email="";
-        role= Role.valueOf("");
-        image="";
+    public void setRole(Role role) {
+        this.role = role;
+    }
+
+    public Departement getDepartement() {
+        return departement;
+    }
+
+    public void setDepartement(Departement departement) {
+        this.departement = departement;
+    }
+
+    public String getImage() {
+        return image;
+    }
+
+    public void setImage(String image) {
+        this.image = image;
+    }
+
+    public int getSoldeConge() {
+        return soldeConge;
+    }
+
+    public void setSoldeConge(int soldeConge) {
+        this.soldeConge = soldeConge;
+    }
+
+    public void cleanUserSession() {
+        this.id_user = 0;
+        this.nom = "";
+        this.prenom = "";
+        this.email = "";
+        this.role = null;
+        this.image = "";
+        this.soldeConge = 0;
+        this.departement = null;
     }
 }
