@@ -38,7 +38,7 @@ public class SupressionCompte {
     public void supprimer_user(ActionEvent actionEvent) {
         try {
 
-            if (mdpSUpp.getText().equals(SessionManager.getInstance().getMdp())) {
+            if (mdpSUpp.getText().equals(SessionManager.getInstance().getPassword())) {
                 UserS.deleteByID(SessionManager.getInstance().getId_user());
                 labelSupp.setText("Suppression Effectue");
 

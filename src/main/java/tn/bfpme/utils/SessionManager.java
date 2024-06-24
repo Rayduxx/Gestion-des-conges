@@ -58,6 +58,14 @@ public class SessionManager {
         this.nom = nom;
     }
 
+    public String getPassword() {
+        return password;
+    }
+
+    public void setPassword(String password) {
+        this.password = password;
+    }
+
     public String getPrenom() {
         return prenom;
     }
