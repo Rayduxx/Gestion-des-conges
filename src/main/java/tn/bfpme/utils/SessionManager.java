@@ -12,10 +12,11 @@ public class SessionManager {
     private String email;
     private Role role;
     private String image;
+    private String password;
     private int soldeConge;
     private Departement departement;
 
-    private SessionManager(int id_user, String nom, String prenom, String email, Role role, String image, int soldeConge, Departement departement) {
+    private SessionManager(int id_user, String nom, String prenom, String email, Role role, String image, int soldeConge, String password, Departement departement) {
         this.id_user = id_user;
         this.nom = nom;
         this.prenom = prenom;
@@ -24,11 +25,12 @@ public class SessionManager {
         this.image = image;
         this.soldeConge = soldeConge;
         this.departement = departement;
+        this.password = password;
     }
 
-    public static SessionManager getInstance(int id_user, String nom, String prenom, String email, Role role, String image, int soldeConge, Departement departement) {
+    public static SessionManager getInstance(int id_user, String nom, String prenom, String email, Role role, String image, int soldeConge, String password, Departement departement) {
         if (instance == null) {
-            instance = new SessionManager(id_user, nom, prenom, email, role, image, soldeConge, departement);
+            instance = new SessionManager(id_user, nom, prenom, email, role, image, soldeConge, password, departement);
         }
         return instance;
     }
@@ -110,6 +112,7 @@ public class SessionManager {
         this.prenom = "";
         this.email = "";
         this.role = null;
+        this.password= "";
         this.image = "";
         this.soldeConge = 0;
         this.departement = null;
