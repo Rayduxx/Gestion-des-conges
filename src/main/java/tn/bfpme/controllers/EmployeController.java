@@ -36,6 +36,7 @@ public class EmployeController implements Initializable {
         CU_dep.setText(String.valueOf(SessionManager.getInstance().getDepartement()));
         CU_email.setText(SessionManager.getInstance().getEmail());
         CU_nomprenom.setText(SessionManager.getInstance().getNom()+" "+SessionManager.getInstance().getPrenom());
+        CU_nomprenom.setText(SessionManager.getInstance().getNom()+" "+SessionManager.getInstance().getPrenom());
         CU_solde.setText(String.valueOf(SessionManager.getInstance().getSoldeConge()));
         contextMenu = new ContextMenu();
 
