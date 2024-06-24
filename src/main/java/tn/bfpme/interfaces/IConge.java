@@ -10,4 +10,10 @@ public interface IConge<C> {
     void updateConge(Conge conge);
     void deleteConge(Conge conge);
     void deleteCongeByID(int id);
+
+    List<Conge> TriparStatut();
+
+    List<Conge> TriparType();
+
+    List<Conge> Rechreche(String recherche);
 }

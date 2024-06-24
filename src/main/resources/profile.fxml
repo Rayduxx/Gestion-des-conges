@@ -1,7 +1,9 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
 <?import javafx.scene.control.Button?>
+<?import javafx.scene.control.ContextMenu?>
 <?import javafx.scene.control.Label?>
+<?import javafx.scene.control.MenuItem?>
 <?import javafx.scene.control.TableColumn?>
 <?import javafx.scene.control.TableView?>
 <?import javafx.scene.image.Image?>
@@ -23,6 +25,51 @@
                   <Image url="@assets/imgs/logo_bfpme.png" />
                </image>
             </ImageView>
+            <HBox layoutX="694.0" layoutY="23.0" prefHeight="60.0" prefWidth="601.0">
+               <children>
+                  <Pane maxWidth="363.0" prefHeight="60.0" prefWidth="363.0">
+                     <children>
+                        <Button layoutX="145.0" layoutY="11.0" mnemonicParsing="false" onAction="#Demander" prefHeight="38.0" prefWidth="166.0" styleClass="btn-secondary" text="Demande congé">
+                           <font>
+                              <Font size="14.0" />
+                           </font>
+                        </Button>
+                     </children>
+                  </Pane>
+                  <Pane maxWidth="250.0" prefHeight="60.0" prefWidth="250.0">
+                     <children>
+                        <Button layoutX="24.0" layoutY="11.0" mnemonicParsing="false" onAction="#Historique" prefHeight="38.0" prefWidth="166.0" styleClass="btn-secondary" text="Historique congé">
+                           <font>
+                              <Font size="14.0" />
+                           </font>
+                        </Button>
+                     </children>
+                  </Pane>
+                  <Pane maxWidth="110.0" prefHeight="60.0" prefWidth="118.0">
+                     <children>
+                        <Button fx:id="settingsButton" layoutX="11.0" layoutY="11.0" mnemonicParsing="false" prefHeight="25.0" prefWidth="48.0" styleClass="settingsButton">
+                           <graphic>
+                              <ImageView fitHeight="32.0" fitWidth="31.0" pickOnBounds="true" preserveRatio="true">
+                                 <image>
+                                    <Image url="@assets/imgs/Settings.png" />
+                                 </image>
+                              </ImageView>
+                           </graphic>
+                           <contextMenu>
+                              <ContextMenu anchorLocation="CONTENT_TOP_RIGHT" anchorX="100.0" x="0.0">
+                                 <items>
+                                    <MenuItem mnemonicParsing="false" text="Profile" />
+                                    <MenuItem mnemonicParsing="false" text="Info" />
+                                    <MenuItem mnemonicParsing="false" text="Supprimer compte" />
+                                    <MenuItem mnemonicParsing="false" text="deconnection" />
+                                 </items>
+                              </ContextMenu>
+                           </contextMenu>
+                        </Button>
+                     </children>
+                  </Pane>
+               </children>
+            </HBox>
          </children>
       </Pane>
       <Pane layoutX="28.0" layoutY="131.0" prefHeight="677.0" prefWidth="1277.0" styleClass="pane1">
