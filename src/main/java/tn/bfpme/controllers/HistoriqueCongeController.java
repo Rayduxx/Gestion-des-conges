@@ -28,6 +28,8 @@ import java.sql.Connection;
 import java.util.ResourceBundle;
 import javafx.scene.control.TextField;
 import javafx.scene.layout.GridPane;
+import tn.bfpme.utils.StageManager;
+
 public class HistoriqueCongeController implements Initializable  {
 
     private final ServiceConge CongeS = new ServiceConge();
@@ -38,6 +40,9 @@ public class HistoriqueCongeController implements Initializable  {
     private TextField Recherche_conge;
     @FXML
     private Button settingsButton;
+    @FXML
+    private MenuItem Menu_profile;
+
 
     @Override
     public void initialize(URL url, ResourceBundle rb) {
@@ -58,6 +63,10 @@ public class HistoriqueCongeController implements Initializable  {
             double screenY = settingsButton.localToScreen(settingsButton.getBoundsInLocal()).getMaxY()+10;
             contextMenu.show(settingsButton, screenX, screenY);
         });
+        profileItem.setOnAction(this::viewprofile);
+        infoItem.setOnAction(this::viewinfo);
+        suppressionItem.setOnAction(this::viewsuppression);
+        logoutItem.setOnAction(this::viewdeconnection);
     }
 
 
@@ -210,6 +219,52 @@ public class HistoriqueCongeController implements Initializable  {
         }
 
     }
+    @FXML
+    void viewdeconnection(ActionEvent event) {
+
+    }
+
+    @FXML
+    void viewinfo(ActionEvent event) {
+
+    }
+
+    @FXML
+     private void viewprofile(ActionEvent actionEvent) {
+        try {
+            FXMLLoader loader = new FXMLLoader(getClass().getResource("/profile.fxml"));
+            Parent root = loader.load();
+            // Get the stage from the current context menu's owner window
+            MenuItem menuItem = (MenuItem) actionEvent.getSource();
+            Stage stage = (Stage) menuItem.getParentPopup().getOwnerWindow();
+            Scene scene = new Scene(root);
+            stage.setScene(scene);
+            stage.setTitle("Profile");
+            stage.show();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+
+    }
+
+    @FXML
+    public void viewsuppression(ActionEvent actionEvent) {
+        try {
+            FXMLLoader loader = new FXMLLoader(getClass().getResource("/SupressionCompte.fxml"));
+            Parent root = loader.load();
+            // Get the stage from the current context menu's owner window
+            MenuItem menuItem = (MenuItem) actionEvent.getSource();
+            Stage stage = (Stage) menuItem.getParentPopup().getOwnerWindow();
+            Scene scene = new Scene(root);
+            stage.setScene(scene);
+            stage.setTitle("Profile");
+            stage.show();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+
+    }
+
 }
 
 
