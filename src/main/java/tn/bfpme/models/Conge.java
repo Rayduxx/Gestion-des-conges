@@ -25,6 +25,11 @@ public class Conge {
         this.file = file;
         this.description = description;
     }
+    public Conge(LocalDate dateDebut, LocalDate dateFin, TypeConge typeConge) {
+        this.dateDebut = dateDebut;
+        this.dateFin = dateFin;
+        this.typeConge = typeConge;
+    }
 
     public int getIdConge() {
         return idConge;

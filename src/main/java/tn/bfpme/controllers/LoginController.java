@@ -46,7 +46,6 @@ public class LoginController {
                     );
                     Employe.setCurrent_Emp(curEmp);
                     SessionManager.getInstance().setDepartement(Departement.valueOf(rs2.getString("Departement")));
-                    System.out.println(Departement.valueOf(rs2.getString("Departement")));
                 }
 
                 // Check if user is a department head
