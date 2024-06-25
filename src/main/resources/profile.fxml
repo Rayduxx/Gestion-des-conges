@@ -20,7 +20,7 @@
    <children>
       <Pane prefHeight="104.0" prefWidth="1340.0" styleClass="pane-clr" stylesheets="@assets/css/style.css">
          <children>
-            <Button layoutX="6.0" layoutY="8.0" mnemonicParsing="false" onAction="#goto_profil" styleClass="settingsButton">
+            <Button alignment="CENTER" contentDisplay="CENTER" layoutX="6.0" layoutY="8.0" mnemonicParsing="false" onAction="#goto_profil" prefWidth="49.0" styleClass="settingsButton" textAlignment="CENTER">
                <graphic>
                   <ImageView fitHeight="81.0" fitWidth="93.0" pickOnBounds="true" preserveRatio="true" styleClass="LogoBfpme">
                      <image>

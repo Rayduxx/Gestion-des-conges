@@ -172,11 +172,6 @@ public class EmployeController implements Initializable {
         }
     }
     public void ReloadUserDATA(){
-       /* CU_dep.setText(String.valueOf(SessionManager.getInstance().getDepartement()));
-        CU_email.setText(SessionManager.getInstance().getEmail());
-        CU_nomprenom.setText(SessionManager.getInstance().getNom()+" "+SessionManager.getInstance().getPrenom());
-        CU_role.setText(String.valueOf(SessionManager.getInstance().getRole()));
-        CU_solde.setText(String.valueOf(SessionManager.getInstance().getSoldeConge()));*/
         CU_dep.setText(String.valueOf(SessionManager.getInstance().getDepartement()));
         CU_email.setText(SessionManager.getInstance().getUtilisateur().getEmail());
         CU_nomprenom.setText(SessionManager.getInstance().getUtilisateur().getNom()+" "+SessionManager.getInstance().getUtilisateur().getPrenom());
