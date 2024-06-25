@@ -237,10 +237,23 @@ public class ServiceConge implements IConge<Conge> {
     @Override
     public List<Conge> Rechreche(String recherche) {
         List<Conge> conges = new ArrayList<>();
-        String sql = "SELECT `ID_Conge`, `DateDebut`, `DateFin`, `TypeConge`, `Statut`, `ID_User`, `file`, `description` FROM `conge` WHERE `TypeConge` LIKE '%" + recherche + "%' OR `Statut` LIKE '%" + recherche + "%'";
-        try {
-            Statement ste = cnx.createStatement();
-            ResultSet rs = ste.executeQuery(sql);
+        String sql = "SELECT `ID_Conge`, `DateDebut`, `DateFin`, `TypeConge`, `Statut`, `ID_User`, `file`, `description` " +
+                "FROM `conge` " +
+                "WHERE `TypeConge` LIKE ? " +
+                "OR `Statut` LIKE ? " +
+                "OR `DateDebut` LIKE ? " +
+                "OR `DateFin` LIKE ? " +
+                "OR `description` LIKE ?";
+
+        try (PreparedStatement ste = cnx.prepareStatement(sql)) {
+            String searchPattern = "%" + recherche + "%";
+            ste.setString(1, searchPattern);
+            ste.setString(2, searchPattern);
+            ste.setString(3, searchPattern);
+            ste.setString(4, searchPattern);
+            ste.setString(5, searchPattern);
+
+            ResultSet rs = ste.executeQuery();
             while (rs.next()) {
                 Conge conge = new Conge();
                 conge.setIdConge(rs.getInt("ID_Conge"));
@@ -258,4 +271,5 @@ public class ServiceConge implements IConge<Conge> {
         }
         return conges;
     }
+
 }
