@@ -1,5 +1,6 @@
 package tn.bfpme.controllers;
 
+import javafx.application.Platform;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
@@ -12,6 +13,7 @@ import javafx.scene.Scene;
 import javafx.scene.control.*;
 import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.scene.image.ImageView;
+import javafx.stage.Modality;
 import javafx.stage.Stage;
 import tn.bfpme.models.Conge;
 import tn.bfpme.models.Departement;
@@ -19,6 +21,7 @@ import tn.bfpme.models.TypeConge;
 import tn.bfpme.models.Utilisateur;
 import tn.bfpme.utils.MyDataBase;
 import tn.bfpme.utils.SessionManager;
+import tn.bfpme.utils.StageManager;
 
 import java.io.IOException;
 import java.net.URL;
@@ -52,18 +55,23 @@ public class EmployeController implements Initializable {
         CU_role.setText(String.valueOf(SessionManager.getInstance().getRole()));
         CU_solde.setText(String.valueOf(SessionManager.getInstance().getSoldeConge()));
         contextMenu = new ContextMenu();
+
         // Add menu items to the context menu
         MenuItem profileItem = new MenuItem("Profile");
-        MenuItem infoItem = new MenuItem("Info");
         MenuItem suppressionItem = new MenuItem("Supprimer Compte");
         MenuItem logoutItem = new MenuItem("Déconnexion");
-        contextMenu.getItems().addAll(profileItem, infoItem, suppressionItem, logoutItem);
+
+        contextMenu.getItems().addAll(profileItem, suppressionItem, logoutItem);
+
         // Show the context menu directly under the settings button
         settingsButton.setOnAction(event -> {
             double screenX = settingsButton.localToScreen(settingsButton.getBoundsInLocal()).getMinX()-70;
             double screenY = settingsButton.localToScreen(settingsButton.getBoundsInLocal()).getMaxY()+10;
             contextMenu.show(settingsButton, screenX, screenY);
         });
+        profileItem.setOnAction(this::viewprofile);
+        suppressionItem.setOnAction(this::viewsuppression);
+        logoutItem.setOnAction(this::viewdeconnection);
         fetchUserCongés();
     }
     @FXML
@@ -76,6 +84,7 @@ public class EmployeController implements Initializable {
             stage.setScene(scene);
             stage.setTitle("Demande de Congé");
             stage.show();
+            StageManager.addStage(stage);
         } catch (IOException e) {
             e.printStackTrace();
         }
@@ -91,6 +100,7 @@ public class EmployeController implements Initializable {
             stage.setScene(scene);
             stage.setTitle("Historique des Congés");
             stage.show();
+            StageManager.addStage(stage);
         } catch (IOException e) {
             e.printStackTrace();
         }
@@ -104,6 +114,7 @@ public class EmployeController implements Initializable {
             stage.setScene(scene);
             stage.setTitle("Demande congé");
             stage.show();
+            StageManager.addStage(stage);
         } catch (IOException e) {
             e.printStackTrace();
         }
@@ -117,6 +128,7 @@ public class EmployeController implements Initializable {
             stage.setScene(scene);
             stage.setTitle("Historique congé");
             stage.show();
+            StageManager.addStage(stage);
         } catch (IOException e) {
             e.printStackTrace();
         }
@@ -140,5 +152,74 @@ public class EmployeController implements Initializable {
         } catch (SQLException ex) {
             ex.printStackTrace();
         }
+    }
+    @FXML
+    void viewdeconnection(ActionEvent actionEvent) {
+        SessionManager.getInstance().cleanUserSession();
+        try {
+            FXMLLoader loader = new FXMLLoader(getClass().getResource("/login.fxml"));
+            Parent root = loader.load();
+
+            // Get the stage from the current context menu's owner window
+            MenuItem menuItem = (MenuItem) actionEvent.getSource();
+            Stage stage = (Stage) menuItem.getParentPopup().getOwnerWindow();
+
+            stage.setScene(new Scene(root));
+            stage.setTitle("Gestion de Congés - Connection");
+            StageManager.addStage(stage);
+            stage.show();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
+
+
+    @FXML
+    private void viewprofile(ActionEvent actionEvent) {
+        try {
+            FXMLLoader loader = new FXMLLoader(getClass().getResource("/profile.fxml"));
+            Parent root = loader.load();
+            // Get the stage from the current context menu's owner window
+            MenuItem menuItem = (MenuItem) actionEvent.getSource();
+            Stage stage = (Stage) menuItem.getParentPopup().getOwnerWindow();
+            Scene scene = new Scene(root);
+            stage.setScene(scene);
+            stage.setTitle("Profile");
+            stage.show();
+            StageManager.addStage(stage);
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+
+    }
+
+    @FXML
+    public void viewsuppression(ActionEvent actionEvent) {
+        try {
+            FXMLLoader loader = new FXMLLoader(getClass().getResource("/SupressionCompte.fxml"));
+            Parent root = loader.load();
+            Stage suppressionStage = new Stage();
+            suppressionStage.setTitle("Suppression User");
+            suppressionStage.setScene(new Scene(root));
+
+
+            MenuItem menuItem = (MenuItem) actionEvent.getSource();
+            Stage ownerStage = (Stage) menuItem.getParentPopup().getOwnerWindow();
+
+
+            suppressionStage.initOwner(ownerStage);
+            suppressionStage.initModality(Modality.WINDOW_MODAL);
+
+
+            suppressionStage.show();
+            Platform.runLater(() -> {
+                suppressionStage.setX(ownerStage.getX() + (ownerStage.getWidth() - suppressionStage.getWidth()) / 2);
+                suppressionStage.setY(ownerStage.getY() + (ownerStage.getHeight() - suppressionStage.getHeight()) / 2);
+            });
+
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+
     }
 }

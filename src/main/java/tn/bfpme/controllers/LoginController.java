@@ -9,6 +9,7 @@ import javafx.stage.Stage;
 import tn.bfpme.models.*;
 import tn.bfpme.utils.MyDataBase;
 import tn.bfpme.utils.SessionManager;
+import tn.bfpme.utils.StageManager;
 
 import java.io.IOException;
 import java.sql.*;
@@ -98,6 +99,7 @@ public class LoginController {
                 stage.setScene(scene);
                 stage.setTitle("Profile");
                 stage.show();
+                StageManager.addStage(stage);
             } else {
                 System.out.println("Login failed: Invalid email or password.");
             }

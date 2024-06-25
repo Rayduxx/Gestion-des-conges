@@ -30,7 +30,10 @@ import java.sql.Connection;
 import java.util.ResourceBundle;
 import javafx.scene.control.TextField;
 import javafx.scene.layout.GridPane;
+import tn.bfpme.utils.SessionManager;
 import tn.bfpme.utils.StageManager;
+
+import static tn.bfpme.utils.StageManager.addStage;
 
 public class HistoriqueCongeController implements Initializable  {
 
@@ -53,11 +56,10 @@ public class HistoriqueCongeController implements Initializable  {
 
         // Add menu items to the context menu
         MenuItem profileItem = new MenuItem("Profile");
-        MenuItem infoItem = new MenuItem("Info");
         MenuItem suppressionItem = new MenuItem("Supprimer Compte");
         MenuItem logoutItem = new MenuItem("Déconnexion");
 
-        contextMenu.getItems().addAll(profileItem, infoItem, suppressionItem, logoutItem);
+        contextMenu.getItems().addAll(profileItem, suppressionItem, logoutItem);
 
         // Show the context menu directly under the settings button
         settingsButton.setOnAction(event -> {
@@ -66,7 +68,6 @@ public class HistoriqueCongeController implements Initializable  {
             contextMenu.show(settingsButton, screenX, screenY);
         });
         profileItem.setOnAction(this::viewprofile);
-        infoItem.setOnAction(this::viewinfo);
         suppressionItem.setOnAction(this::viewsuppression);
         logoutItem.setOnAction(this::viewdeconnection);
     }
@@ -200,6 +201,7 @@ public class HistoriqueCongeController implements Initializable  {
             stage.setScene(scene);
             stage.setTitle("Demande congé");
             stage.show();
+            StageManager.addStage(stage);
         } catch (IOException e) {
             e.printStackTrace();
         }
@@ -214,25 +216,37 @@ public class HistoriqueCongeController implements Initializable  {
             Stage stage = (Stage) ((Node) actionEvent.getSource()).getScene().getWindow();
             Scene scene = new Scene(root);
             stage.setScene(scene);
-            stage.setTitle("Historique congé");
+            stage.setTitle("Historique des congés");
             stage.show();
+            StageManager.addStage(stage);
         } catch (IOException e) {
             e.printStackTrace();
         }
 
     }
     @FXML
-    void viewdeconnection(ActionEvent event) {
+    void viewdeconnection(ActionEvent actionEvent) {
+        SessionManager.getInstance().cleanUserSession();
+        try {
+            FXMLLoader loader = new FXMLLoader(getClass().getResource("/login.fxml"));
+            Parent root = loader.load();
 
+            // Get the stage from the current context menu's owner window
+            MenuItem menuItem = (MenuItem) actionEvent.getSource();
+            Stage stage = (Stage) menuItem.getParentPopup().getOwnerWindow();
+
+            stage.setScene(new Scene(root));
+            stage.setTitle("Gestion de Congés - Connection");
+            StageManager.addStage(stage);
+            stage.show();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
     }
 
-    @FXML
-    void viewinfo(ActionEvent event) {
-
-    }
 
     @FXML
-     private void viewprofile(ActionEvent actionEvent) {
+    private void viewprofile(ActionEvent actionEvent) {
         try {
             FXMLLoader loader = new FXMLLoader(getClass().getResource("/profile.fxml"));
             Parent root = loader.load();
@@ -243,6 +257,7 @@ public class HistoriqueCongeController implements Initializable  {
             stage.setScene(scene);
             stage.setTitle("Profile");
             stage.show();
+            StageManager.addStage(stage);
         } catch (IOException e) {
             e.printStackTrace();
         }
