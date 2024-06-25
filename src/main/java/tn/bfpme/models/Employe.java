@@ -9,7 +9,7 @@ public class Employe extends Utilisateur {
         super();
     }
 
-    public Employe(int idEmploye, int idUser, String nom, String prenom, String email, String mdp, Role role, String image, Solde_congé soldeConge, Departement departement) {
+    public Employe(int idEmploye, int idUser, String nom, String prenom, String email, String mdp, Role role, String image, int soldeConge, Departement departement) {
         super(idUser, nom, prenom, email, mdp, role, image, soldeConge);
         this.idEmploye = idEmploye;
         this.departement = departement;

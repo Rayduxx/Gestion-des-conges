@@ -7,7 +7,7 @@ public class AdminIT extends Utilisateur {
 
     public AdminIT() {super();}
 
-    public AdminIT(int idAdmin, int idUser, String nom, String prenom, String email, String mdp, Role role, String image, Solde_congé soldeConge) {
+    public AdminIT(int idAdmin, int idUser, String nom, String prenom, String email, String mdp, Role role, String image, int soldeConge) {
         super(idUser, nom, prenom, email, mdp, role, image, soldeConge);
         this.idAdmin = idAdmin;
     }
