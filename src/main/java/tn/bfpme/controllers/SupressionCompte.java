@@ -21,17 +21,13 @@ import static tn.bfpme.models.Utilisateur.getCurrent_User;
 public class SupressionCompte {
 
     private final ServiceEmploye UserS = new ServiceEmploye();
-    @FXML
-    private Label labelSupp;
-
-    @FXML
-    private TextField mdpSUpp;
+    @FXML private Label labelSupp;
+    @FXML private TextField mdpSUpp;
 
     @FXML
     void annuler_supression(ActionEvent actionEvent) {
         Stage stage = (Stage) ((Node) actionEvent.getSource()).getScene().getWindow();
         stage.close();
-
     }
 
     @FXML
@@ -41,12 +37,8 @@ public class SupressionCompte {
             if (mdpSUpp.getText().equals(SessionManager.getInstance().getPassword())) {
                 UserS.deleteByID(SessionManager.getInstance().getId_user());
                 labelSupp.setText("Suppression Effectue");
-
-
                 SessionManager.getInstance().cleanUserSession();
-
                 StageManager.closeAllStages();
-
                 restartApplication();
             } else {
                 labelSupp.setText("Suppression Non Effectue: Incorrect Password");
@@ -59,7 +51,6 @@ public class SupressionCompte {
             alert.setContentText(e.getMessage());
             alert.showAndWait();
         }
-
     }
     private void restartApplication() {
         Platform.runLater(() -> {
