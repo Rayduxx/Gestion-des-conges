@@ -217,6 +217,12 @@
     -fx-background-color: transparent;
     -fx-border-color: transparent;
 }
+.LogoBfpme {
+        --fx-effect: dropshadow(gaussian, rgba(0, 0, 0, 0.5), 10, 0.5, 10, 10);
+}
+.LogoBfpme:hover{
+
+}
 
 /*@font-face {
     -fx-font-family: "Roboto";

@@ -20,11 +20,15 @@
    <children>
       <Pane prefHeight="104.0" prefWidth="1340.0" styleClass="pane-clr" stylesheets="@assets/css/style.css">
          <children>
-            <ImageView fitHeight="81.0" fitWidth="93.0" layoutX="14.0" layoutY="12.0" pickOnBounds="true" preserveRatio="true">
-               <image>
-                  <Image url="@assets/imgs/logo_bfpme.png" />
-               </image>
-            </ImageView>
+            <Button layoutX="6.0" layoutY="8.0" mnemonicParsing="false" onAction="#goto_profil" styleClass="settingsButton">
+               <graphic>
+                  <ImageView fitHeight="81.0" fitWidth="93.0" pickOnBounds="true" preserveRatio="true" styleClass="LogoBfpme">
+                     <image>
+                        <Image url="@assets/imgs/logo_bfpme.png" />
+                     </image>
+                  </ImageView>
+               </graphic>
+            </Button>
             <HBox layoutX="694.0" layoutY="23.0" prefHeight="60.0" prefWidth="601.0">
                <children>
                   <Pane maxWidth="363.0" prefHeight="60.0" prefWidth="363.0">
@@ -58,8 +62,8 @@
                            <contextMenu>
                               <ContextMenu anchorLocation="CONTENT_TOP_RIGHT" anchorX="100.0" x="0.0">
                                  <items>
-                                    <MenuItem mnemonicParsing="false" text="Profile" />
-                                    <MenuItem mnemonicParsing="false" text="Supprimer compte" />
+                                    <MenuItem mnemonicParsing="false" text="Boîte de réception" />
+                                    <MenuItem mnemonicParsing="false" text="Aide et support" />
                                     <MenuItem mnemonicParsing="false" text="deconnection" />
                                  </items>
                               </ContextMenu>

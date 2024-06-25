@@ -1,4 +1,5 @@
 package tn.bfpme.controllers;
+
 import javafx.application.Platform;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
@@ -56,6 +57,7 @@ public class DemandeCongeController implements Initializable{
     private final ServiceConge CongeS = new ServiceConge();
     Connection cnx = MyDataBase.getInstance().getCnx();
     ObservableList<String> CongeList = FXCollections.observableArrayList("Annuel", "Exeptionnel", "Maladie", "Sous-Solde", "Maternité");
+
     @Override
     public void initialize(URL url, ResourceBundle resourceBundle) {
         cb_typeconge.setValue("Selectioner type");
@@ -63,20 +65,21 @@ public class DemandeCongeController implements Initializable{
         contextMenu = new ContextMenu();
 
         // Add menu items to the context menu
-        MenuItem profileItem = new MenuItem("Profile");
-        MenuItem suppressionItem = new MenuItem("Supprimer Compte");
+        MenuItem boiteItem = new MenuItem("boîte de réception");
+        MenuItem aideItem = new MenuItem("Aide et support");
         MenuItem logoutItem = new MenuItem("Déconnexion");
 
-        contextMenu.getItems().addAll(profileItem, suppressionItem, logoutItem);
+
+        contextMenu.getItems().addAll(boiteItem, aideItem, logoutItem);
 
         // Show the context menu directly under the settings button
         settingsButton.setOnAction(event -> {
-            double screenX = settingsButton.localToScreen(settingsButton.getBoundsInLocal()).getMinX()-70;
-            double screenY = settingsButton.localToScreen(settingsButton.getBoundsInLocal()).getMaxY()+10;
+            double screenX = settingsButton.localToScreen(settingsButton.getBoundsInLocal()).getMinX() - 70;
+            double screenY = settingsButton.localToScreen(settingsButton.getBoundsInLocal()).getMaxY() + 10;
             contextMenu.show(settingsButton, screenX, screenY);
         });
-        profileItem.setOnAction(this::viewprofile);
-        suppressionItem.setOnAction(this::viewsuppression);
+        boiteItem.setOnAction(this::viewboite);
+        aideItem.setOnAction(this::viewaide);
         logoutItem.setOnAction(this::viewdeconnection);
     }
     @FXML void TypeSelec(ActionEvent event) {
@@ -124,6 +127,7 @@ public class DemandeCongeController implements Initializable{
         paneNaissance.setVisible(true);
         paneGrossesse.setVisible(false);
     }
+
     /*  Demande Congé Annuel */
     @FXML private DatePicker ANL_DD;
     @FXML private DatePicker ANL_DF;
@@ -163,7 +167,7 @@ public class DemandeCongeController implements Initializable{
                     stm.setInt(1, NewSolde);
                     stm.setInt(2, SessionManager.getInstance().getUtilisateur().getIdUser());
                     stm.executeUpdate();
-                }else{
+                } else {
                     Alert alert = new Alert(Alert.AlertType.ERROR);
                     alert.setTitle("Erreur");
                     alert.setHeaderText("Votre solde est dépassé pour cette année.");
@@ -297,6 +301,7 @@ public class DemandeCongeController implements Initializable{
             }
         }
     }
+
     /*  Demande Congé Sous-Solde */
     @FXML private DatePicker SS_DD;
     @FXML private DatePicker SS_DF;
@@ -323,6 +328,7 @@ public class DemandeCongeController implements Initializable{
         }
         CongeS.Add(new Conge(0, DD, DF, TypeConge.Sous_solde, Statut.En_Attente, SessionManager.getInstance().getUtilisateur().getIdUser(), "", DESC));
     }
+
     /*  Demande Congé Maternité (GROSSESSE) */
     @FXML private DatePicker GRO_DD;
     @FXML private DatePicker GRO_DF;
@@ -383,6 +389,7 @@ public class DemandeCongeController implements Initializable{
             }
         }
     }
+
     /*  Demande Congé Maternité (NAISSANCE) */
     @FXML private DatePicker NAI_DD;
     @FXML private DatePicker NAI_DF;
@@ -475,6 +482,7 @@ public class DemandeCongeController implements Initializable{
             e.printStackTrace();
         }
     }
+
     @FXML
     void viewdeconnection(ActionEvent actionEvent) {
         SessionManager.getInstance().cleanUserSession();
@@ -496,49 +504,23 @@ public class DemandeCongeController implements Initializable{
     }
 
 
+    void viewaide(ActionEvent actionEvent) {
+    }
+
+    void viewboite(ActionEvent actionEvent) {
+    }
     @FXML
-    private void viewprofile(ActionEvent actionEvent) {
+    public void goto_profil(ActionEvent actionEvent) {
         try {
             FXMLLoader loader = new FXMLLoader(getClass().getResource("/profile.fxml"));
             Parent root = loader.load();
-            EmployeController employeController = loader.getController();
-            employeController.ReloadUserDATA();
-            MenuItem menuItem = (MenuItem) actionEvent.getSource();
-            Stage stage = (Stage) menuItem.getParentPopup().getOwnerWindow();
+            Stage stage = (Stage) ((Node) actionEvent.getSource()).getScene().getWindow();
             Scene scene = new Scene(root);
             stage.setScene(scene);
-            stage.setTitle("Profile");
+            stage.setTitle("Mon profil");
             stage.show();
             StageManager.addStage(stage);
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-    }
-
-    @FXML
-    public void viewsuppression(ActionEvent actionEvent) {
-        try {
-            FXMLLoader loader = new FXMLLoader(getClass().getResource("/SupressionCompte.fxml"));
-            Parent root = loader.load();
-            Stage suppressionStage = new Stage();
-            suppressionStage.setTitle("Suppression User");
-            suppressionStage.setScene(new Scene(root));
-
-
-            MenuItem menuItem = (MenuItem) actionEvent.getSource();
-            Stage ownerStage = (Stage) menuItem.getParentPopup().getOwnerWindow();
-
-
-            suppressionStage.initOwner(ownerStage);
-            suppressionStage.initModality(Modality.WINDOW_MODAL);
-
-
-            suppressionStage.show();
-            Platform.runLater(() -> {
-                suppressionStage.setX(ownerStage.getX() + (ownerStage.getWidth() - suppressionStage.getWidth()) / 2);
-                suppressionStage.setY(ownerStage.getY() + (ownerStage.getHeight() - suppressionStage.getHeight()) / 2);
-            });
-
+            StageManager.addStage(stage);
         } catch (IOException e) {
             e.printStackTrace();
         }
