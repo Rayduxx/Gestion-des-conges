@@ -47,17 +47,23 @@ public class EmployeController implements Initializable {
     @Override
     public void initialize(URL url, ResourceBundle resourceBundle) {
         contextMenu = new ContextMenu();
-        MenuItem profileItem = new MenuItem("Profile");
-        MenuItem suppressionItem = new MenuItem("Supprimer Compte");
+
+        // Add menu items to the context menu
+        MenuItem boiteItem = new MenuItem("boîte de réception");
+        MenuItem aideItem = new MenuItem("Aide et support");
         MenuItem logoutItem = new MenuItem("Déconnexion");
-        contextMenu.getItems().addAll(profileItem, suppressionItem, logoutItem);
+
+
+        contextMenu.getItems().addAll(boiteItem, aideItem, logoutItem);
+
+        // Show the context menu directly under the settings button
         settingsButton.setOnAction(event -> {
-            double screenX = settingsButton.localToScreen(settingsButton.getBoundsInLocal()).getMinX()-70;
-            double screenY = settingsButton.localToScreen(settingsButton.getBoundsInLocal()).getMaxY()+10;
+            double screenX = settingsButton.localToScreen(settingsButton.getBoundsInLocal()).getMinX() - 70;
+            double screenY = settingsButton.localToScreen(settingsButton.getBoundsInLocal()).getMaxY() + 10;
             contextMenu.show(settingsButton, screenX, screenY);
         });
-        profileItem.setOnAction(this::viewprofile);
-        suppressionItem.setOnAction(this::viewsuppression);
+        boiteItem.setOnAction(this::viewboite);
+        aideItem.setOnAction(this::viewaide);
         logoutItem.setOnAction(this::viewdeconnection);
         fetchUserCongés();
         ReloadUserDATA();
@@ -118,13 +124,23 @@ public class EmployeController implements Initializable {
             e.printStackTrace();
         }
     }
-    @FXML void viewdeconnection(ActionEvent actionEvent) {
+    @FXML void viewaide(ActionEvent actionEvent) {
+
+    }
+    @FXML private void viewboite(ActionEvent actionEvent) {
+
+    }
+    @FXML
+    void viewdeconnection(ActionEvent actionEvent) {
         SessionManager.getInstance().cleanUserSession();
         try {
             FXMLLoader loader = new FXMLLoader(getClass().getResource("/login.fxml"));
             Parent root = loader.load();
+
+            // Get the stage from the current context menu's owner window
             MenuItem menuItem = (MenuItem) actionEvent.getSource();
             Stage stage = (Stage) menuItem.getParentPopup().getOwnerWindow();
+
             stage.setScene(new Scene(root));
             stage.setTitle("Gestion de Congés - Connection");
             StageManager.addStage(stage);
@@ -133,51 +149,7 @@ public class EmployeController implements Initializable {
             e.printStackTrace();
         }
     }
-    @FXML private void viewprofile(ActionEvent actionEvent) {
-        try {
-            FXMLLoader loader = new FXMLLoader(getClass().getResource("/profile.fxml"));
-            Parent root = loader.load();
-            // Get the stage from the current context menu's owner window
-            MenuItem menuItem = (MenuItem) actionEvent.getSource();
-            Stage stage = (Stage) menuItem.getParentPopup().getOwnerWindow();
-            Scene scene = new Scene(root);
-            stage.setScene(scene);
-            stage.setTitle("Profile");
-            stage.show();
-            StageManager.addStage(stage);
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
 
-    }
-    @FXML public void viewsuppression(ActionEvent actionEvent) {
-        try {
-            FXMLLoader loader = new FXMLLoader(getClass().getResource("/SupressionCompte.fxml"));
-            Parent root = loader.load();
-            Stage suppressionStage = new Stage();
-            suppressionStage.setTitle("Suppression User");
-            suppressionStage.setScene(new Scene(root));
-
-
-            MenuItem menuItem = (MenuItem) actionEvent.getSource();
-            Stage ownerStage = (Stage) menuItem.getParentPopup().getOwnerWindow();
-
-
-            suppressionStage.initOwner(ownerStage);
-            suppressionStage.initModality(Modality.WINDOW_MODAL);
-
-
-            suppressionStage.show();
-            Platform.runLater(() -> {
-                suppressionStage.setX(ownerStage.getX() + (ownerStage.getWidth() - suppressionStage.getWidth()) / 2);
-                suppressionStage.setY(ownerStage.getY() + (ownerStage.getHeight() - suppressionStage.getHeight()) / 2);
-            });
-
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-
-    }
     private void fetchUserCongés() {
         ObservableList<Conge> HisUserList = FXCollections.observableArrayList();
         String sql = "SELECT `DateDebut`, `DateFin`, `TypeConge` FROM `conge` WHERE `ID_User`=? AND `Statut`=?";
@@ -210,5 +182,22 @@ public class EmployeController implements Initializable {
         CU_nomprenom.setText(SessionManager.getInstance().getUtilisateur().getNom()+" "+SessionManager.getInstance().getUtilisateur().getPrenom());
         CU_role.setText(String.valueOf(SessionManager.getInstance().getUtilisateur().getRole()));
         CU_solde.setText(String.valueOf(SessionManager.getInstance().getUtilisateur().getSoldeConge()));
+    }
+    @FXML
+    public void goto_profil(ActionEvent actionEvent) {
+        try {
+            FXMLLoader loader = new FXMLLoader(getClass().getResource("/profile.fxml"));
+            Parent root = loader.load();
+            Stage stage = (Stage) ((Node) actionEvent.getSource()).getScene().getWindow();
+            Scene scene = new Scene(root);
+            stage.setScene(scene);
+            stage.setTitle("Mon profil");
+            stage.show();
+            StageManager.addStage(stage);
+            StageManager.addStage(stage);
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+
     }
 }

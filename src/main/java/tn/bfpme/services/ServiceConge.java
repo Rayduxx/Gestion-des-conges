@@ -7,7 +7,6 @@ import tn.bfpme.models.TypeConge;
 import tn.bfpme.utils.MyDataBase;
 
 import java.sql.Date;
-import java.time.*;
 import java.sql.*;
 import java.util.ArrayList;
 import java.util.*;
@@ -142,6 +141,79 @@ public class ServiceConge implements IConge<Conge> {
     public List<Conge> TriparType() {
         List<Conge> conges = new ArrayList<>();
         String sql = "SELECT `ID_Conge`, `DateDebut`, `DateFin`, `TypeConge`, `Statut`, `ID_User`, `file`, `description` FROM `conge` ORDER BY `TypeConge`";
+        try {
+            Statement ste = cnx.createStatement();
+            ResultSet rs = ste.executeQuery(sql);
+            while (rs.next()) {
+                Conge conge = new Conge();
+                conge.setIdConge(rs.getInt("ID_Conge"));
+                conge.setDateDebut(rs.getDate("DateDebut").toLocalDate());
+                conge.setDateFin(rs.getDate("DateFin").toLocalDate());
+                conge.setTypeConge(TypeConge.valueOf(rs.getString("TypeConge")));
+                conge.setStatut(Statut.valueOf(rs.getString("Statut")));
+                conge.setIdUser(rs.getInt("ID_User"));
+                conge.setFile(rs.getString("file"));
+                conge.setDescription(rs.getString("description"));
+                conges.add(conge);
+            }
+        } catch (SQLException ex) {
+            System.out.println(ex.getMessage());
+        }
+        return conges;
+    }
+
+    @Override
+    public List<Conge> TriparDateD() {
+        List<Conge> conges = new ArrayList<>();
+        String sql = "SELECT `ID_Conge`, `DateDebut`, `DateFin`, `TypeConge`, `Statut`, `ID_User`, `file`, `description` FROM `conge` ORDER BY `DateDebut`";
+        try {
+            Statement ste = cnx.createStatement();
+            ResultSet rs = ste.executeQuery(sql);
+            while (rs.next()) {
+                Conge conge = new Conge();
+                conge.setIdConge(rs.getInt("ID_Conge"));
+                conge.setDateDebut(rs.getDate("DateDebut").toLocalDate());
+                conge.setDateFin(rs.getDate("DateFin").toLocalDate());
+                conge.setTypeConge(TypeConge.valueOf(rs.getString("TypeConge")));
+                conge.setStatut(Statut.valueOf(rs.getString("Statut")));
+                conge.setIdUser(rs.getInt("ID_User"));
+                conge.setFile(rs.getString("file"));
+                conge.setDescription(rs.getString("description"));
+                conges.add(conge);
+            }
+        } catch (SQLException ex) {
+            System.out.println(ex.getMessage());
+        }
+        return conges;
+    }
+    @Override
+    public List<Conge> TriparDateF() {
+        List<Conge> conges = new ArrayList<>();
+        String sql = "SELECT `ID_Conge`, `DateDebut`, `DateFin`, `TypeConge`, `Statut`, `ID_User`, `file`, `description` FROM `conge` ORDER BY `DateFin`";
+        try {
+            Statement ste = cnx.createStatement();
+            ResultSet rs = ste.executeQuery(sql);
+            while (rs.next()) {
+                Conge conge = new Conge();
+                conge.setIdConge(rs.getInt("ID_Conge"));
+                conge.setDateDebut(rs.getDate("DateDebut").toLocalDate());
+                conge.setDateFin(rs.getDate("DateFin").toLocalDate());
+                conge.setTypeConge(TypeConge.valueOf(rs.getString("TypeConge")));
+                conge.setStatut(Statut.valueOf(rs.getString("Statut")));
+                conge.setIdUser(rs.getInt("ID_User"));
+                conge.setFile(rs.getString("file"));
+                conge.setDescription(rs.getString("description"));
+                conges.add(conge);
+            }
+        } catch (SQLException ex) {
+            System.out.println(ex.getMessage());
+        }
+        return conges;
+    }
+    @Override
+    public List<Conge> TriparDesc() {
+        List<Conge> conges = new ArrayList<>();
+        String sql = "SELECT `ID_Conge`, `DateDebut`, `DateFin`, `TypeConge`, `Statut`, `ID_User`, `file`, `description` FROM `conge` ORDER BY `description`";
         try {
             Statement ste = cnx.createStatement();
             ResultSet rs = ste.executeQuery(sql);

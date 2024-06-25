@@ -15,5 +15,11 @@ public interface IConge<C> {
 
     List<Conge> TriparType();
 
+    List<Conge> TriparDateD();
+
+    List<Conge> TriparDateF();
+
+    List<Conge> TriparDesc();
+
     List<Conge> Rechreche(String recherche);
 }

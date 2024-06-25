@@ -31,7 +31,7 @@ public class LoginController {
             stm.setString(2, LoginMDP.getText());
             ResultSet rs = stm.executeQuery();
             if (rs.next()) {
-                Utilisateur ConnectedUser = new Utilisateur(rs.getInt("ID_User"), rs.getString("Nom"), rs.getString("Prenom"), rs.getString("Email"), rs.getString("MDP"), Role.valueOf(rs.getString("Role")), rs.getString("Image"), rs.getInt("Solde_congé"));
+                Utilisateur ConnectedUser = new Utilisateur(rs.getInt("ID_User"), rs.getString("Nom"), rs.getString("Prenom"), rs.getString("Email"), rs.getString("MDP"), Role.valueOf(rs.getString("Role")), rs.getString("Image"), Solde_congé.valueOf((rs.getString("Solde_congé"))));
                 // Check if user is an employee
                 String qry2 = "SELECT `ID_Employé`, `Departement`, `ID_User` FROM `employe` WHERE `ID_User`=?";
                 PreparedStatement stm2 = cnx.prepareStatement(qry2);

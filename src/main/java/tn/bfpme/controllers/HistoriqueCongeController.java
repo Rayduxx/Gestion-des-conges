@@ -162,9 +162,8 @@ public class HistoriqueCongeController implements Initializable  {
         }
 
     }
-
     @FXML
-    public void tri_type(ActionEvent actionEvent) {
+    void tri_datedeb(ActionEvent event) {
         ColumnConstraints columnConstraints = new ColumnConstraints();
         columnConstraints.setHgrow(Priority.ALWAYS);
         congeContainer.getColumnConstraints().add(columnConstraints);
@@ -173,14 +172,15 @@ public class HistoriqueCongeController implements Initializable  {
         int row = 0;
         try {
             congeContainer.getChildren().clear(); // Clear existing items
-            for (Conge conge : CongeS.TriparType()) {
+
+            for (Conge conge : CongeS.TriparDateD()) {
                 FXMLLoader fxmlLoader = new FXMLLoader();
                 fxmlLoader.setLocation(getClass().getResource("/CongeCarte.fxml"));
                 Pane CardBox = fxmlLoader.load();
                 CongeCarteController cardC = fxmlLoader.getController();
                 cardC.setData(conge);
 
-                congeContainer.add(CardBox, 0, row++);
+                congeContainer.add(CardBox, 0 , row++);
                 GridPane.setMargin(CardBox, new Insets(4, 4, 4, 4));
                 CardBox.setMaxWidth(Double.MAX_VALUE);
                 congeContainer.setColumnSpan(CardBox, GridPane.REMAINING);
@@ -190,6 +190,101 @@ public class HistoriqueCongeController implements Initializable  {
         } catch (IOException e) {
             e.printStackTrace();
         }
+
+    }
+
+    @FXML
+    void tri_datefin(ActionEvent event) {
+        ColumnConstraints columnConstraints = new ColumnConstraints();
+        columnConstraints.setHgrow(Priority.ALWAYS);
+        congeContainer.getColumnConstraints().add(columnConstraints);
+        congeContainer.setVgap(4);
+        congeContainer.setPadding(new Insets(4));
+        int row = 0;
+        try {
+            congeContainer.getChildren().clear(); // Clear existing items
+
+            for (Conge conge : CongeS.TriparDateF()) {
+                FXMLLoader fxmlLoader = new FXMLLoader();
+                fxmlLoader.setLocation(getClass().getResource("/CongeCarte.fxml"));
+                Pane CardBox = fxmlLoader.load();
+                CongeCarteController cardC = fxmlLoader.getController();
+                cardC.setData(conge);
+
+                congeContainer.add(CardBox, 0 , row++);
+                GridPane.setMargin(CardBox, new Insets(4, 4, 4, 4));
+                CardBox.setMaxWidth(Double.MAX_VALUE);
+                congeContainer.setColumnSpan(CardBox, GridPane.REMAINING);
+                GridPane.setHalignment(CardBox, javafx.geometry.HPos.CENTER);
+
+            }
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+
+    }
+
+    @FXML
+    void tri_desc(ActionEvent event) {
+        ColumnConstraints columnConstraints = new ColumnConstraints();
+        columnConstraints.setHgrow(Priority.ALWAYS);
+        congeContainer.getColumnConstraints().add(columnConstraints);
+        congeContainer.setVgap(4);
+        congeContainer.setPadding(new Insets(4));
+        int row = 0;
+        try {
+            congeContainer.getChildren().clear(); // Clear existing items
+
+            for (Conge conge : CongeS.TriparDesc()) {
+                FXMLLoader fxmlLoader = new FXMLLoader();
+                fxmlLoader.setLocation(getClass().getResource("/CongeCarte.fxml"));
+                Pane CardBox = fxmlLoader.load();
+                CongeCarteController cardC = fxmlLoader.getController();
+                cardC.setData(conge);
+
+                congeContainer.add(CardBox, 0 , row++);
+                GridPane.setMargin(CardBox, new Insets(4, 4, 4, 4));
+                CardBox.setMaxWidth(Double.MAX_VALUE);
+                congeContainer.setColumnSpan(CardBox, GridPane.REMAINING);
+                GridPane.setHalignment(CardBox, javafx.geometry.HPos.CENTER);
+
+            }
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+
+
+    }
+
+    @FXML
+    void tri_type(ActionEvent event) {
+        ColumnConstraints columnConstraints = new ColumnConstraints();
+        columnConstraints.setHgrow(Priority.ALWAYS);
+        congeContainer.getColumnConstraints().add(columnConstraints);
+        congeContainer.setVgap(4);
+        congeContainer.setPadding(new Insets(4));
+        int row = 0;
+        try {
+            congeContainer.getChildren().clear(); // Clear existing items
+
+            for (Conge conge : CongeS.TriparType()) {
+                FXMLLoader fxmlLoader = new FXMLLoader();
+                fxmlLoader.setLocation(getClass().getResource("/CongeCarte.fxml"));
+                Pane CardBox = fxmlLoader.load();
+                CongeCarteController cardC = fxmlLoader.getController();
+                cardC.setData(conge);
+
+                congeContainer.add(CardBox, 0 , row++);
+                GridPane.setMargin(CardBox, new Insets(4, 4, 4, 4));
+                CardBox.setMaxWidth(Double.MAX_VALUE);
+                congeContainer.setColumnSpan(CardBox, GridPane.REMAINING);
+                GridPane.setHalignment(CardBox, javafx.geometry.HPos.CENTER);
+
+            }
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+
 
     }
     @FXML
@@ -217,7 +312,7 @@ public class HistoriqueCongeController implements Initializable  {
             Stage stage = (Stage) ((Node) actionEvent.getSource()).getScene().getWindow();
             Scene scene = new Scene(root);
             stage.setScene(scene);
-            stage.setTitle("Historique des congés");
+            stage.setTitle("Historique des demandes");
             stage.show();
             StageManager.addStage(stage);
         } catch (IOException e) {

@@ -8,7 +8,7 @@ public class ChefDepartement extends Utilisateur {
 
     public ChefDepartement() {super();}
 
-    public ChefDepartement(int idChefDep, int idUser, String nom, String prenom, String email, String mdp, Role role, String image, int soldeConge, Departement departement) {
+    public ChefDepartement(int idChefDep, int idUser, String nom, String prenom, String email, String mdp, Role role, String image, Solde_congé soldeConge, Departement departement) {
         super(idUser, nom, prenom, email, mdp, role, image, soldeConge);
         this.idChefDep = idChefDep;
         this.departement = departement;

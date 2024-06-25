@@ -72,6 +72,11 @@
                   </Pane>
                </children>
             </HBox>
+            <Label layoutX="258.0" layoutY="33.0" text="Historique des congés">
+               <font>
+                  <Font size="22.0" />
+               </font>
+            </Label>
          </children>
       </Pane>
       <Pane layoutX="28.0" layoutY="131.0" prefHeight="677.0" prefWidth="1277.0" styleClass="pane1">
@@ -86,75 +91,112 @@
                <children>
                   <Pane prefHeight="65.0" prefWidth="185.0">
                      <children>
-                        <Label layoutX="79.0" layoutY="24.0" text="Type" />
+                        <Label layoutX="72.0" layoutY="20.0" text="Type">
+                           <font>
+                              <Font size="18.0" />
+                           </font></Label>
+                        <Button layoutX="32.0" layoutY="18.0" mnemonicParsing="false" onAction="#tri_type" prefHeight="25.0" prefWidth="34.0" styleClass="settingsButton">
+                           <graphic>
+                              <ImageView fitHeight="26.0" fitWidth="22.0" pickOnBounds="true" preserveRatio="true">
+                                 <image>
+                                    <Image url="@assets/imgs/tri.png" />
+                                 </image>
+                              </ImageView>
+                           </graphic>
+                        </Button>
                      </children>
                   </Pane>
                   <Separator orientation="VERTICAL" prefHeight="65.0" prefWidth="5.0" styleClass="seperator" />
                   <Pane prefHeight="65.0" prefWidth="200.0">
                      <children>
-                        <Label layoutX="60.0" layoutY="24.0" text="Date du Début" />
+                        <Label layoutX="41.0" layoutY="19.0" text="Date du Début">
+                           <font>
+                              <Font size="18.0" />
+                           </font></Label>
+                        <Button layoutY="17.0" mnemonicParsing="false" onAction="#tri_datedeb" prefHeight="25.0" prefWidth="34.0" styleClass="settingsButton">
+                           <graphic>
+                              <ImageView fitHeight="26.0" fitWidth="22.0" pickOnBounds="true" preserveRatio="true">
+                                 <image>
+                                    <Image url="@assets/imgs/tri.png" />
+                                 </image>
+                              </ImageView>
+                           </graphic>
+                        </Button>
                      </children>
                   </Pane>
                   <Separator orientation="VERTICAL" prefHeight="200.0" styleClass="seperator" stylesheets="@assets/css/style.css" />
                   <Pane prefHeight="65.0" prefWidth="200.0">
                      <children>
-                        <Label layoutX="69.0" layoutY="24.0" text="Date de Fin" />
+                        <Label layoutX="41.0" layoutY="19.0" prefHeight="27.0" prefWidth="117.0" text="Date de Fin">
+                           <font>
+                              <Font size="18.0" />
+                           </font></Label>
+                        <Button layoutY="17.0" mnemonicParsing="false" onAction="#tri_datefin" prefHeight="25.0" prefWidth="34.0" styleClass="settingsButton">
+                           <graphic>
+                              <ImageView fitHeight="26.0" fitWidth="22.0" pickOnBounds="true" preserveRatio="true">
+                                 <image>
+                                    <Image url="@assets/imgs/tri.png" />
+                                 </image>
+                              </ImageView>
+                           </graphic>
+                        </Button>
                      </children>
                   </Pane>
                   <Separator orientation="VERTICAL" prefHeight="200.0" styleClass="seperator" />
                   <Pane prefHeight="65.0" prefWidth="282.0">
                      <children>
-                        <Label layoutX="110.0" layoutY="24.0" text="Description" />
+                        <Label layoutX="95.0" layoutY="19.0" text="Description">
+                           <font>
+                              <Font size="18.0" />
+                           </font></Label>
+                        <Button layoutX="55.0" layoutY="17.0" mnemonicParsing="false" onAction="#tri_desc" prefHeight="25.0" prefWidth="34.0" styleClass="settingsButton">
+                           <graphic>
+                              <ImageView fitHeight="26.0" fitWidth="22.0" pickOnBounds="true" preserveRatio="true">
+                                 <image>
+                                    <Image url="@assets/imgs/tri.png" />
+                                 </image>
+                              </ImageView>
+                           </graphic>
+                        </Button>
                      </children>
                   </Pane>
                   <Separator orientation="VERTICAL" prefHeight="200.0" styleClass="seperator" />
                   <Pane prefHeight="65.0" prefWidth="200.0">
                      <children>
-                        <Label layoutX="83.0" layoutY="24.0" text="Statut" />
+                        <Label layoutX="73.0" layoutY="19.0" prefHeight="25.0" prefWidth="52.0" text="Statut">
+                           <font>
+                              <Font size="18.0" />
+                           </font></Label>
+                        <Button layoutX="33.0" layoutY="17.0" mnemonicParsing="false" onAction="#tri_statut" prefHeight="25.0" prefWidth="34.0" styleClass="settingsButton">
+                           <graphic>
+                              <ImageView fitHeight="26.0" fitWidth="22.0" pickOnBounds="true" preserveRatio="true">
+                                 <image>
+                                    <Image url="@assets/imgs/tri.png" />
+                                 </image>
+                              </ImageView>
+                           </graphic>
+                        </Button>
                      </children>
                   </Pane>
                   <Separator orientation="VERTICAL" prefHeight="200.0" styleClass="seperator" />
                   <Pane prefHeight="65.0" prefWidth="160.0" translateX="1.0">
                      <children>
-                        <Label layoutX="59.0" layoutY="24.0" text="Actions" />
+                        <Label layoutX="50.0" layoutY="19.0" text="Actions">
+                           <font>
+                              <Font size="18.0" />
+                           </font></Label>
                      </children>
                   </Pane>
                </children>
             </HBox>
-            <Label layoutX="63.0" layoutY="39.0" text="Trier:">
-               <font>
-                  <Font size="22.0" />
-               </font>
-            </Label>
             <HBox layoutX="130.0" layoutY="28.0" prefHeight="55.0" prefWidth="216.0">
                <children>
-                  <Pane prefHeight="55.0" prefWidth="98.0">
-                     <children>
-                        <Button layoutX="7.0" layoutY="5.0" mnemonicParsing="false" onAction="#tri_type" prefHeight="45.0" prefWidth="81.0" styleClass="btn-primary" text="Type">
-                           <graphic>
-                              <ImageView fitHeight="24.0" fitWidth="24.0" pickOnBounds="true" preserveRatio="true" />
-                           </graphic>
-                        </Button>
-                     </children>
-                  </Pane>
+                  <Pane prefHeight="55.0" prefWidth="98.0" />
                   <Separator orientation="VERTICAL" prefHeight="200.0" styleClass="seperator" />
-                  <Pane prefHeight="55.0" prefWidth="118.0">
-                     <children>
-                        <Button layoutX="17.0" layoutY="5.0" mnemonicParsing="false" onAction="#tri_statut" prefHeight="45.0" prefWidth="81.0" styleClass="btn-primary" text="Statut">
-                           <graphic>
-                              <ImageView fitHeight="24.0" fitWidth="24.0" pickOnBounds="true" preserveRatio="true" />
-                           </graphic>
-                        </Button>
-                     </children>
-                  </Pane>
+                  <Pane prefHeight="55.0" prefWidth="118.0" />
                </children>
             </HBox>
-            <Label layoutX="531.0" layoutY="40.0" text="Historique des congés">
-               <font>
-                  <Font size="22.0" />
-               </font>
-            </Label>
-            <TextField fx:id="Recherche_conge" layoutX="961.0" layoutY="42.0" onKeyPressed="#Recherche" prefHeight="28.0" prefWidth="216.0" promptText="Recherche" />
+            <TextField fx:id="Recherche_conge" layoutX="487.0" layoutY="42.0" onKeyPressed="#Recherche" prefHeight="28.0" prefWidth="304.0" promptText="Recherche" />
          </children></Pane>
    </children>
 </AnchorPane>
