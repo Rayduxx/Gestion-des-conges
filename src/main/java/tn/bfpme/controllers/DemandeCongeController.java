@@ -36,6 +36,7 @@ import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.util.Optional;
 import java.util.UUID;
 import java.time.LocalDate;
 import java.util.ResourceBundle;
@@ -57,7 +58,7 @@ public class DemandeCongeController implements Initializable{
     private final ServiceConge CongeS = new ServiceConge();
     Connection cnx = MyDataBase.getInstance().getCnx();
     ObservableList<String> CongeList = FXCollections.observableArrayList("Annuel", "Exeptionnel", "Maladie", "Sous-Solde", "Maternité");
-
+    LocalDate currentDate = LocalDate.now();
     @Override
     public void initialize(URL url, ResourceBundle resourceBundle) {
         cb_typeconge.setValue("Selectioner type");
@@ -144,6 +145,14 @@ public class DemandeCongeController implements Initializable{
             alert.showAndWait();
             return;
         }
+        if (DD.isBefore(currentDate) || DF.isBefore(currentDate) || DD.isAfter(DF)) {
+            Alert alert = new Alert(Alert.AlertType.ERROR);
+            alert.setTitle("Erreur");
+            alert.setHeaderText("Dates invalides");
+            alert.setContentText("La date de début et la date de fin doivent être postérieures ou égales à la date actuelle, et la date de début doit être antérieure ou égale à la date de fin.");
+            alert.showAndWait();
+            return;
+        }
         if (DD == null || DF == null || DF == DD || DD.isAfter(DF)) {
             Alert alert = new Alert(Alert.AlertType.ERROR);
             alert.setTitle("Erreur");
@@ -158,15 +167,33 @@ public class DemandeCongeController implements Initializable{
             pstm.setInt(1, SessionManager.getInstance().getUtilisateur().getIdUser());
             ResultSet rs = pstm.executeQuery();
             if (rs.next() ){
-                long daysBetween = ChronoUnit.DAYS.between(DD, DF);
+                //long daysBetween = ChronoUnit.DAYS.between(DD, DF);
                 if (rs.getInt("Solde_congé") > 0){
-                            CongeS.Add(new Conge(0, DD, DF, TypeConge.Annuel, Statut.En_Attente, SessionManager.getInstance().getUtilisateur().getIdUser(),"", DESC));
-                    String qry2 = "UPDATE `utilisateur` SET `Solde_congé`=? WHERE `ID_User`=?";
-                    PreparedStatement stm = cnx.prepareStatement(qry2);
-                    int NewSolde = rs.getInt("Solde_congé") - (int) daysBetween;;
-                    stm.setInt(1, NewSolde);
-                    stm.setInt(2, SessionManager.getInstance().getUtilisateur().getIdUser());
-                    stm.executeUpdate();
+                    CongeS.Add(new Conge(0, DD, DF, TypeConge.Annuel, Statut.En_Attente, SessionManager.getInstance().getUtilisateur().getIdUser(),"", DESC));
+                    Alert successAlert = new Alert(Alert.AlertType.CONFIRMATION);
+                    successAlert.setTitle("Succès");
+                    successAlert.setHeaderText("Demande de congé créée avec succès !");
+                    ButtonType buttonHistorique = new ButtonType("Aller à l'historique");
+                    successAlert.getButtonTypes().setAll(buttonHistorique);
+                    Optional<ButtonType> result = successAlert.showAndWait();
+                    if (result.isPresent() && result.get() == buttonHistorique) {
+                        try {
+                            FXMLLoader loader = new FXMLLoader(getClass().getResource("/HistoriqueConge.fxml"));
+                            Parent root = loader.load();
+                            Stage stage = (Stage) ((Node) event.getSource()).getScene().getWindow();
+                            Scene scene = new Scene(root);
+                            stage.setScene(scene);
+                            stage.setTitle("Historique congé");
+                            stage.show();
+                            StageManager.addStage(stage);
+                            StageManager.addStage(stage);
+                        } catch (IOException e) {
+                            e.printStackTrace();
+                        }
+                    } else {
+                        // Close the current scene or perform other actions
+                        System.out.println("Closing current scene...");
+                    }
                 } else {
                     Alert alert = new Alert(Alert.AlertType.ERROR);
                     alert.setTitle("Erreur");
@@ -207,6 +234,14 @@ public class DemandeCongeController implements Initializable{
             alert.showAndWait();
             return;
         }
+        if (DD.isBefore(currentDate) || DF.isBefore(currentDate) || DD.isAfter(DF)) {
+            Alert alert = new Alert(Alert.AlertType.ERROR);
+            alert.setTitle("Erreur");
+            alert.setHeaderText("Dates invalides");
+            alert.setContentText("La date de début et la date de fin doivent être postérieures ou égales à la date actuelle, et la date de début doit être antérieure ou égale à la date de fin.");
+            alert.showAndWait();
+            return;
+        }
         if (DD == null || DF == null || DF == DD || DD.isAfter(DF)) {
             Alert alert = new Alert(Alert.AlertType.ERROR);
             alert.setTitle("Erreur");
@@ -216,6 +251,7 @@ public class DemandeCongeController implements Initializable{
             return;
         }
         CongeS.Add(new Conge(0, DD, DF, TypeConge.Exceptionnel, Statut.En_Attente, SessionManager.getInstance().getUtilisateur().getIdUser(),DOCLINK, DESC));
+
     }
     @FXML void EXP_Doc_Imp(ActionEvent event) {
         String documentPath = null;
@@ -267,6 +303,14 @@ public class DemandeCongeController implements Initializable{
             alert.showAndWait();
             return;
         }
+        if (DD.isBefore(currentDate) || DF.isBefore(currentDate) || DD.isAfter(DF)) {
+            Alert alert = new Alert(Alert.AlertType.ERROR);
+            alert.setTitle("Erreur");
+            alert.setHeaderText("Dates invalides");
+            alert.setContentText("La date de début et la date de fin doivent être postérieures ou égales à la date actuelle, et la date de début doit être antérieure ou égale à la date de fin.");
+            alert.showAndWait();
+            return;
+        }
         if (DD == null || DF == null || DF == DD || DD.isAfter(DF)) {
             Alert alert = new Alert(Alert.AlertType.ERROR);
             alert.setTitle("Erreur");
@@ -276,6 +320,30 @@ public class DemandeCongeController implements Initializable{
             return;
         }
         CongeS.Add(new Conge(0, DD, DF, TypeConge.Maladie, Statut.En_Attente, SessionManager.getInstance().getUtilisateur().getIdUser(), DOCLINK, DESC));
+        Alert successAlert = new Alert(Alert.AlertType.CONFIRMATION);
+        successAlert.setTitle("Succès");
+        successAlert.setHeaderText("Demande de congé créée avec succès !");
+        ButtonType buttonHistorique = new ButtonType("Aller à l'historique");
+        successAlert.getButtonTypes().setAll(buttonHistorique);
+        Optional<ButtonType> result = successAlert.showAndWait();
+        if (result.isPresent() && result.get() == buttonHistorique) {
+            try {
+                FXMLLoader loader = new FXMLLoader(getClass().getResource("/HistoriqueConge.fxml"));
+                Parent root = loader.load();
+                Stage stage = (Stage) ((Node) event.getSource()).getScene().getWindow();
+                Scene scene = new Scene(root);
+                stage.setScene(scene);
+                stage.setTitle("Historique congé");
+                stage.show();
+                StageManager.addStage(stage);
+                StageManager.addStage(stage);
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+        } else {
+            // Close the current scene or perform other actions
+            System.out.println("Closing current scene...");
+        }
     }
     @FXML void MAL_Doc_Imp(ActionEvent event) {
         String documentPath = null;
@@ -318,6 +386,14 @@ public class DemandeCongeController implements Initializable{
             alert.showAndWait();
             return;
         }
+        if (DD.isBefore(currentDate) || DF.isBefore(currentDate) || DD.isAfter(DF)) {
+            Alert alert = new Alert(Alert.AlertType.ERROR);
+            alert.setTitle("Erreur");
+            alert.setHeaderText("Dates invalides");
+            alert.setContentText("La date de début et la date de fin doivent être postérieures ou égales à la date actuelle, et la date de début doit être antérieure ou égale à la date de fin.");
+            alert.showAndWait();
+            return;
+        }
         if (DD == null || DF == null || DF == DD || DD.isAfter(DF)) {
             Alert alert = new Alert(Alert.AlertType.ERROR);
             alert.setTitle("Erreur");
@@ -327,6 +403,30 @@ public class DemandeCongeController implements Initializable{
             return;
         }
         CongeS.Add(new Conge(0, DD, DF, TypeConge.Sous_solde, Statut.En_Attente, SessionManager.getInstance().getUtilisateur().getIdUser(), "", DESC));
+        Alert successAlert = new Alert(Alert.AlertType.CONFIRMATION);
+        successAlert.setTitle("Succès");
+        successAlert.setHeaderText("Demande de congé créée avec succès !");
+        ButtonType buttonHistorique = new ButtonType("Aller à l'historique");
+        successAlert.getButtonTypes().setAll(buttonHistorique);
+        Optional<ButtonType> result = successAlert.showAndWait();
+        if (result.isPresent() && result.get() == buttonHistorique) {
+            try {
+                FXMLLoader loader = new FXMLLoader(getClass().getResource("/HistoriqueConge.fxml"));
+                Parent root = loader.load();
+                Stage stage = (Stage) ((Node) event.getSource()).getScene().getWindow();
+                Scene scene = new Scene(root);
+                stage.setScene(scene);
+                stage.setTitle("Historique congé");
+                stage.show();
+                StageManager.addStage(stage);
+                StageManager.addStage(stage);
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+        } else {
+            // Close the current scene or perform other actions
+            System.out.println("Closing current scene...");
+        }
     }
 
     /*  Demande Congé Maternité (GROSSESSE) */
@@ -355,6 +455,14 @@ public class DemandeCongeController implements Initializable{
             alert.showAndWait();
             return;
         }
+        if (DD.isBefore(currentDate) || DF.isBefore(currentDate) || DD.isAfter(DF)) {
+            Alert alert = new Alert(Alert.AlertType.ERROR);
+            alert.setTitle("Erreur");
+            alert.setHeaderText("Dates invalides");
+            alert.setContentText("La date de début et la date de fin doivent être postérieures ou égales à la date actuelle, et la date de début doit être antérieure ou égale à la date de fin.");
+            alert.showAndWait();
+            return;
+        }
         if (DD == null || DF == null || DF == DD || DD.isAfter(DF)) {
             Alert alert = new Alert(Alert.AlertType.ERROR);
             alert.setTitle("Erreur");
@@ -363,7 +471,31 @@ public class DemandeCongeController implements Initializable{
             alert.showAndWait();
             return;
         }
-        CongeS.Add(new Conge(0, DD, DF, TypeConge.Sous_solde, Statut.En_Attente, SessionManager.getInstance().getUtilisateur().getIdUser(), DOCLINK, DESC));
+        CongeS.Add(new Conge(0, DD, DF, TypeConge.Maternité, Statut.En_Attente, SessionManager.getInstance().getUtilisateur().getIdUser(), DOCLINK, DESC));
+        Alert successAlert = new Alert(Alert.AlertType.CONFIRMATION);
+        successAlert.setTitle("Succès");
+        successAlert.setHeaderText("Demande de congé créée avec succès !");
+        ButtonType buttonHistorique = new ButtonType("Aller à l'historique");
+        successAlert.getButtonTypes().setAll(buttonHistorique);
+        Optional<ButtonType> result = successAlert.showAndWait();
+        if (result.isPresent() && result.get() == buttonHistorique) {
+            try {
+                FXMLLoader loader = new FXMLLoader(getClass().getResource("/HistoriqueConge.fxml"));
+                Parent root = loader.load();
+                Stage stage = (Stage) ((Node) event.getSource()).getScene().getWindow();
+                Scene scene = new Scene(root);
+                stage.setScene(scene);
+                stage.setTitle("Historique congé");
+                stage.show();
+                StageManager.addStage(stage);
+                StageManager.addStage(stage);
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+        } else {
+            // Close the current scene or perform other actions
+            System.out.println("Closing current scene...");
+        }
     }
     @FXML void GRO_Doc_Imp(ActionEvent event) {
         String documentPath = null;
@@ -416,6 +548,14 @@ public class DemandeCongeController implements Initializable{
             alert.showAndWait();
             return;
         }
+        if (DD.isBefore(currentDate) || DF.isBefore(currentDate) || DD.isAfter(DF)) {
+            Alert alert = new Alert(Alert.AlertType.ERROR);
+            alert.setTitle("Erreur");
+            alert.setHeaderText("Dates invalides");
+            alert.setContentText("La date de début et la date de fin doivent être postérieures ou égales à la date actuelle, et la date de début doit être antérieure ou égale à la date de fin.");
+            alert.showAndWait();
+            return;
+        }
         if (DD == null || DF == null || DF == DD || DD.isAfter(DF)) {
             Alert alert = new Alert(Alert.AlertType.ERROR);
             alert.setTitle("Erreur");
@@ -424,7 +564,29 @@ public class DemandeCongeController implements Initializable{
             alert.showAndWait();
             return;
         }
-        CongeS.Add(new Conge(0, DD, DF, TypeConge.Sous_solde, Statut.En_Attente, SessionManager.getInstance().getUtilisateur().getIdUser(), DOCLINK, DESC));
+        CongeS.Add(new Conge(0, DD, DF, TypeConge.Maternité, Statut.En_Attente, SessionManager.getInstance().getUtilisateur().getIdUser(), DOCLINK, DESC));
+        Alert successAlert = new Alert(Alert.AlertType.CONFIRMATION);
+        successAlert.setTitle("Succès");
+        successAlert.setHeaderText("Demande de congé créée avec succès !");
+        ButtonType buttonHistorique = new ButtonType("Aller à l'historique");
+        successAlert.getButtonTypes().setAll(buttonHistorique);
+        Optional<ButtonType> result = successAlert.showAndWait();
+        if (result.isPresent() && result.get() == buttonHistorique) {
+            try {
+                FXMLLoader loader = new FXMLLoader(getClass().getResource("/HistoriqueConge.fxml"));
+                Parent root = loader.load();
+                Stage stage = (Stage) ((Node) event.getSource()).getScene().getWindow();
+                Scene scene = new Scene(root);
+                stage.setScene(scene);
+                stage.setTitle("Historique congé");
+                stage.show();
+                StageManager.addStage(stage);
+                StageManager.addStage(stage);
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+        }
+
     }
     @FXML void NAI_Doc_Imp(ActionEvent event) {
         String documentPath = null;

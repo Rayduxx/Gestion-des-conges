@@ -218,11 +218,13 @@
     -fx-border-color: transparent;
 }
 .LogoBfpme {
-        --fx-effect: dropshadow(gaussian, rgba(0, 0, 0, 0.5), 10, 0.5, 10, 10);
+    -fx-effect: dropshadow(three-pass-box, #E9A91F, 15, 0, 0, 0);
 }
-.LogoBfpme:hover{
 
+.LogoBfpme:hover {
+    -fx-effect: dropshadow(three-pass-box, red, 20, 0, 0, 0);
 }
+
 
 /*@font-face {
     -fx-font-family: "Roboto";
