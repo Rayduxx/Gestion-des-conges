@@ -8,12 +8,12 @@ public class Utilisateur {
     private String mdp;
     private Role role;
     private String image;
-    private Solde_congé soldeConge;
+    private int soldeConge;
     public static Utilisateur Current_User;
 
     public Utilisateur() {}
 
-    public Utilisateur(int idUser, String nom, String prenom, String email, String mdp, Role role, String image, Solde_congé soldeConge) {
+    public Utilisateur(int idUser, String nom, String prenom, String email, String mdp, Role role, String image, int soldeConge) {
         this.idUser = idUser;
         this.nom = nom;
         this.prenom = prenom;
@@ -80,11 +80,11 @@ public class Utilisateur {
         this.image = image;
     }
 
-    public Solde_congé getSoldeConge() {
+    public int getSoldeConge() {
         return soldeConge;
     }
 
-    public void setSoldeConge(Solde_congé soldeConge) {
+    public void setSoldeConge(int soldeConge) {
         this.soldeConge = soldeConge;
     }
 

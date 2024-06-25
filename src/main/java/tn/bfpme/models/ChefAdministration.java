@@ -7,7 +7,7 @@ public class ChefAdministration extends Utilisateur {
 
     public ChefAdministration() {super();}
 
-    public ChefAdministration(int idChefAdmin, int idUser, String nom, String prenom, String email, String mdp, Role role, String image, Solde_congé soldeConge) {
+    public ChefAdministration(int idChefAdmin, int idUser, String nom, String prenom, String email, String mdp, Role role, String image, int soldeConge) {
         super(idUser, nom, prenom, email, mdp, role, image, soldeConge);
         this.idChefAdmin = idChefAdmin;
     }

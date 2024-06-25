@@ -5,6 +5,7 @@ import tn.bfpme.models.Conge;
 import tn.bfpme.models.Statut;
 import tn.bfpme.models.TypeConge;
 import tn.bfpme.utils.MyDataBase;
+import tn.bfpme.utils.SessionManager;
 
 import java.sql.Date;
 import java.sql.*;
@@ -21,7 +22,7 @@ public class ServiceConge implements IConge<Conge> {
     @Override
     public List<Conge> afficher() {
         List<Conge> conges = new ArrayList<>();
-        String sql = "SELECT `ID_Conge`, `DateDebut`, `DateFin`, `TypeConge`, `Statut`, `ID_User`, `file`, `description` FROM `conge`";
+        String sql = "SELECT `ID_Conge`, `DateDebut`, `DateFin`, `TypeConge`, `Statut`, `ID_User`, `file`, `description` FROM `conge` WHERE `ID_User` LIKE '%" + SessionManager.getInstance().getUtilisateur().getIdUser() + "%'";
         try {
             Statement ste = cnx.createStatement();
             ResultSet rs = ste.executeQuery(sql);
