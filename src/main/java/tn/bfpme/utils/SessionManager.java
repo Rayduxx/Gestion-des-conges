@@ -114,15 +114,7 @@ public class SessionManager {
         this.soldeConge = soldeConge;
     }
 
-    public void cleanUserSession() {
-        this.id_user = 0;
-        this.nom = "";
-        this.prenom = "";
-        this.email = "";
-        this.role = null;
-        this.password= "";
-        this.image = "";
-        this.soldeConge = 0;
-        this.departement = null;
+    public static void cleanUserSession() {
+        instance=null;
     }
 }

@@ -57,11 +57,12 @@ public class EmployeController implements Initializable {
         contextMenu = new ContextMenu();
 
         // Add menu items to the context menu
-        MenuItem profileItem = new MenuItem("Profile");
-        MenuItem suppressionItem = new MenuItem("Supprimer Compte");
+        MenuItem boiteItem = new MenuItem("boîte de réception");
+        MenuItem aideItem = new MenuItem("Aide et support");
         MenuItem logoutItem = new MenuItem("Déconnexion");
 
-        contextMenu.getItems().addAll(profileItem, suppressionItem, logoutItem);
+
+        contextMenu.getItems().addAll(boiteItem, aideItem, logoutItem);
 
         // Show the context menu directly under the settings button
         settingsButton.setOnAction(event -> {
@@ -69,8 +70,8 @@ public class EmployeController implements Initializable {
             double screenY = settingsButton.localToScreen(settingsButton.getBoundsInLocal()).getMaxY()+10;
             contextMenu.show(settingsButton, screenX, screenY);
         });
-        profileItem.setOnAction(this::viewprofile);
-        suppressionItem.setOnAction(this::viewsuppression);
+        boiteItem.setOnAction(this::viewboite);
+        aideItem.setOnAction(this::viewaide);
         logoutItem.setOnAction(this::viewdeconnection);
         fetchUserCongés();
     }
@@ -173,19 +174,22 @@ public class EmployeController implements Initializable {
         }
     }
 
+    void viewaide(ActionEvent actionEvent){
+    }
+    void viewboite(ActionEvent actionEvent){
+    }
 
     @FXML
-    private void viewprofile(ActionEvent actionEvent) {
+    public void goto_profil(ActionEvent actionEvent) {
         try {
             FXMLLoader loader = new FXMLLoader(getClass().getResource("/profile.fxml"));
             Parent root = loader.load();
-            // Get the stage from the current context menu's owner window
-            MenuItem menuItem = (MenuItem) actionEvent.getSource();
-            Stage stage = (Stage) menuItem.getParentPopup().getOwnerWindow();
+            Stage stage = (Stage) ((Node) actionEvent.getSource()).getScene().getWindow();
             Scene scene = new Scene(root);
             stage.setScene(scene);
-            stage.setTitle("Profile");
+            stage.setTitle("Mon profil");
             stage.show();
+            StageManager.addStage(stage);
             StageManager.addStage(stage);
         } catch (IOException e) {
             e.printStackTrace();
@@ -193,33 +197,4 @@ public class EmployeController implements Initializable {
 
     }
 
-    @FXML
-    public void viewsuppression(ActionEvent actionEvent) {
-        try {
-            FXMLLoader loader = new FXMLLoader(getClass().getResource("/SupressionCompte.fxml"));
-            Parent root = loader.load();
-            Stage suppressionStage = new Stage();
-            suppressionStage.setTitle("Suppression User");
-            suppressionStage.setScene(new Scene(root));
-
-
-            MenuItem menuItem = (MenuItem) actionEvent.getSource();
-            Stage ownerStage = (Stage) menuItem.getParentPopup().getOwnerWindow();
-
-
-            suppressionStage.initOwner(ownerStage);
-            suppressionStage.initModality(Modality.WINDOW_MODAL);
-
-
-            suppressionStage.show();
-            Platform.runLater(() -> {
-                suppressionStage.setX(ownerStage.getX() + (ownerStage.getWidth() - suppressionStage.getWidth()) / 2);
-                suppressionStage.setY(ownerStage.getY() + (ownerStage.getHeight() - suppressionStage.getHeight()) / 2);
-            });
-
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-
-    }
 }
