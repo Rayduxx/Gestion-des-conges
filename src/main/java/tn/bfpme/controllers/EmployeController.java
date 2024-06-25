@@ -176,7 +176,7 @@ public class EmployeController implements Initializable {
         CU_email.setText(SessionManager.getInstance().getUtilisateur().getEmail());
         CU_nomprenom.setText(SessionManager.getInstance().getUtilisateur().getNom()+" "+SessionManager.getInstance().getUtilisateur().getPrenom());
         CU_role.setText(String.valueOf(SessionManager.getInstance().getUtilisateur().getRole()));
-        CU_solde.setText(String.valueOf(SessionManager.getInstance().getUtilisateur().getSoldeConge()));
+        //CU_solde.setText(String.valueOf(SessionManager.getInstance().getUtilisateur().getSoldeConge()));
     }
     @FXML
     public void goto_profil(ActionEvent actionEvent) {
