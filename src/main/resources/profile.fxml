@@ -59,7 +59,6 @@
                               <ContextMenu anchorLocation="CONTENT_TOP_RIGHT" anchorX="100.0" x="0.0">
                                  <items>
                                     <MenuItem mnemonicParsing="false" text="Profile" />
-                                    <MenuItem mnemonicParsing="false" text="Info" />
                                     <MenuItem mnemonicParsing="false" text="Supprimer compte" />
                                     <MenuItem mnemonicParsing="false" text="deconnection" />
                                  </items>
