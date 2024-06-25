@@ -15,10 +15,7 @@ import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.scene.image.ImageView;
 import javafx.stage.Modality;
 import javafx.stage.Stage;
-import tn.bfpme.models.Conge;
-import tn.bfpme.models.Departement;
-import tn.bfpme.models.TypeConge;
-import tn.bfpme.models.Utilisateur;
+import tn.bfpme.models.*;
 import tn.bfpme.utils.MyDataBase;
 import tn.bfpme.utils.SessionManager;
 import tn.bfpme.utils.StageManager;
@@ -49,21 +46,11 @@ public class EmployeController implements Initializable {
 
     @Override
     public void initialize(URL url, ResourceBundle resourceBundle) {
-        CU_dep.setText(String.valueOf(SessionManager.getInstance().getDepartement()));
-        CU_email.setText(SessionManager.getInstance().getEmail());
-        CU_nomprenom.setText(SessionManager.getInstance().getNom()+" "+SessionManager.getInstance().getPrenom());
-        CU_role.setText(String.valueOf(SessionManager.getInstance().getRole()));
-        CU_solde.setText(String.valueOf(SessionManager.getInstance().getSoldeConge()));
         contextMenu = new ContextMenu();
-
-        // Add menu items to the context menu
         MenuItem profileItem = new MenuItem("Profile");
         MenuItem suppressionItem = new MenuItem("Supprimer Compte");
         MenuItem logoutItem = new MenuItem("Déconnexion");
-
         contextMenu.getItems().addAll(profileItem, suppressionItem, logoutItem);
-
-        // Show the context menu directly under the settings button
         settingsButton.setOnAction(event -> {
             double screenX = settingsButton.localToScreen(settingsButton.getBoundsInLocal()).getMinX()-70;
             double screenY = settingsButton.localToScreen(settingsButton.getBoundsInLocal()).getMaxY()+10;
@@ -73,9 +60,9 @@ public class EmployeController implements Initializable {
         suppressionItem.setOnAction(this::viewsuppression);
         logoutItem.setOnAction(this::viewdeconnection);
         fetchUserCongés();
+        ReloadUserDATA();
     }
-    @FXML
-    public void DemanderConge(ActionEvent actionEvent) {
+    @FXML public void DemanderConge(ActionEvent actionEvent) {
         try {
             FXMLLoader loader = new FXMLLoader(getClass().getResource("/DemandeConge.fxml"));
             Parent root = loader.load();
@@ -89,9 +76,7 @@ public class EmployeController implements Initializable {
             e.printStackTrace();
         }
     }
-
-    @FXML
-    public void HistoriqueConge(ActionEvent actionEvent) {
+    @FXML public void HistoriqueConge(ActionEvent actionEvent) {
         try {
             FXMLLoader loader = new FXMLLoader(getClass().getResource("/HistoriqueConge.fxml"));
             Parent root = loader.load();
@@ -133,37 +118,13 @@ public class EmployeController implements Initializable {
             e.printStackTrace();
         }
     }
-
-    private void fetchUserCongés() {
-        ObservableList<Conge> HisUserList = FXCollections.observableArrayList();
-        String sql = "SELECT `DateDebut`, `DateFin`, `TypeConge` FROM `conge` WHERE `ID_User`=?";
-        Connection cnx = MyDataBase.getInstance().getCnx();
-        try {
-            PreparedStatement stm = cnx.prepareStatement(sql);
-            stm.setInt(1, SessionManager.getInstance().getId_user());
-            ResultSet rs = stm.executeQuery();
-            while (rs.next()) {
-                HisUserList.add(new Conge(rs.getDate("DateDebut").toLocalDate(), rs.getDate("DateFin").toLocalDate(), TypeConge.valueOf(rs.getString("TypeConge"))));
-                TableType.setCellValueFactory(new PropertyValueFactory<>("TypeConge"));
-                TableDD.setCellValueFactory(new PropertyValueFactory<>("DateDebut"));
-                TableDF.setCellValueFactory(new PropertyValueFactory<>("DateFin"));
-                TableHistorique.setItems(HisUserList);
-            }
-        } catch (SQLException ex) {
-            ex.printStackTrace();
-        }
-    }
-    @FXML
-    void viewdeconnection(ActionEvent actionEvent) {
+    @FXML void viewdeconnection(ActionEvent actionEvent) {
         SessionManager.getInstance().cleanUserSession();
         try {
             FXMLLoader loader = new FXMLLoader(getClass().getResource("/login.fxml"));
             Parent root = loader.load();
-
-            // Get the stage from the current context menu's owner window
             MenuItem menuItem = (MenuItem) actionEvent.getSource();
             Stage stage = (Stage) menuItem.getParentPopup().getOwnerWindow();
-
             stage.setScene(new Scene(root));
             stage.setTitle("Gestion de Congés - Connection");
             StageManager.addStage(stage);
@@ -172,10 +133,7 @@ public class EmployeController implements Initializable {
             e.printStackTrace();
         }
     }
-
-
-    @FXML
-    private void viewprofile(ActionEvent actionEvent) {
+    @FXML private void viewprofile(ActionEvent actionEvent) {
         try {
             FXMLLoader loader = new FXMLLoader(getClass().getResource("/profile.fxml"));
             Parent root = loader.load();
@@ -192,9 +150,7 @@ public class EmployeController implements Initializable {
         }
 
     }
-
-    @FXML
-    public void viewsuppression(ActionEvent actionEvent) {
+    @FXML public void viewsuppression(ActionEvent actionEvent) {
         try {
             FXMLLoader loader = new FXMLLoader(getClass().getResource("/SupressionCompte.fxml"));
             Parent root = loader.load();
@@ -221,5 +177,38 @@ public class EmployeController implements Initializable {
             e.printStackTrace();
         }
 
+    }
+    private void fetchUserCongés() {
+        ObservableList<Conge> HisUserList = FXCollections.observableArrayList();
+        String sql = "SELECT `DateDebut`, `DateFin`, `TypeConge` FROM `conge` WHERE `ID_User`=? AND `Statut`=?";
+        Connection cnx = MyDataBase.getInstance().getCnx();
+        try {
+            PreparedStatement stm = cnx.prepareStatement(sql);
+            //stm.setInt(1, SessionManager.getInstance().getId_user());
+            stm.setInt(1, SessionManager.getInstance().getUtilisateur().getIdUser());
+            stm.setString(2, String.valueOf(Statut.Approuvé));
+            ResultSet rs = stm.executeQuery();
+            while (rs.next()) {
+                HisUserList.add(new Conge(rs.getDate("DateDebut").toLocalDate(), rs.getDate("DateFin").toLocalDate(), TypeConge.valueOf(rs.getString("TypeConge"))));
+                TableType.setCellValueFactory(new PropertyValueFactory<>("TypeConge"));
+                TableDD.setCellValueFactory(new PropertyValueFactory<>("DateDebut"));
+                TableDF.setCellValueFactory(new PropertyValueFactory<>("DateFin"));
+                TableHistorique.setItems(HisUserList);
+            }
+        } catch (SQLException ex) {
+            ex.printStackTrace();
+        }
+    }
+    public void ReloadUserDATA(){
+       /* CU_dep.setText(String.valueOf(SessionManager.getInstance().getDepartement()));
+        CU_email.setText(SessionManager.getInstance().getEmail());
+        CU_nomprenom.setText(SessionManager.getInstance().getNom()+" "+SessionManager.getInstance().getPrenom());
+        CU_role.setText(String.valueOf(SessionManager.getInstance().getRole()));
+        CU_solde.setText(String.valueOf(SessionManager.getInstance().getSoldeConge()));*/
+        CU_dep.setText(String.valueOf(SessionManager.getInstance().getDepartement()));
+        CU_email.setText(SessionManager.getInstance().getUtilisateur().getEmail());
+        CU_nomprenom.setText(SessionManager.getInstance().getUtilisateur().getNom()+" "+SessionManager.getInstance().getUtilisateur().getPrenom());
+        CU_role.setText(String.valueOf(SessionManager.getInstance().getUtilisateur().getRole()));
+        CU_solde.setText(String.valueOf(SessionManager.getInstance().getUtilisateur().getSoldeConge()));
     }
 }

@@ -1,5 +1,4 @@
 package tn.bfpme.controllers;
-
 import javafx.application.Platform;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
@@ -16,13 +15,14 @@ import javafx.stage.FileChooser;
 import javafx.stage.Modality;
 import javafx.stage.Stage;
 import tn.bfpme.models.Conge;
+import tn.bfpme.models.Employe;
 import tn.bfpme.models.Statut;
 import tn.bfpme.models.TypeConge;
 import tn.bfpme.services.ServiceConge;
 import tn.bfpme.utils.MyDataBase;
 import tn.bfpme.utils.SessionManager;
 import tn.bfpme.utils.StageManager;
-
+import java.time.temporal.ChronoUnit;
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.IOException;
@@ -79,8 +79,7 @@ public class DemandeCongeController implements Initializable{
         suppressionItem.setOnAction(this::viewsuppression);
         logoutItem.setOnAction(this::viewdeconnection);
     }
-    @FXML
-    void TypeSelec(ActionEvent event) {
+    @FXML void TypeSelec(ActionEvent event) {
         if (cb_typeconge.getValue().equals("Annuel")) {
             paneAnnuel.setVisible(true);
             paneExeptionnel.setVisible(false);
@@ -117,13 +116,11 @@ public class DemandeCongeController implements Initializable{
             paneMaternite.setVisible(true);
         }
     }
-    @FXML
-    void switchGrossesse(ActionEvent event) {
+    @FXML void switchGrossesse(ActionEvent event) {
         paneGrossesse.setVisible(true);
         paneNaissance.setVisible(false);
     }
-    @FXML
-    void switchNaissance(ActionEvent event) {
+    @FXML void switchNaissance(ActionEvent event) {
         paneNaissance.setVisible(true);
         paneGrossesse.setVisible(false);
     }
@@ -154,16 +151,17 @@ public class DemandeCongeController implements Initializable{
         String qry = "SELECT `Solde_congé` FROM `utilisateur` WHERE `ID_User`=?";
         try {
             PreparedStatement pstm = cnx.prepareStatement(qry);
-            pstm.setInt(1, SessionManager.getInstance().getId_user());
+            pstm.setInt(1, SessionManager.getInstance().getUtilisateur().getIdUser());
             ResultSet rs = pstm.executeQuery();
             if (rs.next() ){
+                long daysBetween = ChronoUnit.DAYS.between(DD, DF);
                 if (rs.getInt("Solde_congé") > 0){
-                    CongeS.Add(new Conge(0, DD, DF, TypeConge.Annuel, Statut.En_Attente, SessionManager.getInstance().getId_user(),"", DESC));
+                            CongeS.Add(new Conge(0, DD, DF, TypeConge.Annuel, Statut.En_Attente, SessionManager.getInstance().getUtilisateur().getIdUser(),"", DESC));
                     String qry2 = "UPDATE `utilisateur` SET `Solde_congé`=? WHERE `ID_User`=?";
                     PreparedStatement stm = cnx.prepareStatement(qry2);
-                    int NewSolde = rs.getInt("Solde_congé") - 1;
+                    int NewSolde = rs.getInt("Solde_congé") - (int) daysBetween;;
                     stm.setInt(1, NewSolde);
-                    stm.setInt(2, SessionManager.getInstance().getId_user());
+                    stm.setInt(2, SessionManager.getInstance().getUtilisateur().getIdUser());
                     stm.executeUpdate();
                 }else{
                     Alert alert = new Alert(Alert.AlertType.ERROR);
@@ -213,7 +211,7 @@ public class DemandeCongeController implements Initializable{
             alert.showAndWait();
             return;
         }
-        CongeS.Add(new Conge(0, DD, DF, TypeConge.Exceptionnel, Statut.En_Attente, SessionManager.getInstance().getId_user(),DOCLINK, DESC));
+        CongeS.Add(new Conge(0, DD, DF, TypeConge.Exceptionnel, Statut.En_Attente, SessionManager.getInstance().getUtilisateur().getIdUser(),DOCLINK, DESC));
     }
     @FXML void EXP_Doc_Imp(ActionEvent event) {
         String documentPath = null;
@@ -273,7 +271,7 @@ public class DemandeCongeController implements Initializable{
             alert.showAndWait();
             return;
         }
-        CongeS.Add(new Conge(0, DD, DF, TypeConge.Maladie, Statut.En_Attente, SessionManager.getInstance().getId_user(), DOCLINK, DESC));
+        CongeS.Add(new Conge(0, DD, DF, TypeConge.Maladie, Statut.En_Attente, SessionManager.getInstance().getUtilisateur().getIdUser(), DOCLINK, DESC));
     }
     @FXML void MAL_Doc_Imp(ActionEvent event) {
         String documentPath = null;
@@ -293,7 +291,7 @@ public class DemandeCongeController implements Initializable{
                 Files.copy(selectedFile.toPath(), destinationPath, StandardCopyOption.REPLACE_EXISTING);
                 documentPath = destinationPath.toString();
                 System.out.println("Certicat uploaded successfully: " + documentPath);
-                EXP_Doc_Link.setText(fileName);
+                MAL_Doc_Link.setText(fileName);
             } catch (IOException e) {
                 e.printStackTrace();
             }
@@ -323,7 +321,7 @@ public class DemandeCongeController implements Initializable{
             alert.showAndWait();
             return;
         }
-        CongeS.Add(new Conge(0, DD, DF, TypeConge.Sous_solde, Statut.En_Attente, SessionManager.getInstance().getId_user(), "", DESC));
+        CongeS.Add(new Conge(0, DD, DF, TypeConge.Sous_solde, Statut.En_Attente, SessionManager.getInstance().getUtilisateur().getIdUser(), "", DESC));
     }
     /*  Demande Congé Maternité (GROSSESSE) */
     @FXML private DatePicker GRO_DD;
@@ -359,7 +357,7 @@ public class DemandeCongeController implements Initializable{
             alert.showAndWait();
             return;
         }
-        CongeS.Add(new Conge(0, DD, DF, TypeConge.Sous_solde, Statut.En_Attente, SessionManager.getInstance().getId_user(), DOCLINK, DESC));
+        CongeS.Add(new Conge(0, DD, DF, TypeConge.Sous_solde, Statut.En_Attente, SessionManager.getInstance().getUtilisateur().getIdUser(), DOCLINK, DESC));
     }
     @FXML void GRO_Doc_Imp(ActionEvent event) {
         String documentPath = null;
@@ -419,7 +417,7 @@ public class DemandeCongeController implements Initializable{
             alert.showAndWait();
             return;
         }
-        CongeS.Add(new Conge(0, DD, DF, TypeConge.Sous_solde, Statut.En_Attente, SessionManager.getInstance().getId_user(), DOCLINK, DESC));
+        CongeS.Add(new Conge(0, DD, DF, TypeConge.Sous_solde, Statut.En_Attente, SessionManager.getInstance().getUtilisateur().getIdUser(), DOCLINK, DESC));
     }
     @FXML void NAI_Doc_Imp(ActionEvent event) {
         String documentPath = null;
@@ -503,7 +501,8 @@ public class DemandeCongeController implements Initializable{
         try {
             FXMLLoader loader = new FXMLLoader(getClass().getResource("/profile.fxml"));
             Parent root = loader.load();
-            // Get the stage from the current context menu's owner window
+            EmployeController employeController = loader.getController();
+            employeController.ReloadUserDATA();
             MenuItem menuItem = (MenuItem) actionEvent.getSource();
             Stage stage = (Stage) menuItem.getParentPopup().getOwnerWindow();
             Scene scene = new Scene(root);
@@ -514,7 +513,6 @@ public class DemandeCongeController implements Initializable{
         } catch (IOException e) {
             e.printStackTrace();
         }
-
     }
 
     @FXML
