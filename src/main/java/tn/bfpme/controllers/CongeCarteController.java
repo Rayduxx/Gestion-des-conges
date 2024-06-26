@@ -80,8 +80,15 @@ public class CongeCarteController{
         } catch (SQLException ex) {
             ex.printStackTrace();
         }
-        Tooltip tooltip = new Tooltip(conge.getDescription());
+        tooltip_desc = new Tooltip(conge.getDescription());
+        tooltip_desc.getStyleClass().add("tooltip");
+
+        // Load the CSS file
+        String css = getClass().getResource("/assets/css/style.css").toExternalForm();
+        tooltip_desc.getScene().getStylesheets().add(css);
+
         Tooltip.install(cardDescription, tooltip_desc);
+
         cUser =conge.getIdUser();
         cid = conge.getIdConge();
         ctype = conge.getTypeConge();
