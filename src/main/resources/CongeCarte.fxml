@@ -53,6 +53,7 @@
                      </font>
                      <tooltip>
                         <Tooltip fx:id="tooltip_desc" autoFix="false" consumeAutoHidingEvents="false" maxHeight="100.0" maxWidth="100.0" text="Tooltip" textAlignment="CENTER" wrapText="true" />
+
                      </tooltip>
                   </Label>
                </children>
@@ -70,7 +71,7 @@
             <Separator orientation="VERTICAL" prefHeight="75.0" prefWidth="5.0" />
             <Pane prefHeight="75.0" prefWidth="150.0" HBox.hgrow="NEVER">
                <children>
-                  <HBox alignment="CENTER" layoutX="30.0" layoutY="21.0" prefHeight="25.0" prefWidth="92.0">
+                  <HBox alignment="CENTER" layoutX="6.0" layoutY="21.0" prefHeight="25.0" prefWidth="92.0" spacing="6.0">
                      <children>
                         <Button fx:id="btnDelete" disable="true" mnemonicParsing="false" onAction="#suppConge" prefHeight="33.0" prefWidth="44.0">
                            <graphic>
@@ -80,8 +81,10 @@
                                  </image>
                               </ImageView>
                            </graphic>
+                           <tooltip>
+                              <Tooltip text="Supprimer congé" />
+                           </tooltip>
                         </Button>
-                        <Separator orientation="VERTICAL" prefHeight="25.0" prefWidth="4.0" visible="false" />
                         <Button fx:id="btnEdit" disable="true" mnemonicParsing="false" onAction="#modifConge" prefHeight="33.0" prefWidth="44.0">
                            <graphic>
                               <ImageView fitHeight="25.0" fitWidth="31.0" pickOnBounds="true" preserveRatio="true">
@@ -90,6 +93,21 @@
                                  </image>
                               </ImageView>
                            </graphic>
+                           <tooltip>
+                              <Tooltip text="Modifier congé" />
+                           </tooltip>
+                        </Button>
+                        <Button mnemonicParsing="false" onAction="#ViewFile" prefHeight="33.0" prefWidth="44.0">
+                           <graphic>
+                              <ImageView fitHeight="25.0" fitWidth="31.0" pickOnBounds="true" preserveRatio="true">
+                                 <image>
+                                    <Image url="@assets/imgs/file.png" />
+                                 </image>
+                              </ImageView>
+                           </graphic>
+                           <tooltip>
+                              <Tooltip text="Afficher document" />
+                           </tooltip>
                         </Button>
                      </children>
                   </HBox>

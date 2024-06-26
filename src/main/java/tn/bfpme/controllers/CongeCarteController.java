@@ -22,6 +22,8 @@ import tn.bfpme.services.ServiceConge;
 import tn.bfpme.utils.MyDataBase;
 import tn.bfpme.utils.SessionManager;
 
+import java.awt.*;
+import java.io.File;
 import java.io.IOException;
 import java.net.URL;
 import java.sql.Connection;
@@ -31,10 +33,12 @@ import java.sql.SQLException;
 import java.time.LocalDate;
 import java.util.Objects;
 import java.util.ResourceBundle;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 import static tn.bfpme.models.Utilisateur.getCurrent_User;
 
-public class CongeCarteController implements Initializable {
+public class CongeCarteController{
     @FXML private Pane Card;
     @FXML private Label cardDatedeb;
     @FXML private Label cardDatefin;
@@ -52,10 +56,6 @@ public class CongeCarteController implements Initializable {
     private TypeConge ctype;
     private Conge conge;
     private final ServiceConge CongeS = new ServiceConge();
-    @Override
-    public void initialize(URL url, ResourceBundle resourceBundle) {
-
-    }
     public void setData(Conge conge) {
         this.conge = conge;
         cardType.setText(String.valueOf(conge.getTypeConge()));
@@ -73,7 +73,6 @@ public class CongeCarteController implements Initializable {
             ResultSet rs = stm.executeQuery();
             while (rs.next()) {
                 if (rs.getString("Statut").equals(String.valueOf(Statut.En_Attente))){
-                    System.out.println(rs.getString("Statut"));
                     btnDelete.setDisable(false);
                     btnEdit.setDisable(false);
                 }
@@ -86,8 +85,11 @@ public class CongeCarteController implements Initializable {
         tooltip_desc.getStyleClass().add("tooltip");
         tooltip_desc.setMaxWidth(200);
         tooltip_desc.setWrapText(true);
-        Tooltip.install(cardDescription, tooltip_desc);
 
+        String css = getClass().getResource("/assets/css/style.css").toExternalForm();
+        tooltip_desc.getScene().getStylesheets().add(css);
+
+        Tooltip.install(cardDescription, tooltip_desc);
         cUser =conge.getIdUser();
         cid = conge.getIdConge();
         ctype = conge.getTypeConge();
@@ -107,32 +109,37 @@ public class CongeCarteController implements Initializable {
             FXMLLoader loader = new FXMLLoader(getClass().getResource("/ModifierConge.fxml"));
             Parent root = loader.load();
             Stage newStage = new Stage();
-
-            // Set up the controller and initialize it with the current conge data
             ModifierCongeController modifierCongeController = loader.getController();
             modifierCongeController.setData(conge, this);
-
             newStage.setTitle("Modifier Congé");
             newStage.setScene(new Scene(root));
             newStage.initModality(Modality.WINDOW_MODAL);
             newStage.initOwner(((Node) actionEvent.getSource()).getScene().getWindow());
-
             newStage.showAndWait();
         } catch (IOException e) {
             e.printStackTrace();
         }
     }
 
-
-
-    @FXML
-    void suppConge(ActionEvent event) {
+    @FXML void suppConge(ActionEvent event) {
         CongeS.deleteCongeByID(cid);
-        // Remove the card from the parent GridPane
         ((GridPane) Card.getParent()).getChildren().remove(Card);
-
     }
 
-
+    @FXML
+    void ViewFile(ActionEvent event) {
+        String filePath = "src/main/resources/assets/files/"+conge.getFile();
+        File file = new File(filePath);
+        if (file.exists()) {
+            Desktop desktop = Desktop.getDesktop();
+            try {
+                desktop.open(file);
+            } catch (IOException e) {
+                Logger.getLogger(CongeCarteController.class.getName()).log(Level.SEVERE, null, e);
+            }
+        } else {
+            System.out.println("File not found: " + filePath);
+        }
+    }
 }
 
