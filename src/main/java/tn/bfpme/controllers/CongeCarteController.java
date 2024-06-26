@@ -43,6 +43,8 @@ public class CongeCarteController implements Initializable {
     @FXML private Button btnDelete;
     @FXML private Button btnEdit;
     @FXML private Label cardType;
+    @FXML
+    private Tooltip tooltip_desc;
     private int cUser, cid;
     private String cdesc, cfile;
     private LocalDate cdebut, cfin;
@@ -80,7 +82,7 @@ public class CongeCarteController implements Initializable {
             ex.printStackTrace();
         }
         Tooltip tooltip = new Tooltip(conge.getDescription());
-        Tooltip.install(cardDescription, tooltip);
+        Tooltip.install(cardDescription, tooltip_desc);
         cUser =conge.getIdUser();
         cid = conge.getIdConge();
         ctype = conge.getTypeConge();
