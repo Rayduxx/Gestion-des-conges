@@ -16,6 +16,7 @@ import javafx.scene.layout.Pane;
 import javafx.scene.layout.Priority;
 import javafx.stage.Modality;
 import javafx.stage.Stage;
+import org.jetbrains.annotations.NotNull;
 import tn.bfpme.models.Conge;
 import tn.bfpme.services.ServiceConge;
 import javafx.scene.control.ContextMenu;
@@ -344,7 +345,7 @@ public class HistoriqueCongeController implements Initializable  {
     void viewboite(ActionEvent actionEvent){
     }
     @FXML
-    public void goto_profil(ActionEvent actionEvent) {
+    public void goto_profil(@NotNull ActionEvent actionEvent) {
         try {
             FXMLLoader loader = new FXMLLoader(getClass().getResource("/profile.fxml"));
             Parent root = loader.load();
