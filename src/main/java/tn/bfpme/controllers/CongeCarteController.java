@@ -82,13 +82,9 @@ public class CongeCarteController{
         }
         tooltip_desc = new Tooltip(conge.getDescription());
         tooltip_desc.getStyleClass().add("tooltip");
-
-        // Load the CSS file
         String css = getClass().getResource("/assets/css/style.css").toExternalForm();
         tooltip_desc.getScene().getStylesheets().add(css);
-
         Tooltip.install(cardDescription, tooltip_desc);
-
         cUser =conge.getIdUser();
         cid = conge.getIdConge();
         ctype = conge.getTypeConge();
@@ -119,11 +115,12 @@ public class CongeCarteController{
             e.printStackTrace();
         }
     }
-    @FXML
-    void suppConge(ActionEvent event) {
+
+    @FXML void suppConge(ActionEvent event) {
         CongeS.deleteCongeByID(cid);
         ((GridPane) Card.getParent()).getChildren().remove(Card);
     }
+
     @FXML
     void ViewFile(ActionEvent event) {
         String filePath = "src/main/resources/assets/files/"+conge.getFile();

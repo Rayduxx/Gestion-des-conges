@@ -224,21 +224,18 @@
 .LogoBfpme:hover {
     -fx-effect: dropshadow(three-pass-box, red, 20, 0, 0, 0);
 }
-
 .tooltip {
-    -fx-background-color: white;
-    -fx-text-fill: black;
-    -fx-padding: 10;
-    -fx-border-color: gray;
-    -fx-border-width: 1;
-    -fx-border-radius: 5;
-    -fx-background-radius: 5;
-    -fx-effect: dropshadow(gaussian, rgba(0, 0, 0, 0.25), 10, 0.2, 0, 0);
-    -fx-font-family: "Arial";
-    -fx-font-size: 14px;
-    -fx-pref-width: 200px; /* Set preferred width */
-    -fx-pref-height: 150px; /* Set preferred height */
-    -fx-wrap-text: true;   /* Allow text wrapping */
+    -fx-font-size: 12px; /* Adjust font size as needed */
+    -fx-max-width: 30px; /* Adjust the width to ensure wrapping */
+    -fx-wrap-text: true; /* Enable text wrapping */
+    -fx-text-fill: black; /* Text color */
+    -fx-background-color: white; /* Background color */
+    -fx-padding: 10; /* Padding inside the tooltip */
+}
+
+.tooltip .content {
+    -fx-max-width: 30px; /* Ensure the content also adheres to the width */
+    -fx-wrap-text: true; /* Ensure the content text wraps */
 }
 
 

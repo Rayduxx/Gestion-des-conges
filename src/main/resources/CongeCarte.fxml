@@ -52,7 +52,7 @@
                         <Font size="15.0" />
                      </font>
                      <tooltip>
-                        <Tooltip fx:id="tooltip_desc" text="Tooltip" />
+                        <Tooltip fx:id="tooltip_desc" autoFix="false" consumeAutoHidingEvents="false" contentDisplay="CENTER" text="Tooltip" />
                      </tooltip>
                   </Label>
                </children>
@@ -80,6 +80,9 @@
                                  </image>
                               </ImageView>
                            </graphic>
+                           <tooltip>
+                              <Tooltip text="Supprimer congé" />
+                           </tooltip>
                         </Button>
                         <Button fx:id="btnEdit" disable="true" mnemonicParsing="false" onAction="#modifConge" prefHeight="33.0" prefWidth="44.0">
                            <graphic>
@@ -89,6 +92,9 @@
                                  </image>
                               </ImageView>
                            </graphic>
+                           <tooltip>
+                              <Tooltip text="Modifier congé" />
+                           </tooltip>
                         </Button>
                         <Button mnemonicParsing="false" onAction="#ViewFile" prefHeight="33.0" prefWidth="44.0">
                            <graphic>
@@ -98,6 +104,9 @@
                                  </image>
                               </ImageView>
                            </graphic>
+                           <tooltip>
+                              <Tooltip text="Afficher document" />
+                           </tooltip>
                         </Button>
                      </children>
                   </HBox>
