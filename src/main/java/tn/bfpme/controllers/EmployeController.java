@@ -1,6 +1,7 @@
 package tn.bfpme.controllers;
 
 import javafx.application.Platform;
+import javafx.beans.property.ReadOnlyObjectWrapper;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
@@ -12,6 +13,7 @@ import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.control.*;
 import javafx.scene.control.cell.PropertyValueFactory;
+import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.stage.Modality;
 import javafx.stage.Stage;
@@ -20,6 +22,9 @@ import tn.bfpme.utils.MyDataBase;
 import tn.bfpme.utils.SessionManager;
 import tn.bfpme.utils.StageManager;
 
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.net.URL;
 import java.sql.Connection;
@@ -41,6 +46,7 @@ public class EmployeController implements Initializable {
     @FXML private TableColumn<Conge, LocalDate> TableDD;
     @FXML private TableColumn<Conge, LocalDate> TableDF;
     @FXML private TableColumn<Conge, TypeConge> TableType;
+    @FXML private TableColumn<Conge, Integer> indexColumn;
     private ContextMenu contextMenu;
     private Connection cnx;
 
@@ -65,6 +71,10 @@ public class EmployeController implements Initializable {
         boiteItem.setOnAction(this::viewboite);
         aideItem.setOnAction(this::viewaide);
         logoutItem.setOnAction(this::viewdeconnection);
+
+        indexColumn.setCellValueFactory(cellData -> new ReadOnlyObjectWrapper<>(TableHistorique.getItems().indexOf(cellData.getValue()) + 1));
+        indexColumn.setSortable(false);
+
         fetchUserCongés();
         ReloadUserDATA();
     }
@@ -82,6 +92,7 @@ public class EmployeController implements Initializable {
             e.printStackTrace();
         }
     }
+
     @FXML public void HistoriqueConge(ActionEvent actionEvent) {
         try {
             FXMLLoader loader = new FXMLLoader(getClass().getResource("/HistoriqueConge.fxml"));
@@ -156,17 +167,18 @@ public class EmployeController implements Initializable {
         Connection cnx = MyDataBase.getInstance().getCnx();
         try {
             PreparedStatement stm = cnx.prepareStatement(sql);
-            //stm.setInt(1, SessionManager.getInstance().getId_user());
             stm.setInt(1, SessionManager.getInstance().getUtilisateur().getIdUser());
             stm.setString(2, String.valueOf(Statut.Approuvé));
             ResultSet rs = stm.executeQuery();
             while (rs.next()) {
                 HisUserList.add(new Conge(rs.getDate("DateDebut").toLocalDate(), rs.getDate("DateFin").toLocalDate(), TypeConge.valueOf(rs.getString("TypeConge"))));
-                TableType.setCellValueFactory(new PropertyValueFactory<>("TypeConge"));
-                TableDD.setCellValueFactory(new PropertyValueFactory<>("DateDebut"));
-                TableDF.setCellValueFactory(new PropertyValueFactory<>("DateFin"));
-                TableHistorique.setItems(HisUserList);
             }
+
+            indexColumn.setCellValueFactory(cellData -> new ReadOnlyObjectWrapper<>(TableHistorique.getItems().indexOf(cellData.getValue()) + 1));
+            TableType.setCellValueFactory(new PropertyValueFactory<>("typeConge"));
+            TableDD.setCellValueFactory(new PropertyValueFactory<>("dateDebut"));
+            TableDF.setCellValueFactory(new PropertyValueFactory<>("dateFin"));
+            TableHistorique.setItems(HisUserList);
         } catch (SQLException ex) {
             ex.printStackTrace();
         }
@@ -176,6 +188,19 @@ public class EmployeController implements Initializable {
         CU_email.setText(SessionManager.getInstance().getUtilisateur().getEmail());
         CU_nomprenom.setText(SessionManager.getInstance().getUtilisateur().getNom()+" "+SessionManager.getInstance().getUtilisateur().getPrenom());
         CU_role.setText(String.valueOf(SessionManager.getInstance().getUtilisateur().getRole()));
+        String imagePath = SessionManager.getInstance().getUtilisateur().getImage();
+        if (imagePath != null) {
+            try {
+                File file = new File(imagePath);
+                FileInputStream inputStream = new FileInputStream(file);
+                Image image = new Image(inputStream);
+                CU_pdp.setImage(image);
+            } catch (FileNotFoundException e) {
+                System.err.println("Image file not found: " + imagePath);
+            }
+        } else {
+            System.err.println("Image path is null for user: " + SessionManager.getInstance().getUtilisateur());
+        }
         //CU_solde.setText(String.valueOf(SessionManager.getInstance().getUtilisateur().getSoldeConge()));
     }
     @FXML

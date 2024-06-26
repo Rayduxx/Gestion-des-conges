@@ -21,7 +21,7 @@
          <children>
             <Button layoutX="6.0" layoutY="8.0" mnemonicParsing="false" onAction="#goto_profil" styleClass="settingsButton">
                <graphic>
-                  <ImageView fitHeight="81.0" fitWidth="93.0" pickOnBounds="true" preserveRatio="true">
+                  <ImageView fitHeight="81.0" fitWidth="93.0" pickOnBounds="true" preserveRatio="true" styleClass="LogoBfpme">
                      <image>
                         <Image url="@assets/imgs/logo_bfpme.png" />
                      </image>

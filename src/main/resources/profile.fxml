@@ -79,7 +79,7 @@
          <children>
             <ImageView fx:id="CU_pdp" fitHeight="152.0" fitWidth="154.0" layoutX="95.0" layoutY="51.0" pickOnBounds="true" preserveRatio="true">
                <image>
-                  <Image url="@assets/imgs/278898897_102014832502188_7162741113201583044_n.jpg" />
+                  <Image url="@assets/imgs/User.jpg" />
                </image>
             </ImageView>
             <GridPane layoutX="512.0" layoutY="278.0" prefHeight="90.0" prefWidth="185.0">
@@ -92,16 +92,17 @@
                 <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
               </rowConstraints>
             </GridPane>
-            <Pane layoutX="814.0" layoutY="51.0" prefHeight="575.0" prefWidth="434.0" style="-fx-border-color: white;" styleClass="pane1">
+            <Pane layoutX="796.0" layoutY="51.0" prefHeight="575.0" prefWidth="441.0" style="-fx-border-color: white;" styleClass="pane1">
                <children>
-                  <TableView fx:id="TableHistorique" layoutX="12.0" layoutY="44.0" prefHeight="515.0" prefWidth="410.0">
+                  <TableView fx:id="TableHistorique" layoutX="20.0" layoutY="46.0" prefHeight="515.0" prefWidth="402.0">
                     <columns>
-                        <TableColumn fx:id="TableType" prefWidth="112.0" text="Type" />
-                      <TableColumn fx:id="TableDD" prefWidth="148.0" text="Date Debut" />
-                        <TableColumn fx:id="TableDF" prefWidth="148.0" text="Date Fin" />
+                       <TableColumn fx:id="indexColumn" prefWidth="40" text="" />
+                        <TableColumn fx:id="TableType" prefWidth="102.0" text="Type" />
+                      <TableColumn fx:id="TableDD" prefWidth="130.0" text="Date Debut" />
+                        <TableColumn fx:id="TableDF" prefWidth="130.0" text="Date Fin" />
                     </columns>
                   </TableView>
-                  <Label alignment="CENTER" layoutX="35.0" layoutY="5.0" prefHeight="36.0" prefWidth="356.0" text="Historique des congés">
+                  <Label alignment="CENTER" layoutX="43.0" prefHeight="36.0" prefWidth="356.0" text="Historique des congés">
                      <font>
                         <Font name="Roboto Italic" size="16.0" />
                      </font>

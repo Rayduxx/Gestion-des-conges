@@ -9,6 +9,7 @@ import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
+import javafx.scene.control.Tooltip;
 import javafx.scene.layout.GridPane;
 import javafx.scene.layout.Pane;
 import javafx.stage.Modality;
@@ -78,6 +79,8 @@ public class CongeCarteController implements Initializable {
         } catch (SQLException ex) {
             ex.printStackTrace();
         }
+        Tooltip tooltip = new Tooltip(conge.getDescription());
+        Tooltip.install(cardDescription, tooltip);
         cUser =conge.getIdUser();
         cid = conge.getIdConge();
         ctype = conge.getTypeConge();
