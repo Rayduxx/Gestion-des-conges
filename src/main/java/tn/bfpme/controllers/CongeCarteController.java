@@ -81,13 +81,11 @@ public class CongeCarteController implements Initializable {
         } catch (SQLException ex) {
             ex.printStackTrace();
         }
-        tooltip_desc = new Tooltip(conge.getDescription());
+        tooltip_desc = new Tooltip();
+        tooltip_desc.setText(conge.getDescription());
         tooltip_desc.getStyleClass().add("tooltip");
-
-        // Load the CSS file
-        String css = getClass().getResource("/assets/css/style.css").toExternalForm();
-        tooltip_desc.getScene().getStylesheets().add(css);
-
+        tooltip_desc.setMaxWidth(200);
+        tooltip_desc.setWrapText(true);
         Tooltip.install(cardDescription, tooltip_desc);
 
         cUser =conge.getIdUser();

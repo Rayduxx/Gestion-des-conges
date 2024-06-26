@@ -52,7 +52,7 @@
                         <Font size="15.0" />
                      </font>
                      <tooltip>
-                        <Tooltip fx:id="tooltip_desc" text="Tooltip" />
+                        <Tooltip fx:id="tooltip_desc" autoFix="false" consumeAutoHidingEvents="false" maxHeight="100.0" maxWidth="100.0" text="Tooltip" textAlignment="CENTER" wrapText="true" />
                      </tooltip>
                   </Label>
                </children>

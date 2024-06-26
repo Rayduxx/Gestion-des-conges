@@ -237,9 +237,9 @@
     -fx-font-family: "Arial";
     -fx-font-size: 14px;
     -fx-pref-width: 200px; /* Set preferred width */
-    -fx-pref-height: 150px; /* Set preferred height */
     -fx-wrap-text: true;   /* Allow text wrapping */
 }
+
 
 
 
