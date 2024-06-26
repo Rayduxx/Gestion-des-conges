@@ -47,8 +47,9 @@ public class CongeCarteController{
     @FXML private Button btnDelete;
     @FXML private Button btnEdit;
     @FXML private Label cardType;
-    @FXML
-    private Tooltip tooltip_desc;
+    @FXML private Tooltip tooltip_desc;
+    @FXML private Tooltip TTViewFile;
+    @FXML private Button btnViewFile;
     private int cUser, cid;
     private String cdesc, cfile;
     private LocalDate cdebut, cfin;
@@ -65,7 +66,7 @@ public class CongeCarteController{
         cardStatus.setText(String.valueOf(conge.getStatut()));
         Card.setStyle("-fx-border-radius: 5px;-fx-border-color:#808080");
         Connection cnx = MyDataBase.getInstance().getCnx();
-        String qry = "SELECT `Statut` FROM `conge` WHERE `ID_User`= ? AND `ID_Conge`=? ";
+        String qry = "SELECT `TypeConge`, `Statut` FROM `conge` WHERE `ID_User`= ? AND `ID_Conge`=? ";
         try {
             PreparedStatement stm = cnx.prepareStatement(qry);
             stm.setInt(1, SessionManager.getInstance().getUtilisateur().getIdUser());
@@ -76,10 +77,17 @@ public class CongeCarteController{
                     btnDelete.setDisable(false);
                     btnEdit.setDisable(false);
                 }
+                if (rs.getString("TypeConge").equals(String.valueOf(TypeConge.Annuel)) || rs.getString("TypeConge").equals(String.valueOf(TypeConge.Sous_solde))){
+                    btnViewFile.setDisable(true);
+                    TTViewFile = new Tooltip();
+                    TTViewFile.setText("Fichier non disponible");
+                    Tooltip.install(btnViewFile, TTViewFile);
+                }
             }
         } catch (SQLException ex) {
             ex.printStackTrace();
         }
+
         tooltip_desc = new Tooltip();
         tooltip_desc.setText(conge.getDescription());
         tooltip_desc.getStyleClass().add("tooltip");
