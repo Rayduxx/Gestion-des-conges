@@ -116,8 +116,9 @@ public class ServiceConge implements IConge<Conge> {
     @Override
     public List<Conge> TriparStatut() {
         List<Conge> conges = new ArrayList<>();
-        String sql = "SELECT `ID_Conge`, `DateDebut`, `DateFin`, `TypeConge`, `Statut`, `ID_User`, `file`, `description` FROM `conge` ORDER BY `Statut`";
+        String sql = "SELECT `ID_Conge`, `DateDebut`, `DateFin`, `TypeConge`, `Statut`, `ID_User`, `file`, `description` FROM `conge` WHERE `ID_User` LIKE '%" + SessionManager.getInstance().getUtilisateur().getIdUser() + "%' ORDER BY `Statut`";
         try {
+
             Statement ste = cnx.createStatement();
             ResultSet rs = ste.executeQuery(sql);
             while (rs.next()) {
@@ -141,7 +142,7 @@ public class ServiceConge implements IConge<Conge> {
     @Override
     public List<Conge> TriparType() {
         List<Conge> conges = new ArrayList<>();
-        String sql = "SELECT `ID_Conge`, `DateDebut`, `DateFin`, `TypeConge`, `Statut`, `ID_User`, `file`, `description` FROM `conge` ORDER BY `TypeConge`";
+        String sql = "SELECT `ID_Conge`, `DateDebut`, `DateFin`, `TypeConge`, `Statut`, `ID_User`, `file`, `description` FROM `conge` WHERE `ID_User` LIKE '%" + SessionManager.getInstance().getUtilisateur().getIdUser() + "%' ORDER BY `TypeConge`";
         try {
             Statement ste = cnx.createStatement();
             ResultSet rs = ste.executeQuery(sql);
@@ -166,7 +167,7 @@ public class ServiceConge implements IConge<Conge> {
     @Override
     public List<Conge> TriparDateD() {
         List<Conge> conges = new ArrayList<>();
-        String sql = "SELECT `ID_Conge`, `DateDebut`, `DateFin`, `TypeConge`, `Statut`, `ID_User`, `file`, `description` FROM `conge` ORDER BY `DateDebut`";
+        String sql = "SELECT `ID_Conge`, `DateDebut`, `DateFin`, `TypeConge`, `Statut`, `ID_User`, `file`, `description` FROM `conge` WHERE `ID_User` LIKE '%" + SessionManager.getInstance().getUtilisateur().getIdUser() + "%'ORDER BY `DateDebut`";
         try {
             Statement ste = cnx.createStatement();
             ResultSet rs = ste.executeQuery(sql);
@@ -190,7 +191,7 @@ public class ServiceConge implements IConge<Conge> {
     @Override
     public List<Conge> TriparDateF() {
         List<Conge> conges = new ArrayList<>();
-        String sql = "SELECT `ID_Conge`, `DateDebut`, `DateFin`, `TypeConge`, `Statut`, `ID_User`, `file`, `description` FROM `conge` ORDER BY `DateFin`";
+        String sql = "SELECT `ID_Conge`, `DateDebut`, `DateFin`, `TypeConge`, `Statut`, `ID_User`, `file`, `description` FROM `conge` WHERE `ID_User` LIKE '%" + SessionManager.getInstance().getUtilisateur().getIdUser() + "%' ORDER BY `DateFin`";
         try {
             Statement ste = cnx.createStatement();
             ResultSet rs = ste.executeQuery(sql);
@@ -214,7 +215,7 @@ public class ServiceConge implements IConge<Conge> {
     @Override
     public List<Conge> TriparDesc() {
         List<Conge> conges = new ArrayList<>();
-        String sql = "SELECT `ID_Conge`, `DateDebut`, `DateFin`, `TypeConge`, `Statut`, `ID_User`, `file`, `description` FROM `conge` ORDER BY `description`";
+        String sql = "SELECT `ID_Conge`, `DateDebut`, `DateFin`, `TypeConge`, `Statut`, `ID_User`, `file`, `description` FROM `conge` WHERE `ID_User` LIKE '%" + SessionManager.getInstance().getUtilisateur().getIdUser() + "%' ORDER BY `description`";
         try {
             Statement ste = cnx.createStatement();
             ResultSet rs = ste.executeQuery(sql);
@@ -240,20 +241,22 @@ public class ServiceConge implements IConge<Conge> {
         List<Conge> conges = new ArrayList<>();
         String sql = "SELECT `ID_Conge`, `DateDebut`, `DateFin`, `TypeConge`, `Statut`, `ID_User`, `file`, `description` " +
                 "FROM `conge` " +
-                "WHERE `TypeConge` LIKE ? " +
+                "WHERE `ID_User` LIKE ? " +
+                "AND (`TypeConge` LIKE ? " +
                 "OR `Statut` LIKE ? " +
                 "OR `DateDebut` LIKE ? " +
                 "OR `DateFin` LIKE ? " +
-                "OR `description` LIKE ?";
+                "OR `description` LIKE ?)";
+
 
         try (PreparedStatement ste = cnx.prepareStatement(sql)) {
             String searchPattern = "%" + recherche + "%";
-            ste.setString(1, searchPattern);
+            ste.setString(1, "%" + SessionManager.getInstance().getUtilisateur().getIdUser() + "%");
             ste.setString(2, searchPattern);
             ste.setString(3, searchPattern);
             ste.setString(4, searchPattern);
             ste.setString(5, searchPattern);
-
+            ste.setString(6, searchPattern);
             ResultSet rs = ste.executeQuery();
             while (rs.next()) {
                 Conge conge = new Conge();

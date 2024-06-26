@@ -224,7 +224,6 @@
 .LogoBfpme:hover {
     -fx-effect: dropshadow(three-pass-box, red, 20, 0, 0, 0);
 }
-
 .tooltip {
     -fx-background-color: white;
     -fx-text-fill: black;
@@ -238,6 +237,7 @@
     -fx-font-size: 14px;
     -fx-pref-width: 200px; /* Set preferred width */
     -fx-wrap-text: true;   /* Allow text wrapping */
+
 }
 
 

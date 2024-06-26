@@ -251,7 +251,27 @@ public class DemandeCongeController implements Initializable{
             return;
         }
         CongeS.Add(new Conge(0, DD, DF, TypeConge.Exceptionnel, Statut.En_Attente, SessionManager.getInstance().getUtilisateur().getIdUser(),DOCLINK, DESC));
-
+        Alert successAlert = new Alert(Alert.AlertType.CONFIRMATION);
+        successAlert.setTitle("Succès");
+        successAlert.setHeaderText("Demande de congé créée avec succès !");
+        ButtonType buttonHistorique = new ButtonType("Aller à l'historique");
+        successAlert.getButtonTypes().setAll(buttonHistorique);
+        Optional<ButtonType> result = successAlert.showAndWait();
+        if (result.isPresent() && result.get() == buttonHistorique) {
+            try {
+                FXMLLoader loader = new FXMLLoader(getClass().getResource("/HistoriqueConge.fxml"));
+                Parent root = loader.load();
+                Stage stage = (Stage) ((Node) event.getSource()).getScene().getWindow();
+                Scene scene = new Scene(root);
+                stage.setScene(scene);
+                stage.setTitle("Historique congé");
+                stage.show();
+                StageManager.addStage(stage);
+                StageManager.addStage(stage);
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+        }
     }
     @FXML void EXP_Doc_Imp(ActionEvent event) {
         String documentPath = null;
@@ -340,9 +360,6 @@ public class DemandeCongeController implements Initializable{
             } catch (IOException e) {
                 e.printStackTrace();
             }
-        } else {
-            // Close the current scene or perform other actions
-            System.out.println("Closing current scene...");
         }
     }
     @FXML void MAL_Doc_Imp(ActionEvent event) {
