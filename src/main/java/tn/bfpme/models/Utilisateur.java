@@ -8,12 +8,16 @@ public class Utilisateur {
     private String mdp;
     private Role role;
     private String image;
-    private int soldeConge;
+    private int soldeAnnuel;
+    private int soldeMaladie;
+    private int soldeExceptionnel;
+    private int soldeMaternite;
+
     public static Utilisateur Current_User;
 
     public Utilisateur() {}
 
-    public Utilisateur(int idUser, String nom, String prenom, String email, String mdp, Role role, String image, int soldeConge) {
+    public Utilisateur(int idUser, String nom, String prenom, String email, String mdp, Role role, String image, int soldeAnnuel,int soldeMaladie, int soldeExceptionnel,int soldeMaternite) {
         this.idUser = idUser;
         this.nom = nom;
         this.prenom = prenom;
@@ -21,7 +25,10 @@ public class Utilisateur {
         this.mdp = mdp;
         this.role = role;
         this.image = image;
-        this.soldeConge = soldeConge;
+        this.soldeAnnuel = soldeAnnuel;
+        this.soldeMaladie=soldeMaladie;
+        this.soldeExceptionnel=soldeExceptionnel;
+        this.soldeMaternite=soldeMaternite;
     }
 
     public int getIdUser() {
@@ -80,12 +87,33 @@ public class Utilisateur {
         this.image = image;
     }
 
-    public int getSoldeConge() {
-        return soldeConge;
+    public int getSoldeAnnuel() {
+        return soldeAnnuel;
     }
 
-    public void setSoldeConge(int soldeConge) {
-        this.soldeConge = soldeConge;
+    public void setSoldeAnnuel(int soldeAnnuel) {
+        this.soldeAnnuel = soldeAnnuel;
+    }
+    public int getSoldeMaladie() {
+        return soldeMaladie;
+    }
+
+    public void setSoldeMaladie(int soldeMaladie) {
+        this.soldeMaladie = soldeMaladie;
+    }
+    public int getSoldeExceptionnel() {
+        return soldeExceptionnel;
+    }
+
+    public void setSoldeExceptionnel(int soldeExceptionnel) {
+        this.soldeExceptionnel = soldeExceptionnel;
+    }
+    public int getSoldeMaternite() {
+        return soldeMaternite;
+    }
+
+    public void setSoldeMaternite(int soldeMaternite) {
+        this.soldeMaternite = soldeMaternite;
     }
 
     public static Utilisateur getCurrent_User() {
@@ -106,7 +134,10 @@ public class Utilisateur {
                 ", mdp='" + mdp + '\'' +
                 ", role=" + role +
                 ", image='" + image + '\'' +
-                ", soldeConge=" + soldeConge +
+                ", soldeAnnuel=" + soldeAnnuel + '\'' +
+                ", soldeMaladie=" + soldeMaladie + '\'' +
+                ", soldeExceptionnel=" + soldeExceptionnel + '\'' +
+                ", soldeMaternite=" + soldeMaternite + '\'' +
                 '}';
     }
 }

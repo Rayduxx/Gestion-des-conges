@@ -9,14 +9,14 @@ public class Employe extends Utilisateur {
         super();
     }
 
-    public Employe(int idEmploye, int idUser, String nom, String prenom, String email, String mdp, Role role, String image, int soldeConge, Departement departement) {
-        super(idUser, nom, prenom, email, mdp, role, image, soldeConge);
+    public Employe(int idEmploye, int idUser, String nom, String prenom, String email, String mdp, Role role, String image,  int soldeAnnuel,int soldeMaladie, int soldeExceptionnel,int soldeMaternite, Departement departement) {
+        super(idUser, nom, prenom, email, mdp, role, image, soldeAnnuel,soldeMaladie,soldeExceptionnel,soldeMaternite);
         this.idEmploye = idEmploye;
         this.departement = departement;
     }
 
     public Employe(int idEmploye, Departement departement, Utilisateur utilisateur) {
-        super(utilisateur.getIdUser(), utilisateur.getNom(), utilisateur.getPrenom(), utilisateur.getEmail(), utilisateur.getMdp(), utilisateur.getRole(), utilisateur.getImage(), utilisateur.getSoldeConge());
+        super(utilisateur.getIdUser(), utilisateur.getNom(), utilisateur.getPrenom(), utilisateur.getEmail(), utilisateur.getMdp(), utilisateur.getRole(), utilisateur.getImage(), utilisateur.getSoldeAnnuel(), utilisateur.getSoldeMaladie(),utilisateur.getSoldeExceptionnel(),utilisateur.getSoldeMaternite());
         this.idEmploye = idEmploye;
         this.departement = departement;
     }

@@ -7,13 +7,13 @@ public class AdminIT extends Utilisateur {
 
     public AdminIT() {super();}
 
-    public AdminIT(int idAdmin, int idUser, String nom, String prenom, String email, String mdp, Role role, String image, int soldeConge) {
-        super(idUser, nom, prenom, email, mdp, role, image, soldeConge);
+    public AdminIT(int idAdmin, int idUser, String nom, String prenom, String email, String mdp, Role role, String image,  int soldeAnnuel,int soldeMaladie, int soldeExceptionnel,int soldeMaternite) {
+        super(idUser, nom, prenom, email, mdp, role, image,soldeAnnuel,soldeMaladie,soldeExceptionnel,soldeMaternite);
         this.idAdmin = idAdmin;
     }
 
     public AdminIT(int idAdmin, Utilisateur utilisateur) {
-        super(utilisateur.getIdUser(), utilisateur.getNom(), utilisateur.getPrenom(), utilisateur.getEmail(), utilisateur.getMdp(), utilisateur.getRole(), utilisateur.getImage(), utilisateur.getSoldeConge());
+        super(utilisateur.getIdUser(), utilisateur.getNom(), utilisateur.getPrenom(), utilisateur.getEmail(), utilisateur.getMdp(), utilisateur.getRole(), utilisateur.getImage(), utilisateur.getSoldeAnnuel(), utilisateur.getSoldeMaladie(),utilisateur.getSoldeExceptionnel(),utilisateur.getSoldeMaternite());
         this.idAdmin = idAdmin;
     }
 

@@ -8,14 +8,14 @@ public class ChefDepartement extends Utilisateur {
 
     public ChefDepartement() {super();}
 
-    public ChefDepartement(int idChefDep, int idUser, String nom, String prenom, String email, String mdp, Role role, String image, int soldeConge, Departement departement) {
-        super(idUser, nom, prenom, email, mdp, role, image, soldeConge);
+    public ChefDepartement(int idChefDep, int idUser, String nom, String prenom, String email, String mdp, Role role, String image,  int soldeAnnuel,int soldeMaladie, int soldeExceptionnel,int soldeMaternite, Departement departement) {
+        super(idUser, nom, prenom, email, mdp, role, image,soldeAnnuel,soldeMaladie,soldeExceptionnel,soldeMaternite);
         this.idChefDep = idChefDep;
         this.departement = departement;
     }
 
     public ChefDepartement(int idChefDep, Departement departement, Utilisateur utilisateur) {
-        super(utilisateur.getIdUser(), utilisateur.getNom(), utilisateur.getPrenom(), utilisateur.getEmail(), utilisateur.getMdp(), utilisateur.getRole(), utilisateur.getImage(), utilisateur.getSoldeConge());
+        super(utilisateur.getIdUser(), utilisateur.getNom(), utilisateur.getPrenom(), utilisateur.getEmail(), utilisateur.getMdp(), utilisateur.getRole(), utilisateur.getImage(),  utilisateur.getSoldeAnnuel(), utilisateur.getSoldeMaladie(),utilisateur.getSoldeExceptionnel(),utilisateur.getSoldeMaternite());
         this.idChefDep = idChefDep;
         this.departement = departement;
     }

@@ -10,7 +10,6 @@ import javafx.scene.Node;
 import javafx.stage.Stage;
 import tn.bfpme.models.*;
 import tn.bfpme.utils.MyDataBase;
-import tn.bfpme.utils.SessionManager;
 import tn.bfpme.utils.StageManager;
 import tn.bfpme.services.ServiceUtilisateur;
 
@@ -40,7 +39,7 @@ public class LoginController {
             stm.setString(2, LoginMDP.getText());
             ResultSet rs = stm.executeQuery();
             if (rs.next()) {
-                Utilisateur ConnectedUser = new Utilisateur(rs.getInt("ID_User"), rs.getString("Nom"), rs.getString("Prenom"), rs.getString("Email"), rs.getString("MDP"), Role.valueOf(rs.getString("Role")), rs.getString("Image"), rs.getInt("Solde_congé"));
+                Utilisateur ConnectedUser = new Utilisateur(rs.getInt("ID_User"), rs.getString("Nom"), rs.getString("Prenom"), rs.getString("Email"), rs.getString("MDP"), Role.valueOf(rs.getString("Role")), rs.getString("Image"), rs.getInt("Solde_Annuel"), rs.getInt("Solde_Maladie"), rs.getInt("Solde_Exceptionnel"), rs.getInt("Solde_Maternité"));
 
                 // Check if user is an employee
                 userS.checkEmployee(rs.getInt("ID_User"), ConnectedUser);
