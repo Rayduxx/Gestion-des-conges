@@ -35,7 +35,7 @@
             </Label>
             <HBox alignment="CENTER" layoutX="608.0" layoutY="19.0" prefHeight="63.0" prefWidth="694.0" spacing="33.0">
                <children>
-                  <Button mnemonicParsing="false" onAction="#ListeDesDemandes" prefHeight="38.0" prefWidth="166.0" styleClass="btn-secondary" text="Liste des demandes">
+                  <Button fx:id="btnListe" mnemonicParsing="false" onAction="#ListeDesDemandes" prefHeight="38.0" prefWidth="166.0" styleClass="btn-secondary" text="Liste des demandes" visible="false">
                      <font>
                         <Font size="14.0" />
                      </font>

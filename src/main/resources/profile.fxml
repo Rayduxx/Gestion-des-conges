@@ -18,63 +18,6 @@
 
 <AnchorPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="830.0" prefWidth="1340.0" styleClass="grad-bg" stylesheets="@assets/css/style.css" xmlns="http://javafx.com/javafx/21" xmlns:fx="http://javafx.com/fxml/1" fx:controller="tn.bfpme.controllers.EmployeController">
    <children>
-      <Pane prefHeight="104.0" prefWidth="1340.0" styleClass="pane-clr" stylesheets="@assets/css/style.css">
-         <children>
-            <Button layoutX="6.0" layoutY="8.0" mnemonicParsing="false" onAction="#goto_profil" styleClass="settingsButton">
-               <graphic>
-                  <ImageView fitHeight="81.0" fitWidth="93.0" pickOnBounds="true" preserveRatio="true" styleClass="LogoBfpme">
-                     <image>
-                        <Image url="@assets/imgs/logo_bfpme.png" />
-                     </image>
-                  </ImageView>
-               </graphic>
-            </Button>
-            <HBox layoutX="694.0" layoutY="23.0" prefHeight="60.0" prefWidth="601.0">
-               <children>
-                  <Pane maxWidth="363.0" prefHeight="60.0" prefWidth="363.0">
-                     <children>
-                        <Button layoutX="145.0" layoutY="11.0" mnemonicParsing="false" onAction="#Demander" prefHeight="38.0" prefWidth="166.0" styleClass="btn-secondary" text="Demande congé">
-                           <font>
-                              <Font size="14.0" />
-                           </font>
-                        </Button>
-                     </children>
-                  </Pane>
-                  <Pane maxWidth="250.0" prefHeight="60.0" prefWidth="250.0">
-                     <children>
-                        <Button layoutX="24.0" layoutY="11.0" mnemonicParsing="false" onAction="#Historique" prefHeight="38.0" prefWidth="166.0" styleClass="btn-secondary" text="Historique congé">
-                           <font>
-                              <Font size="14.0" />
-                           </font>
-                        </Button>
-                     </children>
-                  </Pane>
-                  <Pane maxWidth="110.0" prefHeight="60.0" prefWidth="118.0">
-                     <children>
-                        <Button fx:id="settingsButton" layoutX="11.0" layoutY="11.0" mnemonicParsing="false" prefHeight="25.0" prefWidth="48.0" styleClass="settingsButton">
-                           <graphic>
-                              <ImageView fitHeight="32.0" fitWidth="31.0" pickOnBounds="true" preserveRatio="true">
-                                 <image>
-                                    <Image url="@assets/imgs/Settings.png" />
-                                 </image>
-                              </ImageView>
-                           </graphic>
-                           <contextMenu>
-                              <ContextMenu anchorLocation="CONTENT_TOP_RIGHT" anchorX="100.0" x="0.0">
-                                 <items>
-                                    <MenuItem mnemonicParsing="false" text="Boîte de réception" />
-                                    <MenuItem mnemonicParsing="false" text="Aide et support" />
-                                    <MenuItem mnemonicParsing="false" text="deconnection" />
-                                 </items>
-                              </ContextMenu>
-                           </contextMenu>
-                        </Button>
-                     </children>
-                  </Pane>
-               </children>
-            </HBox>
-         </children>
-      </Pane>
       <Pane layoutX="28.0" layoutY="131.0" prefHeight="677.0" prefWidth="1277.0" styleClass="pane1">
          <children>
             <ImageView fx:id="CU_pdp" fitHeight="152.0" fitWidth="154.0" layoutX="95.0" layoutY="51.0" pickOnBounds="true" preserveRatio="true">
@@ -100,16 +43,16 @@
                </children>
             </Pane>
             <GridPane layoutX="95.0" layoutY="233.0" prefHeight="152.0" prefWidth="392.0">
-              <columnConstraints>
-                <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0" />
-                <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0" />
-              </columnConstraints>
-              <rowConstraints>
-                <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
-                <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
-                <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
+               <columnConstraints>
+                  <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0" />
+                  <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0" />
+               </columnConstraints>
+               <rowConstraints>
                   <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
-              </rowConstraints>
+                  <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
+                  <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
+                  <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
+               </rowConstraints>
                <children>
                   <Label prefHeight="17.0" prefWidth="165.0" text="Nom et prenom :">
                      <font>
@@ -154,17 +97,17 @@
                </children>
             </GridPane>
             <GridPane layoutX="95.0" layoutY="408.0" prefHeight="150.0" prefWidth="262.0">
-              <columnConstraints>
-                <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0" />
-                <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0" />
-              </columnConstraints>
-              <rowConstraints>
-                <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
-                <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
+               <columnConstraints>
+                  <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0" />
+                  <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0" />
+               </columnConstraints>
+               <rowConstraints>
                   <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
-                <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
                   <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
-              </rowConstraints>
+                  <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
+                  <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
+                  <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
+               </rowConstraints>
                <children>
                   <Label prefHeight="17.0" prefWidth="165.0" text="Solde restant :">
                      <font>
@@ -213,8 +156,56 @@
                   </Label>
                </children>
             </GridPane>
-            <Button layoutX="580.0" layoutY="451.0" mnemonicParsing="false" onAction="#DemanderConge" prefHeight="38.0" prefWidth="173.0" styleClass="btn-primary" text="Demander congé" />
-            <Button layoutX="580.0" layoutY="521.0" mnemonicParsing="false" onAction="#HistoriqueConge" prefHeight="40.0" prefWidth="173.0" styleClass="btn-primary" text="Historique congés" />
+         </children>
+      </Pane>
+      <Pane prefHeight="104.0" prefWidth="1340.0" styleClass="pane-clr" stylesheets="@assets/css/style.css">
+         <children>
+            <Button layoutX="6.0" layoutY="8.0" mnemonicParsing="false" onAction="#goto_profil" styleClass="settingsButton">
+               <graphic>
+                  <ImageView fitHeight="81.0" fitWidth="93.0" pickOnBounds="true" preserveRatio="true" styleClass="LogoBfpme">
+                     <image>
+                        <Image url="@assets/imgs/logo_bfpme.png" />
+                     </image>
+                  </ImageView>
+               </graphic>
+            </Button>
+            <HBox alignment="CENTER" layoutX="608.0" layoutY="19.0" prefHeight="63.0" prefWidth="694.0" spacing="33.0">
+               <children>
+                  <Button fx:id="btnListe" mnemonicParsing="false" onAction="#ListeDesDemandes" prefHeight="38.0" prefWidth="166.0" styleClass="btn-secondary" text="Liste des demandes" visible="false">
+                     <font>
+                        <Font size="14.0" />
+                     </font>
+                  </Button>
+                  <Button mnemonicParsing="false" onAction="#Demander" prefHeight="38.0" prefWidth="166.0" styleClass="btn-secondary" text="Demande congé">
+                     <font>
+                        <Font size="14.0" />
+                     </font>
+                  </Button>
+                  <Button mnemonicParsing="false" onAction="#Historique" prefHeight="38.0" prefWidth="185.0" styleClass="btn-secondary" text="Historique des demandes">
+                     <font>
+                        <Font size="14.0" />
+                     </font>
+                  </Button>
+                  <Button fx:id="settingsButton" mnemonicParsing="false" prefHeight="25.0" prefWidth="48.0" styleClass="settingsButton">
+                     <graphic>
+                        <ImageView fitHeight="32.0" fitWidth="31.0" pickOnBounds="true" preserveRatio="true">
+                           <image>
+                              <Image url="@assets/imgs/Settings.png" />
+                           </image>
+                        </ImageView>
+                     </graphic>
+                     <contextMenu>
+                        <ContextMenu anchorLocation="CONTENT_TOP_RIGHT" anchorX="100.0" x="0.0">
+                           <items>
+                              <MenuItem mnemonicParsing="false" text="Boîte de réception" />
+                              <MenuItem mnemonicParsing="false" text="Aide et support" />
+                              <MenuItem mnemonicParsing="false" text="deconnection" />
+                           </items>
+                        </ContextMenu>
+                     </contextMenu>
+                  </Button>
+               </children>
+            </HBox>
          </children>
       </Pane>
    </children>

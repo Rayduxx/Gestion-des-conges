@@ -45,6 +45,7 @@ public class EmployeController implements Initializable {
     @FXML private Label CU_MAL;
     @FXML private Label CU_MAT;
     @FXML private Button settingsButton;
+    @FXML public Button btnListe;
     @FXML private TableView<Conge> TableHistorique;
     @FXML private TableColumn<Conge, LocalDate> TableDD;
     @FXML private TableColumn<Conge, LocalDate> TableDF;
@@ -72,36 +73,11 @@ public class EmployeController implements Initializable {
         indexColumn.setSortable(false);
         fetchUserCongés();
         ReloadUserDATA();
-    }
-    @FXML public void DemanderConge(ActionEvent actionEvent) {
-        try {
-            FXMLLoader loader = new FXMLLoader(getClass().getResource("/DemandeConge.fxml"));
-            Parent root = loader.load();
-            Stage stage = (Stage) ((Node) actionEvent.getSource()).getScene().getWindow();
-            Scene scene = new Scene(root);
-            stage.setScene(scene);
-            stage.setTitle("Demande de Congé");
-            stage.show();
-            StageManager.addStage(stage);
-        } catch (IOException e) {
-            e.printStackTrace();
+        if (SessionManager.getInstance().getUtilisateur().getRole().equals(Role.ChefDepartement)){
+            btnListe.setVisible(true);
         }
     }
 
-    @FXML public void HistoriqueConge(ActionEvent actionEvent) {
-        try {
-            FXMLLoader loader = new FXMLLoader(getClass().getResource("/HistoriqueConge.fxml"));
-            Parent root = loader.load();
-            Stage stage = (Stage) ((Node) actionEvent.getSource()).getScene().getWindow();
-            Scene scene = new Scene(root);
-            stage.setScene(scene);
-            stage.setTitle("Historique des Congés");
-            stage.show();
-            StageManager.addStage(stage);
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-    }
     @FXML public void Demander(ActionEvent actionEvent) {
         try {
             FXMLLoader loader = new FXMLLoader(getClass().getResource("/DemandeConge.fxml"));
@@ -165,7 +141,6 @@ public class EmployeController implements Initializable {
             while (rs.next()) {
                 HisUserList.add(new Conge(rs.getDate("DateDebut").toLocalDate(), rs.getDate("DateFin").toLocalDate(), TypeConge.valueOf(rs.getString("TypeConge"))));
             }
-
             indexColumn.setCellValueFactory(cellData -> new ReadOnlyObjectWrapper<>(TableHistorique.getItems().indexOf(cellData.getValue()) + 1));
             TableType.setCellValueFactory(new PropertyValueFactory<>("typeConge"));
             TableDD.setCellValueFactory(new PropertyValueFactory<>("dateDebut"));
@@ -213,6 +188,22 @@ public class EmployeController implements Initializable {
         } catch (IOException e) {
             e.printStackTrace();
         }
-
     }
+    @FXML
+    void ListeDesDemandes(ActionEvent event) {
+        try {
+            FXMLLoader loader = new FXMLLoader(getClass().getResource("/DemandeDepListe.fxml"));
+            Parent root = loader.load();
+            Stage stage = (Stage) ((Node) event.getSource()).getScene().getWindow();
+            Scene scene = new Scene(root);
+            stage.setScene(scene);
+            stage.setTitle("Mon profil");
+            stage.show();
+            StageManager.addStage(stage);
+            StageManager.addStage(stage);
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
+
 }

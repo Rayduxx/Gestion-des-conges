@@ -18,7 +18,7 @@
     -fx-border-radius: 5;
     -fx-padding: 2;
     -fx-font-family: "Roboto";
-    -fx-font-size: 10px;
+    -fx-font-size: 15px;
 }
 .combo-box .arrow {
     -fx-background-color: linear-gradient(#112349, #1a3766);
