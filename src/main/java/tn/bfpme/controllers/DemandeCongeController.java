@@ -386,7 +386,6 @@ public class DemandeCongeController implements Initializable{
             }
         }
     }
-
     /*  Demande Congé Sous-Solde */
     @FXML private DatePicker SS_DD;
     @FXML private DatePicker SS_DF;
@@ -445,7 +444,6 @@ public class DemandeCongeController implements Initializable{
             System.out.println("Closing current scene...");
         }
     }
-
     /*  Demande Congé Maternité (GROSSESSE) */
     @FXML private DatePicker GRO_DD;
     @FXML private DatePicker GRO_DF;
@@ -538,7 +536,6 @@ public class DemandeCongeController implements Initializable{
             }
         }
     }
-
     /*  Demande Congé Maternité (NAISSANCE) */
     @FXML private DatePicker NAI_DD;
     @FXML private DatePicker NAI_DF;
@@ -630,7 +627,6 @@ public class DemandeCongeController implements Initializable{
         }
     }
 
-
     @FXML public void Demander(ActionEvent actionEvent) {
         try {
             FXMLLoader loader = new FXMLLoader(getClass().getResource("/DemandeConge.fxml"));
@@ -662,17 +658,13 @@ public class DemandeCongeController implements Initializable{
         }
     }
 
-    @FXML
-    void viewdeconnection(ActionEvent actionEvent) {
+    @FXML void viewdeconnection(ActionEvent actionEvent) {
         SessionManager.getInstance().cleanUserSession();
         try {
             FXMLLoader loader = new FXMLLoader(getClass().getResource("/login.fxml"));
             Parent root = loader.load();
-
-            // Get the stage from the current context menu's owner window
             MenuItem menuItem = (MenuItem) actionEvent.getSource();
             Stage stage = (Stage) menuItem.getParentPopup().getOwnerWindow();
-
             stage.setScene(new Scene(root));
             stage.setTitle("Gestion de Congés - Connection");
             StageManager.addStage(stage);
@@ -683,13 +675,9 @@ public class DemandeCongeController implements Initializable{
     }
 
 
-    void viewaide(ActionEvent actionEvent) {
-    }
-
-    void viewboite(ActionEvent actionEvent) {
-    }
-    @FXML
-    public void goto_profil(ActionEvent actionEvent) {
+    void viewaide(ActionEvent actionEvent) {}
+    void viewboite(ActionEvent actionEvent) {}
+    @FXML public void goto_profil(ActionEvent actionEvent) {
         try {
             FXMLLoader loader = new FXMLLoader(getClass().getResource("/profile.fxml"));
             Parent root = loader.load();
