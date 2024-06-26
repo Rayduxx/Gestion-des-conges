@@ -1,22 +1,58 @@
 package tn.bfpme.services;
 
+import tn.bfpme.interfaces.IUtilisateur;
 import tn.bfpme.models.*;
 import tn.bfpme.utils.MyDataBase;
 import tn.bfpme.utils.SessionManager;
 
-import java.sql.Connection;
-import java.sql.PreparedStatement;
-import java.sql.ResultSet;
-import java.sql.SQLException;
+import java.sql.*;
+import java.util.ArrayList;
 import java.util.List;
-import java.util.Map;
 
-public class ServiceUtilisateur {
+public class ServiceUtilisateur implements IUtilisateur {
     private final Connection cnx;
 
     public ServiceUtilisateur() {
         cnx = MyDataBase.getInstance().getCnx();
     }
+    @Override
+    public UserConge afficherusers() {
+        String departement = String.valueOf(SessionManager.getInstance().getDepartement());
+        List<Utilisateur> users = new ArrayList<>();
+        List<Conge> conges = new ArrayList<>();
+        String query = "SELECT utilisateur.ID_User, utilisateur.Nom, utilisateur.Prenom, utilisateur.Email, utilisateur.Image, " +
+                "conge.TypeConge, conge.Statut, conge.DateFin, conge.DateDebut " +
+                "FROM utilisateur " +
+                "JOIN employe ON utilisateur.ID_User = employe.ID_User " +
+                "JOIN conge ON utilisateur.ID_User = conge.ID_User " +
+                "WHERE employe.Departement LIKE '%" + departement + "%'";
+        try {
+            Statement ste = cnx.createStatement();
+            ResultSet rs = ste.executeQuery(query);
+            while (rs.next()) {
+                Utilisateur user = new Utilisateur();
+                user.setIdUser(rs.getInt("ID_User"));
+                user.setNom(rs.getString("Nom"));
+                user.setPrenom(rs.getString("Prenom"));
+                user.setEmail(rs.getString("Email"));
+                user.setImage(rs.getString("Image"));
+                if (!users.contains(user)) {
+                    users.add(user);
+                }
+
+                Conge conge = new Conge();
+                conge.setDateDebut(rs.getDate("DateDebut").toLocalDate());
+                conge.setDateFin(rs.getDate("DateFin").toLocalDate());
+                conge.setTypeConge(TypeConge.valueOf(rs.getString("TypeConge")));
+                conge.setStatut(Statut.valueOf(rs.getString("Statut")));
+                conges.add(conge);
+            }
+        } catch (SQLException ex) {
+            System.out.println(ex.getMessage());
+        }
+        return new UserConge(users, conges);
+    }
+
 
     public void checkEmployee(int userId, Utilisateur user) throws SQLException {
         String qry = "SELECT `ID_Employé`, `Departement`, `ID_User` FROM `employe` WHERE `ID_User`=?";
@@ -67,5 +103,4 @@ public class ServiceUtilisateur {
             }
         }
     }
-
 }

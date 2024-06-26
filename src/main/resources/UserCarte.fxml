@@ -1,0 +1,41 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.control.Button?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.control.Separator?>
+<?import javafx.scene.image.ImageView?>
+<?import javafx.scene.layout.ColumnConstraints?>
+<?import javafx.scene.layout.GridPane?>
+<?import javafx.scene.layout.HBox?>
+<?import javafx.scene.layout.Pane?>
+<?import javafx.scene.layout.RowConstraints?>
+
+<Pane fx:id="UserCard" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="200.0" prefWidth="400.0" stylesheets="@assets/css/style.css" xmlns="http://javafx.com/javafx/21" xmlns:fx="http://javafx.com/fxml/1" fx:controller="tn.bfpme.controllers.UserCarte">
+   <children>
+      <ImageView fx:id="pdp_card" fitHeight="118.0" fitWidth="125.0" layoutX="14.0" layoutY="14.0" pickOnBounds="true" preserveRatio="true" />
+      <GridPane layoutX="161.0" layoutY="15.0" prefHeight="169.0" prefWidth="228.0">
+        <columnConstraints>
+            <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0" />
+        </columnConstraints>
+        <rowConstraints>
+          <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
+          <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
+          <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
+            <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
+        </rowConstraints>
+         <children>
+            <HBox alignment="CENTER" prefHeight="100.0" prefWidth="200.0" GridPane.rowIndex="2">
+               <children>
+                  <Label fx:id="type_card" alignment="CENTER" prefHeight="28.0" prefWidth="190.0" />
+                  <Separator orientation="VERTICAL" prefHeight="200.0" styleClass="seperator" />
+                  <Label fx:id="statut_card" alignment="CENTER" prefHeight="28.0" prefWidth="189.0" />
+               </children>
+            </HBox>
+            <Label fx:id="nomprenom_card" alignment="CENTER" contentDisplay="CENTER" prefHeight="28.0" prefWidth="228.0" />
+            <Label fx:id="email_card" alignment="CENTER" contentDisplay="CENTER" prefHeight="28.0" prefWidth="228.0" GridPane.rowIndex="1" />
+            <Label fx:id="periode_card" alignment="CENTER" contentDisplay="CENTER" prefHeight="28.0" prefWidth="228.0" GridPane.rowIndex="3" />
+         </children>
+      </GridPane>
+      <Button layoutX="17.0" layoutY="149.0" mnemonicParsing="false" onAction="#afficherdemande" prefHeight="35.0" prefWidth="119.0" text="Afficher Demande" />
+   </children>
+</Pane>
