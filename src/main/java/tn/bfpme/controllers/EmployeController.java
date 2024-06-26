@@ -40,7 +40,10 @@ public class EmployeController implements Initializable {
     @FXML private Label CU_nomprenom;
     @FXML private Label CU_role;
     @FXML private ImageView CU_pdp;
-    @FXML private Label CU_solde;
+    @FXML private Label CU_ANL;
+    @FXML private Label CU_EXP;
+    @FXML private Label CU_MAL;
+    @FXML private Label CU_MAT;
     @FXML private Button settingsButton;
     @FXML private TableView<Conge> TableHistorique;
     @FXML private TableColumn<Conge, LocalDate> TableDD;
@@ -53,16 +56,10 @@ public class EmployeController implements Initializable {
     @Override
     public void initialize(URL url, ResourceBundle resourceBundle) {
         contextMenu = new ContextMenu();
-
-        // Add menu items to the context menu
         MenuItem boiteItem = new MenuItem("boîte de réception");
         MenuItem aideItem = new MenuItem("Aide et support");
         MenuItem logoutItem = new MenuItem("Déconnexion");
-
-
         contextMenu.getItems().addAll(boiteItem, aideItem, logoutItem);
-
-        // Show the context menu directly under the settings button
         settingsButton.setOnAction(event -> {
             double screenX = settingsButton.localToScreen(settingsButton.getBoundsInLocal()).getMinX() - 70;
             double screenY = settingsButton.localToScreen(settingsButton.getBoundsInLocal()).getMaxY() + 10;
@@ -71,10 +68,8 @@ public class EmployeController implements Initializable {
         boiteItem.setOnAction(this::viewboite);
         aideItem.setOnAction(this::viewaide);
         logoutItem.setOnAction(this::viewdeconnection);
-
         indexColumn.setCellValueFactory(cellData -> new ReadOnlyObjectWrapper<>(TableHistorique.getItems().indexOf(cellData.getValue()) + 1));
         indexColumn.setSortable(false);
-
         fetchUserCongés();
         ReloadUserDATA();
     }
@@ -147,11 +142,8 @@ public class EmployeController implements Initializable {
         try {
             FXMLLoader loader = new FXMLLoader(getClass().getResource("/login.fxml"));
             Parent root = loader.load();
-
-            // Get the stage from the current context menu's owner window
             MenuItem menuItem = (MenuItem) actionEvent.getSource();
             Stage stage = (Stage) menuItem.getParentPopup().getOwnerWindow();
-
             stage.setScene(new Scene(root));
             stage.setTitle("Gestion de Congés - Connection");
             StageManager.addStage(stage);
@@ -201,7 +193,10 @@ public class EmployeController implements Initializable {
         } else {
             System.err.println("Image path is null for user: " + SessionManager.getInstance().getUtilisateur());
         }
-        //CU_solde.setText(String.valueOf(SessionManager.getInstance().getUtilisateur().getSoldeConge()));
+        CU_ANL.setText(String.valueOf(SessionManager.getInstance().getUtilisateur().getSoldeAnnuel()));
+        CU_EXP.setText(String.valueOf(SessionManager.getInstance().getUtilisateur().getSoldeExceptionnel()));
+        CU_MAL.setText(String.valueOf(SessionManager.getInstance().getUtilisateur().getSoldeMaladie()));
+        CU_MAT.setText(String.valueOf(SessionManager.getInstance().getUtilisateur().getSoldeMaternite()));
     }
     @FXML
     public void goto_profil(ActionEvent actionEvent) {
