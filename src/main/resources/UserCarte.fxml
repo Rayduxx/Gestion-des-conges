@@ -48,7 +48,7 @@
                   <Label fx:id="statut_card" prefHeight="28.0" prefWidth="243.0" text="Statut" />
                </children>
             </HBox>
-            <Label fx:id="periode_card" alignment="CENTER" contentDisplay="CENTER" prefHeight="28.0" prefWidth="228.0" text="Periode" />
+            <Label fx:id="periode_card" contentDisplay="CENTER" prefHeight="28.0" prefWidth="228.0" text="Periode" />
          </children>
       </VBox>
    </children>

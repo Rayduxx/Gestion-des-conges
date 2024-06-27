@@ -66,7 +66,16 @@ public class DemandeDepController {
     }
 
     @FXML void ApproverConge(ActionEvent event) {
+        Alert alert = new Alert(Alert.AlertType.CONFIRMATION);
+        alert.setTitle("Êtes vous sûrs?");
+        alert.setHeaderText("Êtes-vous certain de vouloir approver cette demande ?");
+        ButtonType Oui = new ButtonType("Oui");
+        ButtonType Non = new ButtonType("Non");
+        alert.getButtonTypes().setAll(Oui, Non);
+        Optional<ButtonType> result = alert.showAndWait();
+        if (result.isPresent() && result.get() == Oui) {
 
+        }
     }
 
     @FXML void RefuserConge(ActionEvent event) {
@@ -94,8 +103,6 @@ public class DemandeDepController {
                     stage.setScene(scene);
                     stage.setTitle("Mailing de Demande");
                     stage.show();
-                    StageManager.addStage(stage);
-                    StageManager.addStage(stage);
                 } catch (IOException e) {
                     e.printStackTrace();
                 }
@@ -107,4 +114,5 @@ public class DemandeDepController {
         Stage stage = (Stage) ((Node) event.getSource()).getScene().getWindow();
         stage.close();
     }
+
 }
