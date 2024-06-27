@@ -11,6 +11,7 @@ import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.util.List;
 import java.util.ResourceBundle;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
@@ -26,9 +27,7 @@ import javafx.scene.control.ContextMenu;
 import javafx.scene.layout.Pane;
 import javafx.scene.layout.Priority;
 import javafx.stage.Stage;
-import tn.bfpme.models.Conge;
-import tn.bfpme.models.Statut;
-import tn.bfpme.models.TypeConge;
+import tn.bfpme.models.*;
 import tn.bfpme.services.ServiceConge;
 import tn.bfpme.services.ServiceUtilisateur;
 import tn.bfpme.utils.MyDataBase;
@@ -47,6 +46,8 @@ public class DemandeDepListeController implements Initializable {
     private final ServiceConge CongeS = new ServiceConge();
     private final ServiceUtilisateur UserS = new ServiceUtilisateur();
     public void load() {
+
+        System.out.println("Loading demandes...");
         ColumnConstraints columnConstraints = new ColumnConstraints();
         columnConstraints.setHgrow(Priority.ALWAYS);
         DemandesContainer.getColumnConstraints().add(columnConstraints);
@@ -54,24 +55,46 @@ public class DemandeDepListeController implements Initializable {
         DemandesContainer.setPadding(new Insets(4));
         int row = 0;
         try {
-            for (Conge conge : UserS.afficherusers().getConges()) {
-                FXMLLoader fxmlLoader = new FXMLLoader();
-                fxmlLoader.setLocation(getClass().getResource("/UserCarte.fxml"));
-                Pane CardBox = fxmlLoader.load();
-                CongeCarteController cardC = fxmlLoader.getController();
-                cardC.setData(conge);
+            UserConge userConge = UserS.afficherusers();
+            System.out.println("UserConge object: " + userConge);
+            List<Utilisateur> users = userConge.getUsers();
+            List<Conge> conges = userConge.getConges();
+            System.out.println("Number of users: " + users.size());
+            System.out.println("Number of conges: " + conges.size());
 
-                DemandesContainer.add(CardBox, 0 , row++);
-                GridPane.setMargin(CardBox, new Insets(4, 4, 4, 4));
-                CardBox.setMaxWidth(Double.MAX_VALUE);
-                DemandesContainer.setColumnSpan(CardBox, GridPane.REMAINING);
-                GridPane.setHalignment(CardBox, javafx.geometry.HPos.CENTER);
+            for (Conge conge : conges) {
+                for (Utilisateur user : users) {
+                    if (conge.getIdUser() == user.getIdUser()) {
+                        System.out.println("Processing conge for user: " + user.getNom() + " " + user.getPrenom());
+                        FXMLLoader fxmlLoader = new FXMLLoader();
+                        fxmlLoader.setLocation(getClass().getResource("/UserCarte.fxml"));
+                        try {
+                            Pane cardBox = fxmlLoader.load();
+                            UserCarteController cardu = fxmlLoader.getController();
+                            cardu.setData(conge, user);
 
+                            DemandesContainer.add(cardBox, 0, row++);
+                            GridPane.setMargin(cardBox, new Insets(4, 4, 4, 4));
+                            cardBox.setMaxWidth(Double.MAX_VALUE);
+                            DemandesContainer.setColumnSpan(cardBox, GridPane.REMAINING);
+                            GridPane.setHalignment(cardBox, javafx.geometry.HPos.CENTER);
+
+                            System.out.println("Added card for user: " + user.getNom() + " " + user.getPrenom());
+                        } catch (IOException e) {
+                            System.err.println("Error loading UserCarte.fxml: " + e.getMessage());
+                        }
+                        break; // Exit the inner loop once the correct user is found
+                    }
+                }
             }
-        } catch (IOException e) {
+        } catch (Exception e) {
+            System.err.println("Error in load method: " + e.getMessage());
             e.printStackTrace();
         }
+
     }
+
+
 
 
 

@@ -15,20 +15,18 @@ public class ServiceUtilisateur implements IUtilisateur {
     public ServiceUtilisateur() {
         cnx = MyDataBase.getInstance().getCnx();
     }
-    @Override
     public UserConge afficherusers() {
-        String departement = String.valueOf(SessionManager.getInstance().getDepartement());
         List<Utilisateur> users = new ArrayList<>();
         List<Conge> conges = new ArrayList<>();
         String query = "SELECT utilisateur.ID_User, utilisateur.Nom, utilisateur.Prenom, utilisateur.Email, utilisateur.Image, " +
-                "conge.TypeConge, conge.Statut, conge.DateFin, conge.DateDebut " +
+                "conge.ID_Conge, conge.TypeConge, conge.Statut, conge.DateFin, conge.DateDebut " +
                 "FROM utilisateur " +
                 "JOIN employe ON utilisateur.ID_User = employe.ID_User " +
-                "JOIN conge ON utilisateur.ID_User = conge.ID_User " +
-                "WHERE employe.Departement LIKE '%" + departement + "%'";
+                "JOIN conge ON utilisateur.ID_User = conge.ID_User";
         try {
-            Statement ste = cnx.createStatement();
-            ResultSet rs = ste.executeQuery(query);
+            System.out.println("Executing query: " + query);
+            PreparedStatement ps = cnx.prepareStatement(query);
+            ResultSet rs = ps.executeQuery();
             while (rs.next()) {
                 Utilisateur user = new Utilisateur();
                 user.setIdUser(rs.getInt("ID_User"));
@@ -41,17 +39,23 @@ public class ServiceUtilisateur implements IUtilisateur {
                 }
 
                 Conge conge = new Conge();
+                conge.setIdConge(rs.getInt("ID_Conge"));
                 conge.setDateDebut(rs.getDate("DateDebut").toLocalDate());
                 conge.setDateFin(rs.getDate("DateFin").toLocalDate());
                 conge.setTypeConge(TypeConge.valueOf(rs.getString("TypeConge")));
                 conge.setStatut(Statut.valueOf(rs.getString("Statut")));
+                conge.setIdUser(rs.getInt("ID_User"));
                 conges.add(conge);
             }
+            System.out.println("Loaded users: " + users);
+            System.out.println("Loaded conges: " + conges);
         } catch (SQLException ex) {
-            System.out.println(ex.getMessage());
+            System.out.println("SQL Error: " + ex.getMessage());
+            ex.printStackTrace();
         }
         return new UserConge(users, conges);
     }
+
 
 
     public void checkEmployee(int userId, Utilisateur user) throws SQLException {

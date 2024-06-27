@@ -10,7 +10,7 @@
 <?import javafx.scene.layout.Pane?>
 <?import javafx.scene.layout.RowConstraints?>
 
-<Pane fx:id="UserCard" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="200.0" prefWidth="400.0" stylesheets="@assets/css/style.css" xmlns="http://javafx.com/javafx/21" xmlns:fx="http://javafx.com/fxml/1" fx:controller="tn.bfpme.controllers.UserCarte">
+<Pane fx:id="UserCard" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="200.0" prefWidth="400.0" stylesheets="@assets/css/style.css" xmlns="http://javafx.com/javafx/21" xmlns:fx="http://javafx.com/fxml/1" fx:controller="tn.bfpme.controllers.UserCarteController">
    <children>
       <ImageView fx:id="pdp_card" fitHeight="118.0" fitWidth="125.0" layoutX="14.0" layoutY="14.0" pickOnBounds="true" preserveRatio="true" />
       <GridPane layoutX="161.0" layoutY="15.0" prefHeight="169.0" prefWidth="228.0">
@@ -36,6 +36,6 @@
             <Label fx:id="periode_card" alignment="CENTER" contentDisplay="CENTER" prefHeight="28.0" prefWidth="228.0" GridPane.rowIndex="3" />
          </children>
       </GridPane>
-      <Button layoutX="17.0" layoutY="149.0" mnemonicParsing="false" onAction="#afficherdemande" prefHeight="35.0" prefWidth="119.0" text="Afficher Demande" />
+      <Button layoutX="17.0" layoutY="149.0" mnemonicParsing="false"  prefHeight="35.0" prefWidth="119.0" text="Afficher Demande" />
    </children>
 </Pane>

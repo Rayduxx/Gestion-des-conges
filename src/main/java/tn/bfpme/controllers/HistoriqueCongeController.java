@@ -49,7 +49,7 @@ public class HistoriqueCongeController implements Initializable  {
 
     @Override
     public void initialize(URL url, ResourceBundle rb) {
-        load();0
+        load();
         contextMenu = new ContextMenu();
         MenuItem boiteItem = new MenuItem("boîte de réception");
         MenuItem aideItem = new MenuItem("Aide et support");
