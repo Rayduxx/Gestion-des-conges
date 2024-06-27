@@ -48,16 +48,7 @@ public class UserCarteController {
         }
         nomprenom_card.setText(user.getPrenom() + " " + user.getNom());
         email_card.setText(user.getEmail());
-        //periode_card.setText("De " + conge.getDateDebut() + " à " + conge.getDateFin());
-        Text text1 = new Text("De ");
-        Text text2 = new Text(conge.getDateDebut().toString());
-        text2.setStyle("-fx-font-weight: bold");
-        Text text3 = new Text(" à ");
-        Text text4 = new Text(conge.getDateFin().toString());
-        text4.setStyle("-fx-font-weight: bold");
-        TextFlow textFlow = new TextFlow(text1, text2, text3, text4);
-        periode_card.setGraphic(textFlow);
-
+        periode_card.setText("De " + conge.getDateDebut() + " à " + conge.getDateFin());
         statut_card.setText(String.valueOf(conge.getStatut()));
         type_card.setText(String.valueOf(conge.getTypeConge()));
         UserCard.setStyle("-fx-border-radius: 5px; -fx-border-color: #808080;");
