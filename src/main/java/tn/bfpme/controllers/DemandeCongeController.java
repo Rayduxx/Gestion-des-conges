@@ -19,6 +19,7 @@ import tn.bfpme.services.ServiceConge;
 import tn.bfpme.utils.MyDataBase;
 import tn.bfpme.utils.SessionManager;
 import tn.bfpme.utils.StageManager;
+
 import java.io.File;
 import java.io.IOException;
 import java.net.URL;
@@ -35,24 +36,37 @@ import java.util.UUID;
 import java.time.LocalDate;
 import java.util.ResourceBundle;
 
-public class DemandeCongeController implements Initializable{
-    @FXML private ResourceBundle resources;
-    @FXML private URL location;
-    @FXML private ComboBox<String> cb_typeconge;
-    @FXML private Pane paneAnnuel;
-    @FXML private Pane paneExeptionnel;
-    @FXML private Pane paneMaladie;
-    @FXML private Pane paneSousSolde;
-    @FXML private Pane paneMaternite;
-    @FXML private Pane paneNaissance;
-    @FXML private Pane paneGrossesse;
-    @FXML private Button settingsButton;
-    @FXML private Button btnListe;
+public class DemandeCongeController implements Initializable {
+    @FXML
+    private ResourceBundle resources;
+    @FXML
+    private URL location;
+    @FXML
+    private ComboBox<String> cb_typeconge;
+    @FXML
+    private Pane paneAnnuel;
+    @FXML
+    private Pane paneExeptionnel;
+    @FXML
+    private Pane paneMaladie;
+    @FXML
+    private Pane paneSousSolde;
+    @FXML
+    private Pane paneMaternite;
+    @FXML
+    private Pane paneNaissance;
+    @FXML
+    private Pane paneGrossesse;
+    @FXML
+    private Button settingsButton;
+    @FXML
+    private Button btnListe;
     private ContextMenu contextMenu;
     private final ServiceConge CongeS = new ServiceConge();
     Connection cnx = MyDataBase.getInstance().getCnx();
     ObservableList<String> CongeList = FXCollections.observableArrayList("Annuel", "Exeptionnel", "Maladie", "Sous-Solde", "Maternité");
     LocalDate currentDate = LocalDate.now();
+
     @Override
     public void initialize(URL url, ResourceBundle resourceBundle) {
         cb_typeconge.setValue("Selectioner type");
@@ -70,11 +84,13 @@ public class DemandeCongeController implements Initializable{
         boiteItem.setOnAction(this::viewboite);
         aideItem.setOnAction(this::viewaide);
         logoutItem.setOnAction(this::viewdeconnection);
-        if (SessionManager.getInstance().getUtilisateur().getRole().equals(Role.ChefDepartement)){
+        if (SessionManager.getInstance().getUtilisateur().getRole().equals(Role.ChefDepartement)) {
             btnListe.setVisible(true);
         }
     }
-    @FXML void TypeSelec(ActionEvent event) {
+
+    @FXML
+    void TypeSelec(ActionEvent event) {
         if (cb_typeconge.getValue().equals("Annuel")) {
             paneAnnuel.setVisible(true);
             paneExeptionnel.setVisible(false);
@@ -111,20 +127,29 @@ public class DemandeCongeController implements Initializable{
             paneMaternite.setVisible(true);
         }
     }
-    @FXML void switchGrossesse(ActionEvent event) {
+
+    @FXML
+    void switchGrossesse(ActionEvent event) {
         paneGrossesse.setVisible(true);
         paneNaissance.setVisible(false);
     }
-    @FXML void switchNaissance(ActionEvent event) {
+
+    @FXML
+    void switchNaissance(ActionEvent event) {
         paneNaissance.setVisible(true);
         paneGrossesse.setVisible(false);
     }
 
     /*  Demande Congé Annuel */
-    @FXML private DatePicker ANL_DD;
-    @FXML private DatePicker ANL_DF;
-    @FXML private TextArea ANL_Desc;
-    @FXML void ANL_Demander(ActionEvent event) {
+    @FXML
+    private DatePicker ANL_DD;
+    @FXML
+    private DatePicker ANL_DF;
+    @FXML
+    private TextArea ANL_Desc;
+
+    @FXML
+    void ANL_Demander(ActionEvent event) {
         LocalDate DD = ANL_DD.getValue();
         LocalDate DF = ANL_DF.getValue();
         String DESC = ANL_Desc.getText();
@@ -157,10 +182,10 @@ public class DemandeCongeController implements Initializable{
             PreparedStatement pstm = cnx.prepareStatement(qry);
             pstm.setInt(1, SessionManager.getInstance().getUtilisateur().getIdUser());
             ResultSet rs = pstm.executeQuery();
-            if (rs.next() ){
+            if (rs.next()) {
                 //long daysBetween = ChronoUnit.DAYS.between(DD, DF);
-                if (rs.getInt("Solde_Annuel") > 0){
-                    CongeS.Add(new Conge(0, DD, DF, TypeConge.Annuel, Statut.En_Attente, SessionManager.getInstance().getUtilisateur().getIdUser(),"", DESC));
+                if (rs.getInt("Solde_Annuel") > 0) {
+                    CongeS.Add(new Conge(0, DD, DF, TypeConge.Annuel, Statut.En_Attente, SessionManager.getInstance().getUtilisateur().getIdUser(), "", DESC));
                     Alert successAlert = new Alert(Alert.AlertType.CONFIRMATION);
                     successAlert.setTitle("Succès");
                     successAlert.setHeaderText("Demande de congé créée avec succès !");
@@ -199,12 +224,19 @@ public class DemandeCongeController implements Initializable{
             ex.printStackTrace();
         }
     }
+
     /*  Demande Congé Exeptionnel */
-    @FXML private DatePicker EXP_DD;
-    @FXML private DatePicker EXP_DF;
-    @FXML private TextArea EXP_Desc;
-    @FXML private TextField EXP_Doc_Link;
-    @FXML void EXP_Demander(ActionEvent event) {
+    @FXML
+    private DatePicker EXP_DD;
+    @FXML
+    private DatePicker EXP_DF;
+    @FXML
+    private TextArea EXP_Desc;
+    @FXML
+    private TextField EXP_Doc_Link;
+
+    @FXML
+    void EXP_Demander(ActionEvent event) {
         LocalDate DD = EXP_DD.getValue();
         LocalDate DF = EXP_DF.getValue();
         String DESC = EXP_Desc.getText();
@@ -241,7 +273,7 @@ public class DemandeCongeController implements Initializable{
             alert.showAndWait();
             return;
         }
-        CongeS.Add(new Conge(0, DD, DF, TypeConge.Exceptionnel, Statut.En_Attente, SessionManager.getInstance().getUtilisateur().getIdUser(),DOCLINK, DESC));
+        CongeS.Add(new Conge(0, DD, DF, TypeConge.Exceptionnel, Statut.En_Attente, SessionManager.getInstance().getUtilisateur().getIdUser(), DOCLINK, DESC));
         Alert successAlert = new Alert(Alert.AlertType.CONFIRMATION);
         successAlert.setTitle("Succès");
         successAlert.setHeaderText("Demande de congé créée avec succès !");
@@ -264,7 +296,9 @@ public class DemandeCongeController implements Initializable{
             }
         }
     }
-    @FXML void EXP_Doc_Imp(ActionEvent event) {
+
+    @FXML
+    void EXP_Doc_Imp(ActionEvent event) {
         String documentPath = null;
         FileChooser fileChooser = new FileChooser();
         fileChooser.setTitle("Choisir votre document justicatif");
@@ -288,12 +322,19 @@ public class DemandeCongeController implements Initializable{
             }
         }
     }
+
     /*  Demande Congé Maladie */
-    @FXML private DatePicker MAL_DD;
-    @FXML private DatePicker MAL_DF;
-    @FXML private TextArea MAL_Desc;
-    @FXML private TextField MAL_Doc_Link;
-    @FXML void MAL_Demander(ActionEvent event) {
+    @FXML
+    private DatePicker MAL_DD;
+    @FXML
+    private DatePicker MAL_DF;
+    @FXML
+    private TextArea MAL_Desc;
+    @FXML
+    private TextField MAL_Doc_Link;
+
+    @FXML
+    void MAL_Demander(ActionEvent event) {
         LocalDate DD = MAL_DD.getValue();
         LocalDate DF = MAL_DF.getValue();
         String DESC = MAL_Desc.getText();
@@ -353,7 +394,9 @@ public class DemandeCongeController implements Initializable{
             }
         }
     }
-    @FXML void MAL_Doc_Imp(ActionEvent event) {
+
+    @FXML
+    void MAL_Doc_Imp(ActionEvent event) {
         String documentPath = null;
         FileChooser fileChooser = new FileChooser();
         fileChooser.setTitle("Choisir votre certificat medicale");
@@ -377,11 +420,17 @@ public class DemandeCongeController implements Initializable{
             }
         }
     }
+
     /*  Demande Congé Sous-Solde */
-    @FXML private DatePicker SS_DD;
-    @FXML private DatePicker SS_DF;
-    @FXML private TextArea SS_Desc;
-    @FXML void SS_Demander(ActionEvent event) {
+    @FXML
+    private DatePicker SS_DD;
+    @FXML
+    private DatePicker SS_DF;
+    @FXML
+    private TextArea SS_Desc;
+
+    @FXML
+    void SS_Demander(ActionEvent event) {
         LocalDate DD = SS_DD.getValue();
         LocalDate DF = SS_DF.getValue();
         String DESC = SS_Desc.getText();
@@ -435,12 +484,19 @@ public class DemandeCongeController implements Initializable{
             System.out.println("Closing current scene...");
         }
     }
+
     /*  Demande Congé Maternité (GROSSESSE) */
-    @FXML private DatePicker GRO_DD;
-    @FXML private DatePicker GRO_DF;
-    @FXML private TextArea GRO_Desc;
-    @FXML private TextField GRO_Doc_Link;
-    @FXML void GRO_Demander(ActionEvent event) {
+    @FXML
+    private DatePicker GRO_DD;
+    @FXML
+    private DatePicker GRO_DF;
+    @FXML
+    private TextArea GRO_Desc;
+    @FXML
+    private TextField GRO_Doc_Link;
+
+    @FXML
+    void GRO_Demander(ActionEvent event) {
         LocalDate DD = GRO_DD.getValue();
         LocalDate DF = GRO_DF.getValue();
         String DESC = GRO_Desc.getText();
@@ -503,7 +559,9 @@ public class DemandeCongeController implements Initializable{
             System.out.println("Closing current scene...");
         }
     }
-    @FXML void GRO_Doc_Imp(ActionEvent event) {
+
+    @FXML
+    void GRO_Doc_Imp(ActionEvent event) {
         String documentPath = null;
         FileChooser fileChooser = new FileChooser();
         fileChooser.setTitle("Choisir votre certificat medicale de grossesse");
@@ -527,12 +585,19 @@ public class DemandeCongeController implements Initializable{
             }
         }
     }
+
     /*  Demande Congé Maternité (NAISSANCE) */
-    @FXML private DatePicker NAI_DD;
-    @FXML private DatePicker NAI_DF;
-    @FXML private TextArea NAI_Desc;
-    @FXML private TextField NAI_Doc_Link;
-    @FXML void NAI_Demander(ActionEvent event) {
+    @FXML
+    private DatePicker NAI_DD;
+    @FXML
+    private DatePicker NAI_DF;
+    @FXML
+    private TextArea NAI_Desc;
+    @FXML
+    private TextField NAI_Doc_Link;
+
+    @FXML
+    void NAI_Demander(ActionEvent event) {
         LocalDate DD = NAI_DD.getValue();
         LocalDate DF = NAI_DF.getValue();
         String DESC = NAI_Desc.getText();
@@ -593,7 +658,9 @@ public class DemandeCongeController implements Initializable{
         }
 
     }
-    @FXML void NAI_Doc_Imp(ActionEvent event) {
+
+    @FXML
+    void NAI_Doc_Imp(ActionEvent event) {
         String documentPath = null;
         FileChooser fileChooser = new FileChooser();
         fileChooser.setTitle("Choisir votre certificat medicale de naissance");
@@ -618,7 +685,8 @@ public class DemandeCongeController implements Initializable{
         }
     }
 
-    @FXML public void Demander(ActionEvent actionEvent) {
+    @FXML
+    public void Demander(ActionEvent actionEvent) {
         try {
             FXMLLoader loader = new FXMLLoader(getClass().getResource("/DemandeConge.fxml"));
             Parent root = loader.load();
@@ -632,7 +700,9 @@ public class DemandeCongeController implements Initializable{
             e.printStackTrace();
         }
     }
-    @FXML public void Historique(ActionEvent actionEvent) {
+
+    @FXML
+    public void Historique(ActionEvent actionEvent) {
         try {
             FXMLLoader loader = new FXMLLoader(getClass().getResource("/HistoriqueConge.fxml"));
             Parent root = loader.load();
@@ -647,7 +717,9 @@ public class DemandeCongeController implements Initializable{
             e.printStackTrace();
         }
     }
-    @FXML void viewdeconnection(ActionEvent actionEvent) {
+
+    @FXML
+    void viewdeconnection(ActionEvent actionEvent) {
         SessionManager.getInstance().cleanUserSession();
         try {
             FXMLLoader loader = new FXMLLoader(getClass().getResource("/login.fxml"));
@@ -662,9 +734,15 @@ public class DemandeCongeController implements Initializable{
             e.printStackTrace();
         }
     }
-    void viewaide(ActionEvent actionEvent) {}
-    void viewboite(ActionEvent actionEvent) {}
-    @FXML public void goto_profil(ActionEvent actionEvent) {
+
+    void viewaide(ActionEvent actionEvent) {
+    }
+
+    void viewboite(ActionEvent actionEvent) {
+    }
+
+    @FXML
+    public void goto_profil(ActionEvent actionEvent) {
         try {
             FXMLLoader loader = new FXMLLoader(getClass().getResource("/profile.fxml"));
             Parent root = loader.load();
@@ -680,14 +758,16 @@ public class DemandeCongeController implements Initializable{
         }
 
     }
-    @FXML void ListeDesDemandes(ActionEvent event) {
+
+    @FXML
+    void ListeDesDemandes(ActionEvent event) {
         try {
             FXMLLoader loader = new FXMLLoader(getClass().getResource("/DemandeDepListe.fxml"));
             Parent root = loader.load();
             Stage stage = (Stage) ((Node) event.getSource()).getScene().getWindow();
             Scene scene = new Scene(root);
             stage.setScene(scene);
-            stage.setTitle("Liste des demandes - "+SessionManager.getInstance().getDepartement());
+            stage.setTitle("Liste des demandes - " + SessionManager.getInstance().getDepartement());
             stage.show();
             StageManager.addStage(stage);
             StageManager.addStage(stage);
