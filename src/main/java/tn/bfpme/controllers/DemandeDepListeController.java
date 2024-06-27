@@ -7,10 +7,6 @@ import javafx.fxml.Initializable;
 
 import java.io.IOException;
 import java.net.URL;
-import java.sql.Connection;
-import java.sql.PreparedStatement;
-import java.sql.ResultSet;
-import java.sql.SQLException;
 import java.util.List;
 import java.util.ResourceBundle;
 import javafx.event.ActionEvent;
@@ -30,7 +26,6 @@ import javafx.stage.Stage;
 import tn.bfpme.models.*;
 import tn.bfpme.services.ServiceConge;
 import tn.bfpme.services.ServiceUtilisateur;
-import tn.bfpme.utils.MyDataBase;
 import tn.bfpme.utils.SessionManager;
 import tn.bfpme.utils.StageManager;
 
@@ -44,6 +39,7 @@ public class DemandeDepListeController implements Initializable {
     private Conge conge;
     private final ServiceConge CongeS = new ServiceConge();
     private final ServiceUtilisateur UserS = new ServiceUtilisateur();
+
     public void load() {
         System.out.println("Loading demandes...");
         DemandesContainer.getColumnConstraints().clear();
@@ -92,8 +88,8 @@ public class DemandeDepListeController implements Initializable {
         }
     }
 
-
     ObservableList<String> TriListe = FXCollections.observableArrayList("Statut", "Type", "Nom", "Prenom", "Date Debut", "Date Fin");
+
     @Override public void initialize(URL url, ResourceBundle rb) {
         load();
         comboTri.setValue("Selectioner");
@@ -104,8 +100,8 @@ public class DemandeDepListeController implements Initializable {
         MenuItem logoutItem = new MenuItem("Déconnexion");
         contextMenu.getItems().addAll(boiteItem, aideItem, logoutItem);
         settingsButton.setOnAction(event -> {
-            double screenX = settingsButton.localToScreen(settingsButton.getBoundsInLocal()).getMinX()-70;
-            double screenY = settingsButton.localToScreen(settingsButton.getBoundsInLocal()).getMaxY()+10;
+            double screenX = settingsButton.localToScreen(settingsButton.getBoundsInLocal()).getMinX() - 70;
+            double screenY = settingsButton.localToScreen(settingsButton.getBoundsInLocal()).getMaxY() + 10;
             contextMenu.show(settingsButton, screenX, screenY);
         });
         boiteItem.setOnAction(this::viewboite);
@@ -117,253 +113,81 @@ public class DemandeDepListeController implements Initializable {
     }
 
     @FXML void Recherche(KeyEvent event) {
-
+        // Implement search functionality here
     }
 
     @FXML void TriPar(ActionEvent event) {
         String TYPE = comboTri.getValue();
-        if (TYPE.equals("Statut")) {
-            int row = 0;
-            int column = 0;
-            try {
-                DemandesContainer.getChildren().clear();
-                UserConge userConge = UserS.TriStatut();
-                List<Utilisateur> users = userConge.getUsers();
-                List<Conge> conges = userConge.getConges();
-                for (Conge conge : conges) {
-                    for (Utilisateur user : users) {
-                        if (conge.getIdUser() == user.getIdUser()) {
-                            FXMLLoader fxmlLoader = new FXMLLoader();
-                            fxmlLoader.setLocation(getClass().getResource("/UserCarte.fxml"));
-                            try {
-                                Pane cardBox = fxmlLoader.load();
-                                UserCarteController cardu = fxmlLoader.getController();
-                                cardu.setData(conge, user);
-                                DemandesContainer.add(cardBox, column, row);
-                                GridPane.setMargin(cardBox, new Insets(10));
-                                cardBox.setMaxWidth(Double.MAX_VALUE);
-                                column++;
-                                if (column == 3) {
-                                    column = 0;
-                                    row++;
-                                }
-                            } catch (IOException e) {
-                                System.err.println("Error loading UserCarte.fxml: " + e.getMessage());
-                            }
-                            break;
-                        }
-                    }
-                }
-            } catch (Exception e) {
-                e.printStackTrace();
-            }
-
-        }
-        else if (TYPE.equals("Type")) {
-            int row = 0;
-            int column = 0;
-            try {
-                DemandesContainer.getChildren().clear();
-                UserConge userConge = UserS.TriType();
-                List<Utilisateur> users = userConge.getUsers();
-                List<Conge> conges = userConge.getConges();
-                for (Conge conge : conges) {
-                    for (Utilisateur user : users) {
-                        if (conge.getIdUser() == user.getIdUser()) {
-                            FXMLLoader fxmlLoader = new FXMLLoader();
-                            fxmlLoader.setLocation(getClass().getResource("/UserCarte.fxml"));
-                            try {
-                                Pane cardBox = fxmlLoader.load();
-                                UserCarteController cardu = fxmlLoader.getController();
-                                cardu.setData(conge, user);
-                                DemandesContainer.add(cardBox, column, row);
-                                GridPane.setMargin(cardBox, new Insets(10));
-                                cardBox.setMaxWidth(Double.MAX_VALUE);
-                                column++;
-                                if (column == 3) {
-                                    column = 0;
-                                    row++;
-                                }
-                            } catch (IOException e) {
-                                System.err.println("Error loading UserCarte.fxml: " + e.getMessage());
-                            }
-                            break;
-                        }
-                    }
-                }
-            } catch (Exception e) {
-                e.printStackTrace();
-            }
-        }
-        else if (TYPE.equals("Nom")) {
-            int row = 0;
-            int column = 0;
-            try {
-                DemandesContainer.getChildren().clear();
-                UserConge userConge = UserS.TriNom();
-                List<Utilisateur> users = userConge.getUsers();
-                List<Conge> conges = userConge.getConges();
-                for (Conge conge : conges) {
-                    for (Utilisateur user : users) {
-                        if (conge.getIdUser() == user.getIdUser()) {
-                            FXMLLoader fxmlLoader = new FXMLLoader();
-                            fxmlLoader.setLocation(getClass().getResource("/UserCarte.fxml"));
-                            try {
-                                Pane cardBox = fxmlLoader.load();
-                                UserCarteController cardu = fxmlLoader.getController();
-                                cardu.setData(conge, user);
-                                DemandesContainer.add(cardBox, column, row);
-                                GridPane.setMargin(cardBox, new Insets(10));
-                                cardBox.setMaxWidth(Double.MAX_VALUE);
-                                column++;
-                                if (column == 3) {
-                                    column = 0;
-                                    row++;
-                                }
-                            } catch (IOException e) {
-                                System.err.println("Error loading UserCarte.fxml: " + e.getMessage());
-                            }
-                            break;
-                        }
-                    }
-                }
-            } catch (Exception e) {
-                e.printStackTrace();
-            }
-        }
-        else if (TYPE.equals("Prenom")) {
-            int row = 0;
-            int column = 0;
-            try {
-                DemandesContainer.getChildren().clear();
-                UserConge userConge = UserS.TriPrenom();
-                List<Utilisateur> users = userConge.getUsers();
-                List<Conge> conges = userConge.getConges();
-                for (Conge conge : conges) {
-                    for (Utilisateur user : users) {
-                        if (conge.getIdUser() == user.getIdUser()) {
-                            FXMLLoader fxmlLoader = new FXMLLoader();
-                            fxmlLoader.setLocation(getClass().getResource("/UserCarte.fxml"));
-                            try {
-                                Pane cardBox = fxmlLoader.load();
-                                UserCarteController cardu = fxmlLoader.getController();
-                                cardu.setData(conge, user);
-                                DemandesContainer.add(cardBox, column, row);
-                                GridPane.setMargin(cardBox, new Insets(10));
-                                cardBox.setMaxWidth(Double.MAX_VALUE);
-                                column++;
-                                if (column == 3) {
-                                    column = 0;
-                                    row++;
-                                }
-                            } catch (IOException e) {
-                                System.err.println("Error loading UserCarte.fxml: " + e.getMessage());
-                            }
-                            break;
-                        }
-                    }
-                }
-            } catch (Exception e) {
-                e.printStackTrace();
-            }
-        }
-        else if (TYPE.equals("Date Debut")) {
-            int row = 0;
-            int column = 0;
-            try {
-                DemandesContainer.getChildren().clear();
-                UserConge userConge = UserS.TriDateDebut();
-                List<Utilisateur> users = userConge.getUsers();
-                List<Conge> conges = userConge.getConges();
-                for (Conge conge : conges) {
-                    for (Utilisateur user : users) {
-                        if (conge.getIdUser() == user.getIdUser()) {
-                            FXMLLoader fxmlLoader = new FXMLLoader();
-                            fxmlLoader.setLocation(getClass().getResource("/UserCarte.fxml"));
-                            try {
-                                Pane cardBox = fxmlLoader.load();
-                                UserCarteController cardu = fxmlLoader.getController();
-                                cardu.setData(conge, user);
-                                DemandesContainer.add(cardBox, column, row);
-                                GridPane.setMargin(cardBox, new Insets(10));
-                                cardBox.setMaxWidth(Double.MAX_VALUE);
-                                column++;
-                                if (column == 3) {
-                                    column = 0;
-                                    row++;
-                                }
-                            } catch (IOException e) {
-                                System.err.println("Error loading UserCarte.fxml: " + e.getMessage());
-                            }
-                            break;
-                        }
-                    }
-                }
-            } catch (Exception e) {
-                e.printStackTrace();
-            }
-        }
-        else if (TYPE.equals("Date Fin")) {
-            int row = 0;
-            int column = 0;
-            try {
-                DemandesContainer.getChildren().clear();
-                UserConge userConge = UserS.TriDateFin();
-                List<Utilisateur> users = userConge.getUsers();
-                List<Conge> conges = userConge.getConges();
-                for (Conge conge : conges) {
-                    for (Utilisateur user : users) {
-                        if (conge.getIdUser() == user.getIdUser()) {
-                            FXMLLoader fxmlLoader = new FXMLLoader();
-                            fxmlLoader.setLocation(getClass().getResource("/UserCarte.fxml"));
-                            try {
-                                Pane cardBox = fxmlLoader.load();
-                                UserCarteController cardu = fxmlLoader.getController();
-                                cardu.setData(conge, user);
-                                DemandesContainer.add(cardBox, column, row);
-                                GridPane.setMargin(cardBox, new Insets(10));
-                                cardBox.setMaxWidth(Double.MAX_VALUE);
-                                column++;
-                                if (column == 3) {
-                                    column = 0;
-                                    row++;
-                                }
-                            } catch (IOException e) {
-                                System.err.println("Error loading UserCarte.fxml: " + e.getMessage());
-                            }
-                            break;
-                        }
-                    }
-                }
-            } catch (Exception e) {
-                e.printStackTrace();
+        if (TYPE != null) {
+            switch (TYPE) {
+                case "Statut":
+                    triGenerique(UserS.TriStatut());
+                    break;
+                case "Type":
+                    triGenerique(UserS.TriType());
+                    break;
+                case "Nom":
+                    triGenerique(UserS.TriNom());
+                    break;
+                case "Prenom":
+                    triGenerique(UserS.TriPrenom());
+                    break;
+                case "Date Debut":
+                    triGenerique(UserS.TriDateDebut());
+                    break;
+                case "Date Fin":
+                    triGenerique(UserS.TriDateFin());
+                    break;
+                default:
+                    break;
             }
         }
     }
-    public void LoadCredits() {
-       /* int column = 0;
-        int row = 1;
+
+    private void triGenerique(UserConge userConge) {
+        int row = 0;
+        int column = 0;
         try {
-            for (Credit credit : afficher()) {
-                FXMLLoader fxmlLoader = new FXMLLoader();
-                fxmlLoader.setLocation(getClass().getResource("CardCredit.fxml"));
-                Pane userBox = fxmlLoader.load();
-                CardCreditController CCC = fxmlLoader.getController();
-                CCC.setData(credit);
-                if (column == 2) {
-                    column = 0;
-                    ++row;
+            DemandesContainer.getChildren().clear();
+            List<Utilisateur> users = userConge.getUsers();
+            List<Conge> conges = userConge.getConges();
+            for (Conge conge : conges) {
+                for (Utilisateur user : users) {
+                    if (conge.getIdUser() == user.getIdUser()) {
+                        FXMLLoader fxmlLoader = new FXMLLoader();
+                        fxmlLoader.setLocation(getClass().getResource("/UserCarte.fxml"));
+                        try {
+                            Pane cardBox = fxmlLoader.load();
+                            UserCarteController cardu = fxmlLoader.getController();
+                            cardu.setData(conge, user);
+                            DemandesContainer.add(cardBox, column, row);
+                            GridPane.setMargin(cardBox, new Insets(10));
+                            cardBox.setMaxWidth(Double.MAX_VALUE);
+                            column++;
+                            if (column == 3) {
+                                column = 0;
+                                row++;
+                            }
+                        } catch (IOException e) {
+                            System.err.println("Error loading UserCarte.fxml: " + e.getMessage());
+                        }
+                        break;
+                    }
                 }
-                CredContainer.add(userBox, column++, row);
-                GridPane.setMargin(userBox, new Insets(20));
             }
-        } catch (IOException e) {
+        } catch (Exception e) {
             e.printStackTrace();
-        }*/
+        }
     }
 
-    void viewaide(ActionEvent actionEvent){}
-    void viewboite(ActionEvent actionEvent){}
+    void viewaide(ActionEvent actionEvent) {
+        // Implement viewaide functionality here
+    }
+
+    void viewboite(ActionEvent actionEvent) {
+        // Implement viewboite functionality here
+    }
+
     @FXML void viewdeconnection(ActionEvent actionEvent) {
         SessionManager.getInstance().cleanUserSession();
         try {
@@ -373,12 +197,13 @@ public class DemandeDepListeController implements Initializable {
             Stage stage = (Stage) menuItem.getParentPopup().getOwnerWindow();
             stage.setScene(new Scene(root));
             stage.setTitle("Gestion de Congés - Connection");
-            StageManager.addStage(stage);
+            StageManager.addStage("Login", stage);
             stage.show();
         } catch (IOException e) {
             e.printStackTrace();
         }
     }
+
     @FXML void Demander(ActionEvent event) {
         try {
             FXMLLoader loader = new FXMLLoader(getClass().getResource("/DemandeConge.fxml"));
@@ -388,11 +213,12 @@ public class DemandeDepListeController implements Initializable {
             stage.setScene(scene);
             stage.setTitle("Demande congé");
             stage.show();
-            StageManager.addStage(stage);
+            StageManager.addStage("DemandeConge", stage);
         } catch (IOException e) {
             e.printStackTrace();
         }
     }
+
     @FXML void Historique(ActionEvent event) {
         try {
             FXMLLoader loader = new FXMLLoader(getClass().getResource("/HistoriqueConge.fxml"));
@@ -402,12 +228,12 @@ public class DemandeDepListeController implements Initializable {
             stage.setScene(scene);
             stage.setTitle("Historique congé");
             stage.show();
-            StageManager.addStage(stage);
-            StageManager.addStage(stage);
+            StageManager.addStage("HistoriqueConge", stage);
         } catch (IOException e) {
             e.printStackTrace();
         }
     }
+
     @FXML void goto_profil(ActionEvent event) {
         try {
             FXMLLoader loader = new FXMLLoader(getClass().getResource("/profile.fxml"));
@@ -417,12 +243,12 @@ public class DemandeDepListeController implements Initializable {
             stage.setScene(scene);
             stage.setTitle("Mon profil");
             stage.show();
-            StageManager.addStage(stage);
-            StageManager.addStage(stage);
+            StageManager.addStage("Profile", stage);
         } catch (IOException e) {
             e.printStackTrace();
         }
     }
+
     @FXML void ListeDesDemandes(ActionEvent event) {
         try {
             FXMLLoader loader = new FXMLLoader(getClass().getResource("/DemandeDepListe.fxml"));
@@ -430,10 +256,9 @@ public class DemandeDepListeController implements Initializable {
             Stage stage = (Stage) ((Node) event.getSource()).getScene().getWindow();
             Scene scene = new Scene(root);
             stage.setScene(scene);
-            stage.setTitle("Liste des demandes - "+SessionManager.getInstance().getDepartement());
+            stage.setTitle("Liste des demandes - " + SessionManager.getInstance().getDepartement());
             stage.show();
-            StageManager.addStage(stage);
-            StageManager.addStage(stage);
+            StageManager.addStage("DemandeDepListe", stage);
         } catch (IOException e) {
             e.printStackTrace();
         }

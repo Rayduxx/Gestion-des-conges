@@ -3,13 +3,12 @@ package tn.bfpme.controllers;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
-import javafx.fxml.Initializable;
 import javafx.scene.Node;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
+import javafx.scene.control.*;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
-import javafx.scene.control.Tooltip;
 import javafx.scene.layout.GridPane;
 import javafx.scene.layout.Pane;
 import javafx.stage.Modality;
@@ -17,28 +16,23 @@ import javafx.stage.Stage;
 import tn.bfpme.models.Conge;
 import tn.bfpme.models.Statut;
 import tn.bfpme.models.TypeConge;
-import tn.bfpme.models.Utilisateur;
 import tn.bfpme.services.ServiceConge;
 import tn.bfpme.utils.MyDataBase;
 import tn.bfpme.utils.SessionManager;
+import tn.bfpme.utils.StageManager;
 
 import java.awt.*;
 import java.io.File;
 import java.io.IOException;
-import java.net.URL;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.time.LocalDate;
-import java.util.Objects;
-import java.util.ResourceBundle;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
-import static tn.bfpme.models.Utilisateur.getCurrent_User;
-
-public class CongeCarteController{
+public class CongeCarteController {
     @FXML private Pane Card;
     @FXML private Label cardDatedeb;
     @FXML private Label cardDatefin;
@@ -57,6 +51,7 @@ public class CongeCarteController{
     private TypeConge ctype;
     private Conge conge;
     private final ServiceConge CongeS = new ServiceConge();
+
     public void setData(Conge conge) {
         this.conge = conge;
         cardType.setText(String.valueOf(conge.getTypeConge()));
@@ -107,6 +102,7 @@ public class CongeCarteController{
         cfile = conge.getFile();
         cstatut = conge.getStatut();
     }
+
     public void refreshData(Conge conge) {
         setData(conge);
     }
@@ -124,12 +120,14 @@ public class CongeCarteController{
             newStage.initModality(Modality.WINDOW_MODAL);
             newStage.initOwner(((Node) actionEvent.getSource()).getScene().getWindow());
             newStage.showAndWait();
+            StageManager.addStage("ModifierConge", newStage);
         } catch (IOException e) {
             e.printStackTrace();
         }
     }
 
-    @FXML void suppConge(ActionEvent event) {
+    @FXML
+    void suppConge(ActionEvent event) {
         CongeS.deleteCongeByID(cid);
         ((GridPane) Card.getParent()).getChildren().remove(Card);
     }
@@ -150,4 +148,3 @@ public class CongeCarteController{
         }
     }
 }
-

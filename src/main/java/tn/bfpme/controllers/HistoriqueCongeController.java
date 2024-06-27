@@ -1,6 +1,5 @@
 package tn.bfpme.controllers;
 
-import javafx.application.Platform;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
@@ -10,34 +9,28 @@ import javafx.scene.Node;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.control.ContextMenu;
+import javafx.scene.control.MenuItem;
+import javafx.scene.control.Button;
+import javafx.scene.control.TextField;
+import javafx.scene.input.KeyEvent;
 import javafx.scene.layout.ColumnConstraints;
 import javafx.scene.layout.GridPane;
 import javafx.scene.layout.Pane;
 import javafx.scene.layout.Priority;
-import javafx.stage.Modality;
 import javafx.stage.Stage;
 import org.jetbrains.annotations.NotNull;
 import tn.bfpme.models.Conge;
 import tn.bfpme.models.Role;
 import tn.bfpme.services.ServiceConge;
-import javafx.scene.control.ContextMenu;
-import javafx.scene.control.MenuItem;
-import javafx.scene.control.Button;
-import java.awt.*;
-import javafx.scene.input.InputMethodEvent;
-import javafx.scene.input.KeyEvent;
+import tn.bfpme.utils.SessionManager;
+import tn.bfpme.utils.StageManager;
+
 import java.io.IOException;
 import java.net.URL;
 import java.sql.Connection;
 import java.util.ResourceBundle;
-import javafx.scene.control.TextField;
-import javafx.scene.layout.GridPane;
-import tn.bfpme.utils.SessionManager;
-import tn.bfpme.utils.StageManager;
 
-import static tn.bfpme.utils.StageManager.addStage;
-
-public class HistoriqueCongeController implements Initializable  {
+public class HistoriqueCongeController implements Initializable {
     private final ServiceConge CongeS = new ServiceConge();
     private Connection cnx;
     private ContextMenu contextMenu;
@@ -45,7 +38,7 @@ public class HistoriqueCongeController implements Initializable  {
     @FXML private Button settingsButton;
     @FXML private Button btnListe;
     @FXML private MenuItem Menu_profile;
-
+    @FXML private GridPane congeContainer;
 
     @Override
     public void initialize(URL url, ResourceBundle rb) {
@@ -56,23 +49,18 @@ public class HistoriqueCongeController implements Initializable  {
         MenuItem logoutItem = new MenuItem("Déconnexion");
         contextMenu.getItems().addAll(boiteItem, aideItem, logoutItem);
         settingsButton.setOnAction(event -> {
-            double screenX = settingsButton.localToScreen(settingsButton.getBoundsInLocal()).getMinX()-70;
-            double screenY = settingsButton.localToScreen(settingsButton.getBoundsInLocal()).getMaxY()+10;
+            double screenX = settingsButton.localToScreen(settingsButton.getBoundsInLocal()).getMinX() - 70;
+            double screenY = settingsButton.localToScreen(settingsButton.getBoundsInLocal()).getMaxY() + 10;
             contextMenu.show(settingsButton, screenX, screenY);
         });
         boiteItem.setOnAction(this::viewboite);
         aideItem.setOnAction(this::viewaide);
         logoutItem.setOnAction(this::viewdeconnection);
-        if (SessionManager.getInstance().getUtilisateur().getRole().equals(Role.ChefDepartement)){
+        if (SessionManager.getInstance().getUtilisateur().getRole().equals(Role.ChefDepartement)) {
             btnListe.setVisible(true);
         }
     }
 
-
-
-
-    @FXML
-    private GridPane congeContainer;
     public void load() {
         ColumnConstraints columnConstraints = new ColumnConstraints();
         columnConstraints.setHgrow(Priority.ALWAYS);
@@ -88,18 +76,16 @@ public class HistoriqueCongeController implements Initializable  {
                 CongeCarteController cardC = fxmlLoader.getController();
                 cardC.setData(conge);
 
-                congeContainer.add(CardBox, 0 , row++);
+                congeContainer.add(CardBox, 0, row++);
                 GridPane.setMargin(CardBox, new Insets(4, 4, 4, 4));
                 CardBox.setMaxWidth(Double.MAX_VALUE);
                 congeContainer.setColumnSpan(CardBox, GridPane.REMAINING);
                 GridPane.setHalignment(CardBox, javafx.geometry.HPos.CENTER);
-
             }
         } catch (IOException e) {
             e.printStackTrace();
         }
     }
-
 
     @FXML
     void Recherche(KeyEvent event) {
@@ -114,7 +100,7 @@ public class HistoriqueCongeController implements Initializable  {
                 Pane CardBox = fxmlLoader.load();
                 CongeCarteController cardC = fxmlLoader.getController();
                 cardC.setData(conge);
-                congeContainer.add(CardBox, 0 , row++);
+                congeContainer.add(CardBox, 0, row++);
                 GridPane.setMargin(CardBox, new Insets(4, 4, 4, 4));
                 CardBox.setMaxWidth(Double.MAX_VALUE);
                 congeContainer.setColumnSpan(CardBox, GridPane.REMAINING);
@@ -124,8 +110,6 @@ public class HistoriqueCongeController implements Initializable  {
             e.printStackTrace();
         }
     }
-
-
 
     @FXML
     public void tri_statut(ActionEvent actionEvent) {
@@ -145,18 +129,17 @@ public class HistoriqueCongeController implements Initializable  {
                 CongeCarteController cardC = fxmlLoader.getController();
                 cardC.setData(conge);
 
-                congeContainer.add(CardBox, 0 , row++);
+                congeContainer.add(CardBox, 0, row++);
                 GridPane.setMargin(CardBox, new Insets(4, 4, 4, 4));
                 CardBox.setMaxWidth(Double.MAX_VALUE);
                 congeContainer.setColumnSpan(CardBox, GridPane.REMAINING);
                 GridPane.setHalignment(CardBox, javafx.geometry.HPos.CENTER);
-
             }
         } catch (IOException e) {
             e.printStackTrace();
         }
-
     }
+
     @FXML
     void tri_datedeb(ActionEvent event) {
         ColumnConstraints columnConstraints = new ColumnConstraints();
@@ -175,17 +158,15 @@ public class HistoriqueCongeController implements Initializable  {
                 CongeCarteController cardC = fxmlLoader.getController();
                 cardC.setData(conge);
 
-                congeContainer.add(CardBox, 0 , row++);
+                congeContainer.add(CardBox, 0, row++);
                 GridPane.setMargin(CardBox, new Insets(4, 4, 4, 4));
                 CardBox.setMaxWidth(Double.MAX_VALUE);
                 congeContainer.setColumnSpan(CardBox, GridPane.REMAINING);
                 GridPane.setHalignment(CardBox, javafx.geometry.HPos.CENTER);
-
             }
         } catch (IOException e) {
             e.printStackTrace();
         }
-
     }
 
     @FXML
@@ -206,17 +187,15 @@ public class HistoriqueCongeController implements Initializable  {
                 CongeCarteController cardC = fxmlLoader.getController();
                 cardC.setData(conge);
 
-                congeContainer.add(CardBox, 0 , row++);
+                congeContainer.add(CardBox, 0, row++);
                 GridPane.setMargin(CardBox, new Insets(4, 4, 4, 4));
                 CardBox.setMaxWidth(Double.MAX_VALUE);
                 congeContainer.setColumnSpan(CardBox, GridPane.REMAINING);
                 GridPane.setHalignment(CardBox, javafx.geometry.HPos.CENTER);
-
             }
         } catch (IOException e) {
             e.printStackTrace();
         }
-
     }
 
     @FXML
@@ -237,18 +216,15 @@ public class HistoriqueCongeController implements Initializable  {
                 CongeCarteController cardC = fxmlLoader.getController();
                 cardC.setData(conge);
 
-                congeContainer.add(CardBox, 0 , row++);
+                congeContainer.add(CardBox, 0, row++);
                 GridPane.setMargin(CardBox, new Insets(4, 4, 4, 4));
                 CardBox.setMaxWidth(Double.MAX_VALUE);
                 congeContainer.setColumnSpan(CardBox, GridPane.REMAINING);
                 GridPane.setHalignment(CardBox, javafx.geometry.HPos.CENTER);
-
             }
         } catch (IOException e) {
             e.printStackTrace();
         }
-
-
     }
 
     @FXML
@@ -269,19 +245,17 @@ public class HistoriqueCongeController implements Initializable  {
                 CongeCarteController cardC = fxmlLoader.getController();
                 cardC.setData(conge);
 
-                congeContainer.add(CardBox, 0 , row++);
+                congeContainer.add(CardBox, 0, row++);
                 GridPane.setMargin(CardBox, new Insets(4, 4, 4, 4));
                 CardBox.setMaxWidth(Double.MAX_VALUE);
                 congeContainer.setColumnSpan(CardBox, GridPane.REMAINING);
                 GridPane.setHalignment(CardBox, javafx.geometry.HPos.CENTER);
-
             }
         } catch (IOException e) {
             e.printStackTrace();
         }
-
-
     }
+
     @FXML
     public void Demander(ActionEvent actionEvent) {
         try {
@@ -292,11 +266,10 @@ public class HistoriqueCongeController implements Initializable  {
             stage.setScene(scene);
             stage.setTitle("Demande congé");
             stage.show();
-            StageManager.addStage(stage);
+            StageManager.addStage("DemandeConge", stage);
         } catch (IOException e) {
             e.printStackTrace();
         }
-
     }
 
     @FXML
@@ -309,12 +282,12 @@ public class HistoriqueCongeController implements Initializable  {
             stage.setScene(scene);
             stage.setTitle("Historique des demandes");
             stage.show();
-            StageManager.addStage(stage);
+            StageManager.addStage("HistoriqueConge", stage);
         } catch (IOException e) {
             e.printStackTrace();
         }
-
     }
+
     @FXML
     void viewdeconnection(ActionEvent actionEvent) {
         SessionManager.getInstance().cleanUserSession();
@@ -328,16 +301,21 @@ public class HistoriqueCongeController implements Initializable  {
 
             stage.setScene(new Scene(root));
             stage.setTitle("Gestion de Congés - Connection");
-            StageManager.addStage(stage);
+            StageManager.addStage("Login", stage);
             stage.show();
         } catch (IOException e) {
             e.printStackTrace();
         }
     }
-    void viewaide(ActionEvent actionEvent){
+
+    void viewaide(ActionEvent actionEvent) {
+        // Implement viewaide functionality here
     }
-    void viewboite(ActionEvent actionEvent){
+
+    void viewboite(ActionEvent actionEvent) {
+        // Implement viewboite functionality here
     }
+
     @FXML
     public void goto_profil(@NotNull ActionEvent actionEvent) {
         try {
@@ -348,28 +326,25 @@ public class HistoriqueCongeController implements Initializable  {
             stage.setScene(scene);
             stage.setTitle("Mon profil");
             stage.show();
-            StageManager.addStage(stage);
-            StageManager.addStage(stage);
+            StageManager.addStage("Profile", stage);
         } catch (IOException e) {
             e.printStackTrace();
         }
     }
-    @FXML void ListeDesDemandes(ActionEvent event) {
+
+    @FXML
+    void ListeDesDemandes(ActionEvent event) {
         try {
             FXMLLoader loader = new FXMLLoader(getClass().getResource("/DemandeDepListe.fxml"));
             Parent root = loader.load();
             Stage stage = (Stage) ((Node) event.getSource()).getScene().getWindow();
             Scene scene = new Scene(root);
             stage.setScene(scene);
-            stage.setTitle("Liste des demandes - "+SessionManager.getInstance().getDepartement());
+            stage.setTitle("Liste des demandes - " + SessionManager.getInstance().getDepartement());
             stage.show();
-            StageManager.addStage(stage);
-            StageManager.addStage(stage);
+            StageManager.addStage("DemandeDepListe", stage);
         } catch (IOException e) {
             e.printStackTrace();
         }
     }
 }
-
-
-

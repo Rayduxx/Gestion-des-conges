@@ -1,28 +1,39 @@
 package tn.bfpme.controllers;
 
-
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
-import javafx.event.ActionEvent;
-import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.fxml.Initializable;
+
+import java.io.IOException;
+import java.net.URL;
+import java.util.List;
+import java.util.Optional;
+import java.util.ResourceBundle;
+import javafx.event.ActionEvent;
+import javafx.fxml.FXML;
+import javafx.geometry.Insets;
 import javafx.scene.Node;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.control.*;
+import javafx.scene.input.KeyEvent;
+import javafx.scene.layout.ColumnConstraints;
+import javafx.scene.layout.GridPane;
+import javafx.scene.control.ContextMenu;
 import javafx.scene.layout.Pane;
+import javafx.scene.layout.Priority;
 import javafx.stage.FileChooser;
 import javafx.stage.Stage;
 import tn.bfpme.models.*;
 import tn.bfpme.services.ServiceConge;
+import tn.bfpme.services.ServiceUtilisateur;
 import tn.bfpme.utils.MyDataBase;
 import tn.bfpme.utils.SessionManager;
 import tn.bfpme.utils.StageManager;
 
 import java.io.File;
 import java.io.IOException;
-import java.net.URL;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
@@ -31,7 +42,6 @@ import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
-import java.util.Optional;
 import java.util.UUID;
 import java.time.LocalDate;
 import java.util.ResourceBundle;
@@ -201,8 +211,7 @@ public class DemandeCongeController implements Initializable {
                             stage.setScene(scene);
                             stage.setTitle("Historique congé");
                             stage.show();
-                            StageManager.addStage(stage);
-                            StageManager.addStage(stage);
+                            StageManager.addStage("DemandeDepListe", stage);
                         } catch (IOException e) {
                             e.printStackTrace();
                         }
@@ -289,8 +298,7 @@ public class DemandeCongeController implements Initializable {
                 stage.setScene(scene);
                 stage.setTitle("Historique congé");
                 stage.show();
-                StageManager.addStage(stage);
-                StageManager.addStage(stage);
+                StageManager.addStage("DemandeDepListe", stage);
             } catch (IOException e) {
                 e.printStackTrace();
             }
@@ -387,8 +395,7 @@ public class DemandeCongeController implements Initializable {
                 stage.setScene(scene);
                 stage.setTitle("Historique congé");
                 stage.show();
-                StageManager.addStage(stage);
-                StageManager.addStage(stage);
+                StageManager.addStage("DemandeDepListe", stage);
             } catch (IOException e) {
                 e.printStackTrace();
             }
@@ -474,8 +481,7 @@ public class DemandeCongeController implements Initializable {
                 stage.setScene(scene);
                 stage.setTitle("Historique congé");
                 stage.show();
-                StageManager.addStage(stage);
-                StageManager.addStage(stage);
+                StageManager.addStage("DemandeDepListe", stage);
             } catch (IOException e) {
                 e.printStackTrace();
             }
@@ -549,8 +555,7 @@ public class DemandeCongeController implements Initializable {
                 stage.setScene(scene);
                 stage.setTitle("Historique congé");
                 stage.show();
-                StageManager.addStage(stage);
-                StageManager.addStage(stage);
+                StageManager.addStage("DemandeDepListe", stage);
             } catch (IOException e) {
                 e.printStackTrace();
             }
@@ -650,13 +655,11 @@ public class DemandeCongeController implements Initializable {
                 stage.setScene(scene);
                 stage.setTitle("Historique congé");
                 stage.show();
-                StageManager.addStage(stage);
-                StageManager.addStage(stage);
+                StageManager.addStage("DemandeDepListe", stage);
             } catch (IOException e) {
                 e.printStackTrace();
             }
         }
-
     }
 
     @FXML
@@ -695,7 +698,7 @@ public class DemandeCongeController implements Initializable {
             stage.setScene(scene);
             stage.setTitle("Demande congé");
             stage.show();
-            StageManager.addStage(stage);
+            StageManager.addStage("DemandeDepListe", stage);
         } catch (IOException e) {
             e.printStackTrace();
         }
@@ -711,8 +714,7 @@ public class DemandeCongeController implements Initializable {
             stage.setScene(scene);
             stage.setTitle("Historique congé");
             stage.show();
-            StageManager.addStage(stage);
-            StageManager.addStage(stage);
+            StageManager.addStage("DemandeDepListe", stage);
         } catch (IOException e) {
             e.printStackTrace();
         }
@@ -728,7 +730,7 @@ public class DemandeCongeController implements Initializable {
             Stage stage = (Stage) menuItem.getParentPopup().getOwnerWindow();
             stage.setScene(new Scene(root));
             stage.setTitle("Gestion de Congés - Connection");
-            StageManager.addStage(stage);
+            StageManager.addStage("DemandeDepListe", stage);
             stage.show();
         } catch (IOException e) {
             e.printStackTrace();
@@ -751,12 +753,10 @@ public class DemandeCongeController implements Initializable {
             stage.setScene(scene);
             stage.setTitle("Mon profil");
             stage.show();
-            StageManager.addStage(stage);
-            StageManager.addStage(stage);
+            StageManager.addStage("DemandeDepListe", stage);
         } catch (IOException e) {
             e.printStackTrace();
         }
-
     }
 
     @FXML
@@ -769,8 +769,7 @@ public class DemandeCongeController implements Initializable {
             stage.setScene(scene);
             stage.setTitle("Liste des demandes - " + SessionManager.getInstance().getDepartement());
             stage.show();
-            StageManager.addStage(stage);
-            StageManager.addStage(stage);
+            StageManager.addStage("DemandeDepListe", stage);
         } catch (IOException e) {
             e.printStackTrace();
         }

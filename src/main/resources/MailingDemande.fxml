@@ -83,7 +83,11 @@
                </children>
             </HBox>
             <ComboBox fx:id="raison_mail" layoutX="531.0" layoutY="28.0" onAction="#selectRaison" prefHeight="33.0" prefWidth="216.0" promptText="Raisons prédéfinies" />
-            <TextArea fx:id="mail_text" layoutX="32.0" layoutY="174.0" prefHeight="391.0" prefWidth="1214.0" />
+            <TextArea fx:id="mail_text" layoutX="32.0" layoutY="174.0" prefHeight="391.0" prefWidth="1214.0" wrapText="true">
+               <font>
+                  <Font size="14.0" />
+               </font>
+            </TextArea>
             <TextField fx:id="mail_obj" layoutX="32.0" layoutY="134.0" prefHeight="28.0" prefWidth="1214.0" />
             <Label fx:id="mail_dest" disable="true" layoutX="32.0" layoutY="96.0" prefHeight="28.0" prefWidth="241.0" styleClass="text-area" text="Destinataire" />
             <HBox layoutX="466.0" layoutY="599.0" prefHeight="55.0" prefWidth="346.0">

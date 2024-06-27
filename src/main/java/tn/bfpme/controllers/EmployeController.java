@@ -1,6 +1,5 @@
 package tn.bfpme.controllers;
 
-import javafx.application.Platform;
 import javafx.beans.property.ReadOnlyObjectWrapper;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
@@ -15,7 +14,6 @@ import javafx.scene.control.*;
 import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
-import javafx.stage.Modality;
 import javafx.stage.Stage;
 import tn.bfpme.models.*;
 import tn.bfpme.utils.MyDataBase;
@@ -87,11 +85,12 @@ public class EmployeController implements Initializable {
             stage.setScene(scene);
             stage.setTitle("Demande congé");
             stage.show();
-            StageManager.addStage(stage);
+            StageManager.addStage("DemandeConge", stage);
         } catch (IOException e) {
             e.printStackTrace();
         }
     }
+
     @FXML public void Historique(ActionEvent actionEvent) {
         try {
             FXMLLoader loader = new FXMLLoader(getClass().getResource("/HistoriqueConge.fxml"));
@@ -101,19 +100,21 @@ public class EmployeController implements Initializable {
             stage.setScene(scene);
             stage.setTitle("Historique congé");
             stage.show();
-            StageManager.addStage(stage);
+            StageManager.addStage("HistoriqueConge", stage);
         } catch (IOException e) {
             e.printStackTrace();
         }
     }
+
     @FXML void viewaide(ActionEvent actionEvent) {
-
+        // Implement viewaide functionality here
     }
+
     @FXML private void viewboite(ActionEvent actionEvent) {
-
+        // Implement viewboite functionality here
     }
-    @FXML
-    void viewdeconnection(ActionEvent actionEvent) {
+
+    @FXML void viewdeconnection(ActionEvent actionEvent) {
         SessionManager.getInstance().cleanUserSession();
         try {
             FXMLLoader loader = new FXMLLoader(getClass().getResource("/login.fxml"));
@@ -122,7 +123,7 @@ public class EmployeController implements Initializable {
             Stage stage = (Stage) menuItem.getParentPopup().getOwnerWindow();
             stage.setScene(new Scene(root));
             stage.setTitle("Gestion de Congés - Connection");
-            StageManager.addStage(stage);
+            StageManager.addStage("Login", stage);
             stage.show();
         } catch (IOException e) {
             e.printStackTrace();
@@ -150,6 +151,7 @@ public class EmployeController implements Initializable {
             ex.printStackTrace();
         }
     }
+
     public void ReloadUserDATA(){
         CU_dep.setText(String.valueOf(SessionManager.getInstance().getDepartement()));
         CU_email.setText(SessionManager.getInstance().getUtilisateur().getEmail());
@@ -173,6 +175,7 @@ public class EmployeController implements Initializable {
         CU_MAL.setText(String.valueOf(SessionManager.getInstance().getUtilisateur().getSoldeMaladie()));
         CU_MAT.setText(String.valueOf(SessionManager.getInstance().getUtilisateur().getSoldeMaternite()));
     }
+
     @FXML public void goto_profil(ActionEvent actionEvent) {
         try {
             FXMLLoader loader = new FXMLLoader(getClass().getResource("/profile.fxml"));
@@ -182,12 +185,12 @@ public class EmployeController implements Initializable {
             stage.setScene(scene);
             stage.setTitle("Mon profil");
             stage.show();
-            StageManager.addStage(stage);
-            StageManager.addStage(stage);
+            StageManager.addStage("Profile", stage);
         } catch (IOException e) {
             e.printStackTrace();
         }
     }
+
     @FXML void ListeDesDemandes(ActionEvent event) {
         try {
             FXMLLoader loader = new FXMLLoader(getClass().getResource("/DemandeDepListe.fxml"));
@@ -195,13 +198,11 @@ public class EmployeController implements Initializable {
             Stage stage = (Stage) ((Node) event.getSource()).getScene().getWindow();
             Scene scene = new Scene(root);
             stage.setScene(scene);
-            stage.setTitle("Mon profil");
+            stage.setTitle("Liste des demandes - " + SessionManager.getInstance().getDepartement());
             stage.show();
-            StageManager.addStage(stage);
-            StageManager.addStage(stage);
+            StageManager.addStage("DemandeDepListe", stage);
         } catch (IOException e) {
             e.printStackTrace();
         }
     }
-
 }

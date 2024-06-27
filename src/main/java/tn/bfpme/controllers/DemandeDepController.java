@@ -47,11 +47,11 @@ public class DemandeDepController {
         labelDF.setText(String.valueOf(conge.getDateFin()));
         labelDesc.setText(conge.getDescription());
         labelType.setText(String.valueOf(conge.getTypeConge()));
-        labelJours.setText(String.valueOf(ChronoUnit.DAYS.between(conge.getDateDebut(), conge.getDateFin()))+" Jours");
+        labelJours.setText(String.valueOf(ChronoUnit.DAYS.between(conge.getDateDebut(), conge.getDateFin())) + " Jours");
     }
 
     @FXML void AfficherCongFichier(ActionEvent event) {
-        String filePath = "src/main/resources/assets/files/"+conge.getFile();
+        String filePath = "src/main/resources/assets/files/" + conge.getFile();
         File file = new File(filePath);
         if (file.exists()) {
             Desktop desktop = Desktop.getDesktop();
@@ -66,7 +66,7 @@ public class DemandeDepController {
     }
 
     @FXML void ApproverConge(ActionEvent event) {
-
+        // Implement approval logic here
     }
 
     @FXML void RefuserConge(ActionEvent event) {
@@ -89,13 +89,19 @@ public class DemandeDepController {
                 try {
                     FXMLLoader loader = new FXMLLoader(getClass().getResource("/MailingDemande.fxml"));
                     Parent root = loader.load();
-                    Stage stage = (Stage) ((Node) event.getSource()).getScene().getWindow();
-                    Scene scene = new Scene(root);
-                    stage.setScene(scene);
-                    stage.setTitle("Mailing de Demande");
-                    stage.show();
-                    StageManager.addStage(stage);
-                    StageManager.addStage(stage);
+                    MailingDemandeController controller = loader.getController();
+                    controller.setData(conge, user);
+                    Stage currentStage = (Stage) ((Node) event.getSource()).getScene().getWindow();
+                    currentStage.close();
+
+                    // Replace the scene of DemandeDepListe stage with MailingDemande scene
+                    Stage demandeDepListeStage = StageManager.getStage("DemandeDepListe");
+                    if (demandeDepListeStage != null) {
+                        Scene scene = new Scene(root);
+                        demandeDepListeStage.setScene(scene);
+                        demandeDepListeStage.setTitle("Mailing de Demande");
+                        demandeDepListeStage.show();
+                    }
                 } catch (IOException e) {
                     e.printStackTrace();
                 }

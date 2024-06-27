@@ -12,16 +12,13 @@ import javafx.scene.Scene;
 import javafx.scene.control.*;
 import javafx.stage.Stage;
 import tn.bfpme.models.Conge;
-import tn.bfpme.models.Role;
-import tn.bfpme.services.ServiceConge;
+import tn.bfpme.models.Utilisateur;
 import tn.bfpme.utils.Mails;
 import tn.bfpme.utils.SessionManager;
 import tn.bfpme.utils.StageManager;
 
 import java.io.IOException;
 import java.net.URL;
-import java.time.LocalDate;
-import java.util.Date;
 import java.util.ResourceBundle;
 
 public class MailingDemandeController implements Initializable {
@@ -34,12 +31,6 @@ public class MailingDemandeController implements Initializable {
             "Évaluation de Performance ou Audit"
     );
 
-    @Override
-    public void initialize(URL url, ResourceBundle resourceBundle) {
-        raison_mail.setValue("Selectioner une raison");
-        raison_mail.setItems(RaisonsList);
-
-    }
     @FXML
     private Button btnListe;
 
@@ -54,53 +45,88 @@ public class MailingDemandeController implements Initializable {
 
     @FXML
     private ComboBox<String> raison_mail;
-    Conge conge =new Conge();
+
+    String employeeName, startDate, endDate, managerName, managerRole;
+    private Conge conge;
+    private Utilisateur user;
+
+    @Override
+    public void initialize(URL url, ResourceBundle resourceBundle) {
+        raison_mail.setValue("Sélectionner une raison");
+        raison_mail.setItems(RaisonsList);
+
+        // Initialize variables from SessionManager
+        Utilisateur manager = SessionManager.getInstance().getUtilisateur();
+        if (manager != null) {
+            managerName = manager.getPrenom() + " " + manager.getNom();
+            managerRole = String.valueOf(manager.getRole());
+        }
+    }
+
+    public void setData(Conge conge, Utilisateur user) {
+        this.conge = conge;
+        this.user = user;
+        employeeName = user.getPrenom() + " " + user.getNom();
+        startDate = String.valueOf(conge.getDateDebut());
+        endDate = String.valueOf(conge.getDateFin());
+
+        // Update email destination label or other UI elements as needed
+        mail_dest.setText(user.getEmail());
+    }
+
     @FXML
     void selectRaison(ActionEvent event) {
-        String employeeName = SessionManager.getInstance().getUtilisateur().getPrenom();
-        String startDate = String.valueOf(conge.getDateDebut());
-        String endDate = String.valueOf(conge.getDateFin());
-        String  managerName = SessionManager.getInstance().getUtilisateur().getNom();
-        String  managerRole= String.valueOf(SessionManager.getInstance().getUtilisateur().getRole());
-
-
-        if (raison_mail.getValue().equals("Alternative Proposée")) {
-            mail_text.setText(Mails.generateAlternativeProposee(employeeName,startDate,endDate,managerName,managerRole));
+        String selectedReason = raison_mail.getValue();
+        if (selectedReason != null) {
+            switch (selectedReason) {
+                case "Alternative Proposée":
+                    mail_obj.setText("Refus de Demande de Congé - Proposition d'Alternative");
+                    mail_text.setText(Mails.generateAlternativeProposee(employeeName, startDate, endDate, managerName, managerRole));
+                    break;
+                case "Équité et Équilibre":
+                    mail_obj.setText("Refus de Demande de Congé - Équité et Équilibre");
+                    mail_text.setText(Mails.generateEquiteEtEquilibre(employeeName, startDate, endDate, managerName, managerRole));
+                    break;
+                case "Politique de Rotation des Congés":
+                    mail_obj.setText("Refus de Demande de Congé - Politique de Rotation");
+                    mail_text.setText(Mails.generatePolitiqueDeRotationDesConges(employeeName, startDate, endDate, managerName, managerRole));
+                    break;
+                case "Congés Cumulés Non Autorisés":
+                    mail_obj.setText("Refus de Demande de Congé - Congés Cumulés Non Autorisés");
+                    mail_text.setText(Mails.generateCongesCumulesNonAutorises(employeeName, startDate, endDate, managerName, managerRole, 10)); // Adjust the 10 to the actual limit
+                    break;
+                case "Remplacement Non Disponible":
+                    mail_obj.setText("Refus de Demande de Congé - Remplacement Non Disponible");
+                    mail_text.setText(Mails.generateRemplacementNonDisponible(employeeName, startDate, endDate, managerName, managerRole));
+                    break;
+                case "Évaluation de Performance ou Audit":
+                    mail_obj.setText("Refus de Demande de Congé - Évaluation de Performance ou Audit");
+                    mail_text.setText(Mails.generateEvaluationDePerformanceOuAudit(employeeName, startDate, endDate, managerName, managerRole));
+                    break;
+                default:
+                    mail_text.setText("");
+                    break;
+            }
         }
-        if (raison_mail.getValue().equals("ExeptionnelÉquité et Équilibre")) {
-
-        }
-        if (raison_mail.getValue().equals("Politique de Rotation des Congés")) {
-
-        }
-        if (raison_mail.getValue().equals("Congés Cumulés Non Autorisés")) {
-
-        }
-        if (raison_mail.getValue().equals("Remplacement Non Disponible")) {
-
-        }
-        if (raison_mail.getValue().equals("Évaluation de Performance ou Audit")) {
-
-        }
-
-
-
     }
+
     @FXML
     void Annuler_mail(ActionEvent event) {
+        mail_text.setText("");
+        mail_obj.setText("");
 
     }
 
     @FXML
     void Envoyer_mail(ActionEvent event) {
 
-
     }
-
 
     @FXML
     private Button settingsButton;
-    @FXML void Historique(ActionEvent event) {
+
+    @FXML
+    void Historique(ActionEvent event) {
         try {
             FXMLLoader loader = new FXMLLoader(getClass().getResource("/HistoriqueConge.fxml"));
             Parent root = loader.load();
@@ -109,13 +135,14 @@ public class MailingDemandeController implements Initializable {
             stage.setScene(scene);
             stage.setTitle("Historique congé");
             stage.show();
-            StageManager.addStage(stage);
-            StageManager.addStage(stage);
+            StageManager.addStage("DemandeDepListe", stage);
         } catch (IOException e) {
             e.printStackTrace();
         }
     }
-    @FXML void goto_profil(ActionEvent event) {
+
+    @FXML
+    void goto_profil(ActionEvent event) {
         try {
             FXMLLoader loader = new FXMLLoader(getClass().getResource("/profile.fxml"));
             Parent root = loader.load();
@@ -124,27 +151,28 @@ public class MailingDemandeController implements Initializable {
             stage.setScene(scene);
             stage.setTitle("Mon profil");
             stage.show();
-            StageManager.addStage(stage);
-            StageManager.addStage(stage);
+            StageManager.addStage("DemandeDepListe", stage);
         } catch (IOException e) {
             e.printStackTrace();
         }
     }
-    @FXML void ListeDesDemandes(ActionEvent event) {
+
+    @FXML
+    void ListeDesDemandes(ActionEvent event) {
         try {
             FXMLLoader loader = new FXMLLoader(getClass().getResource("/DemandeDepListe.fxml"));
             Parent root = loader.load();
             Stage stage = (Stage) ((Node) event.getSource()).getScene().getWindow();
             Scene scene = new Scene(root);
             stage.setScene(scene);
-            stage.setTitle("Liste des demandes - "+ SessionManager.getInstance().getDepartement());
+            stage.setTitle("Liste des demandes - " + SessionManager.getInstance().getDepartement());
             stage.show();
-            StageManager.addStage(stage);
-            StageManager.addStage(stage);
+            StageManager.addStage("DemandeDepListe", stage);
         } catch (IOException e) {
             e.printStackTrace();
         }
     }
+
     @FXML
     void Demander(ActionEvent event) {
         try {
@@ -155,7 +183,7 @@ public class MailingDemandeController implements Initializable {
             stage.setScene(scene);
             stage.setTitle("Demande congé");
             stage.show();
-            StageManager.addStage(stage);
+            StageManager.addStage("DemandeDepListe", stage);
         } catch (IOException e) {
             e.printStackTrace();
         }
