@@ -39,6 +39,7 @@ public class DemandeDepController {
     Connection cnx = MyDataBase.getInstance().getCnx();
     private Conge conge;
     private Utilisateur user;
+    private int CongeDays;
     private final ServiceConge serviceConge = new ServiceConge();
     public void setData(Conge conge, Utilisateur user) {
         this.conge = conge;
@@ -48,7 +49,8 @@ public class DemandeDepController {
         labelDF.setText(String.valueOf(conge.getDateFin()));
         labelDesc.setText(conge.getDescription());
         labelType.setText(String.valueOf(conge.getTypeConge()));
-        labelJours.setText(String.valueOf(ChronoUnit.DAYS.between(conge.getDateDebut(), conge.getDateFin()))+" Jours");
+        CongeDays = (int) ChronoUnit.DAYS.between(conge.getDateDebut(), conge.getDateFin());
+        labelJours.setText(String.valueOf(CongeDays)+" Jours");
     }
 
     @FXML void AfficherCongFichier(ActionEvent event) {
@@ -76,10 +78,23 @@ public class DemandeDepController {
         Optional<ButtonType> result = alert.showAndWait();
         if (result.isPresent() && result.get() == Oui) {
             serviceConge.updateStatutConge(this.conge.getIdConge(), Statut.Approuvé);
-
+            if (conge.getTypeConge().equals(TypeConge.Annuel)){
+                serviceConge.updateSoldeAnnuel(this.user.getIdUser(), this.user.getSoldeAnnuel()-CongeDays);
+            }
+            if (conge.getTypeConge().equals(TypeConge.Exceptionnel)){
+                serviceConge.updateSoldeExceptionnel(this.user.getIdUser(), this.user.getSoldeExceptionnel()-CongeDays);
+            }
+            if (conge.getTypeConge().equals(TypeConge.Maladie)){
+                serviceConge.updateSoldeMaladie(this.user.getIdUser(), this.user.getSoldeMaladie()-CongeDays);
+            }
+            if (conge.getTypeConge().equals(TypeConge.Maternité)){
+                serviceConge.updateSoldeMaternité(this.user.getIdUser(), this.user.getSoldeMaternite()-CongeDays);
+            }
             Stage stage = (Stage) ((Node) event.getSource()).getScene().getWindow();
             stage.close();
-
+            Alert cbon = new Alert(Alert.AlertType.INFORMATION);
+            cbon.setTitle("Demande approvée");
+            cbon.setHeaderText("La demande de congé "+this.conge.getTypeConge()+" de "+this.user.getNom()+" "+this.user.getPrenom()+" est apprové");
         }
     }
 

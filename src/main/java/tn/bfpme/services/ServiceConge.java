@@ -105,7 +105,7 @@ public class ServiceConge implements IConge<Conge> {
     @Override
     public void updateSoldeAnnuel(int id, int solde) {
         try {
-            String qry = "UPDATE `utilisateur` SET `Solde_Annuel`=? WHERE `ID_Conge`=?";
+            String qry = "UPDATE `utilisateur` SET `Solde_Annuel`=? WHERE `ID_User`=?";
             PreparedStatement stm = cnx.prepareStatement(qry);
             stm.setInt(1, solde);
             stm.setInt(2, id);
@@ -117,7 +117,7 @@ public class ServiceConge implements IConge<Conge> {
     @Override
     public void updateSoldeMaladie(int id, int solde) {
         try {
-            String qry = "UPDATE `utilisateur` SET `Solde_Maladie`=? WHERE `ID_Conge`=?";
+            String qry = "UPDATE `utilisateur` SET `Solde_Maladie`=? WHERE `ID_User`=?";
             PreparedStatement stm = cnx.prepareStatement(qry);
             stm.setInt(1, solde);
             stm.setInt(2, id);
@@ -129,7 +129,7 @@ public class ServiceConge implements IConge<Conge> {
     @Override
     public void updateSoldeExceptionnel(int id, int solde) {
         try {
-            String qry = "UPDATE `utilisateur` SET `Solde_Exceptionnel`=? WHERE `ID_Conge`=?";
+            String qry = "UPDATE `utilisateur` SET `Solde_Exceptionnel`=? WHERE `ID_User`=?";
             PreparedStatement stm = cnx.prepareStatement(qry);
             stm.setInt(1, solde);
             stm.setInt(2, id);
@@ -141,7 +141,7 @@ public class ServiceConge implements IConge<Conge> {
     @Override
     public void updateSoldeMaternité(int id, int solde) {
         try {
-            String qry = "UPDATE `utilisateur` SET `Solde_Maternité`=? WHERE `ID_Conge`=?";
+            String qry = "UPDATE `utilisateur` SET `Solde_Maternité`=? WHERE `ID_User`=?";
             PreparedStatement stm = cnx.prepareStatement(qry);
             stm.setInt(1, solde);
             stm.setInt(2, id);

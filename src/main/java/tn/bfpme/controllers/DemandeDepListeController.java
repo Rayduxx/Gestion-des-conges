@@ -52,7 +52,6 @@ public class DemandeDepListeController implements Initializable {
     private final ServiceUtilisateur UserS = new ServiceUtilisateur();
 
     public void load() {
-        System.out.println("Loading demandes...");
         DemandesContainer.getColumnConstraints().clear();
         for (int i = 0; i < 3; i++) { // Three columns
             ColumnConstraints columnConstraints = new ColumnConstraints();
@@ -312,28 +311,6 @@ public class DemandeDepListeController implements Initializable {
                 e.printStackTrace();
             }
         }
-    }
-
-    public void LoadCredits() {
-       /* int column = 0;
-        int row = 1;
-        try {
-            for (Credit credit : afficher()) {
-                FXMLLoader fxmlLoader = new FXMLLoader();
-                fxmlLoader.setLocation(getClass().getResource("CardCredit.fxml"));
-                Pane userBox = fxmlLoader.load();
-                CardCreditController CCC = fxmlLoader.getController();
-                CCC.setData(credit);
-                if (column == 2) {
-                    column = 0;
-                    ++row;
-                }
-                CredContainer.add(userBox, column++, row);
-                GridPane.setMargin(userBox, new Insets(20));
-            }
-        } catch (IOException e) {
-            e.printStackTrace();
-        }*/
     }
 
     void viewaide(ActionEvent actionEvent) {
