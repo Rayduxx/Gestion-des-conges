@@ -7,17 +7,31 @@ import javafx.fxml.Initializable;
 
 import java.io.IOException;
 import java.net.URL;
+import java.sql.Connection;
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
+import java.sql.SQLException;
 import java.util.ResourceBundle;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
+import javafx.geometry.Insets;
 import javafx.scene.Node;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.control.*;
 import javafx.scene.input.KeyEvent;
+import javafx.scene.layout.ColumnConstraints;
 import javafx.scene.layout.GridPane;
 import javafx.scene.control.ContextMenu;
+import javafx.scene.layout.Pane;
+import javafx.scene.layout.Priority;
 import javafx.stage.Stage;
+import tn.bfpme.models.Conge;
+import tn.bfpme.models.Statut;
+import tn.bfpme.models.TypeConge;
+import tn.bfpme.services.ServiceConge;
+import tn.bfpme.services.ServiceUtilisateur;
+import tn.bfpme.utils.MyDataBase;
 import tn.bfpme.utils.SessionManager;
 import tn.bfpme.utils.StageManager;
 
@@ -27,8 +41,43 @@ public class DemandeDepListeController implements Initializable {
     @FXML private ComboBox<String> comboTri;
     @FXML private Button settingsButton;
     private ContextMenu contextMenu;
+
+
+    private Conge conge;
+    private final ServiceConge CongeS = new ServiceConge();
+    private final ServiceUtilisateur UserS = new ServiceUtilisateur();
+    public void load() {
+        ColumnConstraints columnConstraints = new ColumnConstraints();
+        columnConstraints.setHgrow(Priority.ALWAYS);
+        DemandesContainer.getColumnConstraints().add(columnConstraints);
+        DemandesContainer.setVgap(4);
+        DemandesContainer.setPadding(new Insets(4));
+        int row = 0;
+        try {
+            for (Conge conge : UserS.afficherusers().getConges()) {
+                FXMLLoader fxmlLoader = new FXMLLoader();
+                fxmlLoader.setLocation(getClass().getResource("/UserCarte.fxml"));
+                Pane CardBox = fxmlLoader.load();
+                CongeCarteController cardC = fxmlLoader.getController();
+                cardC.setData(conge);
+
+                DemandesContainer.add(CardBox, 0 , row++);
+                GridPane.setMargin(CardBox, new Insets(4, 4, 4, 4));
+                CardBox.setMaxWidth(Double.MAX_VALUE);
+                DemandesContainer.setColumnSpan(CardBox, GridPane.REMAINING);
+                GridPane.setHalignment(CardBox, javafx.geometry.HPos.CENTER);
+
+            }
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
+
+
+
     ObservableList<String> TriListe = FXCollections.observableArrayList("Statut", "Type", "Nom", "Prenom", "Date Debut", "Date Fin");
     @Override public void initialize(URL url, ResourceBundle rb) {
+        load();
         comboTri.setValue("Selectioner");
         comboTri.setItems(TriListe);
         contextMenu = new ContextMenu();
