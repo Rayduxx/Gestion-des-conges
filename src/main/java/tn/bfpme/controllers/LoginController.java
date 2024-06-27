@@ -10,7 +10,6 @@ import javafx.scene.Node;
 import javafx.stage.Stage;
 import tn.bfpme.models.*;
 import tn.bfpme.utils.MyDataBase;
-import tn.bfpme.utils.SessionManager;
 import tn.bfpme.utils.StageManager;
 import tn.bfpme.services.ServiceUtilisateur;
 
@@ -28,7 +27,6 @@ public class LoginController {
     @FXML
     private Connection cnx;
     private final ServiceUtilisateur userS = new ServiceUtilisateur();
-
 
     @FXML
     void Login(ActionEvent event) {
@@ -67,6 +65,6 @@ public class LoginController {
         stage.setScene(scene);
         stage.setTitle("Profile");
         stage.show();
-        StageManager.addStage(stage);
+        StageManager.addStage("Profile", stage);
     }
 }

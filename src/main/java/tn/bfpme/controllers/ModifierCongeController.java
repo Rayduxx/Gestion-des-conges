@@ -9,6 +9,7 @@ import javafx.scene.control.TextArea;
 import javafx.stage.Stage;
 import tn.bfpme.models.Conge;
 import tn.bfpme.services.ServiceConge;
+import tn.bfpme.utils.StageManager;
 
 import java.time.LocalDate;
 
@@ -22,13 +23,14 @@ public class ModifierCongeController {
 
     private final ServiceConge CongeS = new ServiceConge();
 
-    public void setData(Conge conge,CongeCarteController congeCarteController) {
+    public void setData(Conge conge, CongeCarteController congeCarteController) {
         this.conge = conge;
         this.congeCarteController = congeCarteController;
         modif_datedeb.setValue(conge.getDateDebut());
         modif_datefin.setValue(conge.getDateFin());
         modif_description.setText(conge.getDescription());
     }
+
     @FXML
     void annuler_conge(ActionEvent actionEvent) {
         Stage stage = (Stage) ((Node) actionEvent.getSource()).getScene().getWindow();
@@ -54,7 +56,5 @@ public class ModifierCongeController {
         } else {
             text_info.setText("Veuillez remplir tous les champs");
         }
-
     }
 }
-

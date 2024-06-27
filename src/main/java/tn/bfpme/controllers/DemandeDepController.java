@@ -51,10 +51,11 @@ public class DemandeDepController {
         labelType.setText(String.valueOf(conge.getTypeConge()));
         CongeDays = (int) ChronoUnit.DAYS.between(conge.getDateDebut(), conge.getDateFin());
         labelJours.setText(String.valueOf(CongeDays)+" Jours");
+
     }
 
     @FXML void AfficherCongFichier(ActionEvent event) {
-        String filePath = "src/main/resources/assets/files/"+conge.getFile();
+        String filePath = "src/main/resources/assets/files/" + conge.getFile();
         File file = new File(filePath);
         if (file.exists()) {
             Desktop desktop = Desktop.getDesktop();
@@ -118,11 +119,18 @@ public class DemandeDepController {
                 try {
                     FXMLLoader loader = new FXMLLoader(getClass().getResource("/MailingDemande.fxml"));
                     Parent root = loader.load();
-                    Stage stage = (Stage) ((Node) event.getSource()).getScene().getWindow();
-                    Scene scene = new Scene(root);
-                    stage.setScene(scene);
-                    stage.setTitle("Mailing de Demande");
-                    stage.show();
+
+                    MailingDemandeController controller = loader.getController();
+                    controller.setData(conge, user);
+                    Stage currentStage = (Stage) ((Node) event.getSource()).getScene().getWindow();
+                    currentStage.close();
+                    Stage demandeDepListeStage = StageManager.getStage("DemandeDepListe");
+                    if (demandeDepListeStage != null) {
+                        Scene scene = new Scene(root);
+                        demandeDepListeStage.setScene(scene);
+                        demandeDepListeStage.setTitle("Mailing de Demande");
+                        demandeDepListeStage.show();
+                    }
                 } catch (IOException e) {
                     e.printStackTrace();
                 }

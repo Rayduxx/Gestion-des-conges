@@ -10,11 +10,14 @@ import javafx.scene.control.Label;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.layout.Pane;
-import javafx.scene.text.*;
+import javafx.scene.text.Text;
+import javafx.scene.text.TextFlow;
 import javafx.stage.Modality;
 import javafx.stage.Stage;
 import tn.bfpme.models.Conge;
 import tn.bfpme.models.Utilisateur;
+import tn.bfpme.utils.StageManager;
+
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
@@ -53,6 +56,7 @@ public class UserCarteController {
         type_card.setText(String.valueOf(conge.getTypeConge()));
         UserCard.setStyle("-fx-border-radius: 5px; -fx-border-color: #808080;");
     }
+
     @FXML
     void AfficherDemande(ActionEvent event) {
         try {
@@ -71,4 +75,3 @@ public class UserCarteController {
         }
     }
 }
-
