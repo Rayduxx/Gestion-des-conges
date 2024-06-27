@@ -48,8 +48,12 @@ public class UserCarteController {
         } else {
             System.err.println("Image path is null for user: " + user);
         }
+<<<<<<< Updated upstream
 
         nomprenom_card.setText(user.getNom() + " " + user.getPrenom());
+=======
+        nomprenom_card.setText(user.getPrenom() + " " + user.getNom());
+>>>>>>> Stashed changes
         email_card.setText(user.getEmail());
         periode_card.setText("De " + conge.getDateDebut() + " à " + conge.getDateFin());
         statut_card.setText(String.valueOf(conge.getStatut()));
