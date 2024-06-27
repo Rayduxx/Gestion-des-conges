@@ -16,16 +16,21 @@ public class ServiceUtilisateur implements IUtilisateur {
         cnx = MyDataBase.getInstance().getCnx();
     }
     public UserConge afficherusers() {
+        Departement departementEnum = SessionManager.getInstance().getDepartement();
+        String departement = departementEnum.name();
+        System.out.println("Departement value: " + departement);
         List<Utilisateur> users = new ArrayList<>();
         List<Conge> conges = new ArrayList<>();
         String query = "SELECT utilisateur.ID_User, utilisateur.Nom, utilisateur.Prenom, utilisateur.Email, utilisateur.Image, " +
                 "conge.ID_Conge, conge.TypeConge, conge.Statut, conge.DateFin, conge.DateDebut " +
                 "FROM utilisateur " +
                 "JOIN employe ON utilisateur.ID_User = employe.ID_User " +
-                "JOIN conge ON utilisateur.ID_User = conge.ID_User";
+                "JOIN conge ON utilisateur.ID_User = conge.ID_User"+
+                " WHERE employe.Departement = ?";
         try {
             System.out.println("Executing query: " + query);
             PreparedStatement ps = cnx.prepareStatement(query);
+            ps.setString(1, departement);
             ResultSet rs = ps.executeQuery();
             while (rs.next()) {
                 Utilisateur user = new Utilisateur();

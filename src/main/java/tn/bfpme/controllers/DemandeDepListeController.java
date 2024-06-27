@@ -46,12 +46,18 @@ public class DemandeDepListeController implements Initializable {
     private final ServiceUtilisateur UserS = new ServiceUtilisateur();
     public void load() {
         System.out.println("Loading demandes...");
-        ColumnConstraints columnConstraints = new ColumnConstraints();
-        columnConstraints.setHgrow(Priority.ALWAYS);
-        DemandesContainer.getColumnConstraints().add(columnConstraints);
-        DemandesContainer.setVgap(4);
-        DemandesContainer.setPadding(new Insets(4));
+        DemandesContainer.getColumnConstraints().clear();
+        for (int i = 0; i < 3; i++) { // Three columns
+            ColumnConstraints columnConstraints = new ColumnConstraints();
+            columnConstraints.setHgrow(Priority.ALWAYS);
+            DemandesContainer.getColumnConstraints().add(columnConstraints);
+        }
+        DemandesContainer.setVgap(10);
+        DemandesContainer.setHgap(10);
+        DemandesContainer.setPadding(new Insets(10));
+
         int row = 0;
+        int column = 0;
         try {
             UserConge userConge = UserS.afficherusers();
             System.out.println("UserConge object: " + userConge);
@@ -59,6 +65,7 @@ public class DemandeDepListeController implements Initializable {
             List<Conge> conges = userConge.getConges();
             System.out.println("Number of users: " + users.size());
             System.out.println("Number of conges: " + conges.size());
+
             for (Conge conge : conges) {
                 for (Utilisateur user : users) {
                     if (conge.getIdUser() == user.getIdUser()) {
@@ -69,13 +76,18 @@ public class DemandeDepListeController implements Initializable {
                             Pane cardBox = fxmlLoader.load();
                             UserCarteController cardu = fxmlLoader.getController();
                             cardu.setData(conge, user);
-                            DemandesContainer.add(cardBox, 0, row++);
-                            GridPane.setMargin(cardBox, new Insets(4, 4, 4, 4));
+
+                            DemandesContainer.add(cardBox, column, row);
+                            GridPane.setMargin(cardBox, new Insets(10));
                             cardBox.setMaxWidth(Double.MAX_VALUE);
-                            DemandesContainer.setColumnSpan(cardBox, GridPane.REMAINING);
-                            GridPane.setHalignment(cardBox, javafx.geometry.HPos.CENTER);
 
                             System.out.println("Added card for user: " + user.getNom() + " " + user.getPrenom());
+
+                            column++;
+                            if (column == 3) {
+                                column = 0;
+                                row++;
+                            }
                         } catch (IOException e) {
                             System.err.println("Error loading UserCarte.fxml: " + e.getMessage());
                         }
@@ -88,6 +100,8 @@ public class DemandeDepListeController implements Initializable {
             e.printStackTrace();
         }
     }
+
+
     ObservableList<String> TriListe = FXCollections.observableArrayList("Statut", "Type", "Nom", "Prenom", "Date Debut", "Date Fin");
     @Override public void initialize(URL url, ResourceBundle rb) {
         load();
