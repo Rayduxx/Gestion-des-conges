@@ -39,14 +39,12 @@ public class DemandeDepListeController implements Initializable {
     @FXML private TextField Recherche_demande;
     @FXML private ComboBox<String> comboTri;
     @FXML private Button settingsButton;
+    @FXML private Button btnListe;
     private ContextMenu contextMenu;
-
-
     private Conge conge;
     private final ServiceConge CongeS = new ServiceConge();
     private final ServiceUtilisateur UserS = new ServiceUtilisateur();
     public void load() {
-
         System.out.println("Loading demandes...");
         ColumnConstraints columnConstraints = new ColumnConstraints();
         columnConstraints.setHgrow(Priority.ALWAYS);
@@ -61,7 +59,6 @@ public class DemandeDepListeController implements Initializable {
             List<Conge> conges = userConge.getConges();
             System.out.println("Number of users: " + users.size());
             System.out.println("Number of conges: " + conges.size());
-
             for (Conge conge : conges) {
                 for (Utilisateur user : users) {
                     if (conge.getIdUser() == user.getIdUser()) {
@@ -72,7 +69,6 @@ public class DemandeDepListeController implements Initializable {
                             Pane cardBox = fxmlLoader.load();
                             UserCarteController cardu = fxmlLoader.getController();
                             cardu.setData(conge, user);
-
                             DemandesContainer.add(cardBox, 0, row++);
                             GridPane.setMargin(cardBox, new Insets(4, 4, 4, 4));
                             cardBox.setMaxWidth(Double.MAX_VALUE);
@@ -91,13 +87,7 @@ public class DemandeDepListeController implements Initializable {
             System.err.println("Error in load method: " + e.getMessage());
             e.printStackTrace();
         }
-
     }
-
-
-
-
-
     ObservableList<String> TriListe = FXCollections.observableArrayList("Statut", "Type", "Nom", "Prenom", "Date Debut", "Date Fin");
     @Override public void initialize(URL url, ResourceBundle rb) {
         load();
@@ -116,6 +106,9 @@ public class DemandeDepListeController implements Initializable {
         boiteItem.setOnAction(this::viewboite);
         aideItem.setOnAction(this::viewaide);
         logoutItem.setOnAction(this::viewdeconnection);
+        if (SessionManager.getInstance().getUtilisateur().getRole().equals(Role.ChefDepartement)){
+            btnListe.setVisible(true);
+        }
     }
 
     @FXML void Recherche(KeyEvent event) {
@@ -167,11 +160,8 @@ public class DemandeDepListeController implements Initializable {
         try {
             FXMLLoader loader = new FXMLLoader(getClass().getResource("/login.fxml"));
             Parent root = loader.load();
-
-            // Get the stage from the current context menu's owner window
             MenuItem menuItem = (MenuItem) actionEvent.getSource();
             Stage stage = (Stage) menuItem.getParentPopup().getOwnerWindow();
-
             stage.setScene(new Scene(root));
             stage.setTitle("Gestion de Congés - Connection");
             StageManager.addStage(stage);

@@ -353,7 +353,21 @@ public class HistoriqueCongeController implements Initializable  {
         } catch (IOException e) {
             e.printStackTrace();
         }
-
+    }
+    @FXML void ListeDesDemandes(ActionEvent event) {
+        try {
+            FXMLLoader loader = new FXMLLoader(getClass().getResource("/DemandeDepListe.fxml"));
+            Parent root = loader.load();
+            Stage stage = (Stage) ((Node) event.getSource()).getScene().getWindow();
+            Scene scene = new Scene(root);
+            stage.setScene(scene);
+            stage.setTitle("Liste des demandes - "+SessionManager.getInstance().getDepartement());
+            stage.show();
+            StageManager.addStage(stage);
+            StageManager.addStage(stage);
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
     }
 }
 

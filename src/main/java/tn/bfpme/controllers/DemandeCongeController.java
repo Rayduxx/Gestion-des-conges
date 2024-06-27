@@ -1,6 +1,6 @@
 package tn.bfpme.controllers;
 
-import javafx.application.Platform;
+
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
@@ -13,16 +13,13 @@ import javafx.scene.Scene;
 import javafx.scene.control.*;
 import javafx.scene.layout.Pane;
 import javafx.stage.FileChooser;
-import javafx.stage.Modality;
 import javafx.stage.Stage;
 import tn.bfpme.models.*;
 import tn.bfpme.services.ServiceConge;
 import tn.bfpme.utils.MyDataBase;
 import tn.bfpme.utils.SessionManager;
 import tn.bfpme.utils.StageManager;
-import java.time.temporal.ChronoUnit;
 import java.io.File;
-import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.net.URL;
 import java.nio.file.Files;
@@ -49,9 +46,8 @@ public class DemandeCongeController implements Initializable{
     @FXML private Pane paneMaternite;
     @FXML private Pane paneNaissance;
     @FXML private Pane paneGrossesse;
-    @FXML
-    private Button settingsButton;
-    private Button btnListe;
+    @FXML private Button settingsButton;
+    @FXML private Button btnListe;
     private ContextMenu contextMenu;
     private final ServiceConge CongeS = new ServiceConge();
     Connection cnx = MyDataBase.getInstance().getCnx();
@@ -636,7 +632,6 @@ public class DemandeCongeController implements Initializable{
             e.printStackTrace();
         }
     }
-
     @FXML public void Historique(ActionEvent actionEvent) {
         try {
             FXMLLoader loader = new FXMLLoader(getClass().getResource("/HistoriqueConge.fxml"));
@@ -652,7 +647,6 @@ public class DemandeCongeController implements Initializable{
             e.printStackTrace();
         }
     }
-
     @FXML void viewdeconnection(ActionEvent actionEvent) {
         SessionManager.getInstance().cleanUserSession();
         try {
@@ -668,8 +662,6 @@ public class DemandeCongeController implements Initializable{
             e.printStackTrace();
         }
     }
-
-
     void viewaide(ActionEvent actionEvent) {}
     void viewboite(ActionEvent actionEvent) {}
     @FXML public void goto_profil(ActionEvent actionEvent) {
@@ -688,5 +680,19 @@ public class DemandeCongeController implements Initializable{
         }
 
     }
-
+    @FXML void ListeDesDemandes(ActionEvent event) {
+        try {
+            FXMLLoader loader = new FXMLLoader(getClass().getResource("/DemandeDepListe.fxml"));
+            Parent root = loader.load();
+            Stage stage = (Stage) ((Node) event.getSource()).getScene().getWindow();
+            Scene scene = new Scene(root);
+            stage.setScene(scene);
+            stage.setTitle("Liste des demandes - "+SessionManager.getInstance().getDepartement());
+            stage.show();
+            StageManager.addStage(stage);
+            StageManager.addStage(stage);
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
 }

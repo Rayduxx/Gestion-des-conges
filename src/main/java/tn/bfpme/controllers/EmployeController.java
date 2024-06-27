@@ -173,8 +173,7 @@ public class EmployeController implements Initializable {
         CU_MAL.setText(String.valueOf(SessionManager.getInstance().getUtilisateur().getSoldeMaladie()));
         CU_MAT.setText(String.valueOf(SessionManager.getInstance().getUtilisateur().getSoldeMaternite()));
     }
-    @FXML
-    public void goto_profil(ActionEvent actionEvent) {
+    @FXML public void goto_profil(ActionEvent actionEvent) {
         try {
             FXMLLoader loader = new FXMLLoader(getClass().getResource("/profile.fxml"));
             Parent root = loader.load();
@@ -189,8 +188,7 @@ public class EmployeController implements Initializable {
             e.printStackTrace();
         }
     }
-    @FXML
-    void ListeDesDemandes(ActionEvent event) {
+    @FXML void ListeDesDemandes(ActionEvent event) {
         try {
             FXMLLoader loader = new FXMLLoader(getClass().getResource("/DemandeDepListe.fxml"));
             Parent root = loader.load();
