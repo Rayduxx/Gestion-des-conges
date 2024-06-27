@@ -36,6 +36,6 @@
             <Label fx:id="periode_card" alignment="CENTER" contentDisplay="CENTER" prefHeight="28.0" prefWidth="228.0" GridPane.rowIndex="3" />
          </children>
       </GridPane>
-      <Button layoutX="17.0" layoutY="149.0" mnemonicParsing="false"  prefHeight="35.0" prefWidth="119.0" text="Afficher Demande" />
+      <Button layoutX="17.0" layoutY="149.0" mnemonicParsing="false" onAction="#AfficherDemande" prefHeight="35.0" prefWidth="119.0" text="Afficher Demande" />
    </children>
 </Pane>

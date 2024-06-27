@@ -110,7 +110,7 @@
             <Font name="Roboto Bold" size="18.0" />
          </font>
       </Label>
-      <Label fx:id="CongerPerson" alignment="CENTER" contentDisplay="CENTER" layoutX="140.0" layoutY="131.0" prefHeight="27.0" prefWidth="147.0" text="Ala Moussa">
+      <Label fx:id="CongePerson" alignment="CENTER" contentDisplay="CENTER" layoutX="140.0" layoutY="131.0" prefHeight="27.0" prefWidth="147.0" text="Ala Moussa">
          <font>
             <Font name="Roboto Bold Italic" size="15.0" />
          </font>
