@@ -48,18 +48,18 @@ public class UserCarteController {
         } else {
             System.err.println("Image path is null for user: " + user);
         }
-<<<<<<< Updated upstream
 
-        nomprenom_card.setText(user.getNom() + " " + user.getPrenom());
-=======
         nomprenom_card.setText(user.getPrenom() + " " + user.getNom());
->>>>>>> Stashed changes
         email_card.setText(user.getEmail());
         periode_card.setText("De " + conge.getDateDebut() + " à " + conge.getDateFin());
         statut_card.setText(String.valueOf(conge.getStatut()));
         type_card.setText(String.valueOf(conge.getTypeConge()));
         UserCard.setStyle("-fx-border-radius: 5px; -fx-border-color: #808080;");
         System.out.println("Card data set for user: " + user.getNom() + " " + user.getPrenom());
+
+
+
+
     }
     @FXML
     void AfficherDemande(ActionEvent event) {
