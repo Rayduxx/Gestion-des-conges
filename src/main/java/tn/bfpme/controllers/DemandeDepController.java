@@ -15,6 +15,7 @@ import tn.bfpme.models.Conge;
 import tn.bfpme.models.Statut;
 import tn.bfpme.models.TypeConge;
 import tn.bfpme.models.Utilisateur;
+import tn.bfpme.services.ServiceConge;
 import tn.bfpme.utils.MyDataBase;
 import tn.bfpme.utils.SessionManager;
 import tn.bfpme.utils.StageManager;
@@ -38,7 +39,7 @@ public class DemandeDepController {
     Connection cnx = MyDataBase.getInstance().getCnx();
     private Conge conge;
     private Utilisateur user;
-
+    private final ServiceConge serviceConge = new ServiceConge();
     public void setData(Conge conge, Utilisateur user) {
         this.conge = conge;
         this.user = user;
@@ -74,6 +75,10 @@ public class DemandeDepController {
         alert.getButtonTypes().setAll(Oui, Non);
         Optional<ButtonType> result = alert.showAndWait();
         if (result.isPresent() && result.get() == Oui) {
+            serviceConge.updateStatutConge(this.conge.getIdConge(), Statut.Approuvé);
+
+            Stage stage = (Stage) ((Node) event.getSource()).getScene().getWindow();
+            stage.close();
 
         }
     }

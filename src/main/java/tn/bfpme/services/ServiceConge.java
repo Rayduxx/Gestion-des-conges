@@ -91,6 +91,66 @@ public class ServiceConge implements IConge<Conge> {
         }
     }
     @Override
+    public void updateStatutConge(int id, Statut statut) {
+        try {
+            String qry = "UPDATE `conge` SET `Statut`=? WHERE `ID_Conge`=?";
+            PreparedStatement stm = cnx.prepareStatement(qry);
+            stm.setString(1, String.valueOf(statut));
+            stm.setInt(2, id);
+            stm.executeUpdate();
+        } catch (SQLException ex) {
+            System.out.println(ex.getMessage());
+        }
+    }
+    @Override
+    public void updateSoldeAnnuel(int id, int solde) {
+        try {
+            String qry = "UPDATE `utilisateur` SET `Solde_Annuel`=? WHERE `ID_Conge`=?";
+            PreparedStatement stm = cnx.prepareStatement(qry);
+            stm.setInt(1, solde);
+            stm.setInt(2, id);
+            stm.executeUpdate();
+        } catch (SQLException ex) {
+            System.out.println(ex.getMessage());
+        }
+    }
+    @Override
+    public void updateSoldeMaladie(int id, int solde) {
+        try {
+            String qry = "UPDATE `utilisateur` SET `Solde_Maladie`=? WHERE `ID_Conge`=?";
+            PreparedStatement stm = cnx.prepareStatement(qry);
+            stm.setInt(1, solde);
+            stm.setInt(2, id);
+            stm.executeUpdate();
+        } catch (SQLException ex) {
+            System.out.println(ex.getMessage());
+        }
+    }
+    @Override
+    public void updateSoldeExceptionnel(int id, int solde) {
+        try {
+            String qry = "UPDATE `utilisateur` SET `Solde_Exceptionnel`=? WHERE `ID_Conge`=?";
+            PreparedStatement stm = cnx.prepareStatement(qry);
+            stm.setInt(1, solde);
+            stm.setInt(2, id);
+            stm.executeUpdate();
+        } catch (SQLException ex) {
+            System.out.println(ex.getMessage());
+        }
+    }
+    @Override
+    public void updateSoldeMaternité(int id, int solde) {
+        try {
+            String qry = "UPDATE `utilisateur` SET `Solde_Maternité`=? WHERE `ID_Conge`=?";
+            PreparedStatement stm = cnx.prepareStatement(qry);
+            stm.setInt(1, solde);
+            stm.setInt(2, id);
+            stm.executeUpdate();
+        } catch (SQLException ex) {
+            System.out.println(ex.getMessage());
+        }
+    }
+    @Override
     public void deleteConge(Conge conge) {
         try {
             String qry = "DELETE FROM `conge` WHERE `ID_Conge`=?";
