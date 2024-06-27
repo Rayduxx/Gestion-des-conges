@@ -10,6 +10,7 @@ import javafx.scene.control.Label;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.layout.Pane;
+import javafx.scene.text.*;
 import javafx.stage.Modality;
 import javafx.stage.Stage;
 import tn.bfpme.models.Conge;
@@ -32,7 +33,6 @@ public class UserCarteController {
     private Utilisateur user;
 
     public void setData(Conge conge, Utilisateur user) {
-        System.out.println("Setting data for user: " + user.getNom() + " " + user.getPrenom());
         this.conge = conge;
         this.user = user;
         String imagePath = user.getImage();
@@ -45,21 +45,22 @@ public class UserCarteController {
             } catch (FileNotFoundException e) {
                 System.err.println("Image file not found: " + imagePath);
             }
-        } else {
-            System.err.println("Image path is null for user: " + user);
         }
-<<<<<<< Updated upstream
-
-        nomprenom_card.setText(user.getNom() + " " + user.getPrenom());
-=======
         nomprenom_card.setText(user.getPrenom() + " " + user.getNom());
->>>>>>> Stashed changes
         email_card.setText(user.getEmail());
-        periode_card.setText("De " + conge.getDateDebut() + " à " + conge.getDateFin());
+        //periode_card.setText("De " + conge.getDateDebut() + " à " + conge.getDateFin());
+        Text text1 = new Text("De ");
+        Text text2 = new Text(conge.getDateDebut().toString());
+        text2.setStyle("-fx-font-weight: bold");
+        Text text3 = new Text(" à ");
+        Text text4 = new Text(conge.getDateFin().toString());
+        text4.setStyle("-fx-font-weight: bold");
+        TextFlow textFlow = new TextFlow(text1, text2, text3, text4);
+        periode_card.setGraphic(textFlow);
+
         statut_card.setText(String.valueOf(conge.getStatut()));
         type_card.setText(String.valueOf(conge.getTypeConge()));
         UserCard.setStyle("-fx-border-radius: 5px; -fx-border-color: #808080;");
-        System.out.println("Card data set for user: " + user.getNom() + " " + user.getPrenom());
     }
     @FXML
     void AfficherDemande(ActionEvent event) {
