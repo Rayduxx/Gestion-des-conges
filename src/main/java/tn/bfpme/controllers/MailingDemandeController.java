@@ -17,8 +17,12 @@ import tn.bfpme.utils.Mails;
 import tn.bfpme.utils.SessionManager;
 import tn.bfpme.utils.StageManager;
 
+import javax.mail.*;
+import javax.mail.internet.InternetAddress;
+import javax.mail.internet.MimeMessage;
 import java.io.IOException;
 import java.net.URL;
+import java.util.Properties;
 import java.util.ResourceBundle;
 
 public class MailingDemandeController implements Initializable {
@@ -69,8 +73,6 @@ public class MailingDemandeController implements Initializable {
         employeeName = user.getPrenom() + " " + user.getNom();
         startDate = String.valueOf(conge.getDateDebut());
         endDate = String.valueOf(conge.getDateFin());
-
-        // Update email destination label or other UI elements as needed
         mail_dest.setText(user.getEmail());
     }
 
@@ -119,7 +121,10 @@ public class MailingDemandeController implements Initializable {
 
     @FXML
     void Envoyer_mail(ActionEvent event) {
-
+        String to = mail_dest.getText();
+        String subject = mail_obj.getText();
+        String messageText = mail_text.getText();
+        Mails.sendEmail(to,subject,messageText);
     }
 
     @FXML

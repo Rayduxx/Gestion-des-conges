@@ -3,6 +3,7 @@ package tn.bfpme.controllers;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
+import javafx.fxml.Initializable;
 import javafx.scene.Node;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
@@ -16,6 +17,7 @@ import tn.bfpme.models.Statut;
 import tn.bfpme.models.TypeConge;
 import tn.bfpme.models.Utilisateur;
 import tn.bfpme.services.ServiceConge;
+import tn.bfpme.utils.Mails;
 import tn.bfpme.utils.MyDataBase;
 import tn.bfpme.utils.SessionManager;
 import tn.bfpme.utils.StageManager;
@@ -23,13 +25,19 @@ import tn.bfpme.utils.StageManager;
 import java.awt.*;
 import java.io.File;
 import java.io.IOException;
+import java.net.URL;
 import java.sql.Connection;
 import java.time.temporal.ChronoUnit;
 import java.util.Optional;
+import java.util.ResourceBundle;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import javafx.stage.Window;
+import javafx.stage.Stage;
+import java.util.stream.Collectors;
+import javafx.scene.Scene;
 
-public class DemandeDepController {
+public class DemandeDepController implements Initializable {
     @FXML private Label CongePerson;
     @FXML private Label labelDD;
     @FXML private Label labelDF;
@@ -40,6 +48,8 @@ public class DemandeDepController {
     private Conge conge;
     private Utilisateur user;
     private int CongeDays;
+    String employeeName, startDate, endDate, managerName, managerRole;
+    String to ,Subject ,MessageText;
     private final ServiceConge serviceConge = new ServiceConge();
     public void setData(Conge conge, Utilisateur user) {
         this.conge = conge;
@@ -51,6 +61,12 @@ public class DemandeDepController {
         labelType.setText(String.valueOf(conge.getTypeConge()));
         CongeDays = (int) ChronoUnit.DAYS.between(conge.getDateDebut(), conge.getDateFin());
         labelJours.setText(String.valueOf(CongeDays)+" Jours");
+        this.conge = conge;
+        this.user = user;
+        employeeName = user.getPrenom() + " " + user.getNom();
+        startDate = String.valueOf(conge.getDateDebut());
+        endDate = String.valueOf(conge.getDateFin());
+        to= user.getEmail();
 
     }
 
@@ -79,6 +95,24 @@ public class DemandeDepController {
         Optional<ButtonType> result = alert.showAndWait();
         if (result.isPresent() && result.get() == Oui) {
             serviceConge.updateStatutConge(this.conge.getIdConge(), Statut.Approuvé);
+            Subject="Approbation de Demande de Congé";
+            MessageText=Mails.generateApprobationDemande(employeeName, startDate, endDate, managerName, managerRole);
+            Mails.sendEmail(to,Subject,MessageText);
+            try {
+                FXMLLoader loader = new FXMLLoader(getClass().getResource("/DemandeDepListe.fxml"));
+                Parent root = loader.load();
+                DemandeDepListeController controller = loader.getController();
+                StageManager.closeAllStages();
+                Stage demandeDepListeStage = new Stage();
+                Scene scene = new Scene(root);
+                demandeDepListeStage.setScene(scene);
+                demandeDepListeStage.setTitle("Mailing de Demande");
+                demandeDepListeStage.show();
+                StageManager.addStage("DemandeDepListe", demandeDepListeStage);
+
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
             if (conge.getTypeConge().equals(TypeConge.Annuel)){
                 serviceConge.updateSoldeAnnuel(this.user.getIdUser(), this.user.getSoldeAnnuel()-CongeDays);
             }
@@ -97,9 +131,10 @@ public class DemandeDepController {
             cbon.setTitle("Demande approvée");
             cbon.setHeaderText("La demande de congé "+this.conge.getTypeConge()+" de "+this.user.getNom()+" "+this.user.getPrenom()+" est apprové");
         }
+
     }
 
-    @FXML void RefuserConge(ActionEvent event) {
+    @FXML void RefuserConge(ActionEvent event) throws IOException {
         Alert alert = new Alert(Alert.AlertType.CONFIRMATION);
         alert.setTitle("Êtes vous sûrs?");
         alert.setHeaderText("Êtes-vous certain de vouloir rejeter cette demande ?");
@@ -117,6 +152,7 @@ public class DemandeDepController {
             Optional<ButtonType> result2 = alert2.showAndWait();
             if (result2.isPresent() && result2.get() == Oui2) {
                 try {
+                    serviceConge.updateStatutConge(this.conge.getIdConge() ,Statut.Rejeté);
                     FXMLLoader loader = new FXMLLoader(getClass().getResource("/MailingDemande.fxml"));
                     Parent root = loader.load();
 
@@ -135,6 +171,27 @@ public class DemandeDepController {
                     e.printStackTrace();
                 }
             }
+            if (result2.isPresent() && result2.get() == Non2) {
+                serviceConge.updateStatutConge(this.conge.getIdConge() ,Statut.Rejeté);
+                Subject="Refus de Demande de Congé";
+                MessageText=Mails.generateRefusDemande(employeeName, startDate, endDate, managerName, managerRole);
+                Mails.sendEmail(to,Subject,MessageText);
+                try {
+                    FXMLLoader loader = new FXMLLoader(getClass().getResource("/DemandeDepListe.fxml"));
+                    Parent root = loader.load();
+                    DemandeDepListeController controller = loader.getController();
+                    StageManager.closeAllStages();
+                    Stage demandeDepListeStage = new Stage();
+                    Scene scene = new Scene(root);
+                    demandeDepListeStage.setScene(scene);
+                    demandeDepListeStage.setTitle("Mailing de Demande");
+                    demandeDepListeStage.show();
+                    StageManager.addStage("DemandeDepListe", demandeDepListeStage);
+
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
+            }
         }
     }
 
@@ -143,4 +200,12 @@ public class DemandeDepController {
         stage.close();
     }
 
+    @Override
+    public void initialize(URL location, ResourceBundle resources) {
+        Utilisateur manager = SessionManager.getInstance().getUtilisateur();
+        if (manager != null) {
+            managerName = manager.getPrenom() + " " + manager.getNom();
+            managerRole = String.valueOf(manager.getRole());
+        }
+    }
 }

@@ -39,4 +39,5 @@ public class StageManager {
         stages.clear();
         stageMap.clear();
     }
+
 }
