@@ -12,9 +12,21 @@ public class Conge {
     private int idUser;
     private String file;
     private String description;
+    private String notification;
 
     public Conge() {}
 
+    public Conge(int idConge, LocalDate dateDebut, LocalDate dateFin, TypeConge typeConge, Statut statut, int idUser, String file, String description,String notification) {
+        this.idConge = idConge;
+        this.dateDebut = dateDebut;
+        this.dateFin = dateFin;
+        this.typeConge = typeConge;
+        this.statut = statut;
+        this.idUser = idUser;
+        this.file = file;
+        this.description = description;
+        this.notification = notification;
+    }
     public Conge(int idConge, LocalDate dateDebut, LocalDate dateFin, TypeConge typeConge, Statut statut, int idUser, String file, String description) {
         this.idConge = idConge;
         this.dateDebut = dateDebut;
@@ -86,12 +98,13 @@ public class Conge {
         this.file = file;
     }
 
-    public String getDescription() {
-        return description;
-    }
-
+    public String getDescription() {return description;}
     public void setDescription(String description) {
         this.description = description;
+    }
+    public String getNotification() {return notification;}
+    public void setNotification(String notification) {
+        this.notification = notification;
     }
 
 
@@ -106,6 +119,7 @@ public class Conge {
                 ", idUser=" + idUser +
                 ", file='" + file +
                 ", description='" + description +
+                ", notification='" + notification +
                 '}';
     }
 }

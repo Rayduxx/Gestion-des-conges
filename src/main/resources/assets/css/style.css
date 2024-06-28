@@ -1,16 +1,20 @@
-.pane-clr{
+.pane-clr {
     -fx-background-color: #112349;
 }
-.pane1{
-     -fx-background-color: rgba(255, 255, 255, 0.24);
- }
-.pane2{
+
+.pane1 {
+    -fx-background-color: rgba(255, 255, 255, 0.24);
+}
+
+.pane2 {
     -fx-background-color: rgba(255, 255, 255, 0.24);
     -fx-border-color: white;
 }
-.grad-bg{
+
+.grad-bg {
     -fx-background-color: linear-gradient(to top right, rgba(17, 35, 73, 0.2), rgba(17, 35, 73, 0.13));
 }
+
 .combo-box {
     -fx-background-color: white;
     -fx-border-color: #112349;
@@ -20,15 +24,18 @@
     -fx-font-family: "Roboto";
     -fx-font-size: 15px;
 }
+
 .combo-box .arrow {
     -fx-background-color: linear-gradient(#112349, #1a3766);
     -fx-padding: 4;
     -fx-background-radius: 5;
 }
+
 .combo-box .arrow-button {
     -fx-background-color: transparent;
     -fx-border-color: transparent;
 }
+
 .combo-box .arrow-button .arrow {
     -fx-shape: "M 0 0 L 4 4 L 8 0 Z";
     -fx-background-insets: 0;
@@ -46,8 +53,24 @@
     -fx-border-radius: 5;
     -fx-cursor: hand;
     -fx-font-family: "Roboto";
-    -fx-font-weight: bold;
 }
+.transparent-background{
+    -fx-border-width: 2;
+    -fx-effect: dropshadow(three-pass-box, #E9A91F, 15, 0, 0, 0);
+    -fx-border-color: #E9A91F;
+
+}
+.scroll-pane {
+     -fx-background-color: rgba(255, 255, 255, 0.25);
+ }
+.scroll-pane > .viewport {
+  / / not . scrollpane but . scroll-pane -fx-background-color: transparent;
+}
+.scroll-pane > .content {
+    -fx-opacity: 1;
+}
+
+
 .btn-secondary {
     -fx-background-color: linear-gradient(#E9A91F, #D88A1A); /* Adjusted to a darker shade */
     -fx-background-radius: 5;
@@ -62,6 +85,7 @@
     -fx-font-family: "Roboto";
     -fx-font-weight: bold;
 }
+
 .btn-approver {
     -fx-background-color: linear-gradient(#E9A91F, #D88A1A);
     -fx-background-radius: 5;
@@ -74,6 +98,7 @@
     -fx-font-family: "Roboto";
     -fx-font-weight: bold;
 }
+
 .btn-refuser {
     -fx-background-color: linear-gradient(#E9A91F, #D88A1A);
     -fx-background-radius: 5;
@@ -86,6 +111,7 @@
     -fx-font-family: "Roboto";
     -fx-font-weight: bold;
 }
+
 .btn-secondary:hover {
     -fx-background-color: linear-gradient(#D88A1A, #E9A91F); /* Reverse the gradient for hover effect */
 }
@@ -99,6 +125,7 @@
     -fx-background-color: linear-gradient(#1a3766, #112349);
     -fx-text-fill: white;
 }
+
 .combo-box .combo-box-popup {
     -fx-background-color: white;
     -fx-border-color: #112349;
@@ -106,21 +133,26 @@
     -fx-border-radius: 5;
     -fx-effect: dropshadow(gaussian, rgba(0, 0, 0, 0.5), 10, 0.2, 0, 0);
 }
+
 .btn-primary:hover {
     -fx-background-color: linear-gradient(#1a3766, #112349);
 }
+
 .combo-box .list-cell {
     -fx-background-color: white;
     -fx-text-fill: #112349;
     -fx-padding: 5 10;
     -fx-font-family: "Arial";
 }
+
 .combo-box .list-cell:filled:hover {
     -fx-background-color: rgba(17, 35, 73, 0.1);
 }
+
 .btn-primary:pressed {
     -fx-background-color: #0d1d33;
 }
+
 .table-view {
     -fx-background-color: white;
     /*-fx-border-color: #112349;
@@ -128,40 +160,49 @@
     -fx-border-radius: 5;
     -fx-effect: dropshadow(gaussian, rgba(0, 0, 0, 0.5), 10, 0.2, 0, 0);*/
 }
+
 .table-view .column-header-background {
     -fx-background-color: linear-gradient(#112349, #1a3766);
     -fx-border-color: #112349;
     -fx-border-width: 0 0 1 0;
     -fx-text-fill: white;
 }
+
 .table-view .column-header, .table-view .filler {
     -fx-background-color: transparent;
 }
+
 .table-view .column-header .label {
     -fx-text-fill: white;
     -fx-font-weight: bold;
     -fx-padding: 5 10;
     -fx-font-family: "Arial";
 }
+
 .table-view .table-row-cell {
     -fx-border-color: transparent transparent #112349 transparent;
 }
+
 .table-view .table-row-cell:filled:selected, .table-view .table-row-cell:filled:selected:hover {
     -fx-background-color: linear-gradient(#1a3766, #112349);
     -fx-text-fill: white;
 }
+
 .table-view .table-cell {
     -fx-padding: 5 10;
     -fx-text-fill: #112349;
     -fx-font-family: "Arial";
 }
+
 .table-view .table-cell:selected {
     -fx-background-color: linear-gradient(#1a3766, #112349);
     -fx-text-fill: white;
 }
+
 .table-view .table-cell:hover {
     -fx-background-color: rgba(17, 35, 73, 0.1);
 }
+
 .text-field {
     -fx-background-color: white;
     -fx-border-color: #112349;
@@ -171,10 +212,12 @@
     -fx-font-family: "Arial";
     -fx-font-size: 14px;
 }
+
 .text-field:focused {
     -fx-border-color: linear-gradient(#112349, #1a3766);
     -fx-border-width: 2;
 }
+
 .text-area {
     -fx-background-color: white;
     -fx-border-color: #112349;
@@ -184,14 +227,17 @@
     -fx-font-family: "Arial";
     -fx-font-size: 14px;
 }
+
 .text-area .content {
     -fx-background-color: white;
     -fx-padding: 5;
 }
+
 .text-area:focused {
     -fx-border-color: linear-gradient(#112349, #1a3766);
     -fx-border-width: 2;
 }
+
 .date-picker {
     -fx-background-color: white;
     -fx-border-color: #112349;
@@ -201,19 +247,23 @@
     -fx-font-family: "Arial";
     -fx-font-size: 14px;
 }
+
 .date-picker:focused {
     -fx-border-color: linear-gradient(#112349, #1a3766);
     -fx-border-width: 2;
 }
+
 .date-picker .arrow {
     -fx-background-color: linear-gradient(#112349, #1a3766);
     -fx-padding: 5;
     -fx-background-radius: 5;
 }
+
 .date-picker .arrow-button {
     -fx-background-color: transparent;
     -fx-border-color: transparent;
 }
+
 .date-picker .popup {
     -fx-background-color: white;
     -fx-border-color: #112349;
@@ -221,25 +271,31 @@
     -fx-border-radius: 5;
     -fx-effect: dropshadow(gaussian, rgba(0, 0, 0, 0.5), 10, 0.2, 0, 0);
 }
+
 .date-picker .content {
     -fx-background-color: white;
 }
+
 .date-picker .date-cell:hover {
     -fx-background-color: rgba(17, 35, 73, 0.1);
 }
+
 .date-picker .date-cell:selected {
     -fx-background-color: linear-gradient(#1a3766, #112349);
     -fx-text-fill: white;
 }
+
 .seperator {
     visibility: hidden;
 
 
 }
+
 .settingsButton {
     -fx-background-color: transparent;
     -fx-border-color: transparent;
 }
+
 .LogoBfpme {
     -fx-effect: dropshadow(three-pass-box, #E9A91F, 15, 0, 0, 0);
 }
@@ -247,6 +303,7 @@
 .LogoBfpme:hover {
     -fx-effect: dropshadow(three-pass-box, red, 20, 0, 0, 0);
 }
+
 .tooltip {
     -fx-background-color: white;
     -fx-text-fill: black;
@@ -259,5 +316,5 @@
     -fx-font-family: "Arial";
     -fx-font-size: 14px;
     -fx-pref-width: 200px; /* Set preferred width */
-    -fx-wrap-text: true;   /* Allow text wrapping */
+    -fx-wrap-text: true; /* Allow text wrapping */
 }

@@ -1,9 +1,12 @@
 package tn.bfpme.controllers;
 
 import javafx.beans.property.ReadOnlyObjectWrapper;
+import javafx.beans.value.ChangeListener;
+import javafx.beans.value.ObservableValue;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
+import javafx.event.EventHandler;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.fxml.Initializable;
@@ -14,7 +17,10 @@ import javafx.scene.control.*;
 import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
+import javafx.scene.input.MouseEvent;
+import javafx.stage.Modality;
 import javafx.stage.Stage;
+import javafx.stage.StageStyle;
 import tn.bfpme.models.*;
 import tn.bfpme.utils.MyDataBase;
 import tn.bfpme.utils.SessionManager;
@@ -33,22 +39,40 @@ import java.time.LocalDate;
 import java.util.ResourceBundle;
 
 public class EmployeController implements Initializable {
-    @FXML private Label CU_dep;
-    @FXML private Label CU_email;
-    @FXML private Label CU_nomprenom;
-    @FXML private Label CU_role;
-    @FXML private ImageView CU_pdp;
-    @FXML private Label CU_ANL;
-    @FXML private Label CU_EXP;
-    @FXML private Label CU_MAL;
-    @FXML private Label CU_MAT;
-    @FXML private Button settingsButton;
-    @FXML public Button btnListe;
-    @FXML private TableView<Conge> TableHistorique;
-    @FXML private TableColumn<Conge, LocalDate> TableDD;
-    @FXML private TableColumn<Conge, LocalDate> TableDF;
-    @FXML private TableColumn<Conge, TypeConge> TableType;
-    @FXML private TableColumn<Conge, Integer> indexColumn;
+    @FXML
+    private Label CU_dep;
+    @FXML
+    private Label CU_email;
+    @FXML
+    private Label CU_nomprenom;
+    @FXML
+    private Label CU_role;
+    @FXML
+    private ImageView CU_pdp;
+    @FXML
+    private Label CU_ANL;
+    @FXML
+    private Label CU_EXP;
+    @FXML
+    private Label CU_MAL;
+    @FXML
+    private Label CU_MAT;
+    @FXML
+    private Button settingsButton;
+    @FXML
+    public Button btnListe;
+    @FXML
+    private TableView<Conge> TableHistorique;
+    @FXML
+    private TableColumn<Conge, LocalDate> TableDD;
+    @FXML
+    private TableColumn<Conge, LocalDate> TableDF;
+    @FXML
+    private TableColumn<Conge, TypeConge> TableType;
+    @FXML
+    private TableColumn<Conge, Integer> indexColumn;
+    @FXML
+    private Button NotifBtn;
     private ContextMenu contextMenu;
     private Connection cnx;
 
@@ -71,12 +95,13 @@ public class EmployeController implements Initializable {
         indexColumn.setSortable(false);
         fetchUserCongés();
         ReloadUserDATA();
-        if (SessionManager.getInstance().getUtilisateur().getRole().equals(Role.ChefDepartement)){
+        if (SessionManager.getInstance().getUtilisateur().getRole().equals(Role.ChefDepartement)) {
             btnListe.setVisible(true);
         }
     }
 
-    @FXML public void Demander(ActionEvent actionEvent) {
+    @FXML
+    public void Demander(ActionEvent actionEvent) {
         try {
             FXMLLoader loader = new FXMLLoader(getClass().getResource("/DemandeConge.fxml"));
             Parent root = loader.load();
@@ -91,7 +116,8 @@ public class EmployeController implements Initializable {
         }
     }
 
-    @FXML public void Historique(ActionEvent actionEvent) {
+    @FXML
+    public void Historique(ActionEvent actionEvent) {
         try {
             FXMLLoader loader = new FXMLLoader(getClass().getResource("/HistoriqueConge.fxml"));
             Parent root = loader.load();
@@ -106,15 +132,29 @@ public class EmployeController implements Initializable {
         }
     }
 
-    @FXML void viewaide(ActionEvent actionEvent) {
-        // Implement viewaide functionality here
+    @FXML
+    void viewaide(ActionEvent actionEvent) {
+        try {
+            FXMLLoader loader = new FXMLLoader(getClass().getResource("/MailingContact.fxml"));
+            Parent root = loader.load();
+            MenuItem menuItem = (MenuItem) actionEvent.getSource();
+            Stage stage = (Stage) menuItem.getParentPopup().getOwnerWindow();
+            stage.setScene(new Scene(root));
+            stage.setTitle("Mailing");
+            StageManager.addStage("Mailing", stage);
+            stage.show();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
     }
 
-    @FXML private void viewboite(ActionEvent actionEvent) {
+    @FXML
+    private void viewboite(ActionEvent actionEvent) {
         // Implement viewboite functionality here
     }
 
-    @FXML void viewdeconnection(ActionEvent actionEvent) {
+    @FXML
+    void viewdeconnection(ActionEvent actionEvent) {
         SessionManager.getInstance().cleanUserSession();
         try {
             FXMLLoader loader = new FXMLLoader(getClass().getResource("/login.fxml"));
@@ -152,10 +192,10 @@ public class EmployeController implements Initializable {
         }
     }
 
-    public void ReloadUserDATA(){
+    public void ReloadUserDATA() {
         CU_dep.setText(String.valueOf(SessionManager.getInstance().getDepartement()));
         CU_email.setText(SessionManager.getInstance().getUtilisateur().getEmail());
-        CU_nomprenom.setText(SessionManager.getInstance().getUtilisateur().getNom()+" "+SessionManager.getInstance().getUtilisateur().getPrenom());
+        CU_nomprenom.setText(SessionManager.getInstance().getUtilisateur().getNom() + " " + SessionManager.getInstance().getUtilisateur().getPrenom());
         CU_role.setText(String.valueOf(SessionManager.getInstance().getUtilisateur().getRole()));
         String imagePath = SessionManager.getInstance().getUtilisateur().getImage();
         if (imagePath != null) {
@@ -176,7 +216,8 @@ public class EmployeController implements Initializable {
         CU_MAT.setText(String.valueOf(SessionManager.getInstance().getUtilisateur().getSoldeMaternite()));
     }
 
-    @FXML public void goto_profil(ActionEvent actionEvent) {
+    @FXML
+    public void goto_profil(ActionEvent actionEvent) {
         try {
             FXMLLoader loader = new FXMLLoader(getClass().getResource("/profile.fxml"));
             Parent root = loader.load();
@@ -191,7 +232,8 @@ public class EmployeController implements Initializable {
         }
     }
 
-    @FXML void ListeDesDemandes(ActionEvent event) {
+    @FXML
+    void ListeDesDemandes(ActionEvent event) {
         try {
             FXMLLoader loader = new FXMLLoader(getClass().getResource("/DemandeDepListe.fxml"));
             Parent root = loader.load();
@@ -205,4 +247,54 @@ public class EmployeController implements Initializable {
             e.printStackTrace();
         }
     }
+
+    @FXML
+    void OpenNotifPane(ActionEvent event) {
+        try {
+            FXMLLoader loader = new FXMLLoader(getClass().getResource("/paneNotif.fxml"));
+            Parent paneNotif = loader.load();
+            Stage stage = new Stage();
+            stage.setTitle("Notifications");
+            Scene scene = new Scene(paneNotif);
+            scene.setFill(null);
+            stage.setScene(scene);
+            stage.initOwner(((Node) event.getSource()).getScene().getWindow());
+            stage.initModality(Modality.NONE);
+            stage.initStyle(StageStyle.UNDECORATED);
+            Node source = (Node) event.getSource();
+            double screenX = source.localToScreen(source.getBoundsInLocal()).getMinX() - 270;
+            double screenY = source.localToScreen(source.getBoundsInLocal()).getMaxY() + 10;
+            stage.setX(screenX);
+            stage.setY(screenY);
+            Scene mainScene = ((Node) event.getSource()).getScene();
+            Stage mainStage = (Stage) mainScene.getWindow();
+            ChangeListener<Number> positionListener = new ChangeListener<Number>() {
+                @Override
+                public void changed(ObservableValue<? extends Number> observable, Number oldValue, Number newValue) {
+                    double newScreenX = source.localToScreen(source.getBoundsInLocal()).getMinX() - 270;
+                    double newScreenY = source.localToScreen(source.getBoundsInLocal()).getMaxY() + 10;
+                    stage.setX(newScreenX);
+                    stage.setY(newScreenY);
+                }
+            };
+            mainStage.xProperty().addListener(positionListener);
+            mainStage.yProperty().addListener(positionListener);
+            EventHandler<MouseEvent> handler = new EventHandler<MouseEvent>() {
+                @Override
+                public void handle(MouseEvent mouseEvent) {
+                    if (!paneNotif.contains(mouseEvent.getSceneX(), mouseEvent.getSceneY())) {
+                        stage.close();
+                        mainScene.removeEventFilter(MouseEvent.MOUSE_PRESSED, this);
+                        mainStage.xProperty().removeListener(positionListener);
+                        mainStage.yProperty().removeListener(positionListener);
+                    }
+                }
+            };
+            mainScene.addEventFilter(MouseEvent.MOUSE_PRESSED, handler);
+            stage.show();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
+
 }

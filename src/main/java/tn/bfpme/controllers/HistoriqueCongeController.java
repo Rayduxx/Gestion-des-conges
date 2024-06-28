@@ -120,8 +120,7 @@ public class HistoriqueCongeController implements Initializable {
         congeContainer.setPadding(new Insets(4));
         int row = 0;
         try {
-            congeContainer.getChildren().clear(); // Clear existing items
-
+            congeContainer.getChildren().clear();
             for (Conge conge : CongeS.TriparStatut()) {
                 FXMLLoader fxmlLoader = new FXMLLoader();
                 fxmlLoader.setLocation(getClass().getResource("/CongeCarte.fxml"));
