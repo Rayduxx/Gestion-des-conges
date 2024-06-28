@@ -137,7 +137,8 @@ public class DemandeDepController implements Initializable {
             if (conge.getTypeConge().equals(TypeConge.Maternité)){
                 serviceConge.updateSoldeMaternité(this.user.getIdUser(), this.user.getSoldeMaternite()-CongeDays);
             }
-            serviceConge.NewNotification( "Votre demande de conge "+ conge.getTypeConge()+" est approuvée pour la période "+conge.getDateDebut()+" jusqu'à "+conge.getDateFin()+".",conge.getIdConge());
+            NotifContent = "Votre demande de conge "+ conge.getTypeConge()+" est approuvée pour la période "+conge.getDateDebut()+" jusqu'à "+conge.getDateFin()+".";
+            serviceConge.NewNotification(NotifContent,user.getIdUser(),conge.getIdConge());
             Stage stage = (Stage) ((Node) event.getSource()).getScene().getWindow();
             stage.close();
             Alert cbon = new Alert(Alert.AlertType.INFORMATION);
@@ -169,7 +170,6 @@ public class DemandeDepController implements Initializable {
                     serviceConge.updateStatutConge(this.conge.getIdConge() ,Statut.Rejeté);
                     FXMLLoader loader = new FXMLLoader(getClass().getResource("/MailingDemande.fxml"));
                     Parent root = loader.load();
-
                     MailingDemandeController controller = loader.getController();
                     controller.setData(conge, user);
                     Stage currentStage = (Stage) ((Node) event.getSource()).getScene().getWindow();
@@ -207,8 +207,7 @@ public class DemandeDepController implements Initializable {
                 }
             }
         }
-        serviceConge.NewNotification( "Votre demande de conge "+ conge.getTypeConge()+" est refusé pour la période "+conge.getDateDebut()+" jusqu'à "+conge.getDateFin()+".",conge.getIdConge());
-
+        serviceConge.NewNotification( "Votre demande de conge "+ conge.getTypeConge()+" est refusé pour la période "+conge.getDateDebut()+" jusqu'à "+conge.getDateFin()+".",user.getIdUser(),conge.getIdConge());
     }
 
     @FXML void retour(ActionEvent event) {

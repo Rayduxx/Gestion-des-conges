@@ -388,7 +388,7 @@ public class ServiceConge implements IConge<Conge> {
     }
     public void DeleteAllUserNotif() {
         try {
-            String qry = "UPDATE `conge` SET `Notification`=? WHERE `ID_Conge`=?";
+            String qry = "UPDATE `conge` SET `Notification`=? WHERE `ID_User`=?";
             PreparedStatement stm = cnx.prepareStatement(qry);
             stm.setString(1, "");
             stm.setInt(2, SessionManager.getInstance().getUtilisateur().getIdUser());
@@ -397,12 +397,13 @@ public class ServiceConge implements IConge<Conge> {
             System.out.println(ex.getMessage());
         }
     }
-    public void NewNotification(String NotfiText, int id) {
+    public void NewNotification(String NotfiText, int idUser,int idConge) {
         try {
-            String qry = "UPDATE `conge` SET `Notification`=? WHERE `ID_User`=?";
+            String qry = "UPDATE `conge` SET `Notification`=? WHERE `ID_User`=? AND `ID_Conge`=?";
             PreparedStatement stm = cnx.prepareStatement(qry);
             stm.setString(1, NotfiText);
-            stm.setInt(2, id);
+            stm.setInt(2, idUser);
+            stm.setInt(3, idConge);
             stm.executeUpdate();
         } catch (SQLException ex) {
             System.out.println(ex.getMessage());
