@@ -199,12 +199,12 @@ public class Mails {
         // Send message
         Transport.send(message);
 
-        System.out.println("Sent message successfully....");
+        System.out.println("Message envoyé....");
 
         Alert alert = new Alert(Alert.AlertType.INFORMATION);
         alert.setTitle("Success");
         alert.setHeaderText(null);
-        alert.setContentText("Email sent successfully!");
+        alert.setContentText("Message envoyé!");
         alert.showAndWait();
 
     } catch (

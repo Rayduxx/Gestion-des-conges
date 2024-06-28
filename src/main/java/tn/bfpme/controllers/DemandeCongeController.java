@@ -81,19 +81,6 @@ public class DemandeCongeController implements Initializable {
     public void initialize(URL url, ResourceBundle resourceBundle) {
         cb_typeconge.setValue("Selectioner type");
         cb_typeconge.setItems(CongeList);
-        contextMenu = new ContextMenu();
-        MenuItem boiteItem = new MenuItem("boîte de réception");
-        MenuItem aideItem = new MenuItem("Aide et support");
-        MenuItem logoutItem = new MenuItem("Déconnexion");
-        contextMenu.getItems().addAll(boiteItem, aideItem, logoutItem);
-        settingsButton.setOnAction(event -> {
-            double screenX = settingsButton.localToScreen(settingsButton.getBoundsInLocal()).getMinX() - 70;
-            double screenY = settingsButton.localToScreen(settingsButton.getBoundsInLocal()).getMaxY() + 10;
-            contextMenu.show(settingsButton, screenX, screenY);
-        });
-        boiteItem.setOnAction(this::viewboite);
-        aideItem.setOnAction(this::viewaide);
-        logoutItem.setOnAction(this::viewdeconnection);
         if (SessionManager.getInstance().getUtilisateur().getRole().equals(Role.ChefDepartement)) {
             btnListe.setVisible(true);
         }
@@ -719,30 +706,6 @@ public class DemandeCongeController implements Initializable {
             e.printStackTrace();
         }
     }
-
-    @FXML
-    void viewdeconnection(ActionEvent actionEvent) {
-        SessionManager.getInstance().cleanUserSession();
-        try {
-            FXMLLoader loader = new FXMLLoader(getClass().getResource("/login.fxml"));
-            Parent root = loader.load();
-            MenuItem menuItem = (MenuItem) actionEvent.getSource();
-            Stage stage = (Stage) menuItem.getParentPopup().getOwnerWindow();
-            stage.setScene(new Scene(root));
-            stage.setTitle("Gestion de Congés - Connection");
-            StageManager.addStage("DemandeDepListe", stage);
-            stage.show();
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-    }
-
-    void viewaide(ActionEvent actionEvent) {
-    }
-
-    void viewboite(ActionEvent actionEvent) {
-    }
-
     @FXML
     public void goto_profil(ActionEvent actionEvent) {
         try {

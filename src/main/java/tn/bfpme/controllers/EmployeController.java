@@ -10,6 +10,7 @@ import javafx.event.EventHandler;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.fxml.Initializable;
+import javafx.stage.Popup;
 import javafx.scene.Node;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
@@ -17,19 +18,18 @@ import javafx.scene.control.*;
 import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
+import javafx.stage.Popup;
 import javafx.scene.input.MouseEvent;
 import javafx.stage.Modality;
 import javafx.stage.Stage;
+import javafx.stage.Window;
 import javafx.stage.StageStyle;
 import tn.bfpme.models.*;
 import tn.bfpme.utils.MyDataBase;
 import tn.bfpme.utils.SessionManager;
 import tn.bfpme.utils.StageManager;
 
-import java.io.File;
-import java.io.FileInputStream;
-import java.io.FileNotFoundException;
-import java.io.IOException;
+import java.io.*;
 import java.net.URL;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
@@ -39,64 +39,55 @@ import java.time.LocalDate;
 import java.util.ResourceBundle;
 
 public class EmployeController implements Initializable {
-    @FXML
-    private Label CU_dep;
-    @FXML
-    private Label CU_email;
-    @FXML
-    private Label CU_nomprenom;
-    @FXML
-    private Label CU_role;
-    @FXML
-    private ImageView CU_pdp;
-    @FXML
-    private Label CU_ANL;
-    @FXML
-    private Label CU_EXP;
-    @FXML
-    private Label CU_MAL;
-    @FXML
-    private Label CU_MAT;
-    @FXML
-    private Button settingsButton;
-    @FXML
-    public Button btnListe;
-    @FXML
-    private TableView<Conge> TableHistorique;
-    @FXML
-    private TableColumn<Conge, LocalDate> TableDD;
-    @FXML
-    private TableColumn<Conge, LocalDate> TableDF;
-    @FXML
-    private TableColumn<Conge, TypeConge> TableType;
-    @FXML
-    private TableColumn<Conge, Integer> indexColumn;
-    @FXML
+    @FXML private Label CU_dep;
+    @FXML private Label CU_email;
+    @FXML private Label CU_nomprenom;
+    @FXML private Label CU_role;
+    @FXML private ImageView CU_pdp;
+    @FXML private Button settingsButton;
+    @FXML private Label CU_ANL;
+    @FXML private Label CU_EXP;
+    @FXML private Label CU_MAL;
+    @FXML private Label CU_MAT;
+    @FXML public Button btnListe;
     private Button NotifBtn;
-    private ContextMenu contextMenu;
+    @FXML private TableView<Conge> TableHistorique;
+    @FXML private TableColumn<Conge, LocalDate> TableDD;
+    @FXML private TableColumn<Conge, LocalDate> TableDF;
+    @FXML private TableColumn<Conge, TypeConge> TableType;
+    @FXML private TableColumn<Conge, Integer> indexColumn;
+    private Popup settingsPopup;
     private Connection cnx;
 
     @Override
     public void initialize(URL url, ResourceBundle resourceBundle) {
-        contextMenu = new ContextMenu();
-        MenuItem boiteItem = new MenuItem("boîte de réception");
-        MenuItem aideItem = new MenuItem("Aide et support");
-        MenuItem logoutItem = new MenuItem("Déconnexion");
-        contextMenu.getItems().addAll(boiteItem, aideItem, logoutItem);
-        settingsButton.setOnAction(event -> {
-            double screenX = settingsButton.localToScreen(settingsButton.getBoundsInLocal()).getMinX() - 70;
-            double screenY = settingsButton.localToScreen(settingsButton.getBoundsInLocal()).getMaxY() + 10;
-            contextMenu.show(settingsButton, screenX, screenY);
-        });
-        boiteItem.setOnAction(this::viewboite);
-        aideItem.setOnAction(this::viewaide);
-        logoutItem.setOnAction(this::viewdeconnection);
         indexColumn.setCellValueFactory(cellData -> new ReadOnlyObjectWrapper<>(TableHistorique.getItems().indexOf(cellData.getValue()) + 1));
         indexColumn.setSortable(false);
         fetchUserCongés();
         ReloadUserDATA();
         if (SessionManager.getInstance().getUtilisateur().getRole().equals(Role.ChefDepartement)) {
             btnListe.setVisible(true);
+        }
+        settingsPopup = new Popup();
+        settingsPopup.setAutoHide(true);
+
+        try {
+            Parent settingsContent = FXMLLoader.load(getClass().getResource("/Settings.fxml"));
+            settingsPopup.getContent().add(settingsContent);
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
+
+    @FXML
+    void settings_button(ActionEvent event) {
+        if (settingsPopup.isShowing()) {
+            settingsPopup.hide();
+        } else {
+            Window window = ((Node) event.getSource()).getScene().getWindow();
+            double x = window.getX() + settingsButton.localToScene(0, 0).getX() + settingsButton.getScene().getX() - 150;
+            double y = window.getY() + settingsButton.localToScene(0, 0).getY() + settingsButton.getScene().getY() + settingsButton.getHeight();
+            settingsPopup.show(window, x, y);
         }
     }
 
@@ -116,8 +107,8 @@ public class EmployeController implements Initializable {
         }
     }
 
-    @FXML
-    public void Historique(ActionEvent actionEvent) {
+
+    @FXML public void Historique(ActionEvent actionEvent) {
         try {
             FXMLLoader loader = new FXMLLoader(getClass().getResource("/HistoriqueConge.fxml"));
             Parent root = loader.load();
@@ -132,8 +123,8 @@ public class EmployeController implements Initializable {
         }
     }
 
-    @FXML
-    void viewaide(ActionEvent actionEvent) {
+        /*
+        MAILING
         try {
             FXMLLoader loader = new FXMLLoader(getClass().getResource("/MailingContact.fxml"));
             Parent root = loader.load();
@@ -145,30 +136,9 @@ public class EmployeController implements Initializable {
             stage.show();
         } catch (IOException e) {
             e.printStackTrace();
-        }
-    }
+        }*/
 
-    @FXML
-    private void viewboite(ActionEvent actionEvent) {
-        // Implement viewboite functionality here
-    }
 
-    @FXML
-    void viewdeconnection(ActionEvent actionEvent) {
-        SessionManager.getInstance().cleanUserSession();
-        try {
-            FXMLLoader loader = new FXMLLoader(getClass().getResource("/login.fxml"));
-            Parent root = loader.load();
-            MenuItem menuItem = (MenuItem) actionEvent.getSource();
-            Stage stage = (Stage) menuItem.getParentPopup().getOwnerWindow();
-            stage.setScene(new Scene(root));
-            stage.setTitle("Gestion de Congés - Connection");
-            StageManager.addStage("Login", stage);
-            stage.show();
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-    }
 
     private void fetchUserCongés() {
         ObservableList<Conge> HisUserList = FXCollections.observableArrayList();
@@ -198,17 +168,22 @@ public class EmployeController implements Initializable {
         CU_nomprenom.setText(SessionManager.getInstance().getUtilisateur().getNom() + " " + SessionManager.getInstance().getUtilisateur().getPrenom());
         CU_role.setText(String.valueOf(SessionManager.getInstance().getUtilisateur().getRole()));
         String imagePath = SessionManager.getInstance().getUtilisateur().getImage();
-        if (imagePath != null) {
-            try {
-                File file = new File(imagePath);
-                FileInputStream inputStream = new FileInputStream(file);
-                Image image = new Image(inputStream);
-                CU_pdp.setImage(image);
-            } catch (FileNotFoundException e) {
-                System.err.println("Image file not found: " + imagePath);
+
+        if (imagePath != null && !imagePath.isEmpty()) {
+            File file = new File(imagePath);
+            if (file.exists()) {
+                try {
+                    FileInputStream inputStream = new FileInputStream(file);
+                    Image image = new Image(inputStream);
+                    CU_pdp.setImage(image);
+                } catch (FileNotFoundException e) {
+                    System.err.println("Image file not found: " + imagePath);
+                }
+            } else {
+                System.err.println("Image file does not exist: " + imagePath);
             }
         } else {
-            System.err.println("Image path is null for user: " + SessionManager.getInstance().getUtilisateur());
+            System.err.println("Image path is null or empty for user: " + SessionManager.getInstance().getUtilisateur());
         }
         CU_ANL.setText(String.valueOf(SessionManager.getInstance().getUtilisateur().getSoldeAnnuel()));
         CU_EXP.setText(String.valueOf(SessionManager.getInstance().getUtilisateur().getSoldeExceptionnel()));
@@ -216,8 +191,8 @@ public class EmployeController implements Initializable {
         CU_MAT.setText(String.valueOf(SessionManager.getInstance().getUtilisateur().getSoldeMaternite()));
     }
 
-    @FXML
-    public void goto_profil(ActionEvent actionEvent) {
+
+    @FXML public void goto_profil(ActionEvent actionEvent) {
         try {
             FXMLLoader loader = new FXMLLoader(getClass().getResource("/profile.fxml"));
             Parent root = loader.load();
