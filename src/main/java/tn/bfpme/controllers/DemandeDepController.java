@@ -47,7 +47,7 @@ public class DemandeDepController implements Initializable {
     @FXML private Label labelJours;
     @FXML private Label labelType;
     @FXML private HBox DocFichHBOX;
-
+    @FXML private HBox HBoxAppRef;
     Connection cnx = MyDataBase.getInstance().getCnx();
     private Conge conge;
     private Utilisateur user;
@@ -65,9 +65,8 @@ public class DemandeDepController implements Initializable {
         labelType.setText(String.valueOf(conge.getTypeConge()));
         CongeDays = (int) ChronoUnit.DAYS.between(conge.getDateDebut(), conge.getDateFin());
         labelJours.setText(String.valueOf(CongeDays)+" Jours");
-        if (this.conge.getFile().isBlank()){
-            DocFichHBOX.setVisible(false);
-        }
+        if (this.conge.getFile().isBlank()){DocFichHBOX.setVisible(false);}
+        if (this.conge.getStatut()!=Statut.En_Attente){HBoxAppRef.setVisible(false);}
         employeeName = user.getPrenom() + " " + user.getNom();
         startDate = String.valueOf(conge.getDateDebut());
         endDate = String.valueOf(conge.getDateFin());
