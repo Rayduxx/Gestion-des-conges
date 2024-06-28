@@ -125,6 +125,21 @@ public class MailingDemandeController implements Initializable {
         String subject = mail_obj.getText();
         String messageText = mail_text.getText();
         Mails.sendEmail(to,subject,messageText);
+        try {
+            FXMLLoader loader = new FXMLLoader(getClass().getResource("/DemandeDepListe.fxml"));
+            Parent root = loader.load();
+            DemandeDepListeController controller = loader.getController();
+            StageManager.closeAllStages();
+            Stage demandeDepListeStage = new Stage();
+            Scene scene = new Scene(root);
+            demandeDepListeStage.setScene(scene);
+            demandeDepListeStage.setTitle("Mailing de Demande");
+            demandeDepListeStage.show();
+            StageManager.addStage("DemandeDepListe", demandeDepListeStage);
+
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
     }
 
     @FXML
