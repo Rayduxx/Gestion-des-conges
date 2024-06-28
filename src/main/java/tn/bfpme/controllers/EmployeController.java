@@ -50,7 +50,7 @@ public class EmployeController implements Initializable {
     @FXML private Label CU_MAL;
     @FXML private Label CU_MAT;
     @FXML public Button btnListe;
-    private Button NotifBtn;
+    @FXML public Button NotifBtn;
     @FXML private TableView<Conge> TableHistorique;
     @FXML private TableColumn<Conge, LocalDate> TableDD;
     @FXML private TableColumn<Conge, LocalDate> TableDF;

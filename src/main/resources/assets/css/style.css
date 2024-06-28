@@ -293,12 +293,3 @@
     -fx-background-color: #E9A91F;
 }
 
-.transparent-background{
-    -fx-border-width: 2;
-    -fx-effect: dropshadow(three-pass-box, #E9A91F, 15, 0, 0, 0);
-    -fx-border-color: #E9A91F;
-
-}
-
-
-}
