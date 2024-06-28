@@ -107,6 +107,7 @@ public class DemandeDepController implements Initializable {
         if (result.isPresent() && result.get() == Oui) {
             serviceConge.updateStatutConge(this.conge.getIdConge(), Statut.Approuvé);
             Subject="Approbation de Demande de Congé";
+            String NotifContent="";
             MessageText=Mails.generateApprobationDemande(employeeName, startDate, endDate, managerName, managerRole);
             Mails.sendEmail(to,Subject,MessageText);
             try {
@@ -136,10 +137,11 @@ public class DemandeDepController implements Initializable {
             if (conge.getTypeConge().equals(TypeConge.Maternité)){
                 serviceConge.updateSoldeMaternité(this.user.getIdUser(), this.user.getSoldeMaternite()-CongeDays);
             }
+            serviceConge.NewNotification( "Votre demande de conge "+ conge.getTypeConge()+" est approuvée pour la période "+conge.getDateDebut()+" jusqu'à "+conge.getDateFin()+".",conge.getIdConge());
             Stage stage = (Stage) ((Node) event.getSource()).getScene().getWindow();
             stage.close();
             Alert cbon = new Alert(Alert.AlertType.INFORMATION);
-            cbon.setTitle("Demande approvée");
+            cbon.setTitle("Demande approuvée");
             cbon.setHeaderText("La demande de congé "+this.conge.getTypeConge()+" de "+this.user.getNom()+" "+this.user.getPrenom()+" à été apprové");
             cbon.showAndWait();
 
@@ -205,6 +207,8 @@ public class DemandeDepController implements Initializable {
                 }
             }
         }
+        serviceConge.NewNotification( "Votre demande de conge "+ conge.getTypeConge()+" est refusé pour la période "+conge.getDateDebut()+" jusqu'à "+conge.getDateFin()+".",conge.getIdConge());
+
     }
 
     @FXML void retour(ActionEvent event) {

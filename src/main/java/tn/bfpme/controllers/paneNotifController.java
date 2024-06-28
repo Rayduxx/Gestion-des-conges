@@ -31,7 +31,7 @@ public class paneNotifController implements Initializable {
         NotifContainer.setPadding(new Insets(4));
         int row = 0;
         try {
-            NotifContainer.getChildren().clear(); // Clear existing items
+            NotifContainer.getChildren().clear();
             for (Conge conge : CongeS.AfficherNotifications()) {
                 FXMLLoader fxmlLoader = new FXMLLoader();
                 fxmlLoader.setLocation(getClass().getResource("/CardNotif.fxml"));
