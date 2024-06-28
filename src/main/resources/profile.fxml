@@ -188,7 +188,7 @@
                   </Button>
                   <Button fx:id="settingsButton" mnemonicParsing="false" prefHeight="25.0" prefWidth="48.0" styleClass="settingsButton">
                      <graphic>
-                        <ImageView fitHeight="32.0" fitWidth="31.0" pickOnBounds="true" preserveRatio="true">
+                        <ImageView fx:id="pdp2" fitHeight="32.0" fitWidth="31.0" pickOnBounds="true" preserveRatio="true">
                            <image>
                               <Image url="@assets/imgs/Settings.png" />
                            </image>
