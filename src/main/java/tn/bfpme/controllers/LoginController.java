@@ -39,14 +39,9 @@ public class LoginController {
             ResultSet rs = stm.executeQuery();
             if (rs.next()) {
                 Utilisateur ConnectedUser = new Utilisateur(rs.getInt("ID_User"), rs.getString("Nom"), rs.getString("Prenom"), rs.getString("Email"), rs.getString("MDP"), Role.valueOf(rs.getString("Role")), rs.getString("Image"), rs.getInt("Solde_Annuel"), rs.getInt("Solde_Maladie"), rs.getInt("Solde_Exceptionnel"), rs.getInt("Solde_Maternité"));
-
-                // Check if user is an employee
                 userS.checkEmployee(rs.getInt("ID_User"), ConnectedUser);
-                // Check if user is a department head
                 userS.checkDepartmentHead(rs.getInt("ID_User"), ConnectedUser);
-                // Check if user is a chief of administration
                 userS.checkChiefAdministration(rs.getInt("ID_User"), ConnectedUser);
-                // Check if user is an IT admin
                 userS.checkAdminIT(rs.getInt("ID_User"), ConnectedUser);
                 navigateToProfile(event);
             } else {

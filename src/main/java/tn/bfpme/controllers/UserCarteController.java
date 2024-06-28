@@ -1,19 +1,12 @@
 package tn.bfpme.controllers;
 
 import javafx.event.ActionEvent;
-import javafx.fxml.FXML;
-import javafx.fxml.FXMLLoader;
-import javafx.scene.Node;
-import javafx.scene.Parent;
-import javafx.scene.Scene;
-import javafx.scene.control.Label;
-import javafx.scene.image.Image;
-import javafx.scene.image.ImageView;
-import javafx.scene.layout.Pane;
-import javafx.scene.text.Text;
-import javafx.scene.text.TextFlow;
-import javafx.stage.Modality;
-import javafx.stage.Stage;
+import javafx.fxml.*;
+import javafx.scene.*;
+import javafx.scene.control.*;
+import javafx.scene.image.*;
+import javafx.scene.layout.*;
+import javafx.stage.*;
 import tn.bfpme.models.Conge;
 import tn.bfpme.models.Utilisateur;
 import tn.bfpme.utils.StageManager;
@@ -31,7 +24,6 @@ public class UserCarteController {
     @FXML private Label periode_card;
     @FXML private Label statut_card;
     @FXML private Label type_card;
-
     private Conge conge;
     private Utilisateur user;
 
@@ -55,6 +47,7 @@ public class UserCarteController {
         statut_card.setText(String.valueOf(conge.getStatut()));
         type_card.setText(String.valueOf(conge.getTypeConge()));
         UserCard.setStyle("-fx-border-radius: 5px; -fx-border-color: #808080;");
+
     }
 
     @FXML

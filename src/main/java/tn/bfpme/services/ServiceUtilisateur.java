@@ -21,7 +21,7 @@ public class ServiceUtilisateur implements IUtilisateur {
         String departement = departementEnum.name();
         List<Utilisateur> users = new ArrayList<>();
         List<Conge> conges = new ArrayList<>();
-        String query = "SELECT utilisateur.ID_User, utilisateur.Nom, utilisateur.Prenom, utilisateur.Email, utilisateur.Image, " +
+        String query = "SELECT utilisateur.ID_User, utilisateur.Nom, utilisateur.Prenom, utilisateur.Email, utilisateur.Image, utilisateur.Solde_Annuel, utilisateur.Solde_Maladie, utilisateur.Solde_Exceptionnel, utilisateur.Solde_Maternité, " +
                 "conge.ID_Conge, conge.TypeConge, conge.Statut, conge.DateFin, conge.DateDebut, conge.description, conge.file " +
                 "FROM utilisateur " +
                 "JOIN employe ON utilisateur.ID_User = employe.ID_User " +
@@ -39,6 +39,10 @@ public class ServiceUtilisateur implements IUtilisateur {
                 user.setPrenom(rs.getString("Prenom"));
                 user.setEmail(rs.getString("Email"));
                 user.setImage(rs.getString("Image"));
+                user.setSoldeAnnuel(rs.getInt("Solde_Annuel"));
+                user.setSoldeExceptionnel(rs.getInt("Solde_Exceptionnel"));
+                user.setSoldeMaladie(rs.getInt("Solde_Maladie"));
+                user.setSoldeMaternite(rs.getInt("Solde_Maternité"));
                 if (!users.contains(user)) {
                     users.add(user);
                 }
@@ -63,7 +67,7 @@ public class ServiceUtilisateur implements IUtilisateur {
         String departement = departementEnum.name();
         List<Utilisateur> users = new ArrayList<>();
         List<Conge> conges = new ArrayList<>();
-        String query = "SELECT utilisateur.ID_User, utilisateur.Nom, utilisateur.Prenom, utilisateur.Email, utilisateur.Image, " +
+        String query = "SELECT utilisateur.ID_User, utilisateur.Nom, utilisateur.Prenom, utilisateur.Email, utilisateur.Image, utilisateur.Solde_Annuel, utilisateur.Solde_Maladie, utilisateur.Solde_Exceptionnel, utilisateur.Solde_Maternité, " +
                 "conge.ID_Conge, conge.TypeConge, conge.Statut, conge.DateFin, conge.DateDebut, conge.description, conge.file " +
                 "FROM utilisateur " +
                 "JOIN employe ON utilisateur.ID_User = employe.ID_User " +
@@ -81,6 +85,10 @@ public class ServiceUtilisateur implements IUtilisateur {
                 user.setPrenom(rs.getString("Prenom"));
                 user.setEmail(rs.getString("Email"));
                 user.setImage(rs.getString("Image"));
+                user.setSoldeAnnuel(rs.getInt("Solde_Annuel"));
+                user.setSoldeExceptionnel(rs.getInt("Solde_Exceptionnel"));
+                user.setSoldeMaladie(rs.getInt("Solde_Maladie"));
+                user.setSoldeMaternite(rs.getInt("Solde_Maternité"));
                 if (!users.contains(user)) {
                     users.add(user);
                 }
@@ -105,7 +113,7 @@ public class ServiceUtilisateur implements IUtilisateur {
         String departement = departementEnum.name();
         List<Utilisateur> users = new ArrayList<>();
         List<Conge> conges = new ArrayList<>();
-        String query = "SELECT utilisateur.ID_User, utilisateur.Nom, utilisateur.Prenom, utilisateur.Email, utilisateur.Image, " +
+        String query = "SELECT utilisateur.ID_User, utilisateur.Nom, utilisateur.Prenom, utilisateur.Email, utilisateur.Image, utilisateur.Solde_Annuel, utilisateur.Solde_Maladie, utilisateur.Solde_Exceptionnel, utilisateur.Solde_Maternité, " +
                 "conge.ID_Conge, conge.TypeConge, conge.Statut, conge.DateFin, conge.DateDebut, conge.description, conge.file " +
                 "FROM utilisateur " +
                 "JOIN employe ON utilisateur.ID_User = employe.ID_User " +
@@ -123,6 +131,10 @@ public class ServiceUtilisateur implements IUtilisateur {
                 user.setPrenom(rs.getString("Prenom"));
                 user.setEmail(rs.getString("Email"));
                 user.setImage(rs.getString("Image"));
+                user.setSoldeAnnuel(rs.getInt("Solde_Annuel"));
+                user.setSoldeExceptionnel(rs.getInt("Solde_Exceptionnel"));
+                user.setSoldeMaladie(rs.getInt("Solde_Maladie"));
+                user.setSoldeMaternite(rs.getInt("Solde_Maternité"));
                 if (!users.contains(user)) {
                     users.add(user);
                 }
@@ -148,7 +160,7 @@ public class ServiceUtilisateur implements IUtilisateur {
         String departement = departementEnum.name();
         List<Utilisateur> users = new ArrayList<>();
         List<Conge> conges = new ArrayList<>();
-        String query = "SELECT utilisateur.ID_User, utilisateur.Nom, utilisateur.Prenom, utilisateur.Email, utilisateur.Image, " +
+        String query = "SELECT utilisateur.ID_User, utilisateur.Nom, utilisateur.Prenom, utilisateur.Email, utilisateur.Image, utilisateur.Solde_Annuel, utilisateur.Solde_Maladie, utilisateur.Solde_Exceptionnel, utilisateur.Solde_Maternité, " +
                 "conge.ID_Conge, conge.TypeConge, conge.Statut, conge.DateFin, conge.DateDebut, conge.description, conge.file " +
                 "FROM utilisateur " +
                 "JOIN employe ON utilisateur.ID_User = employe.ID_User " +
@@ -166,6 +178,10 @@ public class ServiceUtilisateur implements IUtilisateur {
                 user.setPrenom(rs.getString("Prenom"));
                 user.setEmail(rs.getString("Email"));
                 user.setImage(rs.getString("Image"));
+                user.setSoldeAnnuel(rs.getInt("Solde_Annuel"));
+                user.setSoldeExceptionnel(rs.getInt("Solde_Exceptionnel"));
+                user.setSoldeMaladie(rs.getInt("Solde_Maladie"));
+                user.setSoldeMaternite(rs.getInt("Solde_Maternité"));
                 if (!users.contains(user)) {
                     users.add(user);
                 }
@@ -190,7 +206,7 @@ public class ServiceUtilisateur implements IUtilisateur {
         String departement = departementEnum.name();
         List<Utilisateur> users = new ArrayList<>();
         List<Conge> conges = new ArrayList<>();
-        String query = "SELECT utilisateur.ID_User, utilisateur.Nom, utilisateur.Prenom, utilisateur.Email, utilisateur.Image, " +
+        String query = "SELECT utilisateur.ID_User, utilisateur.Nom, utilisateur.Prenom, utilisateur.Email, utilisateur.Image, utilisateur.Solde_Annuel, utilisateur.Solde_Maladie, utilisateur.Solde_Exceptionnel, utilisateur.Solde_Maternité, " +
                 "conge.ID_Conge, conge.TypeConge, conge.Statut, conge.DateFin, conge.DateDebut, conge.description, conge.file " +
                 "FROM utilisateur " +
                 "JOIN employe ON utilisateur.ID_User = employe.ID_User " +
@@ -208,6 +224,10 @@ public class ServiceUtilisateur implements IUtilisateur {
                 user.setPrenom(rs.getString("Prenom"));
                 user.setEmail(rs.getString("Email"));
                 user.setImage(rs.getString("Image"));
+                user.setSoldeAnnuel(rs.getInt("Solde_Annuel"));
+                user.setSoldeExceptionnel(rs.getInt("Solde_Exceptionnel"));
+                user.setSoldeMaladie(rs.getInt("Solde_Maladie"));
+                user.setSoldeMaternite(rs.getInt("Solde_Maternité"));
                 if (!users.contains(user)) {
                     users.add(user);
                 }
@@ -232,7 +252,7 @@ public class ServiceUtilisateur implements IUtilisateur {
         String departement = departementEnum.name();
         List<Utilisateur> users = new ArrayList<>();
         List<Conge> conges = new ArrayList<>();
-        String query = "SELECT utilisateur.ID_User, utilisateur.Nom, utilisateur.Prenom, utilisateur.Email, utilisateur.Image, " +
+        String query = "SELECT utilisateur.ID_User, utilisateur.Nom, utilisateur.Prenom, utilisateur.Email, utilisateur.Image, utilisateur.Solde_Annuel, utilisateur.Solde_Maladie, utilisateur.Solde_Exceptionnel, utilisateur.Solde_Maternité, " +
                 "conge.ID_Conge, conge.TypeConge, conge.Statut, conge.DateFin, conge.DateDebut, conge.description, conge.file " +
                 "FROM utilisateur " +
                 "JOIN employe ON utilisateur.ID_User = employe.ID_User " +
@@ -250,6 +270,10 @@ public class ServiceUtilisateur implements IUtilisateur {
                 user.setPrenom(rs.getString("Prenom"));
                 user.setEmail(rs.getString("Email"));
                 user.setImage(rs.getString("Image"));
+                user.setSoldeAnnuel(rs.getInt("Solde_Annuel"));
+                user.setSoldeExceptionnel(rs.getInt("Solde_Exceptionnel"));
+                user.setSoldeMaladie(rs.getInt("Solde_Maladie"));
+                user.setSoldeMaternite(rs.getInt("Solde_Maternité"));
                 if (!users.contains(user)) {
                     users.add(user);
                 }
@@ -274,7 +298,7 @@ public class ServiceUtilisateur implements IUtilisateur {
         String departement = departementEnum.name();
         List<Utilisateur> users = new ArrayList<>();
         List<Conge> conges = new ArrayList<>();
-        String query = "SELECT utilisateur.ID_User, utilisateur.Nom, utilisateur.Prenom, utilisateur.Email, utilisateur.Image, " +
+        String query = "SELECT utilisateur.ID_User, utilisateur.Nom, utilisateur.Prenom, utilisateur.Email, utilisateur.Image, utilisateur.Solde_Annuel, utilisateur.Solde_Maladie, utilisateur.Solde_Exceptionnel, utilisateur.Solde_Maternité, " +
                 "conge.ID_Conge, conge.TypeConge, conge.Statut, conge.DateFin, conge.DateDebut, conge.description, conge.file " +
                 "FROM utilisateur " +
                 "JOIN employe ON utilisateur.ID_User = employe.ID_User " +
@@ -292,6 +316,10 @@ public class ServiceUtilisateur implements IUtilisateur {
                 user.setPrenom(rs.getString("Prenom"));
                 user.setEmail(rs.getString("Email"));
                 user.setImage(rs.getString("Image"));
+                user.setSoldeAnnuel(rs.getInt("Solde_Annuel"));
+                user.setSoldeExceptionnel(rs.getInt("Solde_Exceptionnel"));
+                user.setSoldeMaladie(rs.getInt("Solde_Maladie"));
+                user.setSoldeMaternite(rs.getInt("Solde_Maternité"));
                 if (!users.contains(user)) {
                     users.add(user);
                 }
@@ -316,7 +344,7 @@ public class ServiceUtilisateur implements IUtilisateur {
         String departement = departementEnum.name();
         List<Utilisateur> users = new ArrayList<>();
         List<Conge> conges = new ArrayList<>();
-        String query = "SELECT utilisateur.ID_User, utilisateur.Nom, utilisateur.Prenom, utilisateur.Email, utilisateur.Image, " +
+        String query = "SELECT utilisateur.ID_User, utilisateur.Nom, utilisateur.Prenom, utilisateur.Email, utilisateur.Image, utilisateur.Solde_Annuel, utilisateur.Solde_Maladie, utilisateur.Solde_Exceptionnel, utilisateur.Solde_Maternité, " +
                 "conge.ID_Conge, conge.TypeConge, conge.Statut, conge.DateFin, conge.DateDebut, conge.description, conge.file " +
                 "FROM utilisateur " +
                 "JOIN employe ON utilisateur.ID_User = employe.ID_User " +
@@ -334,6 +362,10 @@ public class ServiceUtilisateur implements IUtilisateur {
                 user.setPrenom(rs.getString("Prenom"));
                 user.setEmail(rs.getString("Email"));
                 user.setImage(rs.getString("Image"));
+                user.setSoldeAnnuel(rs.getInt("Solde_Annuel"));
+                user.setSoldeExceptionnel(rs.getInt("Solde_Exceptionnel"));
+                user.setSoldeMaladie(rs.getInt("Solde_Maladie"));
+                user.setSoldeMaternite(rs.getInt("Solde_Maternité"));
                 if (!users.contains(user)) {
                     users.add(user);
                 }

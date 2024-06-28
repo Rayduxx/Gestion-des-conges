@@ -10,6 +10,7 @@ import javafx.scene.control.Alert;
 import javafx.scene.control.ButtonType;
 import javafx.scene.control.Label;
 import javafx.scene.control.Tooltip;
+import javafx.scene.layout.HBox;
 import javafx.stage.Stage;
 import tn.bfpme.models.Conge;
 import tn.bfpme.models.Statut;
@@ -20,6 +21,7 @@ import tn.bfpme.utils.MyDataBase;
 import tn.bfpme.utils.SessionManager;
 import tn.bfpme.utils.StageManager;
 
+import javax.swing.*;
 import java.awt.*;
 import java.io.File;
 import java.io.IOException;
@@ -36,6 +38,8 @@ public class DemandeDepController {
     @FXML private Label labelDesc;
     @FXML private Label labelJours;
     @FXML private Label labelType;
+    @FXML private HBox DocFichHBOX;
+
     Connection cnx = MyDataBase.getInstance().getCnx();
     private Conge conge;
     private Utilisateur user;
@@ -51,6 +55,9 @@ public class DemandeDepController {
         labelType.setText(String.valueOf(conge.getTypeConge()));
         CongeDays = (int) ChronoUnit.DAYS.between(conge.getDateDebut(), conge.getDateFin());
         labelJours.setText(String.valueOf(CongeDays)+" Jours");
+        if (this.conge.getFile().isBlank()){
+            DocFichHBOX.setVisible(false);
+        }
 
     }
 
@@ -95,7 +102,9 @@ public class DemandeDepController {
             stage.close();
             Alert cbon = new Alert(Alert.AlertType.INFORMATION);
             cbon.setTitle("Demande approvée");
-            cbon.setHeaderText("La demande de congé "+this.conge.getTypeConge()+" de "+this.user.getNom()+" "+this.user.getPrenom()+" est apprové");
+            cbon.setHeaderText("La demande de congé "+this.conge.getTypeConge()+" de "+this.user.getNom()+" "+this.user.getPrenom()+" à été apprové");
+            cbon.showAndWait();
+
         }
     }
 

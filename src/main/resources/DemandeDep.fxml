@@ -92,7 +92,7 @@
                         <Insets />
                      </opaqueInsets>
                   </Separator>
-                  <HBox prefHeight="27.0" prefWidth="250.0">
+                  <HBox fx:id="DocFichHBOX" prefHeight="27.0" prefWidth="250.0">
                      <children>
                         <Label contentDisplay="CENTER" prefHeight="27.0" prefWidth="110.0" text="Fichier : ">
                            <font>
