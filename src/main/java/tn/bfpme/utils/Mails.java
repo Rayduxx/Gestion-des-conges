@@ -1,5 +1,15 @@
 package tn.bfpme.utils;
 
+import javafx.scene.control.Alert;
+
+import javax.mail.Message;
+import javax.mail.MessagingException;
+import javax.mail.Session;
+import javax.mail.Transport;
+import javax.mail.internet.InternetAddress;
+import javax.mail.internet.MimeMessage;
+import java.util.Properties;
+
 public class Mails {
 
     public static String generateAlternativeProposee(String employeeName, String startDate, String endDate, String managerName, String managerRole) {
@@ -109,4 +119,97 @@ public class Mails {
                 employeeName, startDate, endDate, managerName, managerRole
         );
     }
+    public static String generateRefusDemande(String employeeName, String startDate, String endDate, String managerName, String managerRole) {
+        return String.format(
+                "Cher/Chère %s,\n" +
+                        "\n" +
+                        "Je vous écris pour vous informer que votre demande de congé pour la période du %s au %s ne peut pas être approuvée pour des raisons opérationnelles et organisationnelles.\n" +
+                        "\n" +
+                        "Nous comprenons l'importance de vos besoins personnels et nous regrettons de ne pouvoir accéder à votre demande à ce moment. Nous vous encourageons à soumettre une nouvelle demande de congé pour une période ultérieure qui pourrait mieux convenir aux besoins opérationnels de notre département.\n" +
+                        "\n" +
+                        "Nous restons à votre disposition pour toute question ou pour discuter des dates alternatives possibles.\n" +
+                        "\n" +
+                        "Merci de votre compréhension.\n" +
+                        "\n" +
+                        "Cordialement,\n" +
+                        "\n" +
+                        "%s\n" +
+                        "%s",
+                employeeName, startDate, endDate, managerName, managerRole
+        );
+    }
+    public static String generateApprobationDemande(String employeeName, String startDate, String endDate, String managerName, String managerRole) {
+        return String.format(
+                "Cher/Chère %s,\n" +
+                        "\n" +
+                        "Je vous écris pour vous informer que votre demande de congé pour la période du %s au %s a été approuvée.\n" +
+                        "\n" +
+                        "Nous vous souhaitons une période de congé agréable et reposante. Si vous avez besoin de quoi que ce soit avant votre départ, n'hésitez pas à me contacter.\n" +
+                        "\n" +
+                        "Merci de votre travail acharné et de votre dévouement.\n" +
+                        "\n" +
+                        "Cordialement,\n" +
+                        "\n" +
+                        "%s\n" +
+                        "%s",
+                employeeName, startDate, endDate, managerName, managerRole
+        );
+    }
+
+
+    public static void sendEmail(String to ,String subject,String messageText) {
+    String from = "waves.esprit@gmail.com"; // change accordingly
+    final String username = "waves.esprit@gmail.com"; // change accordingly
+    final String password = "tgao tbqg wudl aluo"; // change accordingly
+
+    // Assuming you are sending email through Gmail
+    String host = "smtp.gmail.com";
+
+    Properties props = new Properties();
+    props.put("mail.smtp.auth", "true");
+    props.put("mail.smtp.starttls.enable", "true");
+    props.put("mail.smtp.host", host);
+    props.put("mail.smtp.port", "587");
+
+    // Get the Session object.
+    Session session = Session.getInstance(props,
+            new javax.mail.Authenticator() {
+                protected javax.mail.PasswordAuthentication getPasswordAuthentication() {
+                    return new javax.mail.PasswordAuthentication(username, password);
+                }
+            });
+
+    try {
+        // Create a default MimeMessage object.
+        Message message = new MimeMessage(session);
+
+        // Set From: header field of the header.
+        message.setFrom(new InternetAddress(from));
+
+        // Set To: header field of the header.
+        message.setRecipients(Message.RecipientType.TO,
+                InternetAddress.parse(to));
+
+        // Set Subject: header field
+        message.setSubject(subject);
+
+        // Now set the actual message
+        message.setText(messageText);
+
+        // Send message
+        Transport.send(message);
+
+        System.out.println("Sent message successfully....");
+
+        Alert alert = new Alert(Alert.AlertType.INFORMATION);
+        alert.setTitle("Success");
+        alert.setHeaderText(null);
+        alert.setContentText("Email sent successfully!");
+        alert.showAndWait();
+
+    } catch (
+            MessagingException e) {
+        throw new RuntimeException(e);
+    }
+}
 }
