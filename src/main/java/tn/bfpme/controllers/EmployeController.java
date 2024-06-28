@@ -45,18 +45,21 @@ public class EmployeController implements Initializable {
     @FXML private Label CU_role;
     @FXML private ImageView CU_pdp;
     @FXML private Button settingsButton;
+    @FXML public Button NotifBtn;
+
     @FXML private Label CU_ANL;
     @FXML private Label CU_EXP;
     @FXML private Label CU_MAL;
     @FXML private Label CU_MAT;
     @FXML public Button btnListe;
-    @FXML public Button NotifBtn;
+
     @FXML private TableView<Conge> TableHistorique;
     @FXML private TableColumn<Conge, LocalDate> TableDD;
     @FXML private TableColumn<Conge, LocalDate> TableDF;
     @FXML private TableColumn<Conge, TypeConge> TableType;
     @FXML private TableColumn<Conge, Integer> indexColumn;
     private Popup settingsPopup;
+    private Popup notifPopup;
     private Connection cnx;
 
     @Override
@@ -77,6 +80,15 @@ public class EmployeController implements Initializable {
         } catch (IOException e) {
             e.printStackTrace();
         }
+        notifPopup =new Popup();
+        notifPopup.setAutoHide(true);
+        try {
+            Parent settingsContent = FXMLLoader.load(getClass().getResource("/paneNotif.fxml"));
+            notifPopup.getContent().add(settingsContent);
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+
     }
 
     @FXML
@@ -89,6 +101,18 @@ public class EmployeController implements Initializable {
             double y = window.getY() + settingsButton.localToScene(0, 0).getY() + settingsButton.getScene().getY() + settingsButton.getHeight();
             settingsPopup.show(window, x, y);
         }
+    }
+    @FXML
+    void OpenNotifPane(ActionEvent event) {
+        if (notifPopup.isShowing()) {
+            notifPopup.hide();
+        } else {
+            Window window = ((Node) event.getSource()).getScene().getWindow();
+            double x = window.getX() + NotifBtn.localToScene(0, 0).getX() + NotifBtn.getScene().getX() - 250;
+            double y = window.getY() + NotifBtn.localToScene(0, 0).getY() + NotifBtn.getScene().getY() + NotifBtn.getHeight();
+            notifPopup.show(window, x, y);
+        }
+
     }
 
     @FXML
@@ -223,53 +247,5 @@ public class EmployeController implements Initializable {
         }
     }
 
-    @FXML
-    void OpenNotifPane(ActionEvent event) {
-        try {
-            FXMLLoader loader = new FXMLLoader(getClass().getResource("/paneNotif.fxml"));
-            Parent paneNotif = loader.load();
-            Stage stage = new Stage();
-            stage.setTitle("Notifications");
-            Scene scene = new Scene(paneNotif);
-            scene.setFill(null);
-            stage.setScene(scene);
-            stage.initOwner(((Node) event.getSource()).getScene().getWindow());
-            stage.initModality(Modality.NONE);
-            stage.initStyle(StageStyle.UNDECORATED);
-            Node source = (Node) event.getSource();
-            double screenX = source.localToScreen(source.getBoundsInLocal()).getMinX() - 270;
-            double screenY = source.localToScreen(source.getBoundsInLocal()).getMaxY() + 10;
-            stage.setX(screenX);
-            stage.setY(screenY);
-            Scene mainScene = ((Node) event.getSource()).getScene();
-            Stage mainStage = (Stage) mainScene.getWindow();
-            ChangeListener<Number> positionListener = new ChangeListener<Number>() {
-                @Override
-                public void changed(ObservableValue<? extends Number> observable, Number oldValue, Number newValue) {
-                    double newScreenX = source.localToScreen(source.getBoundsInLocal()).getMinX() - 270;
-                    double newScreenY = source.localToScreen(source.getBoundsInLocal()).getMaxY() + 10;
-                    stage.setX(newScreenX);
-                    stage.setY(newScreenY);
-                }
-            };
-            mainStage.xProperty().addListener(positionListener);
-            mainStage.yProperty().addListener(positionListener);
-            EventHandler<MouseEvent> handler = new EventHandler<MouseEvent>() {
-                @Override
-                public void handle(MouseEvent mouseEvent) {
-                    if (!paneNotif.contains(mouseEvent.getSceneX(), mouseEvent.getSceneY())) {
-                        stage.close();
-                        mainScene.removeEventFilter(MouseEvent.MOUSE_PRESSED, this);
-                        mainStage.xProperty().removeListener(positionListener);
-                        mainStage.yProperty().removeListener(positionListener);
-                    }
-                }
-            };
-            mainScene.addEventFilter(MouseEvent.MOUSE_PRESSED, handler);
-            stage.show();
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-    }
 
 }

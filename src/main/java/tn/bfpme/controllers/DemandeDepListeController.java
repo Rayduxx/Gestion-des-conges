@@ -22,7 +22,9 @@ import javafx.scene.layout.GridPane;
 import javafx.scene.control.ContextMenu;
 import javafx.scene.layout.Pane;
 import javafx.scene.layout.Priority;
+import javafx.stage.Popup;
 import javafx.stage.Stage;
+import javafx.stage.Window;
 import tn.bfpme.models.*;
 import tn.bfpme.services.ServiceConge;
 import tn.bfpme.services.ServiceUtilisateur;
@@ -41,6 +43,9 @@ public class DemandeDepListeController implements Initializable {
     @FXML
     private Button btnListe;
     private ContextMenu contextMenu;
+    private Popup settingsPopup;
+    private Popup notifPopup;
+    @FXML public Button NotifBtn;
     private Conge conge;
     private final ServiceConge CongeS = new ServiceConge();
     private final ServiceUtilisateur UserS = new ServiceUtilisateur();
@@ -102,8 +107,46 @@ public class DemandeDepListeController implements Initializable {
         if (SessionManager.getInstance().getUtilisateur().getRole().equals(Role.ChefDepartement)) {
             btnListe.setVisible(true);
         }
+        settingsPopup = new Popup();
+        settingsPopup.setAutoHide(true);
+        try {
+            Parent settingsContent = FXMLLoader.load(getClass().getResource("/Settings.fxml"));
+            settingsPopup.getContent().add(settingsContent);
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        notifPopup =new Popup();
+        notifPopup.setAutoHide(true);
+        try {
+            Parent settingsContent = FXMLLoader.load(getClass().getResource("/paneNotif.fxml"));
+            notifPopup.getContent().add(settingsContent);
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
     }
+    @FXML
+    void settings_button(ActionEvent event) {
+        if (settingsPopup.isShowing()) {
+            settingsPopup.hide();
+        } else {
+            Window window = ((Node) event.getSource()).getScene().getWindow();
+            double x = window.getX() + settingsButton.localToScene(0, 0).getX() + settingsButton.getScene().getX() - 150;
+            double y = window.getY() + settingsButton.localToScene(0, 0).getY() + settingsButton.getScene().getY() + settingsButton.getHeight();
+            settingsPopup.show(window, x, y);
+        }
+    }
+    @FXML
+    void OpenNotifPane(ActionEvent event) {
+        if (notifPopup.isShowing()) {
+            notifPopup.hide();
+        } else {
+            Window window = ((Node) event.getSource()).getScene().getWindow();
+            double x = window.getX() + NotifBtn.localToScene(0, 0).getX() + NotifBtn.getScene().getX() - 150;
+            double y = window.getY() + NotifBtn.localToScene(0, 0).getY() + NotifBtn.getScene().getY() + NotifBtn.getHeight();
+            notifPopup.show(window, x, y);
+        }
 
+    }
     @FXML void Recherche(KeyEvent event) {
     }
 

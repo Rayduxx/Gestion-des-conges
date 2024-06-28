@@ -34,6 +34,7 @@ public class SessionManager {
     }
 
     public static void cleanUserSession() {
+
         instance = null;
     }
 
@@ -56,7 +57,6 @@ public class SessionManager {
         }
         throw new IllegalStateException("This user type does not have a department.");
     }
-
 }
 
 //package tn.bfpme.utils;
@@ -188,8 +188,3 @@ public class SessionManager {
 //    public void setSoldeConge(int soldeConge) {
 //        this.soldeConge = soldeConge;
 //    }
-//
-//    public static void cleanUserSession() {
-//        instance = null;
-//    }
-//}

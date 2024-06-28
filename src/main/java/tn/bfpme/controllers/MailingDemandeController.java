@@ -10,7 +10,9 @@ import javafx.scene.Node;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.control.*;
+import javafx.stage.Popup;
 import javafx.stage.Stage;
+import javafx.stage.Window;
 import tn.bfpme.models.Conge;
 import tn.bfpme.models.Utilisateur;
 import tn.bfpme.utils.Mails;
@@ -51,6 +53,9 @@ public class MailingDemandeController implements Initializable {
     private ComboBox<String> raison_mail;
 
     String employeeName, startDate, endDate, managerName, managerRole;
+    private Popup settingsPopup;
+    private Popup notifPopup;
+    @FXML public Button NotifBtn;
     private Conge conge;
     private Utilisateur user;
 
@@ -65,6 +70,22 @@ public class MailingDemandeController implements Initializable {
             managerName = manager.getPrenom() + " " + manager.getNom();
             managerRole = String.valueOf(manager.getRole());
         }
+        settingsPopup = new Popup();
+        settingsPopup.setAutoHide(true);
+        try {
+            Parent settingsContent = FXMLLoader.load(getClass().getResource("/Settings.fxml"));
+            settingsPopup.getContent().add(settingsContent);
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        notifPopup =new Popup();
+        notifPopup.setAutoHide(true);
+        try {
+            Parent settingsContent = FXMLLoader.load(getClass().getResource("/paneNotif.fxml"));
+            notifPopup.getContent().add(settingsContent);
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
     }
 
     public void setData(Conge conge, Utilisateur user) {
@@ -74,6 +95,29 @@ public class MailingDemandeController implements Initializable {
         startDate = String.valueOf(conge.getDateDebut());
         endDate = String.valueOf(conge.getDateFin());
         mail_dest.setText(user.getEmail());
+    }
+    @FXML
+    void settings_button(ActionEvent event) {
+        if (settingsPopup.isShowing()) {
+            settingsPopup.hide();
+        } else {
+            Window window = ((Node) event.getSource()).getScene().getWindow();
+            double x = window.getX() + settingsButton.localToScene(0, 0).getX() + settingsButton.getScene().getX() - 150;
+            double y = window.getY() + settingsButton.localToScene(0, 0).getY() + settingsButton.getScene().getY() + settingsButton.getHeight();
+            settingsPopup.show(window, x, y);
+        }
+    }
+    @FXML
+    void OpenNotifPane(ActionEvent event) {
+        if (notifPopup.isShowing()) {
+            notifPopup.hide();
+        } else {
+            Window window = ((Node) event.getSource()).getScene().getWindow();
+            double x = window.getX() + NotifBtn.localToScene(0, 0).getX() + NotifBtn.getScene().getX() - 150;
+            double y = window.getY() + NotifBtn.localToScene(0, 0).getY() + NotifBtn.getScene().getY() + NotifBtn.getHeight();
+            notifPopup.show(window, x, y);
+        }
+
     }
 
     @FXML
