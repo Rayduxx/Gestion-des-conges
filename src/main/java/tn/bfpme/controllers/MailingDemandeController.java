@@ -72,6 +72,7 @@ public class MailingDemandeController implements Initializable {
         }
         settingsPopup = new Popup();
         settingsPopup.setAutoHide(true);
+
         try {
             Parent settingsContent = FXMLLoader.load(getClass().getResource("/Settings.fxml"));
             settingsPopup.getContent().add(settingsContent);
@@ -113,7 +114,7 @@ public class MailingDemandeController implements Initializable {
             notifPopup.hide();
         } else {
             Window window = ((Node) event.getSource()).getScene().getWindow();
-            double x = window.getX() + NotifBtn.localToScene(0, 0).getX() + NotifBtn.getScene().getX() - 150;
+            double x = window.getX() + NotifBtn.localToScene(0, 0).getX() + NotifBtn.getScene().getX() - 250;
             double y = window.getY() + NotifBtn.localToScene(0, 0).getY() + NotifBtn.getScene().getY() + NotifBtn.getHeight();
             notifPopup.show(window, x, y);
         }

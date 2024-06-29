@@ -479,4 +479,18 @@ public class ServiceUtilisateur implements IUtilisateur {
             }
         }
     }
+
+    public void SetDestinataire(int userId,Departement departement,Utilisateur user) throws SQLException{
+        String qry = "SELECT * FROM `user` WHERE `ID_User`=?l+";
+        try (PreparedStatement stm = cnx.prepareStatement(qry)) {
+            stm.setInt(1, userId);
+            ResultSet rs = stm.executeQuery();
+            if (rs.next()) {
+                AdminIT curAdm = new AdminIT(rs.getInt("ID_Admin"), user);
+                SessionManager.getInstance(curAdm);
+            }
+        }
+
+
+    }
 }

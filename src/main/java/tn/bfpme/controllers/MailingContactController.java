@@ -24,11 +24,13 @@ import java.io.IOException;
 import java.net.URL;
 import java.util.ResourceBundle;
 
+import static tn.bfpme.models.Role.Employé;
+
 public class MailingContactController implements Initializable {
     @FXML
     private Button btnListe;
     @FXML
-    private Label mail_dest;
+    private TextField mail_dest;
     @FXML
     private TextField mail_obj;
     @FXML
@@ -40,20 +42,22 @@ public class MailingContactController implements Initializable {
     private Popup settingsPopup;
     private Popup notifPopup;
     @FXML public Button NotifBtn;
+    @FXML
+    private Button settingsButton;
     private Conge conge;
     private Utilisateur user;
 
     @Override
     public void initialize(URL url, ResourceBundle resourceBundle) {
-        // Initialize variables from SessionManager
         Utilisateur manager = SessionManager.getInstance().getUtilisateur();
         if (manager != null) {
             managerName = manager.getPrenom() + " " + manager.getNom();
             managerRole = String.valueOf(manager.getRole());
         }
-        if(SessionManager.getInstance().getUtilisateur().getRole().equals(Role.Employé)){btnListe.setVisible(false);}
+        if(SessionManager.getInstance().getUtilisateur().getRole().equals(Employé)){btnListe.setVisible(false);}
         settingsPopup = new Popup();
         settingsPopup.setAutoHide(true);
+
         try {
             Parent settingsContent = FXMLLoader.load(getClass().getResource("/Settings.fxml"));
             settingsPopup.getContent().add(settingsContent);
@@ -68,15 +72,6 @@ public class MailingContactController implements Initializable {
         } catch (IOException e) {
             e.printStackTrace();
         }
-    }
-
-    public void setData(Conge conge, Utilisateur user) {
-        this.conge = conge;
-        this.user = user;
-        employeeName = user.getPrenom() + " " + user.getNom();
-        startDate = String.valueOf(conge.getDateDebut());
-        endDate = String.valueOf(conge.getDateFin());
-        mail_dest.setText(user.getEmail());
     }
     @FXML
     void settings_button(ActionEvent event) {
@@ -95,7 +90,7 @@ public class MailingContactController implements Initializable {
             notifPopup.hide();
         } else {
             Window window = ((Node) event.getSource()).getScene().getWindow();
-            double x = window.getX() + NotifBtn.localToScene(0, 0).getX() + NotifBtn.getScene().getX() - 150;
+            double x = window.getX() + NotifBtn.localToScene(0, 0).getX() + NotifBtn.getScene().getX() - 250;
             double y = window.getY() + NotifBtn.localToScene(0, 0).getY() + NotifBtn.getScene().getY() + NotifBtn.getHeight();
             notifPopup.show(window, x, y);
         }
@@ -132,8 +127,6 @@ public class MailingContactController implements Initializable {
         }
     }
 
-    @FXML
-    private Button settingsButton;
 
     @FXML
     void Historique(ActionEvent event) {
@@ -198,4 +191,6 @@ public class MailingContactController implements Initializable {
             e.printStackTrace();
         }
     }
+
+
 }

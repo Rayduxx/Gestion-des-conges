@@ -81,7 +81,6 @@
                </font>
             </TextArea>
             <TextField fx:id="mail_obj" layoutX="146.0" layoutY="101.0" prefHeight="28.0" prefWidth="1100.0" />
-            <Label fx:id="mail_dest" disable="true" layoutX="146.0" layoutY="61.0" prefHeight="28.0" prefWidth="241.0" styleClass="text-area" />
             <HBox layoutX="466.0" layoutY="599.0" prefHeight="55.0" prefWidth="346.0">
                <children>
                   <Button mnemonicParsing="false" onAction="#Envoyer_mail" prefHeight="72.0" prefWidth="91.0" styleClass="btn-primary" text="Envoyer" />
@@ -99,6 +98,7 @@
                   <Font name="System Bold" size="14.0" />
                </font>
             </Label>
+            <TextField fx:id="mail_dest" layoutX="146.0" layoutY="61.0" prefHeight="28.0" prefWidth="256.0" />
          </children>
       </Pane>
    </children>
