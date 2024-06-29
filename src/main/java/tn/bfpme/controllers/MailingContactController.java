@@ -13,10 +13,7 @@ import javafx.scene.control.*;
 import javafx.stage.Popup;
 import javafx.stage.Stage;
 import javafx.stage.Window;
-import tn.bfpme.models.Conge;
-import tn.bfpme.models.Role;
-import tn.bfpme.models.UserConge;
-import tn.bfpme.models.Utilisateur;
+import tn.bfpme.models.*;
 import tn.bfpme.services.ServiceUtilisateur;
 import tn.bfpme.utils.Mails;
 import tn.bfpme.utils.SessionManager;
@@ -40,8 +37,7 @@ public class MailingContactController implements Initializable {
     private TextArea mail_text;
     @FXML
     private ComboBox<String> raison_mail;
-    @FXML
-    private Button searchButton;
+
 
     String employeeName, startDate, endDate, managerName, managerRole;
     private Popup settingsPopup;
@@ -110,34 +106,34 @@ public class MailingContactController implements Initializable {
         }
 
     }
-
-    @FXML
-    void Annuler_mail(ActionEvent event) {
-        mail_text.setText("");
-        mail_obj.setText("");
-    }
-
     @FXML
     void Envoyer_mail(ActionEvent event) {
         String to = mail_dest.getText();
         String subject = mail_obj.getText();
         String messageText = mail_text.getText();
-        Mails.sendEmail(to, subject, messageText);
+        Mails.sendEmail(to,subject,messageText);
         try {
-            FXMLLoader loader = new FXMLLoader(getClass().getResource("/DemandeDepListe.fxml"));
+            FXMLLoader loader = new FXMLLoader(getClass().getResource("/profile.fxml"));
             Parent root = loader.load();
-            DemandeDepListeController controller = loader.getController();
+            EmployeController controller = loader.getController();
             StageManager.closeAllStages();
-            Stage demandeDepListeStage = new Stage();
+            Stage profileStage = new Stage();
             Scene scene = new Scene(root);
-            demandeDepListeStage.setScene(scene);
-            demandeDepListeStage.setTitle("Mailing de Demande");
-            demandeDepListeStage.show();
-            StageManager.addStage("DemandeDepListe", demandeDepListeStage);
+            profileStage.setScene(scene);
+            profileStage.setTitle("Profil");
+            profileStage.show();
+            StageManager.addStage("profile",profileStage );
 
         } catch (IOException e) {
             e.printStackTrace();
         }
+    }
+
+
+    @FXML
+    void Annuler_mail(ActionEvent event) {
+        mail_text.setText("");
+        mail_obj.setText("");
     }
 
     @FXML
