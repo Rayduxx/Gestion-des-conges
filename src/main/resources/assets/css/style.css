@@ -1,3 +1,50 @@
+.paneRoundedCornders{
+    -fx-background-size: 1200 900;
+    -fx-background-radius: 18 18 18 18;
+    -fx-border-radius: 18 18 18 18;
+    -fx-background-color: rgba(255, 255, 255, 0.24);
+    -fx-border-color: white;
+}
+.paneRoundedCorndersANNUEL{
+    -fx-background-size: 1200 900;
+    -fx-background-radius: 18 18 18 18;
+    -fx-border-radius: 18 18 18 18;
+    -fx-background-color: rgba(255, 255, 255, 0.24);
+    -fx-border-color: #f3f3f3;
+    -fx-border-width: 2;
+    -fx-effect: dropshadow(three-pass-box, #E9A91F, 10, 0, 0, 0);
+
+}
+.paneRoundedCorndersMALADIE{
+    -fx-background-size: 1200 900;
+    -fx-background-radius: 18 18 18 18;
+    -fx-border-radius: 18 18 18 18;
+    -fx-background-color: rgba(255, 255, 255, 0.24);
+    -fx-border-color: #f3f3f3;
+    -fx-border-width: 2;
+    -fx-effect: dropshadow(three-pass-box, #E9A91F, 10, 0, 0, 0);
+}
+.paneRoundedCorndersEXCEPTIONNEL{
+    -fx-background-size: 1200 900;
+    -fx-background-radius: 18 18 18 18;
+    -fx-border-radius: 18 18 18 18;
+    -fx-background-color: rgba(255, 255, 255, 0.24);
+    -fx-border-color: #f3f3f3;
+    -fx-border-width: 2;
+    -fx-effect: dropshadow(three-pass-box, #E9A91F, 10, 0, 0, 0);
+
+}
+.paneRoundedCorndersMATERNITE{
+    -fx-background-size: 1200 900;
+    -fx-background-radius: 18 18 18 18;
+    -fx-border-radius: 18 18 18 18;
+    -fx-background-color: rgba(255, 255, 255, 0.24);
+    -fx-border-color: #f3f3f3;
+    -fx-border-width: 2;
+    -fx-effect: dropshadow(three-pass-box, #E9A91F, 10, 0, 0, 0);
+
+}
+
 .pane-clr {
     -fx-background-color: #112349;
 }
@@ -12,7 +59,8 @@
 }
 
 .grad-bg {
-    -fx-background-color: linear-gradient(to top right, rgba(17, 35, 73, 0.2), rgba(17, 35, 73, 0.13));
+    -fx-background-color: linear-gradient(to right, rgba(17, 35, 73, 0.2), rgba(233, 169, 31, 0.06));
+
 }
 
 .combo-box {
@@ -286,8 +334,8 @@
     -fx-effect: dropshadow(gaussian, rgba(0, 0, 0, 0.25), 10, 0.2, 0, 0);
     -fx-font-family: "Arial";
     -fx-font-size: 14px;
-    -fx-pref-width: 200px; /* Set preferred width */
-    -fx-wrap-text: true; /* Allow text wrapping */
+    -fx-pref-width: 200px;
+    -fx-wrap-text: true;
 }
 .separator1 {
     -fx-background-color: #E9A91F;
