@@ -219,29 +219,22 @@
 .btn-primary {
     -fx-background-color: linear-gradient(#112349, #1a3766);
     -fx-background-radius: 5;
-    /*-fx-padding: 10 20;*/
-    /*-fx-font-size: 14px;*/
     -fx-text-fill: white;
     -fx-effect: dropshadow(gaussian, rgba(0, 0, 0, 0.5), 10, 0.2, 0, 0);
     -fx-border-color: #1a3766;
     -fx-border-width: 1;
     -fx-border-radius: 5;
     -fx-cursor: hand;
-    -fx-font-family: "Roboto";
 }
 .btn-secondary {
     -fx-background-color: linear-gradient(#E9A91F, #D88A1A); /* Adjusted to a darker shade */
     -fx-background-radius: 5;
-    /*-fx-padding: 10 20;*/
-    /*-fx-font-size: 14px;*/
     -fx-text-fill: white;
     -fx-effect: dropshadow(gaussian, rgba(0, 0, 0, 0.5), 10, 0.2, 0, 0);
     -fx-border-color: #D88A1A; /* Adjusted to match the darker shade */
     -fx-border-width: 1;
     -fx-border-radius: 5;
     -fx-cursor: hand;
-    -fx-font-family: "Roboto";
-    -fx-font-weight: bold;
 }
 .btn-approver {
     -fx-background-color: linear-gradient(#E9A91F, #D88A1A);
@@ -252,8 +245,6 @@
     -fx-border-width: 1;
     -fx-border-radius: 5;
     -fx-cursor: hand;
-    -fx-font-family: "Roboto";
-    -fx-font-weight: bold;
 }
 .btn-refuser {
     -fx-background-color: linear-gradient(#E9A91F, #D88A1A);
@@ -375,8 +366,6 @@
     -fx-border-width: 1;
     -fx-border-radius: 5;
     -fx-padding: 2;
-    -fx-font-family: "Roboto";
-    -fx-font-size: 15px;
 }
 .combo-box .arrow {
     -fx-background-color: linear-gradient(#112349, #1a3766);
@@ -406,7 +395,7 @@
     -fx-background-color: white;
     -fx-text-fill: #112349;
     -fx-padding: 5 10;
-    -fx-font-family: "Arial";
+    -fx-font-family: "Roboto Regular";
 }
 .combo-box .list-cell:filled:hover {
     -fx-background-color: rgba(17, 35, 73, 0.1);
