@@ -59,7 +59,6 @@ public class CongeCarteController {
         cardDatefin.setText(String.valueOf(conge.getDateFin()));
         cardDescription.setText(String.valueOf(conge.getDescription()));
         cardStatus.setText(String.valueOf(conge.getStatut()));
-        Card.setStyle("-fx-border-radius: 5px;-fx-border-color:#808080");
         Connection cnx = MyDataBase.getInstance().getCnx();
         String qry = "SELECT `TypeConge`, `Statut` FROM `conge` WHERE `ID_User`= ? AND `ID_Conge`=? ";
         try {
