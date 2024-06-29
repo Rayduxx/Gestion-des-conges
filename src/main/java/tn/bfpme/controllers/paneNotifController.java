@@ -12,10 +12,7 @@ import java.net.URL;
 import java.util.ResourceBundle;
 
 public class paneNotifController implements Initializable {
-    @FXML
-    private GridPane NotifContainer;
-
-
+    @FXML private GridPane NotifContainer;
     private final ServiceConge CongeS = new ServiceConge();
 
     @Override

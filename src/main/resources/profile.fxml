@@ -88,7 +88,7 @@
                        <TableColumn fx:id="indexColumn" prefWidth="40" text="" />
                         <TableColumn fx:id="TableType" prefWidth="102.0" text="Type" />
                       <TableColumn fx:id="TableDD" prefWidth="130.0" text="Date Debut" />
-                        <TableColumn fx:id="TableDF" prefWidth="130.0" text="Date Fin" />
+                        <TableColumn fx:id="TableDF" prefWidth="126.0" text="Date Fin" />
                     </columns>
                   </TableView>
                   <Label alignment="CENTER" layoutX="43.0" prefHeight="36.0" prefWidth="356.0" text="Historique des congés">
@@ -185,7 +185,7 @@
                   </ImageView>
                </graphic>
             </Button>
-            <HBox alignment="CENTER" layoutX="608.0" layoutY="19.0" prefHeight="63.0" prefWidth="694.0" spacing="33.0">
+            <HBox alignment="CENTER" layoutX="527.0" layoutY="19.0" prefHeight="63.0" prefWidth="775.0" spacing="33.0">
                <children>
                   <Button fx:id="btnListe" mnemonicParsing="false" onAction="#ListeDesDemandes" prefHeight="38.0" prefWidth="166.0" styleClass="btn-secondary" text="Liste des demandes" visible="false">
                      <font>
