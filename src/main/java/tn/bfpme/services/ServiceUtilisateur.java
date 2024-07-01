@@ -17,23 +17,21 @@ public class ServiceUtilisateur implements IUtilisateur {
     }
 
     public UserConge afficherusers() {
-        Departement departementEnum = SessionManager.getInstance().getDepartement();
-        String departement = departementEnum.name();
-        List<Utilisateur> users = new ArrayList<>();
+        String departement =String.valueOf(SessionManager.getInstance().getUser().getIdDepartement());
+        List<User> users = new ArrayList<>();
         List<Conge> conges = new ArrayList<>();
-        String query = "SELECT utilisateur.ID_User, utilisateur.Nom, utilisateur.Prenom, utilisateur.Email, utilisateur.Image, utilisateur.Solde_Annuel, utilisateur.Solde_Maladie, utilisateur.Solde_Exceptionnel, utilisateur.Solde_Maternité, " +
-                "conge.ID_Conge, conge.TypeConge, conge.Statut, conge.DateFin, conge.DateDebut, conge.description, conge.file " +
-                "FROM utilisateur " +
-                "JOIN employe ON utilisateur.ID_User = employe.ID_User " +
+        String query = "SELECT user.ID_User, user.Nom, user.Prenom, user.Email, user.Image, user.Solde_Annuel, user.Solde_Maladie, user.Solde_Exceptionnel, user.Solde_Maternité, user.ID_Departement " +
+                "conge.ID_Conge, conge.TypeConge, conge.Statut, conge.DateFin, conge.DateDebut, conge.description, conge.file, conge.notification" +
+                "FROM user" +
                 "JOIN conge ON utilisateur.ID_User = conge.ID_User" +
-                " WHERE employe.Departement = ? AND conge.Statut = ?";
+                " WHERE user.ID_Departement = ? AND conge.Statut = ?";
         try {
             PreparedStatement ps = cnx.prepareStatement(query);
             ps.setString(1, departement);
             ps.setString(2, String.valueOf(Statut.En_Attente));
             ResultSet rs = ps.executeQuery();
             while (rs.next()) {
-                Utilisateur user = new Utilisateur();
+                User user = new User();
                 user.setIdUser(rs.getInt("ID_User"));
                 user.setNom(rs.getString("Nom"));
                 user.setPrenom(rs.getString("Prenom"));
@@ -43,6 +41,9 @@ public class ServiceUtilisateur implements IUtilisateur {
                 user.setSoldeExceptionnel(rs.getInt("Solde_Exceptionnel"));
                 user.setSoldeMaladie(rs.getInt("Solde_Maladie"));
                 user.setSoldeMaternite(rs.getInt("Solde_Maternité"));
+                user.setIdDepartement(rs.getInt("ID_Departement"));
+
+
                 if (!users.contains(user)) {
                     users.add(user);
                 }
@@ -64,23 +65,21 @@ public class ServiceUtilisateur implements IUtilisateur {
     }
 
     public UserConge AfficherApprove() {
-        Departement departementEnum = SessionManager.getInstance().getDepartement();
-        String departement = departementEnum.name();
-        List<Utilisateur> users = new ArrayList<>();
+        String departement =String.valueOf(SessionManager.getInstance().getUser().getIdDepartement());
+        List<User> users = new ArrayList<>();
         List<Conge> conges = new ArrayList<>();
-        String query = "SELECT utilisateur.ID_User, utilisateur.Nom, utilisateur.Prenom, utilisateur.Email, utilisateur.Image, utilisateur.Solde_Annuel, utilisateur.Solde_Maladie, utilisateur.Solde_Exceptionnel, utilisateur.Solde_Maternité, " +
-                "conge.ID_Conge, conge.TypeConge, conge.Statut, conge.DateFin, conge.DateDebut, conge.description, conge.file " +
-                "FROM utilisateur " +
-                "JOIN employe ON utilisateur.ID_User = employe.ID_User " +
+        String query = "SELECT user.ID_User, user.Nom, user.Prenom, user.Email, user.Image, user.Solde_Annuel, user.Solde_Maladie, user.Solde_Exceptionnel, user.Solde_Maternité, user.ID_Departement " +
+                "conge.ID_Conge, conge.TypeConge, conge.Statut, conge.DateFin, conge.DateDebut, conge.description, conge.file, conge.notification" +
+                "FROM user" +
                 "JOIN conge ON utilisateur.ID_User = conge.ID_User" +
-                " WHERE employe.Departement = ? AND conge.Statut = ?";
+                " WHERE user.ID_Departement = ? AND conge.Statut = ?";
         try {
             PreparedStatement ps = cnx.prepareStatement(query);
             ps.setString(1, departement);
             ps.setString(2, String.valueOf(Statut.Approuvé));
             ResultSet rs = ps.executeQuery();
             while (rs.next()) {
-                Utilisateur user = new Utilisateur();
+                User user = new User();
                 user.setIdUser(rs.getInt("ID_User"));
                 user.setNom(rs.getString("Nom"));
                 user.setPrenom(rs.getString("Prenom"));
@@ -90,6 +89,7 @@ public class ServiceUtilisateur implements IUtilisateur {
                 user.setSoldeExceptionnel(rs.getInt("Solde_Exceptionnel"));
                 user.setSoldeMaladie(rs.getInt("Solde_Maladie"));
                 user.setSoldeMaternite(rs.getInt("Solde_Maternité"));
+                user.setIdDepartement(rs.getInt("ID_Departement"));
                 if (!users.contains(user)) {
                     users.add(user);
                 }
@@ -111,23 +111,21 @@ public class ServiceUtilisateur implements IUtilisateur {
     }
 
     public UserConge AfficherReject() {
-        Departement departementEnum = SessionManager.getInstance().getDepartement();
-        String departement = departementEnum.name();
-        List<Utilisateur> users = new ArrayList<>();
+        String departement =String.valueOf(SessionManager.getInstance().getUser().getIdDepartement());
+        List<User> users = new ArrayList<>();
         List<Conge> conges = new ArrayList<>();
-        String query = "SELECT utilisateur.ID_User, utilisateur.Nom, utilisateur.Prenom, utilisateur.Email, utilisateur.Image, utilisateur.Solde_Annuel, utilisateur.Solde_Maladie, utilisateur.Solde_Exceptionnel, utilisateur.Solde_Maternité, " +
-                "conge.ID_Conge, conge.TypeConge, conge.Statut, conge.DateFin, conge.DateDebut, conge.description, conge.file " +
-                "FROM utilisateur " +
-                "JOIN employe ON utilisateur.ID_User = employe.ID_User " +
+        String query = "SELECT user.ID_User, user.Nom, user.Prenom, user.Email, user.Image, user.Solde_Annuel, user.Solde_Maladie, user.Solde_Exceptionnel, user.Solde_Maternité, user.ID_Departement " +
+                "conge.ID_Conge, conge.TypeConge, conge.Statut, conge.DateFin, conge.DateDebut, conge.description, conge.file, conge.notification" +
+                "FROM user" +
                 "JOIN conge ON utilisateur.ID_User = conge.ID_User" +
-                " WHERE employe.Departement = ? AND conge.Statut = ?";
+                " WHERE user.ID_Departement = ? AND conge.Statut = ?";
         try {
             PreparedStatement ps = cnx.prepareStatement(query);
             ps.setString(1, departement);
             ps.setString(2, String.valueOf(Statut.Rejeté));
             ResultSet rs = ps.executeQuery();
             while (rs.next()) {
-                Utilisateur user = new Utilisateur();
+                User user = new User();
                 user.setIdUser(rs.getInt("ID_User"));
                 user.setNom(rs.getString("Nom"));
                 user.setPrenom(rs.getString("Prenom"));
@@ -137,6 +135,7 @@ public class ServiceUtilisateur implements IUtilisateur {
                 user.setSoldeExceptionnel(rs.getInt("Solde_Exceptionnel"));
                 user.setSoldeMaladie(rs.getInt("Solde_Maladie"));
                 user.setSoldeMaternite(rs.getInt("Solde_Maternité"));
+                user.setIdDepartement(rs.getInt("ID_Departement"));
                 if (!users.contains(user)) {
                     users.add(user);
                 }
@@ -158,23 +157,21 @@ public class ServiceUtilisateur implements IUtilisateur {
     }
 
     public UserConge TriType() {
-        Departement departementEnum = SessionManager.getInstance().getDepartement();
-        String departement = departementEnum.name();
-        List<Utilisateur> users = new ArrayList<>();
+        String departement =String.valueOf(SessionManager.getInstance().getUser().getIdDepartement());
+        List<User> users = new ArrayList<>();
         List<Conge> conges = new ArrayList<>();
-        String query = "SELECT utilisateur.ID_User, utilisateur.Nom, utilisateur.Prenom, utilisateur.Email, utilisateur.Image, utilisateur.Solde_Annuel, utilisateur.Solde_Maladie, utilisateur.Solde_Exceptionnel, utilisateur.Solde_Maternité, " +
-                "conge.ID_Conge, conge.TypeConge, conge.Statut, conge.DateFin, conge.DateDebut, conge.description, conge.file " +
-                "FROM utilisateur " +
-                "JOIN employe ON utilisateur.ID_User = employe.ID_User " +
+        String query = "SELECT user.ID_User, user.Nom, user.Prenom, user.Email, user.Image, user.Solde_Annuel, user.Solde_Maladie, user.Solde_Exceptionnel, user.Solde_Maternité, user.ID_Departement " +
+                "conge.ID_Conge, conge.TypeConge, conge.Statut, conge.DateFin, conge.DateDebut, conge.description, conge.file, conge.notification" +
+                "FROM user" +
                 "JOIN conge ON utilisateur.ID_User = conge.ID_User" +
-                " WHERE employe.Departement = ? AND conge.Statut = ? ORDER BY conge.TypeConge";
+                " WHERE user.ID_Departement = ? AND conge.Statut = ? ORDER BY conge.TypeConge";
         try {
             PreparedStatement ps = cnx.prepareStatement(query);
             ps.setString(1, departement);
             ps.setString(2, String.valueOf(Statut.En_Attente));
             ResultSet rs = ps.executeQuery();
             while (rs.next()) {
-                Utilisateur user = new Utilisateur();
+                User user = new User();
                 user.setIdUser(rs.getInt("ID_User"));
                 user.setNom(rs.getString("Nom"));
                 user.setPrenom(rs.getString("Prenom"));
@@ -184,6 +181,7 @@ public class ServiceUtilisateur implements IUtilisateur {
                 user.setSoldeExceptionnel(rs.getInt("Solde_Exceptionnel"));
                 user.setSoldeMaladie(rs.getInt("Solde_Maladie"));
                 user.setSoldeMaternite(rs.getInt("Solde_Maternité"));
+                user.setIdDepartement(rs.getInt("ID_Departement"));
                 if (!users.contains(user)) {
                     users.add(user);
                 }
@@ -205,23 +203,21 @@ public class ServiceUtilisateur implements IUtilisateur {
     }
 
     public UserConge TriNom() {
-        Departement departementEnum = SessionManager.getInstance().getDepartement();
-        String departement = departementEnum.name();
-        List<Utilisateur> users = new ArrayList<>();
+        String departement =String.valueOf(SessionManager.getInstance().getUser().getIdDepartement());
+        List<User> users = new ArrayList<>();
         List<Conge> conges = new ArrayList<>();
-        String query = "SELECT utilisateur.ID_User, utilisateur.Nom, utilisateur.Prenom, utilisateur.Email, utilisateur.Image, utilisateur.Solde_Annuel, utilisateur.Solde_Maladie, utilisateur.Solde_Exceptionnel, utilisateur.Solde_Maternité, " +
-                "conge.ID_Conge, conge.TypeConge, conge.Statut, conge.DateFin, conge.DateDebut, conge.description, conge.file " +
-                "FROM utilisateur " +
-                "JOIN employe ON utilisateur.ID_User = employe.ID_User " +
+        String query = "SELECT user.ID_User, user.Nom, user.Prenom, user.Email, user.Image, user.Solde_Annuel, user.Solde_Maladie, user.Solde_Exceptionnel, user.Solde_Maternité, user.ID_Departement " +
+                "conge.ID_Conge, conge.TypeConge, conge.Statut, conge.DateFin, conge.DateDebut, conge.description, conge.file, conge.notification" +
+                "FROM user" +
                 "JOIN conge ON utilisateur.ID_User = conge.ID_User" +
-                " WHERE employe.Departement = ? AND conge.Statut = ? ORDER BY utilisateur.Nom";
+                " WHERE user.ID_Departement = ? AND conge.Statut = ? ORDER BY user.Nom";
         try {
             PreparedStatement ps = cnx.prepareStatement(query);
             ps.setString(1, departement);
             ps.setString(2, String.valueOf(Statut.En_Attente));
             ResultSet rs = ps.executeQuery();
             while (rs.next()) {
-                Utilisateur user = new Utilisateur();
+                User user = new User();
                 user.setIdUser(rs.getInt("ID_User"));
                 user.setNom(rs.getString("Nom"));
                 user.setPrenom(rs.getString("Prenom"));
@@ -231,6 +227,7 @@ public class ServiceUtilisateur implements IUtilisateur {
                 user.setSoldeExceptionnel(rs.getInt("Solde_Exceptionnel"));
                 user.setSoldeMaladie(rs.getInt("Solde_Maladie"));
                 user.setSoldeMaternite(rs.getInt("Solde_Maternité"));
+                user.setIdDepartement(rs.getInt("ID_Departement"));
                 if (!users.contains(user)) {
                     users.add(user);
                 }
@@ -252,35 +249,34 @@ public class ServiceUtilisateur implements IUtilisateur {
     }
 
     public UserConge TriPrenom() {
-        Departement departementEnum = SessionManager.getInstance().getDepartement();
-        String departement = departementEnum.name();
-        List<Utilisateur> users = new ArrayList<>();
-        List<Conge> conges = new ArrayList<>();
-        String query = "SELECT utilisateur.ID_User, utilisateur.Nom, utilisateur.Prenom, utilisateur.Email, utilisateur.Image, utilisateur.Solde_Annuel, utilisateur.Solde_Maladie, utilisateur.Solde_Exceptionnel, utilisateur.Solde_Maternité, " +
-                "conge.ID_Conge, conge.TypeConge, conge.Statut, conge.DateFin, conge.DateDebut, conge.description, conge.file " +
-                "FROM utilisateur " +
-                "JOIN employe ON utilisateur.ID_User = employe.ID_User " +
-                "JOIN conge ON utilisateur.ID_User = conge.ID_User" +
-                " WHERE employe.Departement = ? AND conge.Statut = ? ORDER BY utilisateur.Prenom";
-        try {
-            PreparedStatement ps = cnx.prepareStatement(query);
-            ps.setString(1, departement);
-            ps.setString(2, String.valueOf(Statut.En_Attente));
-            ResultSet rs = ps.executeQuery();
-            while (rs.next()) {
-                Utilisateur user = new Utilisateur();
-                user.setIdUser(rs.getInt("ID_User"));
-                user.setNom(rs.getString("Nom"));
-                user.setPrenom(rs.getString("Prenom"));
-                user.setEmail(rs.getString("Email"));
-                user.setImage(rs.getString("Image"));
-                user.setSoldeAnnuel(rs.getInt("Solde_Annuel"));
-                user.setSoldeExceptionnel(rs.getInt("Solde_Exceptionnel"));
-                user.setSoldeMaladie(rs.getInt("Solde_Maladie"));
-                user.setSoldeMaternite(rs.getInt("Solde_Maternité"));
-                if (!users.contains(user)) {
-                    users.add(user);
-                }
+            String departement =String.valueOf(SessionManager.getInstance().getUser().getIdDepartement());
+            List<User> users = new ArrayList<>();
+            List<Conge> conges = new ArrayList<>();
+            String query = "SELECT user.ID_User, user.Nom, user.Prenom, user.Email, user.Image, user.Solde_Annuel, user.Solde_Maladie, user.Solde_Exceptionnel, user.Solde_Maternité, user.ID_Departement " +
+                    "conge.ID_Conge, conge.TypeConge, conge.Statut, conge.DateFin, conge.DateDebut, conge.description, conge.file, conge.notification" +
+                    "FROM user" +
+                    "JOIN conge ON utilisateur.ID_User = conge.ID_User" +
+                    " WHERE user.ID_Departement = ? AND conge.Statut = ? ORDER BY user.Prenom";
+            try {
+                PreparedStatement ps = cnx.prepareStatement(query);
+                ps.setString(1, departement);
+                ps.setString(2, String.valueOf(Statut.En_Attente));
+                ResultSet rs = ps.executeQuery();
+                while (rs.next()) {
+                    User user = new User();
+                    user.setIdUser(rs.getInt("ID_User"));
+                    user.setNom(rs.getString("Nom"));
+                    user.setPrenom(rs.getString("Prenom"));
+                    user.setEmail(rs.getString("Email"));
+                    user.setImage(rs.getString("Image"));
+                    user.setSoldeAnnuel(rs.getInt("Solde_Annuel"));
+                    user.setSoldeExceptionnel(rs.getInt("Solde_Exceptionnel"));
+                    user.setSoldeMaladie(rs.getInt("Solde_Maladie"));
+                    user.setSoldeMaternite(rs.getInt("Solde_Maternité"));
+                    user.setIdDepartement(rs.getInt("ID_Departement"));
+                    if (!users.contains(user)) {
+                        users.add(user);
+                    }
                 Conge conge = new Conge();
                 conge.setIdConge(rs.getInt("ID_Conge"));
                 conge.setDateDebut(rs.getDate("DateDebut").toLocalDate());

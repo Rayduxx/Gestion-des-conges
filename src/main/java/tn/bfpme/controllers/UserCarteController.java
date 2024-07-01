@@ -8,8 +8,6 @@ import javafx.scene.image.*;
 import javafx.scene.layout.*;
 import javafx.stage.*;
 import tn.bfpme.models.Conge;
-import tn.bfpme.models.Utilisateur;
-import tn.bfpme.utils.StageManager;
 
 import java.io.File;
 import java.io.FileInputStream;
