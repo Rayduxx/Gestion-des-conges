@@ -14,9 +14,7 @@ public class User {
     private int idDepartement;
     public static User Current_User;
 
-    // Constructors
-    public User() {
-    }
+    public User() {}
 
     public User(int idUser, String nom, String prenom, String email, String mdp, String image, int soldeAnnuel, int soldeMaladie, int soldeExceptionnel, int soldeMaternite, int idDepartement) {
         this.idUser = idUser;
@@ -32,7 +30,6 @@ public class User {
         this.idDepartement = idDepartement;
     }
 
-    // Getters and Setters
     public int getIdUser() {
         return idUser;
     }
