@@ -295,23 +295,21 @@ public class ServiceUtilisateur implements IUtilisateur {
     }
 
     public UserConge TriDateDebut() {
-        Departement departementEnum = SessionManager.getInstance().getDepartement();
-        String departement = departementEnum.name();
-        List<Utilisateur> users = new ArrayList<>();
+        String departement =String.valueOf(SessionManager.getInstance().getUser().getIdDepartement());
+        List<User> users = new ArrayList<>();
         List<Conge> conges = new ArrayList<>();
-        String query = "SELECT utilisateur.ID_User, utilisateur.Nom, utilisateur.Prenom, utilisateur.Email, utilisateur.Image, utilisateur.Solde_Annuel, utilisateur.Solde_Maladie, utilisateur.Solde_Exceptionnel, utilisateur.Solde_Maternité, " +
-                "conge.ID_Conge, conge.TypeConge, conge.Statut, conge.DateFin, conge.DateDebut, conge.description, conge.file " +
-                "FROM utilisateur " +
-                "JOIN employe ON utilisateur.ID_User = employe.ID_User " +
+        String query = "SELECT user.ID_User, user.Nom, user.Prenom, user.Email, user.Image, user.Solde_Annuel, user.Solde_Maladie, user.Solde_Exceptionnel, user.Solde_Maternité, user.ID_Departement " +
+                "conge.ID_Conge, conge.TypeConge, conge.Statut, conge.DateFin, conge.DateDebut, conge.description, conge.file, conge.notification" +
+                "FROM user" +
                 "JOIN conge ON utilisateur.ID_User = conge.ID_User" +
-                " WHERE employe.Departement = ? AND conge.Statut = ? ORDER BY conge.DateDebut";
+                " WHERE user.ID_Departement = ? AND conge.Statut = ? ORDER BY conge.DateDebut";
         try {
             PreparedStatement ps = cnx.prepareStatement(query);
             ps.setString(1, departement);
             ps.setString(2, String.valueOf(Statut.En_Attente));
             ResultSet rs = ps.executeQuery();
             while (rs.next()) {
-                Utilisateur user = new Utilisateur();
+                User user = new User();
                 user.setIdUser(rs.getInt("ID_User"));
                 user.setNom(rs.getString("Nom"));
                 user.setPrenom(rs.getString("Prenom"));
@@ -321,6 +319,7 @@ public class ServiceUtilisateur implements IUtilisateur {
                 user.setSoldeExceptionnel(rs.getInt("Solde_Exceptionnel"));
                 user.setSoldeMaladie(rs.getInt("Solde_Maladie"));
                 user.setSoldeMaternite(rs.getInt("Solde_Maternité"));
+                user.setIdDepartement(rs.getInt("ID_Departement"));
                 if (!users.contains(user)) {
                     users.add(user);
                 }
@@ -342,23 +341,21 @@ public class ServiceUtilisateur implements IUtilisateur {
     }
 
     public UserConge TriDateFin() {
-        Departement departementEnum = SessionManager.getInstance().getDepartement();
-        String departement = departementEnum.name();
-        List<Utilisateur> users = new ArrayList<>();
+        String departement =String.valueOf(SessionManager.getInstance().getUser().getIdDepartement());
+        List<User> users = new ArrayList<>();
         List<Conge> conges = new ArrayList<>();
-        String query = "SELECT utilisateur.ID_User, utilisateur.Nom, utilisateur.Prenom, utilisateur.Email, utilisateur.Image, utilisateur.Solde_Annuel, utilisateur.Solde_Maladie, utilisateur.Solde_Exceptionnel, utilisateur.Solde_Maternité, " +
-                "conge.ID_Conge, conge.TypeConge, conge.Statut, conge.DateFin, conge.DateDebut, conge.description, conge.file " +
-                "FROM utilisateur " +
-                "JOIN employe ON utilisateur.ID_User = employe.ID_User " +
+        String query = "SELECT user.ID_User, user.Nom, user.Prenom, user.Email, user.Image, user.Solde_Annuel, user.Solde_Maladie, user.Solde_Exceptionnel, user.Solde_Maternité, user.ID_Departement " +
+                "conge.ID_Conge, conge.TypeConge, conge.Statut, conge.DateFin, conge.DateDebut, conge.description, conge.file, conge.notification" +
+                "FROM user" +
                 "JOIN conge ON utilisateur.ID_User = conge.ID_User" +
-                " WHERE employe.Departement = ? AND conge.Statut = ? ORDER BY conge.DateFin";
+                " WHERE user.ID_Departement = ? AND conge.Statut = ? ORDER BY conge.DateFin";
         try {
             PreparedStatement ps = cnx.prepareStatement(query);
             ps.setString(1, departement);
             ps.setString(2, String.valueOf(Statut.En_Attente));
             ResultSet rs = ps.executeQuery();
             while (rs.next()) {
-                Utilisateur user = new Utilisateur();
+                User user = new User();
                 user.setIdUser(rs.getInt("ID_User"));
                 user.setNom(rs.getString("Nom"));
                 user.setPrenom(rs.getString("Prenom"));
@@ -368,6 +365,7 @@ public class ServiceUtilisateur implements IUtilisateur {
                 user.setSoldeExceptionnel(rs.getInt("Solde_Exceptionnel"));
                 user.setSoldeMaladie(rs.getInt("Solde_Maladie"));
                 user.setSoldeMaternite(rs.getInt("Solde_Maternité"));
+                user.setIdDepartement(rs.getInt("ID_Departement"));
                 if (!users.contains(user)) {
                     users.add(user);
                 }
@@ -435,60 +433,11 @@ public class ServiceUtilisateur implements IUtilisateur {
     }*/
 
 
-    public void checkEmployee(int userId, Utilisateur user) throws SQLException {
-        String qry = "SELECT `ID_Employé`, `Departement`, `ID_User` FROM `employe` WHERE `ID_User`=?";
-        try (PreparedStatement stm = cnx.prepareStatement(qry)) {
-            stm.setInt(1, userId);
-            ResultSet rs = stm.executeQuery();
-            if (rs.next()) {
-                Employe curEmp = new Employe(rs.getInt("ID_Employé"), Departement.valueOf(rs.getString("Departement")), user);
-                SessionManager sessionManager = SessionManager.getInstance(curEmp);
-                sessionManager.setDepartementEmp(Departement.valueOf(rs.getString("Departement")));
-            }
-        }
-    }
 
-    public void checkDepartmentHead(int userId, Utilisateur user) throws SQLException {
-        String qry = "SELECT `ID_ChefDep`, `Departement`, `ID_User` FROM `chef_departement` WHERE `ID_User`=?";
-        try (PreparedStatement stm = cnx.prepareStatement(qry)) {
-            stm.setInt(1, userId);
-            ResultSet rs = stm.executeQuery();
-            if (rs.next()) {
-                ChefDepartement curChefDep = new ChefDepartement(rs.getInt("ID_ChefDep"), Departement.valueOf(rs.getString("Departement")), user);
-                SessionManager sessionManager = SessionManager.getInstance(curChefDep);
-                sessionManager.setDepartementChfDep(Departement.valueOf(rs.getString("Departement")));
-            }
-        }
-    }
 
-    public void checkChiefAdministration(int userId, Utilisateur user) throws SQLException {
-        String qry = "SELECT * FROM `chef_administration` WHERE `ID_User`=?";
-        try (PreparedStatement stm = cnx.prepareStatement(qry)) {
-            stm.setInt(1, userId);
-            ResultSet rs = stm.executeQuery();
-            if (rs.next()) {
-                ChefAdministration curChefAdm = new ChefAdministration(rs.getInt("ID_ChefAdmin"), user);
-                SessionManager.getInstance(curChefAdm);
-            }
-        }
-    }
-
-    public void checkAdminIT(int userId, Utilisateur user) throws SQLException {
-        String qry = "SELECT * FROM `admin` WHERE `ID_User`=?";
-        try (PreparedStatement stm = cnx.prepareStatement(qry)) {
-            stm.setInt(1, userId);
-            ResultSet rs = stm.executeQuery();
-            if (rs.next()) {
-                AdminIT curAdm = new AdminIT(rs.getInt("ID_Admin"), user);
-                SessionManager.getInstance(curAdm);
-            }
-        }
-    }
-
-    public Utilisateur GetChef() {
-        Departement departementEnum = SessionManager.getInstance().getDepartement();
-        String departement = departementEnum.name();
-        Utilisateur chef = null;
+    /*public User GetChef() {
+        String departement = String.valueOf(SessionManager.getInstance().getUser().getIdDepartement());
+        User chef = null;
 
         String query = "SELECT utilisateur.ID_User, utilisateur.Nom, utilisateur.Prenom, utilisateur.Email, utilisateur.Image, utilisateur.Solde_Annuel, utilisateur.Solde_Maladie, utilisateur.Solde_Exceptionnel, utilisateur.Solde_Maternité " +
                 "FROM utilisateur " +
@@ -501,7 +450,7 @@ public class ServiceUtilisateur implements IUtilisateur {
             ResultSet rs = ps.executeQuery();
 
             if (rs.next()) {
-                chef = new Utilisateur();
+                chef = new User();
                 chef.setIdUser(rs.getInt("ID_User"));
                 chef.setNom(rs.getString("Nom"));
                 chef.setPrenom(rs.getString("Prenom"));
@@ -517,14 +466,13 @@ public class ServiceUtilisateur implements IUtilisateur {
         }
 
         return chef;
-    }
+    }*/
 
-    public List<Utilisateur> getUsersByDepartment(String departement) {
-        List<Utilisateur> users = new ArrayList<>();
-        String sql = "SELECT utilisateur.ID_User, utilisateur.Nom, utilisateur.Prenom, utilisateur.Email, utilisateur.Image, utilisateur.Solde_Annuel, utilisateur.Solde_Maladie, utilisateur.Solde_Exceptionnel, utilisateur.Solde_Maternité " +
-                "FROM utilisateur " +
-                "JOIN employe ON utilisateur.ID_User = employe.ID_User " +
-                "WHERE employe.Departement = ?";
+    public List<User> getUsersByDepartment(String departement) {
+        List<User> users = new ArrayList<>();
+        String sql = "SELECT user.ID_User, user.Nom, user.Prenom, user.Email, user.Image, user.Solde_Annuel, user.Solde_Maladie, user.Solde_Exceptionnel, user.Solde_Maternité " +
+                "FROM user " +
+                "WHERE user.Departement = ?";
 
         try {
             PreparedStatement ps = cnx.prepareStatement(sql);
@@ -532,7 +480,7 @@ public class ServiceUtilisateur implements IUtilisateur {
             ResultSet rs = ps.executeQuery();
 
             while (rs.next()) {
-                Utilisateur user = new Utilisateur();
+                User user = new User();
                 user.setIdUser(rs.getInt("ID_User"));
                 user.setNom(rs.getString("Nom"));
                 user.setPrenom(rs.getString("Prenom"));
@@ -542,7 +490,7 @@ public class ServiceUtilisateur implements IUtilisateur {
                 user.setSoldeExceptionnel(rs.getInt("Solde_Exceptionnel"));
                 user.setSoldeMaladie(rs.getInt("Solde_Maladie"));
                 user.setSoldeMaternite(rs.getInt("Solde_Maternité"));
-                users.add(user);
+                user.setIdDepartement(rs.getInt("ID_Departement"));
             }
         } catch (SQLException ex) {
             ex.printStackTrace();
