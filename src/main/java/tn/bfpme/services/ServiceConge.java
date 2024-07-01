@@ -22,7 +22,7 @@ public class ServiceConge implements IConge<Conge> {
     @Override
     public List<Conge> afficher() {
         List<Conge> conges = new ArrayList<>();
-        String sql = "SELECT ID_Conge, DateDebut, DateFin, TypeConge, Statut, ID_User, file, description FROM conge WHERE ID_User LIKE '%" + SessionManager.getInstance().getUtilisateur().getIdUser() + "%'";
+        String sql = "SELECT ID_Conge, DateDebut, DateFin, TypeConge, Statut, ID_User, file, description FROM conge WHERE ID_User LIKE '%" + SessionManager.getInstance().getUser().getIdUser() + "%'";
         try {
             Statement ste = cnx.createStatement();
             ResultSet rs = ste.executeQuery(sql);
@@ -176,7 +176,7 @@ public class ServiceConge implements IConge<Conge> {
     @Override
     public List<Conge> TriparStatut() {
         List<Conge> conges = new ArrayList<>();
-        String sql = "SELECT `ID_Conge`, `DateDebut`, `DateFin`, `TypeConge`, `Statut`, `ID_User`, `file`, `description` FROM `conge` WHERE `ID_User` LIKE '%" + SessionManager.getInstance().getUtilisateur().getIdUser() + "%' ORDER BY `Statut`";
+        String sql = "SELECT `ID_Conge`, `DateDebut`, `DateFin`, `TypeConge`, `Statut`, `ID_User`, `file`, `description` FROM `conge` WHERE `ID_User` LIKE '%" + SessionManager.getInstance().getUser().getIdUser() + "%' ORDER BY `Statut`";
         try {
 
             Statement ste = cnx.createStatement();
@@ -202,7 +202,7 @@ public class ServiceConge implements IConge<Conge> {
     @Override
     public List<Conge> TriparType() {
         List<Conge> conges = new ArrayList<>();
-        String sql = "SELECT `ID_Conge`, `DateDebut`, `DateFin`, `TypeConge`, `Statut`, `ID_User`, `file`, `description` FROM `conge` WHERE `ID_User` LIKE '%" + SessionManager.getInstance().getUtilisateur().getIdUser() + "%' ORDER BY `TypeConge`";
+        String sql = "SELECT `ID_Conge`, `DateDebut`, `DateFin`, `TypeConge`, `Statut`, `ID_User`, `file`, `description` FROM `conge` WHERE `ID_User` LIKE '%" + SessionManager.getInstance().getUser().getIdUser() + "%' ORDER BY `TypeConge`";
         try {
             Statement ste = cnx.createStatement();
             ResultSet rs = ste.executeQuery(sql);
@@ -227,7 +227,7 @@ public class ServiceConge implements IConge<Conge> {
     @Override
     public List<Conge> TriparDateD() {
         List<Conge> conges = new ArrayList<>();
-        String sql = "SELECT `ID_Conge`, `DateDebut`, `DateFin`, `TypeConge`, `Statut`, `ID_User`, `file`, `description` FROM `conge` WHERE `ID_User` LIKE '%" + SessionManager.getInstance().getUtilisateur().getIdUser() + "%'ORDER BY `DateDebut`";
+        String sql = "SELECT `ID_Conge`, `DateDebut`, `DateFin`, `TypeConge`, `Statut`, `ID_User`, `file`, `description` FROM `conge` WHERE `ID_User` LIKE '%" + SessionManager.getInstance().getUser().getIdUser() + "%'ORDER BY `DateDebut`";
         try {
             Statement ste = cnx.createStatement();
             ResultSet rs = ste.executeQuery(sql);
@@ -251,7 +251,7 @@ public class ServiceConge implements IConge<Conge> {
     @Override
     public List<Conge> TriparDateF() {
         List<Conge> conges = new ArrayList<>();
-        String sql = "SELECT `ID_Conge`, `DateDebut`, `DateFin`, `TypeConge`, `Statut`, `ID_User`, `file`, `description` FROM `conge` WHERE `ID_User` LIKE '%" + SessionManager.getInstance().getUtilisateur().getIdUser() + "%' ORDER BY `DateFin`";
+        String sql = "SELECT `ID_Conge`, `DateDebut`, `DateFin`, `TypeConge`, `Statut`, `ID_User`, `file`, `description` FROM `conge` WHERE `ID_User` LIKE '%" + SessionManager.getInstance().getUser().getIdUser() + "%' ORDER BY `DateFin`";
         try {
             Statement ste = cnx.createStatement();
             ResultSet rs = ste.executeQuery(sql);
@@ -275,7 +275,7 @@ public class ServiceConge implements IConge<Conge> {
     @Override
     public List<Conge> TriparDesc() {
         List<Conge> conges = new ArrayList<>();
-        String sql = "SELECT `ID_Conge`, `DateDebut`, `DateFin`, `TypeConge`, `Statut`, `ID_User`, `file`, `description` FROM `conge` WHERE `ID_User` LIKE '%" + SessionManager.getInstance().getUtilisateur().getIdUser() + "%' ORDER BY `description`";
+        String sql = "SELECT `ID_Conge`, `DateDebut`, `DateFin`, `TypeConge`, `Statut`, `ID_User`, `file`, `description` FROM `conge` WHERE `ID_User` LIKE '%" + SessionManager.getInstance().getUser().getIdUser() + "%' ORDER BY `description`";
         try {
             Statement ste = cnx.createStatement();
             ResultSet rs = ste.executeQuery(sql);
@@ -311,7 +311,7 @@ public class ServiceConge implements IConge<Conge> {
 
         try (PreparedStatement ste = cnx.prepareStatement(sql)) {
             String searchPattern = "%" + recherche + "%";
-            ste.setString(1, "%" + SessionManager.getInstance().getUtilisateur().getIdUser() + "%");
+            ste.setString(1, "%" + SessionManager.getInstance().getUser().getIdUser() + "%");
             ste.setString(2, searchPattern);
             ste.setString(3, searchPattern);
             ste.setString(4, searchPattern);
@@ -351,7 +351,7 @@ public class ServiceConge implements IConge<Conge> {
         List<Conge> conges = new ArrayList<>();
         String sql = "SELECT ID_Conge, DateDebut, DateFin, TypeConge, Statut, ID_User, file, description, Notification " +
                 "FROM conge " +
-                "WHERE ID_User LIKE '%" + SessionManager.getInstance().getUtilisateur().getIdUser() + "%' " +
+                "WHERE ID_User LIKE '%" + SessionManager.getInstance().getUser().getIdUser() + "%' " +
                 "AND Notification IS NOT NULL " +
                 "AND Notification <> '' " +
                 "AND Statut <> 'En_Attente'";
@@ -391,7 +391,7 @@ public class ServiceConge implements IConge<Conge> {
             String qry = "UPDATE `conge` SET `Notification`=? WHERE `ID_User`=?";
             PreparedStatement stm = cnx.prepareStatement(qry);
             stm.setString(1, "");
-            stm.setInt(2, SessionManager.getInstance().getUtilisateur().getIdUser());
+            stm.setInt(2, SessionManager.getInstance().getUser().getIdUser());
             stm.executeUpdate();
         } catch (SQLException ex) {
             System.out.println(ex.getMessage());
