@@ -10,20 +10,17 @@ import javafx.scene.Scene;
 import javafx.scene.control.Alert;
 import javafx.scene.control.ButtonType;
 import javafx.scene.control.Label;
-import javafx.scene.control.Tooltip;
 import javafx.scene.layout.HBox;
 import javafx.stage.Stage;
 import tn.bfpme.models.Conge;
 import tn.bfpme.models.Statut;
 import tn.bfpme.models.TypeConge;
-import tn.bfpme.models.Utilisateur;
 import tn.bfpme.services.ServiceConge;
 import tn.bfpme.utils.Mails;
 import tn.bfpme.utils.MyDataBase;
 import tn.bfpme.utils.SessionManager;
 import tn.bfpme.utils.StageManager;
 
-import javax.swing.*;
 import java.awt.*;
 import java.io.File;
 import java.io.IOException;
@@ -34,10 +31,6 @@ import java.util.Optional;
 import java.util.ResourceBundle;
 import java.util.logging.Level;
 import java.util.logging.Logger;
-import javafx.stage.Window;
-import javafx.stage.Stage;
-import java.util.stream.Collectors;
-import javafx.scene.Scene;
 
 public class DemandeDepController implements Initializable {
     @FXML private Label CongePerson;
