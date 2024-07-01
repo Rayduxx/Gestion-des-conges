@@ -31,14 +31,14 @@ public class LoginController {
     @FXML
     void Login(ActionEvent event) {
         Connection cnx = MyDataBase.getInstance().getCnx();
-        String qry = "SELECT * FROM `utilisateur` WHERE `Email`=? AND `MDP`=?";
+        String qry = "SELECT * FROM `user` WHERE `Email`=? AND `MDP`=?";
         try {
             PreparedStatement stm = cnx.prepareStatement(qry);
             stm.setString(1, LoginEmail.getText());
             stm.setString(2, LoginMDP.getText());
             ResultSet rs = stm.executeQuery();
             if (rs.next()) {
-                Utilisateur ConnectedUser = new Utilisateur(rs.getInt("ID_User"), rs.getString("Nom"), rs.getString("Prenom"), rs.getString("Email"), rs.getString("MDP"), Role.valueOf(rs.getString("Role")), rs.getString("Image"), rs.getInt("Solde_Annuel"), rs.getInt("Solde_Maladie"), rs.getInt("Solde_Exceptionnel"), rs.getInt("Solde_Maternité"));
+                User ConnectedUser = new User(rs.getInt("ID_User"), rs.getString("Nom"), rs.getString("Prenom"), rs.getString("Email"), rs.getString("MDP"), Role.valueOf(rs.getString("Role")), rs.getString("Image"), rs.getInt("Solde_Annuel"), rs.getInt("Solde_Maladie"), rs.getInt("Solde_Exceptionnel"), rs.getInt("Solde_Maternité"));
                 userS.checkEmployee(rs.getInt("ID_User"), ConnectedUser);
                 userS.checkDepartmentHead(rs.getInt("ID_User"), ConnectedUser);
                 userS.checkChiefAdministration(rs.getInt("ID_User"), ConnectedUser);
