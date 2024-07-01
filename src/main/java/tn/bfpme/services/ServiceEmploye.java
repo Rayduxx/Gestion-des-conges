@@ -1,7 +1,5 @@
 package tn.bfpme.services;
 
-import tn.bfpme.models.Employe;
-import tn.bfpme.models.Utilisateur;
 import tn.bfpme.utils.MyDataBase;
 import java.sql.Connection;
 import java.sql.PreparedStatement;

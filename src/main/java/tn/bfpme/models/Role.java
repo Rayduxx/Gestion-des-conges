@@ -1,20 +1,37 @@
 package tn.bfpme.models;
 
-public enum Role {
-    Employé("Employé"),
-    ChefDepartement("Chef Departement"),
-    ChefAdministration("Chef Administration"),
-    AdminIT("Admin IT");
+public class Role {
+    private int idRole;
+    private String nom;
+    private String description;
 
-    private final String displayName;
-
-    Role(String displayName) {
-        this.displayName = displayName;
+    public Role(int idRole, String nom, String description) {
+        this.idRole = idRole;
+        this.nom = nom;
+        this.description = description;
     }
 
-    @Override
-    public String toString() {
-        return displayName;
+    public int getIdRole() {
+        return idRole;
     }
 
+    public void setIdRole(int idRole) {
+        this.idRole = idRole;
+    }
+
+    public String getNom() {
+        return nom;
+    }
+
+    public void setNom(String nom) {
+        this.nom = nom;
+    }
+
+    public String getDescription() {
+        return description;
+    }
+
+    public void setDescription(String description) {
+        this.description = description;
+    }
 }
