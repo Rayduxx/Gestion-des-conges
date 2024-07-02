@@ -45,7 +45,7 @@ public class EmployeController implements Initializable {
     @FXML private Label CU_MAL;
     @FXML private Label CU_MAT;
     @FXML public Button btnListe;
-
+    @FXML private Button btnRH;
     @FXML private TableView<Conge> TableHistorique;
     @FXML private TableColumn<Conge, LocalDate> TableDD;
     @FXML private TableColumn<Conge, LocalDate> TableDF;
@@ -62,10 +62,10 @@ public class EmployeController implements Initializable {
         fetchUserConges();
         reloadUserData();
 
-        // Determine visibility of btnListe based on role
         String userRole = SessionManager.getInstance().getUserRoleName();
+        String userDep = SessionManager.getInstance().getUserDepartmentName();
         btnListe.setVisible(!userRole.equals("Employe"));
-
+        btnRH.setVisible(userDep.equals("RH"));
         settingsPopup = new Popup();
         settingsPopup.setAutoHide(true);
 
@@ -197,5 +197,10 @@ public class EmployeController implements Initializable {
         } catch (IOException e) {
             e.printStackTrace();
         }
+    }
+    @FXML
+    void RH_Interface(ActionEvent event) {
+        navigateToScene(event, "/RH_Interface.fxml", "Ressource Humaine");
+
     }
 }

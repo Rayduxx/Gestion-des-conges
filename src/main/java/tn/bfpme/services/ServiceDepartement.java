@@ -84,17 +84,23 @@ public class ServiceDepartement {
              PreparedStatement pstmt = cnx.prepareStatement(query)) {
             pstmt.setString(1, name);
             pstmt.setString(2, description);
-            if (parentDeptId != null) {
-                pstmt.setInt(3, parentDeptId);
-            } else {
-                pstmt.setNull(3, Types.INTEGER);
-            }
+            pstmt.setInt(3, parentDeptId);
             pstmt.executeUpdate();
         } catch (SQLException e) {
             e.printStackTrace();
         }
     }
-
+    public void addDepartement2(String name, String description) {
+        String query = "INSERT INTO departement (nom, description) VALUES (?, ?)";
+        try (Connection cnx = MyDataBase.getInstance().getCnx();
+             PreparedStatement pstmt = cnx.prepareStatement(query)) {
+            pstmt.setString(1, name);
+            pstmt.setString(2, description);
+            pstmt.executeUpdate();
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+    }
     public void updateDepartment(int id, String name, String description, Integer parentDeptId) {
         String query = "UPDATE departement SET nom = ?, description = ?, Parent_Dept = ? WHERE ID_Departement = ?";
         try (Connection cnx = MyDataBase.getInstance().getCnx();

@@ -14,6 +14,11 @@ public class Departement {
         this.description = description;
         this.parentDept = parentDept;
     }
+    public Departement(int idDepartement, String nom, String description) {
+        this.idDepartement = idDepartement;
+        this.nom = nom;
+        this.description = description;
+    }
 
     public int getIdDepartement() {
         return idDepartement;
@@ -45,5 +50,11 @@ public class Departement {
 
     public void setParentDept(int parentDept) {
         this.parentDept = parentDept;
+    }
+
+    @Override
+    public String toString() {
+        return nom;
+
     }
 }

@@ -126,4 +126,22 @@ public class User {
     public void setIdRole(int idRole) {
         this.idRole = idRole;
     }
+
+    @Override
+    public String toString() {
+        return "User{" +
+                "idUser=" + idUser +
+                ", nom='" + nom + '\'' +
+                ", prenom='" + prenom + '\'' +
+                ", email='" + email + '\'' +
+                ", mdp='" + mdp + '\'' +
+                ", image='" + image + '\'' +
+                ", soldeAnnuel=" + soldeAnnuel +
+                ", soldeMaladie=" + soldeMaladie +
+                ", soldeExceptionnel=" + soldeExceptionnel +
+                ", soldeMaternite=" + soldeMaternite +
+                ", idDepartement=" + idDepartement +
+                ", idRole=" + idRole +
+                '}';
+    }
 }

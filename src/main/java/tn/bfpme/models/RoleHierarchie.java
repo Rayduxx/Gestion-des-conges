@@ -58,4 +58,13 @@ public class RoleHierarchie {
             this.idRoleC = 0;
         }
     }
+
+    @Override
+    public String toString() {
+        return "RoleHierarchie{" +
+                "idRoleH=" + idRoleH +
+                ", idRoleP=" + idRoleP +
+                ", idRoleC=" + idRoleC +
+                '}';
+    }
 }

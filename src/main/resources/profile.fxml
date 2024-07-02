@@ -327,6 +327,16 @@
                   </HBox>
                </children>
             </HBox>
+            <Button fx:id="btnRH" layoutX="484.0" layoutY="35.0" mnemonicParsing="false" onAction="#RH_Interface" prefHeight="38.0" prefWidth="87.0" text="RH" visible="false">
+               <font>
+                  <Font size="14.0" />
+               </font>
+               <styleClass>
+                  <String fx:value="btn-secondary" />
+                  <String fx:value="FontSize-15" />
+                  <String fx:value="RobotoBold" />
+               </styleClass>
+            </Button>
          </children>
       </Pane>
    </children>
