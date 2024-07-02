@@ -15,6 +15,7 @@ import javafx.stage.Stage;
 import tn.bfpme.models.Conge;
 import tn.bfpme.models.Statut;
 import tn.bfpme.models.TypeConge;
+import tn.bfpme.models.User;
 import tn.bfpme.services.ServiceConge;
 import tn.bfpme.utils.Mails;
 import tn.bfpme.utils.MyDataBase;
@@ -43,12 +44,12 @@ public class DemandeDepController implements Initializable {
     @FXML private HBox HBoxAppRef;
     Connection cnx = MyDataBase.getInstance().getCnx();
     private Conge conge;
-    private Utilisateur user;
+    private User user;
     private int CongeDays;
     String employeeName, startDate, endDate, managerName, managerRole;
     String to ,Subject ,MessageText;
     private final ServiceConge serviceConge = new ServiceConge();
-    public void setData(Conge conge, Utilisateur user) {
+    public void setData(Conge conge, User user) {
         this.conge = conge;
         this.user = user;
         CongePerson.setText(user.getNom() + " " + user.getPrenom());
@@ -67,10 +68,12 @@ public class DemandeDepController implements Initializable {
     }
     @Override
     public void initialize(URL location, ResourceBundle resources) {
-        Utilisateur manager = SessionManager.getInstance().getUtilisateur();
+        User manager = SessionManager.getInstance().getUser();
+        String role = SessionManager.getInstance().getUserRoleName();
+        String departement = SessionManager.getInstance().getUserDepartmentName();
         if (manager != null) {
             managerName = manager.getPrenom() + " " + manager.getNom();
-            managerRole = String.valueOf(manager.getRole());
+            managerRole = String.valueOf(role);
         }
     }
 

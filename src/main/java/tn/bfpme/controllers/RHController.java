@@ -5,12 +5,15 @@ import javafx.collections.ObservableList;
 import javafx.fxml.FXML;
 import javafx.scene.control.*;
 import javafx.scene.layout.Pane;
-
 import tn.bfpme.models.Departement;
 import tn.bfpme.models.Role;
 import tn.bfpme.models.User;
+import tn.bfpme.services.ServiceDepartement;
+import tn.bfpme.services.ServiceRole;
+import tn.bfpme.services.ServiceUtilisateur;
 
 public class RHController {
+
     @FXML
     private Pane DepartementPane, RolesPane, UtilisateursPane;
     @FXML
@@ -34,9 +37,9 @@ public class RHController {
     @FXML
     private ComboBox<Role> roleComboBox;
 
-    private DepartmentDAO departmentDAO;
-    private RoleDAO roleDAO;
-    private UserDAO userDAO;
+    private ServiceDepartement departmentDAO;
+    private ServiceRole roleDAO;
+    private ServiceUtilisateur userDAO;
 
     public void initialize() {
         departmentDAO = new DepartmentDAO();
@@ -72,7 +75,7 @@ public class RHController {
         String name = deptNameField.getText();
         String description = deptDescriptionField.getText();
         Departement parent = parentDeptComboBox.getSelectionModel().getSelectedItem();
-        departmentDAO.addDepartment(name, description, parent != null ? parent.getId() : null);
+        departmentDAO.addDepartement(name, description, parent != null ? parent.getId() : null);
         loadDepartments();
     }
 

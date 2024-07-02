@@ -65,10 +65,10 @@ public class DemandeDepListeController implements Initializable {
         int column = 0;
         try {
             UserConge userConge = UserS.afficherusers();
-            List<Utilisateur> users = userConge.getUsers();
+            List<User> users = userConge.getUsers();
             List<Conge> conges = userConge.getConges();
             for (Conge conge : conges) {
-                for (Utilisateur user : users) {
+                for (User user : users) {
                     if (conge.getIdUser() == user.getIdUser()) {
                         FXMLLoader fxmlLoader = new FXMLLoader();
                         fxmlLoader.setLocation(getClass().getResource("/UserCarte.fxml"));
@@ -104,9 +104,8 @@ public class DemandeDepListeController implements Initializable {
         load();
         comboTri.setValue("Selectioner");
         comboTri.setItems(TriListe);
-        if (SessionManager.getInstance().getUtilisateur().getRole().equals(Role.ChefDepartement)) {
-            btnListe.setVisible(true);
-        }
+        String userRole = SessionManager.getInstance().getUserRoleName();
+        btnListe.setVisible(!userRole.equals("Employe"));
         settingsPopup = new Popup();
         settingsPopup.setAutoHide(true);
 
@@ -181,10 +180,10 @@ public class DemandeDepListeController implements Initializable {
         int column = 0;
         try {
             DemandesContainer.getChildren().clear();
-            List<Utilisateur> users = userConge.getUsers();
+            List<User> users = userConge.getUsers();
             List<Conge> conges = userConge.getConges();
             for (Conge conge : conges) {
-                for (Utilisateur user : users) {
+                for (User user : users) {
                     if (conge.getIdUser() == user.getIdUser()) {
                         FXMLLoader fxmlLoader = new FXMLLoader();
                         fxmlLoader.setLocation(getClass().getResource("/UserCarte.fxml"));
@@ -263,7 +262,7 @@ public class DemandeDepListeController implements Initializable {
             Stage stage = (Stage) ((Node) event.getSource()).getScene().getWindow();
             Scene scene = new Scene(root);
             stage.setScene(scene);
-            stage.setTitle("Liste des demandes - " + SessionManager.getInstance().getDepartement());
+            stage.setTitle("Liste des demandes - " + SessionManager.getInstance().getUserDepartmentName());
             stage.show();
             StageManager.addStage("DemandeDepListe", stage);
         } catch (IOException e) {
@@ -277,10 +276,10 @@ public class DemandeDepListeController implements Initializable {
         try {
             DemandesContainer.getChildren().clear();
             UserConge userConge = UserS.AfficherApprove();
-            List<Utilisateur> users = userConge.getUsers();
+            List<User> users = userConge.getUsers();
             List<Conge> conges = userConge.getConges();
             for (Conge conge : conges) {
-                for (Utilisateur user : users) {
+                for (User user : users) {
                     if (conge.getIdUser() == user.getIdUser()) {
                         FXMLLoader fxmlLoader = new FXMLLoader();
                         fxmlLoader.setLocation(getClass().getResource("/UserCarte.fxml"));
@@ -315,10 +314,10 @@ public class DemandeDepListeController implements Initializable {
         try {
             DemandesContainer.getChildren().clear();
             UserConge userConge = UserS.afficherusers();
-            List<Utilisateur> users = userConge.getUsers();
+            List<User> users = userConge.getUsers();
             List<Conge> conges = userConge.getConges();
             for (Conge conge : conges) {
-                for (Utilisateur user : users) {
+                for (User user : users) {
                     if (conge.getIdUser() == user.getIdUser()) {
                         FXMLLoader fxmlLoader = new FXMLLoader();
                         fxmlLoader.setLocation(getClass().getResource("/UserCarte.fxml"));
@@ -353,10 +352,10 @@ public class DemandeDepListeController implements Initializable {
         try {
             DemandesContainer.getChildren().clear();
             UserConge userConge = UserS.AfficherReject();
-            List<Utilisateur> users = userConge.getUsers();
+            List<User> users = userConge.getUsers();
             List<Conge> conges = userConge.getConges();
             for (Conge conge : conges) {
-                for (Utilisateur user : users) {
+                for (User user : users) {
                     if (conge.getIdUser() == user.getIdUser()) {
                         FXMLLoader fxmlLoader = new FXMLLoader();
                         fxmlLoader.setLocation(getClass().getResource("/UserCarte.fxml"));
