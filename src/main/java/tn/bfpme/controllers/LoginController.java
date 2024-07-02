@@ -38,7 +38,7 @@ public class LoginController {
             stm.setString(2, LoginMDP.getText());
             ResultSet rs = stm.executeQuery();
             if (rs.next()) {
-                User ConnectedUser = new User(rs.getInt("id"),rs.getString("Nom"),rs.getString("Prenom"),rs.getString("Email"),rs.getString("MDP"),rs.getString("Image"),rs.getInt("Solde_Annuel"), rs.getInt("Solde_Maladie"), rs.getInt("Solde_Exceptionnel"), rs.getInt("Solde_Maternité"),rs.getInt("ID_Departement"));
+                User ConnectedUser = new User(rs.getInt("ID_User"),rs.getString("Nom"),rs.getString("Prenom"),rs.getString("Email"),rs.getString("MDP"),rs.getString("Image"),rs.getInt("Solde_Annuel"), rs.getInt("Solde_Maladie"), rs.getInt("Solde_Exceptionnel"), rs.getInt("Solde_Maternité"),rs.getInt("ID_Departement"));
                 navigateToProfile(event);
             } else {
                 System.out.println("Login failed: Invalid email or password.");
