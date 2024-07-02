@@ -110,9 +110,9 @@ public class SessionManager {
                         rs.getInt("Solde_Maladie"),
                         rs.getInt("Solde_Exceptionnel"),
                         rs.getInt("Solde_Maternite"),
-                        rs.getInt("ID_Departement")
+                        rs.getInt("ID_Departement"),
+                        rs.getInt("ID_Role")
                 );
-                chef.setIdRole(rs.getInt("ID_Role"));
                 return chef;
             }
         } catch (SQLException e) {
@@ -158,9 +158,9 @@ public class SessionManager {
                         rs.getInt("Solde_Maladie"),
                         rs.getInt("Solde_Exceptionnel"),
                         rs.getInt("Solde_Maternite"),
-                        rs.getInt("ID_Departement")
+                        rs.getInt("ID_Departement"),
+                        rs.getInt("ID_Role")
                 );
-                chef.setIdRole(rs.getInt("ID_Role"));
                 return chef;
             }
         } catch (SQLException e) {

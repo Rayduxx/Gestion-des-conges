@@ -512,7 +512,7 @@ public class ServiceUtilisateur implements IUtilisateur {
 
     public List<User> getAllUsers() {
         List<User> users = new ArrayList<>();
-        String query = "SELECT * FROM user";
+        String query = "SELECT u.*, ur.ID_Role FROM user u LEFT JOIN user_role ur ON u.ID_User = ur.ID_User";
         try (Connection cnx = MyDataBase.getInstance().getCnx();
              Statement stmt = cnx.createStatement();
              ResultSet rs = stmt.executeQuery(query)) {
@@ -528,7 +528,8 @@ public class ServiceUtilisateur implements IUtilisateur {
                         rs.getInt("Solde_Maladie"),
                         rs.getInt("Solde_Exceptionnel"),
                         rs.getInt("Solde_Maternité"),
-                        rs.getInt("ID_Departement")
+                        rs.getInt("ID_Departement"),
+                        rs.getInt("ID_Role")
                 );
                 users.add(user);
             }

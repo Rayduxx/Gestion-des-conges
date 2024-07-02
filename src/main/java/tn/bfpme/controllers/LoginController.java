@@ -30,14 +30,31 @@ public class LoginController {
     @FXML
     void Login(ActionEvent event) {
         cnx = MyDataBase.getInstance().getCnx();
-        String qry = "SELECT * FROM `user` WHERE `Email`=? AND `MDP`=?";
+        String qry =  "SELECT u.*, ur.ID_Role " +
+                "FROM `user` as u " +
+                "JOIN `user_role` ur ON ur.ID_User = u.ID_User " +
+                "WHERE u.`Email`=? AND u.`MDP`=?";
         try {
             PreparedStatement stm = cnx.prepareStatement(qry);
             stm.setString(1, LoginEmail.getText());
             stm.setString(2, LoginMDP.getText());
             ResultSet rs = stm.executeQuery();
             if (rs.next()) {
-                User connectedUser = new User(rs.getInt("ID_User"), rs.getString("Nom"), rs.getString("Prenom"), rs.getString("Email"), rs.getString("MDP"), rs.getString("Image"), rs.getInt("Solde_Annuel"), rs.getInt("Solde_Maladie"), rs.getInt("Solde_Exceptionnel"), rs.getInt("Solde_Maternité"), rs.getInt("ID_Departement"));
+                User connectedUser = new User(
+                        rs.getInt("ID_User"),
+                        rs.getString("Nom"),
+                        rs.getString("Prenom"),
+                        rs.getString("Email"),
+                        rs.getString("MDP"),
+                        rs.getString("Image"),
+                        rs.getInt("Solde_Annuel"),
+                        rs.getInt("Solde_Maladie"),
+                        rs.getInt("Solde_Exceptionnel"),
+                        rs.getInt("Solde_Maternité"),
+                        rs.getInt("ID_Departement"),
+                        rs.getInt("ID_Role")
+                );
+                connectedUser.setIdRole(rs.getInt("ID_Role"));
                 SessionManager.getInstance(connectedUser);
                 navigateToProfile(event);
             } else {

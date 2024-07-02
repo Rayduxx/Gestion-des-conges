@@ -124,4 +124,61 @@ public class ServiceRole {
         }
         return role;
     }
+
+    public List<Role> getAllRoles() {
+        List<Role> roles = new ArrayList<>();
+        String query = "SELECT * FROM role";
+        try (Connection cnx = MyDataBase.getInstance().getCnx();
+             Statement stmt = cnx.createStatement();
+             ResultSet rs = stmt.executeQuery(query)) {
+            while (rs.next()) {
+                Role role = new Role(
+                        rs.getInt("ID_Role"),
+                        rs.getString("nom"),
+                        rs.getString("description")
+                );
+                roles.add(role);
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return roles;
+    }
+
+    public void addRole(String nom, String description) {
+        String query = "INSERT INTO role (nom, description) VALUES (?, ?)";
+        try (Connection cnx = MyDataBase.getInstance().getCnx();
+             PreparedStatement pstmt = cnx.prepareStatement(query)) {
+            pstmt.setString(1, nom);
+            pstmt.setString(2, description);
+            pstmt.executeUpdate();
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+    }
+
+    public void updateRole(int idRole, String nom, String description) {
+        String query = "UPDATE role SET nom = ?, description = ? WHERE ID_Role = ?";
+        try (Connection cnx = MyDataBase.getInstance().getCnx();
+             PreparedStatement pstmt = cnx.prepareStatement(query)) {
+            pstmt.setString(1, nom);
+            pstmt.setString(2, description);
+            pstmt.setInt(3, idRole);
+            pstmt.executeUpdate();
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+    }
+
+    public void deleteRole(int idRole) {
+        String query = "DELETE FROM role WHERE ID_Role = ?";
+        try (Connection cnx = MyDataBase.getInstance().getCnx();
+             PreparedStatement pstmt = cnx.prepareStatement(query)) {
+            pstmt.setInt(1, idRole);
+            pstmt.executeUpdate();
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+    }
+
 }
