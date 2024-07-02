@@ -10,8 +10,8 @@ import javafx.scene.Node;
 import javafx.stage.Stage;
 import tn.bfpme.models.*;
 import tn.bfpme.utils.MyDataBase;
+import tn.bfpme.utils.SessionManager;
 import tn.bfpme.utils.StageManager;
-import tn.bfpme.services.ServiceUtilisateur;
 
 import java.io.IOException;
 import java.sql.Connection;
@@ -26,11 +26,10 @@ public class LoginController {
     private TextField LoginMDP;
     @FXML
     private Connection cnx;
-    private final ServiceUtilisateur userS = new ServiceUtilisateur();
 
     @FXML
     void Login(ActionEvent event) {
-        Connection cnx = MyDataBase.getInstance().getCnx();
+        cnx = MyDataBase.getInstance().getCnx();
         String qry = "SELECT * FROM `user` WHERE `Email`=? AND `MDP`=?";
         try {
             PreparedStatement stm = cnx.prepareStatement(qry);
@@ -38,7 +37,8 @@ public class LoginController {
             stm.setString(2, LoginMDP.getText());
             ResultSet rs = stm.executeQuery();
             if (rs.next()) {
-                User ConnectedUser = new User(rs.getInt("ID_User"),rs.getString("Nom"),rs.getString("Prenom"),rs.getString("Email"),rs.getString("MDP"),rs.getString("Image"),rs.getInt("Solde_Annuel"), rs.getInt("Solde_Maladie"), rs.getInt("Solde_Exceptionnel"), rs.getInt("Solde_Maternité"),rs.getInt("ID_Departement"));
+                User connectedUser = new User(rs.getInt("ID_User"), rs.getString("Nom"), rs.getString("Prenom"), rs.getString("Email"), rs.getString("MDP"), rs.getString("Image"), rs.getInt("Solde_Annuel"), rs.getInt("Solde_Maladie"), rs.getInt("Solde_Exceptionnel"), rs.getInt("Solde_Maternité"), rs.getInt("ID_Departement"));
+                SessionManager.getInstance(connectedUser);
                 navigateToProfile(event);
             } else {
                 System.out.println("Login failed: Invalid email or password.");

@@ -13,11 +13,10 @@ public class User {
     private int soldeMaternite;
     private int idDepartement;
     private int idRole;
-    public static User Current_User;
 
     public User() {}
 
-    public User(int idUser, String nom, String prenom, String email, String mdp, String image, int soldeAnnuel, int soldeMaladie, int soldeExceptionnel, int soldeMaternite, int idDepartement) {
+    public User(int idUser, String nom, String prenom, String email, String mdp, String image, int soldeAnnuel, int soldeMaladie, int soldeExceptionnel, int soldeMaternite, int idDepartement, int idRole) {
         this.idUser = idUser;
         this.nom = nom;
         this.prenom = prenom;
@@ -29,6 +28,7 @@ public class User {
         this.soldeExceptionnel = soldeExceptionnel;
         this.soldeMaternite = soldeMaternite;
         this.idDepartement = idDepartement;
+        this.idRole = idRole;
     }
 
     public int getIdUser() {
@@ -118,6 +118,7 @@ public class User {
     public void setIdDepartement(int idDepartement) {
         this.idDepartement = idDepartement;
     }
+
     public int getIdRole() {
         return idRole;
     }
@@ -125,30 +126,4 @@ public class User {
     public void setIdRole(int idRole) {
         this.idRole = idRole;
     }
-
-    public static User getCurrent_User() {
-        return Current_User;
-    }
-
-    public static void setCurrent_User(User Current_User) {
-        User.Current_User = Current_User;
-    }
-
-    @Override
-    public String toString() {
-        return "User{" +
-                "idUser=" + idUser +
-                ", nom='" + nom + '\'' +
-                ", prenom='" + prenom + '\'' +
-                ", email='" + email + '\'' +
-                ", mdp='" + mdp + '\'' +
-                ", image='" + image + '\'' +
-                ", soldeAnnuel=" + soldeAnnuel +
-                ", soldeMaladie=" + soldeMaladie +
-                ", soldeExceptionnel=" + soldeExceptionnel +
-                ", soldeMaternite=" + soldeMaternite +
-                ", idDepartement=" + idDepartement +
-                '}';
-    }
-
 }

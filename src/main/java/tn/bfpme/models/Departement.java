@@ -6,6 +6,8 @@ public class Departement {
     private String description;
     private int parentDept;
 
+    public Departement() {}
+
     public Departement(int idDepartement, String nom, String description, int parentDept) {
         this.idDepartement = idDepartement;
         this.nom = nom;
@@ -43,27 +45,5 @@ public class Departement {
 
     public void setParentDept(int parentDept) {
         this.parentDept = parentDept;
-    }
-
-    public Departement getParentDepartement() {
-        return null;
-    }
-
-    public void setParentDepartement(Departement parentDepartement) {
-        if (parentDepartement != null) {
-            this.parentDept = parentDepartement.getIdDepartement();
-        } else {
-            this.parentDept = 0;
-        }
-    }
-
-    @Override
-    public String toString() {
-        return "Departement{" +
-                "idDepartement=" + idDepartement +
-                ", nom='" + nom + '\'' +
-                ", description='" + description + '\'' +
-                ", parentDept=" + parentDept +
-                '}';
     }
 }

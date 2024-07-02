@@ -438,7 +438,7 @@ public class ServiceUtilisateur implements IUtilisateur {
 
         // Get the current user's department ID and role ID
         int currentDeptId = SessionManager.getInstance().getUser().getIdDepartement();
-        int currentRoleId = SessionManager.getInstance().getUser().getIdRole();
+        int currentRoleId = SessionManager.getInstance().getUserRole().getIdRole();
 
         // Find parent roles of the current user's role
         List<Integer> parentRoleIds = ServiceRole.getParentRoleIds(currentRoleId);
@@ -471,7 +471,6 @@ public class ServiceUtilisateur implements IUtilisateur {
                 chef.setSoldeExceptionnel(rs.getInt("Solde_Exceptionnel"));
                 chef.setSoldeMaternite(rs.getInt("Solde_Maternite"));
                 chef.setIdDepartement(rs.getInt("ID_Departement"));
-                chef.setIdRole(rs.getInt("ID_Role"));
             }
         } catch (SQLException ex) {
             ex.printStackTrace();
@@ -529,7 +528,7 @@ public class ServiceUtilisateur implements IUtilisateur {
                         rs.getInt("Solde_Maladie"),
                         rs.getInt("Solde_Exceptionnel"),
                         rs.getInt("Solde_Maternité"),
-                        rs.getInt("ID_DEPT")
+                        rs.getInt("ID_Departement")
                 );
                 users.add(user);
             }

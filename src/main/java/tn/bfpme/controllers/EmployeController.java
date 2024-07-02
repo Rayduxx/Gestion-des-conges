@@ -59,8 +59,8 @@ public class EmployeController implements Initializable {
     public void initialize(URL url, ResourceBundle resourceBundle) {
         indexColumn.setCellValueFactory(cellData -> new ReadOnlyObjectWrapper<>(TableHistorique.getItems().indexOf(cellData.getValue()) + 1));
         indexColumn.setSortable(false);
-        fetchUserCongés();
-        ReloadUserDATA();
+        fetchUserConges();
+        reloadUserData();
 
         // Determine visibility of btnListe based on role
         String userRole = SessionManager.getInstance().getUserRoleName();
@@ -120,10 +120,10 @@ public class EmployeController implements Initializable {
         navigateToScene(actionEvent, "/HistoriqueConge.fxml", "Historique congé");
     }
 
-    private void fetchUserCongés() {
+    private void fetchUserConges() {
         ObservableList<Conge> HisUserList = FXCollections.observableArrayList();
-        String sql = "SELECT `DateDebut`, `DateFin`, `TypeConge` FROM `conge` WHERE `ID_User`=? AND `Statut`=?";
-        Connection cnx = MyDataBase.getInstance().getCnx();
+        String sql = "SELECT DateDebut, DateFin, TypeConge FROM conge WHERE ID_User = ? AND Statut = ?";
+        cnx = MyDataBase.getInstance().getCnx();
         try {
             PreparedStatement stm = cnx.prepareStatement(sql);
             stm.setInt(1, SessionManager.getInstance().getUser().getIdUser());
@@ -142,11 +142,11 @@ public class EmployeController implements Initializable {
         }
     }
 
-    public void ReloadUserDATA() {
+    public void reloadUserData() {
         User currentUser = SessionManager.getInstance().getUser();
         String departement = SessionManager.getInstance().getUserDepartmentName();
         String role = SessionManager.getInstance().getUserRoleName();
-        CU_dep.setText(String.valueOf(departement));
+        CU_dep.setText(departement);
         CU_email.setText(currentUser.getEmail());
         CU_nomprenom.setText(currentUser.getNom() + " " + currentUser.getPrenom());
         CU_role.setText(role);
@@ -172,7 +172,6 @@ public class EmployeController implements Initializable {
         CU_EXP.setText(String.valueOf(currentUser.getSoldeExceptionnel()));
         CU_MAL.setText(String.valueOf(currentUser.getSoldeMaladie()));
         CU_MAT.setText(String.valueOf(currentUser.getSoldeMaternite()));
-
     }
 
     @FXML

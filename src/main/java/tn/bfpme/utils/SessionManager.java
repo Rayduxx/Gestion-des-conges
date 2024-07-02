@@ -46,7 +46,6 @@ public class SessionManager {
         instance = null;
     }
 
-    // Methods to retrieve department and role information
     public Departement getUserDepartment() {
         return ServiceDepartement.getDepartmentById(user.getIdDepartement());
     }
@@ -61,7 +60,7 @@ public class SessionManager {
     }
 
     public Role getUserRole() {
-        return ServiceRole.getRoleById(user.getIdRole());
+        return ServiceRole.getRoleByUserId(user.getIdUser());
     }
 
     public String getUserRoleName() {
@@ -70,21 +69,23 @@ public class SessionManager {
     }
 
     public List<Role> getParentRoles() {
-        return ServiceRole.getParentRoles(user.getIdRole());
+        Role role = getUserRole();
+        return ServiceRole.getParentRoles(role.getIdRole());
     }
 
     public List<Role> getChildRoles() {
-        return ServiceRole.getChildRoles(user.getIdRole());
+        Role role = getUserRole();
+        return ServiceRole.getChildRoles(role.getIdRole());
     }
 
-    // New method to get the user's chef by role name
     public User getUserChef() {
-        List<Integer> parentRoleIds = ServiceRole.getParentRoleIds(user.getIdRole());
+        Role userRole = getUserRole();
+        List<Integer> parentRoleIds = ServiceRole.getParentRoleIds(userRole.getIdRole());
         if (parentRoleIds.isEmpty()) {
             return null;
         }
 
-        String sql = "SELECT * FROM user u JOIN user_role ur ON u.ID_User = ur.ID_User WHERE u.ID_Departement = ? AND ur.ID_Role IN (";
+        String sql = "SELECT u.*, ur.ID_Role FROM user u JOIN user_role ur ON u.ID_User = ur.ID_User WHERE u.ID_Departement = ? AND ur.ID_Role IN (";
         for (int i = 0; i < parentRoleIds.size(); i++) {
             sql += parentRoleIds.get(i);
             if (i < parentRoleIds.size() - 1) {
@@ -98,18 +99,19 @@ public class SessionManager {
             stmt.setInt(1, user.getIdDepartement());
             ResultSet rs = stmt.executeQuery();
             if (rs.next()) {
-                User chef = new User();
-                chef.setIdUser(rs.getInt("ID_User"));
-                chef.setNom(rs.getString("Nom"));
-                chef.setPrenom(rs.getString("Prenom"));
-                chef.setEmail(rs.getString("Email"));
-                chef.setMdp(rs.getString("MDP"));
-                chef.setImage(rs.getString("Image"));
-                chef.setSoldeAnnuel(rs.getInt("Solde_Annuel"));
-                chef.setSoldeMaladie(rs.getInt("Solde_Maladie"));
-                chef.setSoldeExceptionnel(rs.getInt("Solde_Exceptionnel"));
-                chef.setSoldeMaternite(rs.getInt("Solde_Maternite"));
-                chef.setIdDepartement(rs.getInt("ID_Departement"));
+                User chef = new User(
+                        rs.getInt("ID_User"),
+                        rs.getString("Nom"),
+                        rs.getString("Prenom"),
+                        rs.getString("Email"),
+                        rs.getString("MDP"),
+                        rs.getString("Image"),
+                        rs.getInt("Solde_Annuel"),
+                        rs.getInt("Solde_Maladie"),
+                        rs.getInt("Solde_Exceptionnel"),
+                        rs.getInt("Solde_Maternite"),
+                        rs.getInt("ID_Departement")
+                );
                 chef.setIdRole(rs.getInt("ID_Role"));
                 return chef;
             }
@@ -119,7 +121,6 @@ public class SessionManager {
         return null;
     }
 
-    // New method to get the user's chef by department name and role name
     public User getUserChefByDeptAndRole(String deptName, String roleName) {
         Departement departement = ServiceDepartement.getDepartmentByName(deptName);
         Role role = ServiceRole.getRoleByName(roleName);
@@ -132,7 +133,7 @@ public class SessionManager {
             return null;
         }
 
-        String sql = "SELECT * FROM user u JOIN user_role ur ON u.ID_User = ur.ID_User WHERE u.ID_Departement = ? AND ur.ID_Role IN (";
+        String sql = "SELECT u.*, ur.ID_Role FROM user u JOIN user_role ur ON u.ID_User = ur.ID_User WHERE u.ID_Departement = ? AND ur.ID_Role IN (";
         for (int i = 0; i < parentRoleIds.size(); i++) {
             sql += parentRoleIds.get(i);
             if (i < parentRoleIds.size() - 1) {
@@ -146,18 +147,19 @@ public class SessionManager {
             stmt.setInt(1, departement.getIdDepartement());
             ResultSet rs = stmt.executeQuery();
             if (rs.next()) {
-                User chef = new User();
-                chef.setIdUser(rs.getInt("ID_User"));
-                chef.setNom(rs.getString("Nom"));
-                chef.setPrenom(rs.getString("Prenom"));
-                chef.setEmail(rs.getString("Email"));
-                chef.setMdp(rs.getString("MDP"));
-                chef.setImage(rs.getString("Image"));
-                chef.setSoldeAnnuel(rs.getInt("Solde_Annuel"));
-                chef.setSoldeMaladie(rs.getInt("Solde_Maladie"));
-                chef.setSoldeExceptionnel(rs.getInt("Solde_Exceptionnel"));
-                chef.setSoldeMaternite(rs.getInt("Solde_Maternite"));
-                chef.setIdDepartement(rs.getInt("ID_Departement"));
+                User chef = new User(
+                        rs.getInt("ID_User"),
+                        rs.getString("Nom"),
+                        rs.getString("Prenom"),
+                        rs.getString("Email"),
+                        rs.getString("MDP"),
+                        rs.getString("Image"),
+                        rs.getInt("Solde_Annuel"),
+                        rs.getInt("Solde_Maladie"),
+                        rs.getInt("Solde_Exceptionnel"),
+                        rs.getInt("Solde_Maternite"),
+                        rs.getInt("ID_Departement")
+                );
                 chef.setIdRole(rs.getInt("ID_Role"));
                 return chef;
             }
