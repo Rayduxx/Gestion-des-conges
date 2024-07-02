@@ -13,7 +13,6 @@ import tn.bfpme.services.ServiceRole;
 import tn.bfpme.services.ServiceUtilisateur;
 
 public class RHController {
-
     @FXML
     private Pane DepartementPane, RolesPane, UtilisateursPane;
     @FXML
@@ -37,36 +36,35 @@ public class RHController {
     @FXML
     private ComboBox<Role> roleComboBox;
 
-    private ServiceDepartement departmentDAO;
-    private ServiceRole roleDAO;
-    private ServiceUtilisateur userDAO;
+    private ServiceDepartement depService;
+    private ServiceRole roleService;
+    private ServiceUtilisateur userService;
 
     public void initialize() {
-        departmentDAO = new DepartmentDAO();
-        roleDAO = new RoleDAO();
-        userDAO = new UserDAO();
-
+        depService = new ServiceDepartement();
+        roleService = new ServiceRole();
+        userService = new ServiceUtilisateur();
         loadDepartments();
         loadRoles();
         loadUsers();
     }
 
     private void loadDepartments() {
-        ObservableList<Departement> departments = FXCollections.observableArrayList(departmentDAO.getAllDepartments());
+        ObservableList<Departement> departments = FXCollections.observableArrayList(depService.getAllDepartments());
         departementListView.setItems(departments);
         parentDeptComboBox.setItems(departments);
         departmentComboBox.setItems(departments);
     }
 
     private void loadRoles() {
-        ObservableList<Role> roles = FXCollections.observableArrayList(roleDAO.getAllRoles());
+        ObservableList<Role> roles = FXCollections.observableArrayList(roleService.getAllRoles());
         roleListView.setItems(roles);
         parentRoleComboBox.setItems(roles);
         roleComboBox.setItems(roles);
     }
 
     private void loadUsers() {
-        ObservableList<User> users = FXCollections.observableArrayList(userDAO.getAllUsers());
+        ObservableList<User> users = FXCollections.observableArrayList(userService.getAllUsers());
         userListView.setItems(users);
     }
 
@@ -75,7 +73,7 @@ public class RHController {
         String name = deptNameField.getText();
         String description = deptDescriptionField.getText();
         Departement parent = parentDeptComboBox.getSelectionModel().getSelectedItem();
-        departmentDAO.addDepartement(name, description, parent != null ? parent.getId() : null);
+        depService.addDepartement(name, description, parent != null ? parent.getIdDepartement() : null);
         loadDepartments();
     }
 
@@ -86,7 +84,7 @@ public class RHController {
             String name = deptNameField.getText();
             String description = deptDescriptionField.getText();
             Departement parent = parentDeptComboBox.getSelectionModel().getSelectedItem();
-            departmentDAO.updateDepartment(selectedDept.getId(), name, description, parent != null ? parent.getId() : null);
+            depService.updateDepartment(selectedDept.getIdDepartement(), name, description, parent != null ? parent.getIdDepartement() : null);
             loadDepartments();
         }
     }
@@ -95,7 +93,7 @@ public class RHController {
     private void handleDeleteDepartment() {
         Departement selectedDept = departementListView.getSelectionModel().getSelectedItem();
         if (selectedDept != null) {
-            departmentDAO.deleteDepartment(selectedDept.getId());
+            depService.deleteDepartment(selectedDept.getIdDepartement());
             loadDepartments();
         }
     }
@@ -105,7 +103,7 @@ public class RHController {
         String name = roleNameField.getText();
         String description = roleDescriptionField.getText();
         Role parent = parentRoleComboBox.getSelectionModel().getSelectedItem();
-        roleDAO.addRole(name, description, parent != null ? parent.getId() : null);
+        roleService.addRole(name, description);
         loadRoles();
     }
 
@@ -116,7 +114,7 @@ public class RHController {
             String name = roleNameField.getText();
             String description = roleDescriptionField.getText();
             Role parent = parentRoleComboBox.getSelectionModel().getSelectedItem();
-            roleDAO.updateRole(selectedRole.getId(), name, description, parent != null ? parent.getId() : null);
+            roleService.updateRole(selectedRole.getIdRole(), name, description);
             loadRoles();
         }
     }
@@ -125,7 +123,7 @@ public class RHController {
     private void handleDeleteRole() {
         Role selectedRole = roleListView.getSelectionModel().getSelectedItem();
         if (selectedRole != null) {
-            roleDAO.deleteRole(selectedRole.getId());
+            roleService.deleteRole(selectedRole.getIdRole());
             loadRoles();
         }
     }
@@ -136,7 +134,7 @@ public class RHController {
         String email = userEmailField.getText();
         Departement department = departmentComboBox.getSelectionModel().getSelectedItem();
         Role role = roleComboBox.getSelectionModel().getSelectedItem();
-        userDAO.addUser(name, email, department != null ? department.getId() : null, role != null ? role.getId() : null);
+        //userService.addUser(name, email, department != null ? department.getIdDepartement() : null, role != null ? role.getIdRole() : null);
         loadUsers();
     }
 
@@ -148,7 +146,7 @@ public class RHController {
             String email = userEmailField.getText();
             Departement department = departmentComboBox.getSelectionModel().getSelectedItem();
             Role role = roleComboBox.getSelectionModel().getSelectedItem();
-            userDAO.updateUser(selectedUser.getId(), name, email, department != null ? department.getId() : null, role != null ? role.getId() : null);
+            //userService.updateUser(selectedUser.getIdUser(), name, email, department != null ? department.getIdDepartement() : null, role != null ? role.getIdRole() : null);
             loadUsers();
         }
     }
@@ -157,7 +155,7 @@ public class RHController {
     private void handleDeleteUser() {
         User selectedUser = userListView.getSelectionModel().getSelectedItem();
         if (selectedUser != null) {
-            userDAO.deleteUser(selectedUser.getId());
+            userService.deleteUser(selectedUser.getIdUser());
             loadUsers();
         }
     }
@@ -168,7 +166,7 @@ public class RHController {
         Departement department = departmentComboBox.getSelectionModel().getSelectedItem();
         Role role = roleComboBox.getSelectionModel().getSelectedItem();
         if (selectedUser != null && department != null && role != null) {
-            userDAO.assignUserToDepartmentAndRole(selectedUser.getId(), department.getId(), role.getId());
+            userService.assignUserToDepartmentAndRole(selectedUser.getIdUser(), department.getIdDepartement(), role.getIdRole());
             loadUsers();
         }
     }

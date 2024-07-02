@@ -3,10 +3,7 @@ package tn.bfpme.services;
 import tn.bfpme.models.Role;
 import tn.bfpme.utils.MyDataBase;
 
-import java.sql.Connection;
-import java.sql.PreparedStatement;
-import java.sql.ResultSet;
-import java.sql.SQLException;
+import java.sql.*;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -90,7 +87,6 @@ public class ServiceRole {
         return childRoles;
     }
 
-    // New method to get roles that can be parents of a given role
     public static List<Integer> getParentRoleIds(int idRole) {
         List<Integer> parentRoleIds = new ArrayList<>();
         String sql = "SELECT ID_RoleP FROM rolehierarchie WHERE ID_RoleC = ?";
@@ -105,5 +101,61 @@ public class ServiceRole {
             e.printStackTrace();
         }
         return parentRoleIds;
+    }
+
+    public List<Role> getAllRoles() {
+        List<Role> roles = new ArrayList<>();
+        String query = "SELECT * FROM role";
+        try (Connection cnx = MyDataBase.getInstance().getCnx();
+             Statement stmt = cnx.createStatement();
+             ResultSet rs = stmt.executeQuery(query)) {
+            while (rs.next()) {
+                Role role = new Role(
+                        rs.getInt("ID_Role"),
+                        rs.getString("nom"),
+                        rs.getString("description")
+                );
+                roles.add(role);
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return roles;
+    }
+
+    public void addRole(String nom, String description) {
+        String query = "INSERT INTO role (nom, description) VALUES (?, ?)";
+        try (Connection cnx = MyDataBase.getInstance().getCnx();
+             PreparedStatement pstmt = cnx.prepareStatement(query)) {
+            pstmt.setString(1, nom);
+            pstmt.setString(2, description);
+            pstmt.executeUpdate();
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+    }
+
+    public void updateRole(int idRole, String nom, String description) {
+        String query = "UPDATE role SET nom = ?, description = ? WHERE ID_Role = ?";
+        try (Connection cnx = MyDataBase.getInstance().getCnx();
+             PreparedStatement pstmt = cnx.prepareStatement(query)) {
+            pstmt.setString(1, nom);
+            pstmt.setString(2, description);
+            pstmt.setInt(3, idRole);
+            pstmt.executeUpdate();
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+    }
+
+    public void deleteRole(int idRole) {
+        String query = "DELETE FROM role WHERE ID_Role = ?";
+        try (Connection cnx = MyDataBase.getInstance().getCnx();
+             PreparedStatement pstmt = cnx.prepareStatement(query)) {
+            pstmt.setInt(1, idRole);
+            pstmt.executeUpdate();
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
     }
 }

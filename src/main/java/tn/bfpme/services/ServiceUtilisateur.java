@@ -432,10 +432,6 @@ public class ServiceUtilisateur implements IUtilisateur {
         }
         return new UserConge(users, conges);
     }*/
-
-
-
-
     public User getChef() {
         User chef = null;
         Connection cnx = MyDataBase.getInstance().getCnx(); // Assuming MyDataBase is your connection manager
@@ -484,7 +480,6 @@ public class ServiceUtilisateur implements IUtilisateur {
         return chef;
     }
 
-
     public List<User> getUsersByDepartment(String departement) {
         List<User> users = new ArrayList<>();
         String sql = "SELECT user.ID_User, user.Nom, user.Prenom, user.Email, user.Image, user.Solde_Annuel, user.Solde_Maladie, user.Solde_Exceptionnel, user.Solde_Maternité " +
@@ -514,6 +509,101 @@ public class ServiceUtilisateur implements IUtilisateur {
         }
 
         return users;
+    }
+
+    public List<User> getAllUsers() {
+        List<User> users = new ArrayList<>();
+        String query = "SELECT * FROM user";
+        try (Connection cnx = MyDataBase.getInstance().getCnx();
+             Statement stmt = cnx.createStatement();
+             ResultSet rs = stmt.executeQuery(query)) {
+            while (rs.next()) {
+                User user = new User(
+                        rs.getInt("ID_User"),
+                        rs.getString("Nom"),
+                        rs.getString("Prenom"),
+                        rs.getString("Email"),
+                        rs.getString("MDP"),
+                        rs.getString("Image"),
+                        rs.getInt("Solde_Annuel"),
+                        rs.getInt("Solde_Maladie"),
+                        rs.getInt("Solde_Exceptionnel"),
+                        rs.getInt("Solde_Maternité"),
+                        rs.getInt("ID_DEPT")
+                );
+                users.add(user);
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return users;
+    }
+
+    public void addUser(String nom, String prenom, String email, String mdp, String image, int soldeAnnuel, int soldeMaladie, int soldeExceptionnel, int soldeMaternite, int idDepartement, int idRole) {
+        String query = "INSERT INTO user (Nom, Prenom, Email, MDP, Image, Solde_Annuel, Solde_Maladie, Solde_Exceptionnel, Solde_Maternité, ID_DEPT, ID_Role) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
+        try (Connection cnx = MyDataBase.getInstance().getCnx();
+             PreparedStatement pstmt = cnx.prepareStatement(query)) {
+            pstmt.setString(1, nom);
+            pstmt.setString(2, prenom);
+            pstmt.setString(3, email);
+            pstmt.setString(4, mdp);
+            pstmt.setString(5, image);
+            pstmt.setInt(6, soldeAnnuel);
+            pstmt.setInt(7, soldeMaladie);
+            pstmt.setInt(8, soldeExceptionnel);
+            pstmt.setInt(9, soldeMaternite);
+            pstmt.setInt(10, idDepartement);
+            pstmt.setInt(11, idRole);
+            pstmt.executeUpdate();
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+    }
+
+    public void updateUser(int idUser, String nom, String prenom, String email, String mdp, String image, int soldeAnnuel, int soldeMaladie, int soldeExceptionnel, int soldeMaternite, int idDepartement, int idRole) {
+        String query = "UPDATE user SET Nom = ?, Prenom = ?, Email = ?, MDP = ?, Image = ?, Solde_Annuel = ?, Solde_Maladie = ?, Solde_Exceptionnel = ?, Solde_Maternité = ?, ID_DEPT = ?, ID_Role = ? WHERE ID_User = ?";
+        try (Connection cnx = MyDataBase.getInstance().getCnx();
+             PreparedStatement pstmt = cnx.prepareStatement(query)) {
+            pstmt.setString(1, nom);
+            pstmt.setString(2, prenom);
+            pstmt.setString(3, email);
+            pstmt.setString(4, mdp);
+            pstmt.setString(5, image);
+            pstmt.setInt(6, soldeAnnuel);
+            pstmt.setInt(7, soldeMaladie);
+            pstmt.setInt(8, soldeExceptionnel);
+            pstmt.setInt(9, soldeMaternite);
+            pstmt.setInt(10, idDepartement);
+            pstmt.setInt(11, idRole);
+            pstmt.setInt(12, idUser);
+            pstmt.executeUpdate();
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+    }
+
+    public void deleteUser(int idUser) {
+        String query = "DELETE FROM user WHERE ID_User = ?";
+        try (Connection cnx = MyDataBase.getInstance().getCnx();
+             PreparedStatement pstmt = cnx.prepareStatement(query)) {
+            pstmt.setInt(1, idUser);
+            pstmt.executeUpdate();
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+    }
+
+    public void assignUserToDepartmentAndRole(int idUser, int idDepartement, int idRole) {
+        String query = "UPDATE user SET ID_DEPT = ?, ID_Role = ? WHERE ID_User = ?";
+        try (Connection cnx = MyDataBase.getInstance().getCnx();
+             PreparedStatement pstmt = cnx.prepareStatement(query)) {
+            pstmt.setInt(1, idDepartement);
+            pstmt.setInt(2, idRole);
+            pstmt.setInt(3, idUser);
+            pstmt.executeUpdate();
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
     }
 
 }
