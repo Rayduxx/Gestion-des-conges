@@ -8,6 +8,7 @@ import tn.bfpme.utils.SessionManager;
 import java.sql.*;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Collectors;
 
 public class ServiceUtilisateur implements IUtilisateur {
     private final Connection cnx;
@@ -435,18 +436,31 @@ public class ServiceUtilisateur implements IUtilisateur {
 
 
 
-    /*public User GetChef() {
-        String departement = String.valueOf(SessionManager.getInstance().getUser().getIdDepartement());
+    public User getChef() {
         User chef = null;
+        Connection cnx = MyDataBase.getInstance().getCnx(); // Assuming MyDataBase is your connection manager
 
-        String query = "SELECT utilisateur.ID_User, utilisateur.Nom, utilisateur.Prenom, utilisateur.Email, utilisateur.Image, utilisateur.Solde_Annuel, utilisateur.Solde_Maladie, utilisateur.Solde_Exceptionnel, utilisateur.Solde_Maternité " +
-                "FROM utilisateur " +
-                "JOIN chef_departement ON utilisateur.ID_User = chef_departement.ID_User " +
-                "WHERE chef_departement.Departement = ?";
+        // Get the current user's department ID and role ID
+        int currentDeptId = SessionManager.getInstance().getUser().getIdDepartement();
+        int currentRoleId = SessionManager.getInstance().getUser().getIdRole();
+
+        // Find parent roles of the current user's role
+        List<Integer> parentRoleIds = ServiceRole.getParentRoleIds(currentRoleId);
+        if (parentRoleIds.isEmpty()) {
+            return null;
+        }
+
+        // Create SQL query to find a user with one of the parent roles in the same department
+        String query = "SELECT u.ID_User, u.Nom, u.Prenom, u.Email, u.Image, u.Solde_Annuel, u.Solde_Maladie, u.Solde_Exceptionnel, u.Solde_Maternite, u.ID_Departement " +
+                "FROM user u " +
+                "JOIN user_role ur ON u.ID_User = ur.ID_User " +
+                "WHERE u.ID_Departement = ? AND ur.ID_Role IN (" +
+                parentRoleIds.stream().map(String::valueOf).collect(Collectors.joining(",")) +
+                ") LIMIT 1";
 
         try {
             PreparedStatement ps = cnx.prepareStatement(query);
-            ps.setString(1, departement);
+            ps.setInt(1, currentDeptId);
             ResultSet rs = ps.executeQuery();
 
             if (rs.next()) {
@@ -457,16 +471,19 @@ public class ServiceUtilisateur implements IUtilisateur {
                 chef.setEmail(rs.getString("Email"));
                 chef.setImage(rs.getString("Image"));
                 chef.setSoldeAnnuel(rs.getInt("Solde_Annuel"));
-                chef.setSoldeExceptionnel(rs.getInt("Solde_Exceptionnel"));
                 chef.setSoldeMaladie(rs.getInt("Solde_Maladie"));
-                chef.setSoldeMaternite(rs.getInt("Solde_Maternité"));
+                chef.setSoldeExceptionnel(rs.getInt("Solde_Exceptionnel"));
+                chef.setSoldeMaternite(rs.getInt("Solde_Maternite"));
+                chef.setIdDepartement(rs.getInt("ID_Departement"));
+                chef.setIdRole(rs.getInt("ID_Role"));
             }
         } catch (SQLException ex) {
             ex.printStackTrace();
         }
 
         return chef;
-    }*/
+    }
+
 
     public List<User> getUsersByDepartment(String departement) {
         List<User> users = new ArrayList<>();

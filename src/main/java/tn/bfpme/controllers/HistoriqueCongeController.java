@@ -47,9 +47,8 @@ public class HistoriqueCongeController implements Initializable {
     @Override
     public void initialize(URL url, ResourceBundle rb) {
         load();
-        if (SessionManager.getInstance().getUtilisateur().getRole().equals(Role.ChefDepartement)) {
-            btnListe.setVisible(true);
-        }
+        String userRole = SessionManager.getInstance().getUserRoleName();
+        btnListe.setVisible(!userRole.equals("Employe"));
         settingsPopup = new Popup();
         settingsPopup.setAutoHide(true);
 
@@ -343,7 +342,7 @@ public class HistoriqueCongeController implements Initializable {
             Stage stage = (Stage) ((Node) event.getSource()).getScene().getWindow();
             Scene scene = new Scene(root);
             stage.setScene(scene);
-            stage.setTitle("Liste des demandes - " + SessionManager.getInstance().getDepartement());
+            stage.setTitle("Liste des demandes - " + SessionManager.getInstance().getUserDepartmentName());
             stage.show();
             StageManager.addStage("DemandeDepListe", stage);
         } catch (IOException e) {

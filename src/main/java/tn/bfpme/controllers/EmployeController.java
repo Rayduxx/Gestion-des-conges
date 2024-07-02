@@ -63,7 +63,7 @@ public class EmployeController implements Initializable {
         ReloadUserDATA();
 
         // Determine visibility of btnListe based on role
-        String userRole = SessionManager.getInstance().getUser().getRole().getNom();
+        String userRole = SessionManager.getInstance().getUserRoleName();
         btnListe.setVisible(!userRole.equals("Employe"));
 
         settingsPopup = new Popup();
@@ -144,10 +144,12 @@ public class EmployeController implements Initializable {
 
     public void ReloadUserDATA() {
         User currentUser = SessionManager.getInstance().getUser();
-        CU_dep.setText(String.valueOf(currentUser.getDepartement()));
+        String departement = SessionManager.getInstance().getUserDepartmentName();
+        String role = SessionManager.getInstance().getUserRoleName();
+        CU_dep.setText(String.valueOf(departement));
         CU_email.setText(currentUser.getEmail());
         CU_nomprenom.setText(currentUser.getNom() + " " + currentUser.getPrenom());
-        CU_role.setText(currentUser.getRole().getNom());
+        CU_role.setText(role);
         String imagePath = currentUser.getImage();
 
         if (imagePath != null && !imagePath.isEmpty()) {
@@ -170,6 +172,7 @@ public class EmployeController implements Initializable {
         CU_EXP.setText(String.valueOf(currentUser.getSoldeExceptionnel()));
         CU_MAL.setText(String.valueOf(currentUser.getSoldeMaladie()));
         CU_MAT.setText(String.valueOf(currentUser.getSoldeMaternite()));
+
     }
 
     @FXML
@@ -179,7 +182,7 @@ public class EmployeController implements Initializable {
 
     @FXML
     void ListeDesDemandes(ActionEvent event) {
-        navigateToScene(event, "/DemandeDepListe.fxml", "Liste des demandes - " + SessionManager.getInstance();
+        navigateToScene(event, "/DemandeDepListe.fxml", "Liste des demandes - " + SessionManager.getInstance().getUserDepartmentName());
     }
 
     private void navigateToScene(ActionEvent actionEvent, String fxmlFile, String title) {

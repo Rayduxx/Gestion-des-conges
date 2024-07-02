@@ -1,18 +1,18 @@
 package tn.bfpme.models;
 
-public class Notification extends Utilisateur{
+public class Notification extends User{
     private int idNotif;
     private String notification;
     public static Notification Current_Notif;
 
     public Notification(){super();}
-    public Notification(int idNotif, int idUser, String nom, String prenom, String email, String mdp, Role role, String image,  int soldeAnnuel,int soldeMaladie, int soldeExceptionnel,int soldeMaternite, String notification) {
-        super(idUser, nom, prenom, email, mdp, role, image, soldeAnnuel,soldeMaladie,soldeExceptionnel,soldeMaternite);
+    public Notification(int idNotif, int idUser, String nom, String prenom, String email, String mdp, Role role, String image,  int soldeAnnuel,int soldeMaladie, int soldeExceptionnel,int soldeMaternite, String notification,int idDepartement) {
+        super(idUser, nom, prenom, email, mdp, image, soldeAnnuel,soldeMaladie,soldeExceptionnel,soldeMaternite,idDepartement);
         this.idNotif = idNotif;
         this.notification = notification;
     }
-    public Notification(int idNotif, String notification, Utilisateur utilisateur) {
-        super(utilisateur.getIdUser(), utilisateur.getNom(), utilisateur.getPrenom(), utilisateur.getEmail(), utilisateur.getMdp(), utilisateur.getRole(), utilisateur.getImage(), utilisateur.getSoldeAnnuel(), utilisateur.getSoldeMaladie(),utilisateur.getSoldeExceptionnel(),utilisateur.getSoldeMaternite());
+    public Notification(int idNotif, String notification, User utilisateur) {
+        super(utilisateur.getIdUser(), utilisateur.getNom(), utilisateur.getPrenom(), utilisateur.getEmail(), utilisateur.getMdp(), utilisateur.getImage(), utilisateur.getSoldeAnnuel(), utilisateur.getSoldeMaladie(),utilisateur.getSoldeExceptionnel(),utilisateur.getSoldeMaternite(), utilisateur.getIdDepartement());
         this.idNotif = idNotif;
         this.notification = notification;
     }
