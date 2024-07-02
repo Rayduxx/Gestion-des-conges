@@ -12,6 +12,7 @@ public class User {
     private int soldeExceptionnel;
     private int soldeMaternite;
     private int idDepartement;
+    private int idRole;
     public static User Current_User;
 
     public User() {}
@@ -116,6 +117,13 @@ public class User {
 
     public void setIdDepartement(int idDepartement) {
         this.idDepartement = idDepartement;
+    }
+    public int getIdRole() {
+        return idRole;
+    }
+
+    public void setIdRole(int idRole) {
+        this.idRole = idRole;
     }
 
     public static User getCurrent_User() {

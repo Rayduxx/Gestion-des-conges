@@ -1,16 +1,12 @@
 package tn.bfpme.controllers;
 
 import javafx.beans.property.ReadOnlyObjectWrapper;
-import javafx.beans.value.ChangeListener;
-import javafx.beans.value.ObservableValue;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
-import javafx.event.EventHandler;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.fxml.Initializable;
-import javafx.stage.Popup;
 import javafx.scene.Node;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
@@ -19,11 +15,8 @@ import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.stage.Popup;
-import javafx.scene.input.MouseEvent;
-import javafx.stage.Modality;
 import javafx.stage.Stage;
 import javafx.stage.Window;
-import javafx.stage.StageStyle;
 import tn.bfpme.models.*;
 import tn.bfpme.utils.MyDataBase;
 import tn.bfpme.utils.SessionManager;
@@ -68,9 +61,11 @@ public class EmployeController implements Initializable {
         indexColumn.setSortable(false);
         fetchUserCongés();
         ReloadUserDATA();
-        if (SessionManager.getInstance().getUtilisateur().getRole().equals(Role.ChefDepartement)) {
-            btnListe.setVisible(true);
-        }
+
+        // Determine visibility of btnListe based on role
+        String userRole = SessionManager.getInstance().getUser().getRole().getNom();
+        btnListe.setVisible(!userRole.equals("Employe"));
+
         settingsPopup = new Popup();
         settingsPopup.setAutoHide(true);
 
@@ -80,7 +75,8 @@ public class EmployeController implements Initializable {
         } catch (IOException e) {
             e.printStackTrace();
         }
-        notifPopup =new Popup();
+
+        notifPopup = new Popup();
         notifPopup.setAutoHide(true);
         try {
             Parent settingsContent = FXMLLoader.load(getClass().getResource("/paneNotif.fxml"));
@@ -88,7 +84,6 @@ public class EmployeController implements Initializable {
         } catch (IOException e) {
             e.printStackTrace();
         }
-
     }
 
     @FXML
@@ -102,6 +97,7 @@ public class EmployeController implements Initializable {
             settingsPopup.show(window, x, y);
         }
     }
+
     @FXML
     void OpenNotifPane(ActionEvent event) {
         if (notifPopup.isShowing()) {
@@ -112,57 +108,17 @@ public class EmployeController implements Initializable {
             double y = window.getY() + NotifBtn.localToScene(0, 0).getY() + NotifBtn.getScene().getY() + NotifBtn.getHeight();
             notifPopup.show(window, x, y);
         }
-
     }
 
     @FXML
     public void Demander(ActionEvent actionEvent) {
-        try {
-            FXMLLoader loader = new FXMLLoader(getClass().getResource("/DemandeConge.fxml"));
-            Parent root = loader.load();
-            Stage stage = (Stage) ((Node) actionEvent.getSource()).getScene().getWindow();
-            Scene scene = new Scene(root);
-            stage.setScene(scene);
-            stage.setTitle("Demande congé");
-            stage.show();
-            StageManager.addStage("DemandeConge", stage);
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
+        navigateToScene(actionEvent, "/DemandeConge.fxml", "Demande congé");
     }
 
-
-    @FXML public void Historique(ActionEvent actionEvent) {
-        try {
-            FXMLLoader loader = new FXMLLoader(getClass().getResource("/HistoriqueConge.fxml"));
-            Parent root = loader.load();
-            Stage stage = (Stage) ((Node) actionEvent.getSource()).getScene().getWindow();
-            Scene scene = new Scene(root);
-            stage.setScene(scene);
-            stage.setTitle("Historique congé");
-            stage.show();
-            StageManager.addStage("HistoriqueConge", stage);
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
+    @FXML
+    public void Historique(ActionEvent actionEvent) {
+        navigateToScene(actionEvent, "/HistoriqueConge.fxml", "Historique congé");
     }
-
-        /*
-        MAILING
-        try {
-            FXMLLoader loader = new FXMLLoader(getClass().getResource("/MailingContact.fxml"));
-            Parent root = loader.load();
-            MenuItem menuItem = (MenuItem) actionEvent.getSource();
-            Stage stage = (Stage) menuItem.getParentPopup().getOwnerWindow();
-            stage.setScene(new Scene(root));
-            stage.setTitle("Mailing");
-            StageManager.addStage("Mailing", stage);
-            stage.show();
-        } catch (IOException e) {
-            e.printStackTrace();
-        }*/
-
-
 
     private void fetchUserCongés() {
         ObservableList<Conge> HisUserList = FXCollections.observableArrayList();
@@ -170,7 +126,7 @@ public class EmployeController implements Initializable {
         Connection cnx = MyDataBase.getInstance().getCnx();
         try {
             PreparedStatement stm = cnx.prepareStatement(sql);
-            stm.setInt(1, SessionManager.getInstance().getUtilisateur().getIdUser());
+            stm.setInt(1, SessionManager.getInstance().getUser().getIdUser());
             stm.setString(2, String.valueOf(Statut.Approuvé));
             ResultSet rs = stm.executeQuery();
             while (rs.next()) {
@@ -187,11 +143,12 @@ public class EmployeController implements Initializable {
     }
 
     public void ReloadUserDATA() {
-        CU_dep.setText(String.valueOf(SessionManager.getInstance().getDepartement()));
-        CU_email.setText(SessionManager.getInstance().getUtilisateur().getEmail());
-        CU_nomprenom.setText(SessionManager.getInstance().getUtilisateur().getNom() + " " + SessionManager.getInstance().getUtilisateur().getPrenom());
-        CU_role.setText(String.valueOf(SessionManager.getInstance().getUtilisateur().getRole()));
-        String imagePath = SessionManager.getInstance().getUtilisateur().getImage();
+        User currentUser = SessionManager.getInstance().getUser();
+        CU_dep.setText(String.valueOf(currentUser.getDepartement()));
+        CU_email.setText(currentUser.getEmail());
+        CU_nomprenom.setText(currentUser.getNom() + " " + currentUser.getPrenom());
+        CU_role.setText(currentUser.getRole().getNom());
+        String imagePath = currentUser.getImage();
 
         if (imagePath != null && !imagePath.isEmpty()) {
             File file = new File(imagePath);
@@ -207,45 +164,36 @@ public class EmployeController implements Initializable {
                 System.err.println("Image file does not exist: " + imagePath);
             }
         } else {
-            System.err.println("Image path is null or empty for user: " + SessionManager.getInstance().getUtilisateur());
+            System.err.println("Image path is null or empty for user: " + currentUser);
         }
-        CU_ANL.setText(String.valueOf(SessionManager.getInstance().getUtilisateur().getSoldeAnnuel()));
-        CU_EXP.setText(String.valueOf(SessionManager.getInstance().getUtilisateur().getSoldeExceptionnel()));
-        CU_MAL.setText(String.valueOf(SessionManager.getInstance().getUtilisateur().getSoldeMaladie()));
-        CU_MAT.setText(String.valueOf(SessionManager.getInstance().getUtilisateur().getSoldeMaternite()));
+        CU_ANL.setText(String.valueOf(currentUser.getSoldeAnnuel()));
+        CU_EXP.setText(String.valueOf(currentUser.getSoldeExceptionnel()));
+        CU_MAL.setText(String.valueOf(currentUser.getSoldeMaladie()));
+        CU_MAT.setText(String.valueOf(currentUser.getSoldeMaternite()));
     }
 
-
-    @FXML public void goto_profil(ActionEvent actionEvent) {
-        try {
-            FXMLLoader loader = new FXMLLoader(getClass().getResource("/profile.fxml"));
-            Parent root = loader.load();
-            Stage stage = (Stage) ((Node) actionEvent.getSource()).getScene().getWindow();
-            Scene scene = new Scene(root);
-            stage.setScene(scene);
-            stage.setTitle("Mon profil");
-            stage.show();
-            StageManager.addStage("Profile", stage);
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
+    @FXML
+    public void goto_profil(ActionEvent actionEvent) {
+        navigateToScene(actionEvent, "/profile.fxml", "Mon profil");
     }
 
     @FXML
     void ListeDesDemandes(ActionEvent event) {
+        navigateToScene(event, "/DemandeDepListe.fxml", "Liste des demandes - " + SessionManager.getInstance();
+    }
+
+    private void navigateToScene(ActionEvent actionEvent, String fxmlFile, String title) {
         try {
-            FXMLLoader loader = new FXMLLoader(getClass().getResource("/DemandeDepListe.fxml"));
+            FXMLLoader loader = new FXMLLoader(getClass().getResource(fxmlFile));
             Parent root = loader.load();
-            Stage stage = (Stage) ((Node) event.getSource()).getScene().getWindow();
+            Stage stage = (Stage) ((Node) actionEvent.getSource()).getScene().getWindow();
             Scene scene = new Scene(root);
             stage.setScene(scene);
-            stage.setTitle("Liste des demandes - " + SessionManager.getInstance().getDepartement());
+            stage.setTitle(title);
             stage.show();
-            StageManager.addStage("DemandeDepListe", stage);
+            StageManager.addStage(title, stage);
         } catch (IOException e) {
             e.printStackTrace();
         }
     }
-
-
 }

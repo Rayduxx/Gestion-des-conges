@@ -11,6 +11,7 @@ public class Role {
         this.description = description;
     }
 
+    // Getters and Setters
     public int getIdRole() {
         return idRole;
     }
