@@ -63,7 +63,7 @@ public class CongeCarteController {
         String qry = "SELECT `TypeConge`, `Statut` FROM `conge` WHERE `ID_User`= ? AND `ID_Conge`=? ";
         try {
             PreparedStatement stm = cnx.prepareStatement(qry);
-            stm.setInt(1, SessionManager.getInstance().getUtilisateur().getIdUser());
+            stm.setInt(1, SessionManager.getInstance().getUser().getIdUser());
             stm.setInt(2, conge.getIdConge());
             ResultSet rs = stm.executeQuery();
             while (rs.next()) {

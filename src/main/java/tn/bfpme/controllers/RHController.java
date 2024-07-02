@@ -8,19 +8,24 @@ import javafx.scene.layout.Pane;
 import tn.bfpme.dao.DepartmentDAO;
 import tn.bfpme.dao.RoleDAO;
 import tn.bfpme.dao.UserDAO;
+import tn.bfpme.models.Departement;
 import tn.bfpme.models.Department;
+import tn.bfpme.models.Role;
 import tn.bfpme.models.User;
+import tn.bfpme.services.ServiceDepartement;
+import tn.bfpme.services.ServiceRole;
+import tn.bfpme.services.ServiceUtilisateur;
 
 public class RHController {
 
     @FXML
     private Pane DepartementPane, RolesPane, UtilisateursPane;
     @FXML
-    private ListView<Department> departementListView;
+    private ListView<Departement> departementListView;
     @FXML
     private TextField deptNameField, deptDescriptionField;
     @FXML
-    private ComboBox<Department> parentDeptComboBox;
+    private ComboBox<Departement> parentDeptComboBox;
     @FXML
     private ListView<Role> roleListView;
     @FXML
@@ -32,13 +37,13 @@ public class RHController {
     @FXML
     private TextField userNameField, userEmailField;
     @FXML
-    private ComboBox<Department> departmentComboBox;
+    private ComboBox<Departement> departmentComboBox;
     @FXML
     private ComboBox<Role> roleComboBox;
 
-    private DepartmentDAO departmentDAO;
-    private RoleDAO roleDAO;
-    private UserDAO userDAO;
+    private ServiceDepartement departmentDAO;
+    private ServiceRole roleDAO;
+    private ServiceUtilisateur userDAO;
 
     public void initialize() {
         departmentDAO = new DepartmentDAO();
@@ -51,7 +56,7 @@ public class RHController {
     }
 
     private void loadDepartments() {
-        ObservableList<Department> departments = FXCollections.observableArrayList(departmentDAO.getAllDepartments());
+        ObservableList<Departement> departments = FXCollections.observableArrayList(departmentDAO.getAllDepartments());
         departementListView.setItems(departments);
         parentDeptComboBox.setItems(departments);
         departmentComboBox.setItems(departments);
@@ -73,14 +78,14 @@ public class RHController {
     private void handleAddDepartment() {
         String name = deptNameField.getText();
         String description = deptDescriptionField.getText();
-        Department parent = parentDeptComboBox.getSelectionModel().getSelectedItem();
-        departmentDAO.addDepartment(name, description, parent != null ? parent.getId() : null);
+        Departement parent = parentDeptComboBox.getSelectionModel().getSelectedItem();
+        departmentDAO.addDepartement(name, description, parent != null ? parent.getId() : null);
         loadDepartments();
     }
 
     @FXML
     private void handleEditDepartment() {
-        Department selectedDept = departementListView.getSelectionModel().getSelectedItem();
+        Departement selectedDept = departementListView.getSelectionModel().getSelectedItem();
         if (selectedDept != null) {
             String name = deptNameField.getText();
             String description = deptDescriptionField.getText();
@@ -92,7 +97,7 @@ public class RHController {
 
     @FXML
     private void handleDeleteDepartment() {
-        Department selectedDept = departementListView.getSelectionModel().getSelectedItem();
+        Departement selectedDept = departementListView.getSelectionModel().getSelectedItem();
         if (selectedDept != null) {
             departmentDAO.deleteDepartment(selectedDept.getId());
             loadDepartments();
@@ -133,7 +138,7 @@ public class RHController {
     private void handleAddUser() {
         String name = userNameField.getText();
         String email = userEmailField.getText();
-        Department department = departmentComboBox.getSelectionModel().getSelectedItem();
+        Departement department = departmentComboBox.getSelectionModel().getSelectedItem();
         Role role = roleComboBox.getSelectionModel().getSelectedItem();
         userDAO.addUser(name, email, department != null ? department.getId() : null, role != null ? role.getId() : null);
         loadUsers();
@@ -145,7 +150,7 @@ public class RHController {
         if (selectedUser != null) {
             String name = userNameField.getText();
             String email = userEmailField.getText();
-            Department department = departmentComboBox.getSelectionModel().getSelectedItem();
+            Departement department = departmentComboBox.getSelectionModel().getSelectedItem();
             Role role = roleComboBox.getSelectionModel().getSelectedItem();
             userDAO.updateUser(selectedUser.getId(), name, email, department != null ? department.getId() : null, role != null ? role.getId() : null);
             loadUsers();
@@ -164,7 +169,7 @@ public class RHController {
     @FXML
     private void handleAssignUser() {
         User selectedUser = userListView.getSelectionModel().getSelectedItem();
-        Department department = departmentComboBox.getSelectionModel().getSelectedItem();
+        Departement department = departmentComboBox.getSelectionModel().getSelectedItem();
         Role role = roleComboBox.getSelectionModel().getSelectedItem();
         if (selectedUser != null && department != null && role != null) {
             userDAO.assignUserToDepartmentAndRole(selectedUser.getId(), department.getId(), role.getId());

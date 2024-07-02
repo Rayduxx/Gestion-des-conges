@@ -14,6 +14,7 @@ import javafx.stage.Popup;
 import javafx.stage.Stage;
 import javafx.stage.Window;
 import tn.bfpme.models.Conge;
+import tn.bfpme.models.User;
 import tn.bfpme.utils.Mails;
 import tn.bfpme.utils.SessionManager;
 import tn.bfpme.utils.StageManager;
@@ -60,11 +61,16 @@ public class MailingDemandeController implements Initializable {
         raison_mail.setItems(RaisonsList);
 
         // Initialize variables from SessionManager
-        Utilisateur manager = SessionManager.getInstance().getUtilisateur();
+
+        User manager = SessionManager.getInstance().getUser();
+        String role = SessionManager.getInstance().getUserRoleName();
+        String departement = SessionManager.getInstance().getUserDepartmentName();
         if (manager != null) {
             managerName = manager.getPrenom() + " " + manager.getNom();
-            managerRole = String.valueOf(manager.getRole());
+            managerRole = String.valueOf(role);
         }
+        String userRole = SessionManager.getInstance().getUserRoleName();
+        btnListe.setVisible(!userRole.equals("Employe"));
         settingsPopup = new Popup();
         settingsPopup.setAutoHide(true);
 
@@ -84,7 +90,7 @@ public class MailingDemandeController implements Initializable {
         }
     }
 
-    public void setData(Conge conge, Utilisateur user) {
+    public void setData(Conge conge, User user) {
         this.conge = conge;
         this.user = user;
         employeeName = user.getPrenom() + " " + user.getNom();
@@ -225,7 +231,7 @@ public class MailingDemandeController implements Initializable {
             Stage stage = (Stage) ((Node) event.getSource()).getScene().getWindow();
             Scene scene = new Scene(root);
             stage.setScene(scene);
-            stage.setTitle("Liste des demandes - " + SessionManager.getInstance().getDepartement());
+            stage.setTitle("Liste des demandes - " + SessionManager.getInstance().getUserDepartmentName());
             stage.show();
             StageManager.addStage("DemandeDepListe", stage);
         } catch (IOException e) {
