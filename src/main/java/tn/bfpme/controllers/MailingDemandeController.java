@@ -52,7 +52,7 @@ public class MailingDemandeController implements Initializable {
     private Popup notifPopup;
     @FXML public Button NotifBtn;
     private Conge conge;
-    private Utilisateur user;
+    private User user;
 
     @Override
     public void initialize(URL url, ResourceBundle resourceBundle) {

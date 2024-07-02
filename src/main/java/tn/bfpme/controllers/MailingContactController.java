@@ -24,7 +24,6 @@ import java.net.URL;
 import java.util.List;
 import java.util.ResourceBundle;
 
-import static tn.bfpme.models.Role.Employé;
 
 public class MailingContactController implements Initializable {
     @FXML
@@ -46,23 +45,24 @@ public class MailingContactController implements Initializable {
     @FXML
     private Button settingsButton;
     private Conge conge;
-    private Utilisateur user;
+    private User user;
     ServiceUtilisateur UserS = new ServiceUtilisateur();
-    private List<Utilisateur> usersInDepartment;
+    private List<User> usersInDepartment;
 
     @Override
     public void initialize(URL url, ResourceBundle resourceBundle) {
         loadMail();
 
-        Utilisateur manager = SessionManager.getInstance().getUtilisateur();
+        User manager = SessionManager.getInstance().getUser();
+        String role = SessionManager.getInstance().getUserRoleName();
+        String departement = SessionManager.getInstance().getUserDepartmentName();
         if (manager != null) {
             managerName = manager.getPrenom() + " " + manager.getNom();
-            managerRole = String.valueOf(manager.getRole());
-            usersInDepartment = UserS.getUsersByDepartment(String.valueOf(SessionManager.getInstance().getDepartement())); // Load users in the department
+            managerRole = String.valueOf(role);
+            usersInDepartment = UserS.getUsersByDepartment(departement); // Load users in the department
         }
-        if (SessionManager.getInstance().getUtilisateur().getRole().equals(Employé)) {
-            btnListe.setVisible(false);
-        }
+        String userRole = SessionManager.getInstance().getUserRoleName();
+        btnListe.setVisible(!userRole.equals("Employe"));
         settingsPopup = new Popup();
         settingsPopup.setAutoHide(true);
 
@@ -176,7 +176,7 @@ public class MailingContactController implements Initializable {
             Stage stage = (Stage) ((Node) event.getSource()).getScene().getWindow();
             Scene scene = new Scene(root);
             stage.setScene(scene);
-            stage.setTitle("Liste des demandes - " + SessionManager.getInstance().getDepartement());
+            stage.setTitle("Liste des demandes - " + SessionManager.getInstance().getUserDepartmentName());
             stage.show();
             StageManager.addStage("DemandeDepListe", stage);
         } catch (IOException e) {
@@ -201,8 +201,8 @@ public class MailingContactController implements Initializable {
     }
 
     public void loadMail() {
-        if (SessionManager.getInstance().getUtilisateur().getRole().equals(Employé)) {
-            Utilisateur chef = UserS.GetChef();
+        if (SessionManager.getInstance().getUserRoleName().equals("Employé")) {
+            User chef = UserS.getChef();
             if (chef != null) {
                 mail_dest.setText(chef.getEmail());
                 mail_dest.setDisable(true);
@@ -213,7 +213,7 @@ public class MailingContactController implements Initializable {
     @FXML
     void searchButton(ActionEvent event) {
         String searchText = mail_dest.getText().trim();
-        for (Utilisateur user : usersInDepartment) {
+        for (User user : usersInDepartment) {
             if ((user.getNom() + " " + user.getPrenom()).equalsIgnoreCase(searchText) ||
                     user.getEmail().equalsIgnoreCase(searchText) ||
                     ((user.getPrenom() + " " + user.getNom()).equalsIgnoreCase(searchText))) {

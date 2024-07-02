@@ -86,9 +86,8 @@ public class DemandeCongeController implements Initializable {
     public void initialize(URL url, ResourceBundle resourceBundle) {
         cb_typeconge.setValue("Selectioner type");
         cb_typeconge.setItems(CongeList);
-        if (SessionManager.getInstance().getUtilisateur().getRole().equals(Role.ChefDepartement)) {
-            btnListe.setVisible(true);
-        }
+        String userRole = SessionManager.getInstance().getUserRoleName();
+        btnListe.setVisible(!userRole.equals("Employe"));
         settingsPopup = new Popup();
         settingsPopup.setAutoHide(true);
 
@@ -219,15 +218,15 @@ public class DemandeCongeController implements Initializable {
             alert.showAndWait();
             return;
         }
-        String qry = "SELECT `Solde_Annuel` FROM `utilisateur` WHERE `ID_User`=?";
+        String qry = "SELECT `Solde_Annuel` FROM `user` WHERE `ID_User`=?";
         try {
             PreparedStatement pstm = cnx.prepareStatement(qry);
-            pstm.setInt(1, SessionManager.getInstance().getUtilisateur().getIdUser());
+            pstm.setInt(1, SessionManager.getInstance().getUser().getIdUser());
             ResultSet rs = pstm.executeQuery();
             if (rs.next()) {
                 //long daysBetween = ChronoUnit.DAYS.between(DD, DF);
                 if (rs.getInt("Solde_Annuel") > 0) {
-                    CongeS.Add(new Conge(0, DD, DF, TypeConge.Annuel, Statut.En_Attente, SessionManager.getInstance().getUtilisateur().getIdUser(), "", DESC));
+                    CongeS.Add(new Conge(0, DD, DF, TypeConge.Annuel, Statut.En_Attente, SessionManager.getInstance().getUser().getIdUser(), "", DESC));
                     Alert successAlert = new Alert(Alert.AlertType.CONFIRMATION);
                     successAlert.setTitle("Succès");
                     successAlert.setHeaderText("Demande de congé créée avec succès !");
@@ -314,7 +313,7 @@ public class DemandeCongeController implements Initializable {
             alert.showAndWait();
             return;
         }
-        CongeS.Add(new Conge(0, DD, DF, TypeConge.Exceptionnel, Statut.En_Attente, SessionManager.getInstance().getUtilisateur().getIdUser(), DOCLINK, DESC));
+        CongeS.Add(new Conge(0, DD, DF, TypeConge.Exceptionnel, Statut.En_Attente, SessionManager.getInstance().getUser().getIdUser(), DOCLINK, DESC));
         Alert successAlert = new Alert(Alert.AlertType.CONFIRMATION);
         successAlert.setTitle("Succès");
         successAlert.setHeaderText("Demande de congé créée avec succès !");
@@ -411,7 +410,7 @@ public class DemandeCongeController implements Initializable {
             alert.showAndWait();
             return;
         }
-        CongeS.Add(new Conge(0, DD, DF, TypeConge.Maladie, Statut.En_Attente, SessionManager.getInstance().getUtilisateur().getIdUser(), DOCLINK, DESC));
+        CongeS.Add(new Conge(0, DD, DF, TypeConge.Maladie, Statut.En_Attente, SessionManager.getInstance().getUser().getIdUser(), DOCLINK, DESC));
         Alert successAlert = new Alert(Alert.AlertType.CONFIRMATION);
         successAlert.setTitle("Succès");
         successAlert.setHeaderText("Demande de congé créée avec succès !");
@@ -497,7 +496,7 @@ public class DemandeCongeController implements Initializable {
             alert.showAndWait();
             return;
         }
-        CongeS.Add(new Conge(0, DD, DF, TypeConge.Sous_solde, Statut.En_Attente, SessionManager.getInstance().getUtilisateur().getIdUser(), "", DESC));
+        CongeS.Add(new Conge(0, DD, DF, TypeConge.Sous_solde, Statut.En_Attente, SessionManager.getInstance().getUser().getIdUser(), "", DESC));
         Alert successAlert = new Alert(Alert.AlertType.CONFIRMATION);
         successAlert.setTitle("Succès");
         successAlert.setHeaderText("Demande de congé créée avec succès !");
@@ -571,7 +570,7 @@ public class DemandeCongeController implements Initializable {
             alert.showAndWait();
             return;
         }
-        CongeS.Add(new Conge(0, DD, DF, TypeConge.Maternité, Statut.En_Attente, SessionManager.getInstance().getUtilisateur().getIdUser(), DOCLINK, DESC));
+        CongeS.Add(new Conge(0, DD, DF, TypeConge.Maternité, Statut.En_Attente, SessionManager.getInstance().getUser().getIdUser(), DOCLINK, DESC));
         Alert successAlert = new Alert(Alert.AlertType.CONFIRMATION);
         successAlert.setTitle("Succès");
         successAlert.setHeaderText("Demande de congé créée avec succès !");
@@ -671,7 +670,7 @@ public class DemandeCongeController implements Initializable {
             alert.showAndWait();
             return;
         }
-        CongeS.Add(new Conge(0, DD, DF, TypeConge.Maternité, Statut.En_Attente, SessionManager.getInstance().getUtilisateur().getIdUser(), DOCLINK, DESC));
+        CongeS.Add(new Conge(0, DD, DF, TypeConge.Maternité, Statut.En_Attente, SessionManager.getInstance().getUser().getIdUser(), DOCLINK, DESC));
         Alert successAlert = new Alert(Alert.AlertType.CONFIRMATION);
         successAlert.setTitle("Succès");
         successAlert.setHeaderText("Demande de congé créée avec succès !");
@@ -775,7 +774,7 @@ public class DemandeCongeController implements Initializable {
             Stage stage = (Stage) ((Node) event.getSource()).getScene().getWindow();
             Scene scene = new Scene(root);
             stage.setScene(scene);
-            stage.setTitle("Liste des demandes - " + SessionManager.getInstance().getDepartement());
+            stage.setTitle("Liste des demandes - " + SessionManager.getInstance().getUserDepartmentName());
             stage.show();
             StageManager.addStage("DemandeDepListe", stage);
         } catch (IOException e) {

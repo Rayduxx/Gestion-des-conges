@@ -8,6 +8,7 @@ import javafx.scene.image.*;
 import javafx.scene.layout.*;
 import javafx.stage.*;
 import tn.bfpme.models.Conge;
+import tn.bfpme.models.User;
 
 import java.io.File;
 import java.io.FileInputStream;
@@ -23,9 +24,9 @@ public class UserCarteController {
     @FXML private Label statut_card;
     @FXML private Label type_card;
     private Conge conge;
-    private Utilisateur user;
+    private User user;
 
-    public void setData(Conge conge, Utilisateur user) {
+    public void setData(Conge conge, User user) {
         this.conge = conge;
         this.user = user;
         String imagePath = user.getImage();

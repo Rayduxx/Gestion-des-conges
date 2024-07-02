@@ -36,9 +36,9 @@ public class SettingsController  implements Initializable {
     @FXML
     public void initialize(URL location, ResourceBundle resources) {
         try {
-            User_name.setText(SessionManager.getInstance().getUtilisateur().getNom()+" "+SessionManager.getInstance().getUtilisateur().getPrenom());
-            User_role.setText(String.valueOf(SessionManager.getInstance().getUtilisateur().getRole()));
-            String imagePath = SessionManager.getInstance().getUtilisateur().getImage();
+            User_name.setText(SessionManager.getInstance().getUser().getNom()+" "+SessionManager.getInstance().getUser().getPrenom());
+            User_role.setText(String.valueOf(SessionManager.getInstance().getUserRoleName()));
+            String imagePath = SessionManager.getInstance().getUser().getImage();
 
             if (imagePath != null && !imagePath.isEmpty()) {
                 File file = new File(imagePath);
@@ -54,7 +54,7 @@ public class SettingsController  implements Initializable {
                     System.err.println("Image file does not exist: " + imagePath);
                 }
             } else {
-                System.err.println("Image path is null or empty for user: " + SessionManager.getInstance().getUtilisateur());
+                System.err.println("Image path is null or empty for user: " + SessionManager.getInstance().getUser());
             }
             /*String userImagePath = SessionManager.getInstance().getUtilisateur().getImage();
             System.out.println("Image path: " + userImagePath); // Debugging statement
