@@ -57,7 +57,6 @@
                      <HBox alignment="CENTER" maxHeight="-Infinity" maxWidth="-Infinity" prefHeight="41.0" prefWidth="281.0" spacing="10">
                         <Button onAction="#handleAssignUser" styleClass="btn-primary" text="Affecter" />
                         <Button onAction="#handleEditUser" styleClass="btn-primary" text="Modifier" />
-                        <Button onAction="#handleDeleteUser" styleClass="btn-primary" text="Supprimer" />
                      </HBox>
                   </children>
                </VBox>

@@ -27,7 +27,7 @@ import tn.bfpme.utils.StageManager;
 
 import java.io.IOException;
 import java.sql.Connection;
-import java.sql.DriverManager;
+import java.sql.PreparedStatement;
 import java.sql.SQLException;
 import java.util.List;
 
@@ -64,7 +64,6 @@ public class RHController {
     private ListView<RoleHierarchie> roleHListView;
 
     private FilteredList<User> filteredData;
-
 
     private ServiceDepartement depService;
     private ServiceRole roleService;
@@ -520,6 +519,8 @@ public class RHController {
 
             if (isUpdated) {
                 loadUsers();
+                // Ensure the selected user remains visible in the list
+                highlightSelectedUser(selectedUser);
             } else {
                 showError("Please select a role and/or department to assign.");
             }
@@ -528,7 +529,16 @@ public class RHController {
         }
     }
 
-
+    private void highlightSelectedUser(User user) {
+        Platform.runLater(() -> {
+            userListView.getItems().forEach(u -> {
+                if (u.equals(user)) {
+                    userListView.getSelectionModel().select(u);
+                    userListView.scrollTo(u);
+                }
+            });
+        });
+    }
 
     @FXML
     private void showDepartementPane() {
@@ -536,7 +546,6 @@ public class RHController {
         RolesPane.setVisible(false);
         UtilisateursPane.setVisible(false);
         HierarchyPane.setVisible(false);
-
     }
 
     @FXML
@@ -561,7 +570,6 @@ public class RHController {
         RolesPane.setVisible(false);
         UtilisateursPane.setVisible(true);
         HierarchyPane.setVisible(false);
-
     }
 
     @FXML
@@ -632,7 +640,5 @@ public class RHController {
                 break;
             }
         }
-
     }
-
 }
