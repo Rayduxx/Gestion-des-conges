@@ -18,4 +18,7 @@ public interface IUtilisateur {
     UserConge AfficherReject();
 
     List<User> RechrecheRH(String recherche);
+
+
+    void assignRoleToUser(int userId, int roleId);
 }

@@ -606,7 +606,7 @@ public class ServiceUtilisateur implements IUtilisateur {
     }
 
     public void assignUserToDepartmentAndRole(int idUser, int idDepartement, int idRole) {
-        String query = "UPDATE user SET ID_DEPT = ?, ID_Role = ? WHERE ID_User = ?";
+        String query = "UPDATE user SET ID_Departement = ?, ID_Role = ? WHERE ID_User = ?";
         try (Connection cnx = MyDataBase.getInstance().getCnx();
              PreparedStatement pstmt = cnx.prepareStatement(query)) {
             pstmt.setInt(1, idDepartement);
@@ -617,5 +617,17 @@ public class ServiceUtilisateur implements IUtilisateur {
             e.printStackTrace();
         }
     }
+    public void assignRoleToUser(int userId, int roleId) {
+        String sql = "UPDATE user_role SET ID_Role = ? WHERE ID_User = ?";
+
+        try (cnx; PreparedStatement pstmt = cnx.prepareStatement(sql)) {
+            pstmt.setInt(1, roleId);
+            pstmt.setInt(2, userId);
+            pstmt.executeUpdate();
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+    }
+
 
 }
