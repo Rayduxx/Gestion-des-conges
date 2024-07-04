@@ -34,7 +34,7 @@
             </Pane>
 
             <!-- Roles Pane -->
-            <Pane fx:id="RolesPane" layoutX="60.0" layoutY="11.0" prefHeight="622.0" prefWidth="1198.0" styleClass="pane1">
+            <Pane fx:id="RolesPane" layoutX="60.0" layoutY="11.0" prefHeight="622.0" prefWidth="1198.0" styleClass="pane1" visible="false">
                <Pane layoutX="52.0" layoutY="74.0" prefHeight="474.0" prefWidth="526.0" styleClass="pane1">
                   <children>
                      <ListView fx:id="roleListView" layoutX="14.0" layoutY="37.0" prefHeight="400" prefWidth="200" />
@@ -76,7 +76,7 @@
             </Pane>
 
                <!-- Utilisateurs Pane -->
-            <Pane fx:id="UtilisateursPane" layoutX="177.0" layoutY="11.0" prefHeight="622.0" prefWidth="964.0" styleClass="pane1" visible="false">
+            <Pane fx:id="UtilisateursPane" layoutX="177.0" layoutY="11.0" prefHeight="622.0" prefWidth="964.0" styleClass="pane1">
                <VBox layoutX="733.0" layoutY="407.0" spacing="10" />
                <ListView fx:id="userListView" layoutX="69.0" layoutY="109.0" prefHeight="400" prefWidth="326.0" />
                <VBox alignment="CENTER" layoutX="469.0" layoutY="111.0" prefHeight="400.0" prefWidth="393.0" spacing="30.0">
@@ -87,7 +87,6 @@
                      <HBox alignment="CENTER" maxHeight="-Infinity" maxWidth="-Infinity" prefHeight="41.0" prefWidth="281.0" spacing="10">
                         <Button onAction="#handleAssignUser" styleClass="btn-primary" text="Affecter" />
                         <Button onAction="#handleEditUser" styleClass="btn-primary" text="Modifier" />
-                        <Button onAction="#handleDeleteUser" styleClass="btn-primary" text="Supprimer" />
                      </HBox>
                   </children>
                </VBox>

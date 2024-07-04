@@ -628,6 +628,42 @@ public class ServiceUtilisateur implements IUtilisateur {
             e.printStackTrace();
         }
     }
+    public void updateUserRoleAndDepartment(int userId, int roleId, int departmentId) {
+        String sql = "UPDATE `user` SET `ID_Role` = ?, `ID_Departement` = ? WHERE `ID_User` = ?";
+        try (Connection cnx = MyDataBase.getInstance().getCnx();
+             PreparedStatement stm = cnx.prepareStatement(sql)) {
+            stm.setInt(1, roleId);
+            stm.setInt(2, departmentId);
+            stm.setInt(3, userId);
+            stm.executeUpdate();
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+    }
+
+    public void updateUserRole(int userId, int roleId) {
+        String sql = "UPDATE `user` SET `ID_Role` = ? WHERE `ID_User` = ?";
+        try (Connection cnx = MyDataBase.getInstance().getCnx();
+             PreparedStatement stm = cnx.prepareStatement(sql)) {
+            stm.setInt(1, roleId);
+            stm.setInt(2, userId);
+            stm.executeUpdate();
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+    }
+
+    public void updateUserDepartment(int userId, int departmentId) {
+        String sql = "UPDATE `user` SET `ID_Departement` = ? WHERE `ID_User` = ?";
+        try (Connection cnx = MyDataBase.getInstance().getCnx();
+             PreparedStatement stm = cnx.prepareStatement(sql)) {
+            stm.setInt(1, departmentId);
+            stm.setInt(2, userId);
+            stm.executeUpdate();
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+    }
 
 
 }

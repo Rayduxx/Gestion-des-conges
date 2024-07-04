@@ -1,5 +1,6 @@
 package tn.bfpme.controllers;
 
+import javafx.application.Platform;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.collections.transformation.FilteredList;
@@ -75,10 +76,12 @@ public class RHController {
         depService = new ServiceDepartement();
         roleService = new ServiceRole();
         userService = new ServiceUtilisateur();
+
         loadDepartments();
         loadRoles();
         loadUsers();
-        loadRoleHeierarchie();
+        loadRoleHierarchie();
+
         departementListView.getSelectionModel().selectedItemProperty().addListener((observable, oldValue, newValue) -> {
             if (newValue != null) {
                 deptNameField.setText(newValue.getNom());
@@ -91,37 +94,50 @@ public class RHController {
             if (newValue != null) {
                 roleNameField.setText(newValue.getNom());
                 roleDescriptionField.setText(newValue.getDescription());
-                /*Role parentRole = ServiceRole.getRoleParents(newValue.getIdRole());
+                Role parentRole = roleService.getRoleParents(newValue.getIdRole());
                 if (parentRole != null) {
                     parentRoleComboBox.getSelectionModel().select(parentRole);
                 } else {
                     parentRoleComboBox.getSelectionModel().clearSelection();
-                }*/
+                }
             }
         });
 
         userListView.getSelectionModel().selectedItemProperty().addListener((observable, oldValue, newValue) -> {
-            if (newValue != null) {
-                User_field.setText(newValue.getPrenom() + " " + newValue.getNom() + " _ " + newValue.getEmail());
-                Departement departement = depService.getDepartmentById(newValue.getIdDepartement());
-                Role role = roleService.getRoleById(newValue.getIdRole());
-                if (departement != null) {
-                    departmentComboBox.getSelectionModel().select(departement);
+            Platform.runLater(() -> {
+                if (newValue != null) {
+                    try {
+                        User_field.setText(newValue.getPrenom() + " " + newValue.getNom());
+
+                        Departement departement = depService.getDepartmentById(newValue.getIdDepartement());
+                        Role role = roleService.getRoleById(newValue.getIdRole());
+
+                        if (departement != null) {
+                            departmentComboBox.getSelectionModel().select(departement);
+                        } else {
+                            departmentComboBox.getSelectionModel().clearSelection();
+                        }
+
+                        if (role != null) {
+                            roleComboBox.getSelectionModel().select(role);
+                        } else {
+                            roleComboBox.getSelectionModel().clearSelection();
+                        }
+                    } catch (Exception e) {
+                        e.printStackTrace(); // Log the exception to the console
+                        showError("An error occurred while selecting the user: " + e.getMessage());
+                    }
                 }
-                if (role != null) {
-                    roleComboBox.getSelectionModel().select(role);
-                }
-            }
+            });
         });
+
         roleHListView.getSelectionModel().selectedItemProperty().addListener((observable, oldValue, newValue) -> {
             if (newValue != null) {
-                // Find the parent role based on the ID
                 Role parentRole = parentRoleComboBox.getItems().stream()
                         .filter(role -> role.getIdRole() == newValue.getIdRoleP())
                         .findFirst()
                         .orElse(null);
 
-                // Find the child role based on the ID
                 Role childRole = RoleHComboBox.getItems().stream()
                         .filter(role -> role.getIdRole() == newValue.getIdRoleC())
                         .findFirst()
@@ -131,6 +147,7 @@ public class RHController {
                 RoleHComboBox.getSelectionModel().select(childRole);
             }
         });
+
         settingsPopup = new Popup();
         settingsPopup.setAutoHide(true);
 
@@ -182,154 +199,183 @@ public class RHController {
     }
 
     private void loadDepartments() {
-        List<Departement> departmentList = depService.getAllDepartments();
-        Departement noParentDept = new Departement(0, "", "", 0);
-        departmentList.add(0, noParentDept);
+        try {
+            List<Departement> departmentList = depService.getAllDepartments();
+            Departement noParentDept = new Departement(0, "", "", 0);
+            departmentList.add(0, noParentDept);
 
-        ObservableList<Departement> departments = FXCollections.observableArrayList(departmentList);
-        departementListView.setItems(departments);
-        departementListView.setCellFactory(param -> new ListCell<Departement>() {
-            @Override
-            protected void updateItem(Departement item, boolean empty) {
-                super.updateItem(item, empty);
-                if (empty || item == null || item.getNom() == null) {
-                    setText(null);
-                } else {
-                    setText(item.getNom());
+            ObservableList<Departement> departments = FXCollections.observableArrayList(departmentList);
+            departementListView.setItems(departments);
+            departementListView.setCellFactory(param -> new ListCell<Departement>() {
+                @Override
+                protected void updateItem(Departement item, boolean empty) {
+                    super.updateItem(item, empty);
+                    if (empty || item == null || item.getNom() == null) {
+                        setText(null);
+                    } else {
+                        setText(item.getNom());
+                    }
                 }
-            }
-        });
-        parentDeptComboBox.setItems(departments);
-        parentDeptComboBox.setCellFactory(param -> new ListCell<Departement>() {
-            @Override
-            protected void updateItem(Departement item, boolean empty) {
-                super.updateItem(item, empty);
-                if (empty || item == null || item.getNom() == null) {
-                    setText(null);
-                } else {
-                    setText(item.getNom());
+            });
+            parentDeptComboBox.setItems(departments);
+            parentDeptComboBox.setCellFactory(param -> new ListCell<Departement>() {
+                @Override
+                protected void updateItem(Departement item, boolean empty) {
+                    super.updateItem(item, empty);
+                    if (empty || item == null || item.getNom() == null) {
+                        setText(null);
+                    } else {
+                        setText(item.getNom());
+                    }
                 }
-            }
-        });
-        parentDeptComboBox.setButtonCell(new ListCell<Departement>() {
-            @Override
-            protected void updateItem(Departement item, boolean empty) {
-                super.updateItem(item, empty);
-                if (empty || item == null || item.getNom() == null) {
-                    setText(null);
-                } else {
-                    setText(item.getNom());
+            });
+            parentDeptComboBox.setButtonCell(new ListCell<Departement>() {
+                @Override
+                protected void updateItem(Departement item, boolean empty) {
+                    super.updateItem(item, empty);
+                    if (empty || item == null || item.getNom() == null) {
+                        setText(null);
+                    } else {
+                        setText(item.getNom());
+                    }
                 }
-            }
-        });
+            });
+        } catch (Exception e) {
+            showError("Failed to load departments: " + e.getMessage());
+        }
     }
 
     private void loadRoles() {
-        List<Role> roleList = roleService.getAllRoles();
-        Role noParentRole = new Role(0, "", "");
-        roleList.add(0, noParentRole);
-        ObservableList<Role> roles = FXCollections.observableArrayList(roleList);
-        roleListView.setItems(roles);
-        roleListView.setCellFactory(param -> new ListCell<Role>() {
-            @Override
-            protected void updateItem(Role item, boolean empty) {
-                super.updateItem(item, empty);
-                if (empty || item == null || item.getNom() == null) {
-                    setText(null);
-                } else {
-                    setText(item.getNom());
+        try {
+            List<Role> roleList = roleService.getAllRoles();
+            Role noParentRole = new Role(0, "", "");
+            roleList.add(0, noParentRole);
+            ObservableList<Role> roles = FXCollections.observableArrayList(roleList);
+            roleListView.setItems(roles);
+            roleListView.setCellFactory(param -> new ListCell<Role>() {
+                @Override
+                protected void updateItem(Role item, boolean empty) {
+                    super.updateItem(item, empty);
+                    if (empty || item == null || item.getNom() == null) {
+                        setText(null);
+                    } else {
+                        setText(item.getNom());
+                    }
                 }
-            }
-        });
-        parentRoleComboBox.setItems(roles);
-        parentRoleComboBox.setCellFactory(param -> new ListCell<Role>() {
-            @Override
-            protected void updateItem(Role item, boolean empty) {
-                super.updateItem(item, empty);
-                if (empty || item == null || item.getNom() == null) {
-                    setText(null);
-                } else {
-                    setText(item.getNom());
+            });
+            parentRoleComboBox.setItems(roles);
+            parentRoleComboBox.setCellFactory(param -> new ListCell<Role>() {
+                @Override
+                protected void updateItem(Role item, boolean empty) {
+                    super.updateItem(item, empty);
+                    if (empty || item == null || item.getNom() == null) {
+                        setText(null);
+                    } else {
+                        setText(item.getNom());
+                    }
                 }
-            }
-        });
-        parentRoleComboBox.setButtonCell(new ListCell<Role>() {
-            @Override
-            protected void updateItem(Role item, boolean empty) {
-                super.updateItem(item, empty);
-                if (empty || item == null || item.getNom() == null) {
-                    setText(null);
-                } else {
-                    setText(item.getNom());
+            });
+            parentRoleComboBox.setButtonCell(new ListCell<Role>() {
+                @Override
+                protected void updateItem(Role item, boolean empty) {
+                    super.updateItem(item, empty);
+                    if (empty || item == null || item.getNom() == null) {
+                        setText(null);
+                    } else {
+                        setText(item.getNom());
+                    }
                 }
-            }
-        });
-        RoleHComboBox.setItems(roles);
-        RoleHComboBox.setCellFactory(param -> new ListCell<Role>() {
-            @Override
-            protected void updateItem(Role item, boolean empty) {
-                super.updateItem(item, empty);
-                if (empty || item == null || item.getNom() == null) {
-                    setText(null);
-                } else {
-                    setText(item.getNom());
+            });
+            RoleHComboBox.setItems(roles);
+            RoleHComboBox.setCellFactory(param -> new ListCell<Role>() {
+                @Override
+                protected void updateItem(Role item, boolean empty) {
+                    super.updateItem(item, empty);
+                    if (empty || item == null || item.getNom() == null) {
+                        setText(null);
+                    } else {
+                        setText(item.getNom());
+                    }
                 }
-            }
-        });
-        RoleHComboBox.setButtonCell(new ListCell<Role>() {
-            @Override
-            protected void updateItem(Role item, boolean empty) {
-                super.updateItem(item, empty);
-                if (empty || item == null || item.getNom() == null) {
-                    setText(null);
-                } else {
-                    setText(item.getNom());
+            });
+            RoleHComboBox.setButtonCell(new ListCell<Role>() {
+                @Override
+                protected void updateItem(Role item, boolean empty) {
+                    super.updateItem(item, empty);
+                    if (empty || item == null || item.getNom() == null) {
+                        setText(null);
+                    } else {
+                        setText(item.getNom());
+                    }
                 }
-            }
-        });
-        roleComboBox.setItems(roles);
-        roleComboBox.setCellFactory(param -> new ListCell<Role>() {
-            @Override
-            protected void updateItem(Role item, boolean empty) {
-                super.updateItem(item, empty);
-                if (empty || item == null || item.getNom() == null) {
-                    setText(null);
-                } else {
-                    setText(item.getNom());
+            });
+            roleComboBox.setItems(roles);
+            roleComboBox.setCellFactory(param -> new ListCell<Role>() {
+                @Override
+                protected void updateItem(Role item, boolean empty) {
+                    super.updateItem(item, empty);
+                    if (empty || item == null || item.getNom() == null) {
+                        setText(null);
+                    } else {
+                        setText(item.getNom());
+                    }
                 }
-            }
-        });
-        roleComboBox.setButtonCell(new ListCell<Role>() {
-            @Override
-            protected void updateItem(Role item, boolean empty) {
-                super.updateItem(item, empty);
-                if (empty || item == null || item.getNom() == null) {
-                    setText(null);
-                } else {
-                    setText(item.getNom());
+            });
+            roleComboBox.setButtonCell(new ListCell<Role>() {
+                @Override
+                protected void updateItem(Role item, boolean empty) {
+                    super.updateItem(item, empty);
+                    if (empty || item == null || item.getNom() == null) {
+                        setText(null);
+                    } else {
+                        setText(item.getNom());
+                    }
                 }
-            }
-        });
+            });
+        } catch (Exception e) {
+            showError("Failed to load roles: " + e.getMessage());
+        }
     }
 
     private void loadUsers() {
-        List<User> userList = userService.getAllUsers();
-        ObservableList<User> users = FXCollections.observableArrayList(userList);
-        filteredData = new FilteredList<>(users, p -> true);
-        userListView.setItems(filteredData);
-        userListView.setCellFactory(param -> new ListCell<User>() {
-            @Override
-            protected void updateItem(User user, boolean empty) {
-                super.updateItem(user, empty);
-                if (empty || user == null) {
-                    setText(null);
-                } else {
-                    Departement departement = depService.getDepartmentById(user.getIdDepartement());
-                    Role role = roleService.getRoleById(user.getIdRole());
-                    setText(user.getPrenom() + " " + user.getNom() + " _ " + user.getEmail() + " _ " + (role != null ? role.getNom() : "N/A") + " _ " + (departement != null ? departement.getNom() : "N/A"));
+        try {
+            List<User> userList = userService.getAllUsers();
+            ObservableList<User> users = FXCollections.observableArrayList(userList);
+            filteredData = new FilteredList<>(users, p -> true);
+            userListView.setItems(filteredData);
+            userListView.setCellFactory(param -> new ListCell<User>() {
+                @Override
+                protected void updateItem(User user, boolean empty) {
+                    super.updateItem(user, empty);
+                    if (empty || user == null) {
+                        setText(null);
+                    } else {
+                        Departement departement = depService.getDepartmentById(user.getIdDepartement());
+                        Role role = roleService.getRoleById(user.getIdRole());
+                        setText(user.getPrenom() + " " + user.getNom() + " _ " + user.getEmail() + " _ " + (role != null ? role.getNom() : "N/A") + " _ " + (departement != null ? departement.getNom() : "N/A"));
+                    }
                 }
-            }
-        });
+            });
+        } catch (Exception e) {
+            showError("Failed to load users: " + e.getMessage());
+        }
+    }
+
+    private void loadRoleHierarchie() {
+        try {
+            ObservableList<RoleHierarchie> roleHierarchies = FXCollections.observableArrayList(roleService.getAllRoleHierarchies());
+            roleHListView.setItems(roleHierarchies);
+        } catch (Exception e) {
+            showError("Failed to load role hierarchies: " + e.getMessage());
+        }
+    }
+
+    private void showError(String message) {
+        Alert alert = new Alert(Alert.AlertType.ERROR);
+        alert.setTitle("Error");
+        alert.setHeaderText(null);
+        alert.setContentText(message);
+        alert.showAndWait();
     }
 
     public Integer getSelectedUserId() {
@@ -434,31 +480,37 @@ public class RHController {
         }
     }
 
-    private void showError(String message) {
-        Alert alert = new Alert(Alert.AlertType.ERROR);
-        alert.setTitle("Error");
-        alert.setHeaderText(null);
-        alert.setContentText(message);
-        alert.showAndWait();
-    }
-
     @FXML
     private void handleEditUser() {
         User selectedUser = userListView.getSelectionModel().getSelectedItem();
         if (selectedUser != null) {
-            // Add logic to handle user edit if needed
-            loadUsers();
+            Role selectedRole = roleComboBox.getSelectionModel().getSelectedItem();
+            Departement selectedDepartement = departmentComboBox.getSelectionModel().getSelectedItem();
+
+            boolean isUpdated = false;
+
+            if (selectedRole != null && selectedDepartement != null) {
+                userService.updateUserRoleAndDepartment(selectedUser.getIdUser(), selectedRole.getIdRole(), selectedDepartement.getIdDepartement());
+                isUpdated = true;
+            } else if (selectedRole != null) {
+                userService.updateUserRole(selectedUser.getIdUser(), selectedRole.getIdRole());
+                isUpdated = true;
+            } else if (selectedDepartement != null) {
+                userService.updateUserDepartment(selectedUser.getIdUser(), selectedDepartement.getIdDepartement());
+                isUpdated = true;
+            }
+
+            if (isUpdated) {
+                loadUsers();
+            } else {
+                showError("Please select a role and/or department to assign.");
+            }
+        } else {
+            showError("Please select a user to edit.");
         }
     }
 
-    @FXML
-    private void handleDeleteUser() {
-        User selectedUser = userListView.getSelectionModel().getSelectedItem();
-        if (selectedUser != null) {
-            userService.deleteUser(selectedUser.getIdUser());
-            loadUsers();
-        }
-    }
+
     @FXML
     private void showDepartementPane() {
         DepartementPane.setVisible(true);
