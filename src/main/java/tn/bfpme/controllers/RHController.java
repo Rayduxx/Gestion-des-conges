@@ -16,6 +16,7 @@ import javafx.stage.Stage;
 import javafx.stage.Window;
 import tn.bfpme.models.Departement;
 import tn.bfpme.models.Role;
+import tn.bfpme.models.RoleHierarchie;
 import tn.bfpme.models.User;
 import tn.bfpme.services.ServiceDepartement;
 import tn.bfpme.services.ServiceRole;
@@ -44,8 +45,6 @@ public class RHController {
     @FXML
     private ListView<User> userListView;
     @FXML
-    private TextField userNameField, userEmailField;
-    @FXML
     private ComboBox<Departement> departmentComboBox;
     @FXML
     private ComboBox<Role> roleComboBox;
@@ -53,6 +52,8 @@ public class RHController {
     private Button settingsButton;
     @FXML
     public Button NotifBtn;
+    @FXML
+    private ListView<RoleHierarchie> roleHListView;
     @FXML
     private TextField User_field;
     private FilteredList<User> filteredData;
@@ -71,7 +72,7 @@ public class RHController {
         loadDepartments();
         loadRoles();
         loadUsers();
-
+        loadRoleHeierarchie();
         departementListView.getSelectionModel().selectedItemProperty().addListener((observable, oldValue, newValue) -> {
             if (newValue != null) {
                 deptNameField.setText(newValue.getNom());
@@ -83,9 +84,12 @@ public class RHController {
             if (newValue != null) {
                 roleNameField.setText(newValue.getNom());
                 roleDescriptionField.setText(newValue.getDescription());
-                //parentRoleComboBox.getSelectionModel().select(roleService.getRoleParents(newValue.getIdRole()));
-                parentDeptComboBox.getSelectionModel().select(roleService.getRoleParents(newValue.getIdRole()) != 0 ? roleService.getRoleParents(newValue.getIdRole()) : null);
-
+                /*Role parentRole = ServiceRole.getRoleParents(newValue.getIdRole());
+                if (parentRole != null) {
+                    parentRoleComboBox.getSelectionModel().select(parentRole);
+                } else {
+                    parentRoleComboBox.getSelectionModel().clearSelection();
+                }*/
             }
         });
 
@@ -228,18 +232,27 @@ public class RHController {
             }
         });
         roleComboBox.setItems(roles);
+        roleComboBox.setButtonCell(new ListCell<Role>() {
+            @Override
+            protected void updateItem(Role item, boolean empty) {
+                super.updateItem(item, empty);
+                if (empty || item == null || item.getNom() == null) {
+                    setText(null);
+                } else {
+                    setText(item.getNom());
+                }
+            }
+        });
     }
-
-    /*private void loadRoles() {
-        ObservableList<Role> roles = FXCollections.observableArrayList(roleService.getAllRoles());
-        roleListView.setItems(roles);
-        parentRoleComboBox.setItems(roles);
-        roleComboBox.setItems(roles);
-    }*/
 
     private void loadUsers() {
         ObservableList<User> users = FXCollections.observableArrayList(userService.getAllUsersInfo());
         userListView.setItems(users);
+    }
+
+    private void loadRoleHeierarchie() {
+        ObservableList<RoleHierarchie> roleHierarchies = FXCollections.observableArrayList(roleService.getAllRoleHierarchies());
+        roleHListView.setItems(roleHierarchies);
     }
 
     @FXML
@@ -251,7 +264,7 @@ public class RHController {
         if(parent.getNom() ==  "") {
             depService.addDepartement2(name, description);
         }else{
-        depService.addDepartement(name, description, parent.getIdDepartement() != 0 ? parent.getIdDepartement() : 0);
+            depService.addDepartement(name, description, parent.getIdDepartement() != 0 ? parent.getIdDepartement() : 0);
         }
         loadDepartments();
     }
@@ -308,25 +321,27 @@ public class RHController {
     }
 
     @FXML
+    void handleAddRoleToH(ActionEvent event) {
+
+    }
+    @FXML
+    void handleDeleteRoleH(ActionEvent event) {
+
+    }
+    @FXML
+    void handleEditRoleH(ActionEvent event) {
+
+    }
+    @FXML
     private void handleAddUser() {
-        String name = userNameField.getText();
-        String email = userEmailField.getText();
-        Departement department = departmentComboBox.getSelectionModel().getSelectedItem();
-        Role role = roleComboBox.getSelectionModel().getSelectedItem();
-        //userService.addUser(name, email, department != null ? department.getIdDepartement() : null, role != null ? role.getIdRole() : null);
-        loadUsers();
+
     }
 
     @FXML
     private void handleEditUser() {
         User selectedUser = userListView.getSelectionModel().getSelectedItem();
         if (selectedUser != null) {
-            String name = userNameField.getText();
-            String email = userEmailField.getText();
-            Departement department = departmentComboBox.getSelectionModel().getSelectedItem();
-            Role role = roleComboBox.getSelectionModel().getSelectedItem();
-            //userService.updateUser(selectedUser.getIdUser(), name, email, department != null ? department.getIdDepartement() : null, role != null ? role.getIdRole() : null);
-            loadUsers();
+
         }
     }
 

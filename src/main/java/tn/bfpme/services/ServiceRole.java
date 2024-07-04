@@ -1,6 +1,8 @@
 package tn.bfpme.services;
 
+import tn.bfpme.models.Departement;
 import tn.bfpme.models.Role;
+import tn.bfpme.models.RoleHierarchie;
 import tn.bfpme.utils.MyDataBase;
 
 import java.sql.*;
@@ -144,20 +146,31 @@ public class ServiceRole {
         }
         return roles;
     }
-    public int getRoleParents(int idRole) {
-        int RoleParents = 0;
-        String query = "SELECT `ID_RoleP` FROM rolehierarchie WHERE `ID_RoleC` = '%" + idRole +"%'";
+
+    public static Role getRoleParents(int idRole) {
+        Role parentRole = null;
+        String sql = "SELECT r2.* FROM role r1 " +
+                "JOIN rolehierarchie rh ON r1.ID_Role = rh.ID_RoleC " +
+                "JOIN role r2 ON rh.ID_RoleP = r2.ID_Role " +
+                "WHERE r1.ID_Role = ?";
         try (Connection cnx = MyDataBase.getInstance().getCnx();
-             Statement stmt = cnx.createStatement();
-             ResultSet rs = stmt.executeQuery(query)) {
-            while (rs.next()) {
-                RoleParents = rs.getInt("ID_RoleP");
+             PreparedStatement stmt = cnx.prepareStatement(sql)) {
+            stmt.setInt(1, idRole);
+            ResultSet rs = stmt.executeQuery();
+            if (rs.next()) {
+                parentRole = new Role(
+                        rs.getInt("ID_Role"),
+                        rs.getString("nom"),
+                        rs.getString("description")
+                        // Add other fields if necessary
+                );
             }
         } catch (SQLException e) {
             e.printStackTrace();
         }
-        return RoleParents;
+        return parentRole;
     }
+
 
     public void addRole(String nom, String description) {
         String query = "INSERT INTO role (nom, description) VALUES (?, ?)";
@@ -193,6 +206,31 @@ public class ServiceRole {
         } catch (SQLException e) {
             e.printStackTrace();
         }
+    }
+
+    public List<RoleHierarchie> getAllRoleHierarchies() {
+        List<RoleHierarchie> roleHierarchies = new ArrayList<>();
+        String query = "SELECT rh.ID_RoleH, rh.ID_RoleP, rh.ID_RoleC, rp.nom AS parentRoleName, rc.nom AS childRoleName " +
+                "FROM rolehierarchie rh " +
+                "JOIN role rp ON rh.ID_RoleP = rp.ID_Role " +
+                "JOIN role rc ON rh.ID_RoleC = rc.ID_Role";
+        try (Connection cnx = MyDataBase.getInstance().getCnx();
+             Statement stmt = cnx.createStatement();
+             ResultSet rs = stmt.executeQuery(query)) {
+            while (rs.next()) {
+                RoleHierarchie roleHierarchie = new RoleHierarchie(
+                        rs.getInt("ID_RoleH"),
+                        rs.getInt("ID_RoleP"),
+                        rs.getInt("ID_RoleC")
+                );
+                roleHierarchie.setParentRoleName(rs.getString("parentRoleName"));
+                roleHierarchie.setChildRoleName(rs.getString("childRoleName"));
+                roleHierarchies.add(roleHierarchie);
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return roleHierarchies;
     }
 
 }

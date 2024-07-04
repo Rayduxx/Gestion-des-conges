@@ -4,11 +4,21 @@ public class RoleHierarchie {
     private int idRoleH;
     private int idRoleP;
     private int idRoleC;
+    private String parentRoleName;
+    private String childRoleName;
 
     public RoleHierarchie(int idRoleH, int idRoleP, int idRoleC) {
         this.idRoleH = idRoleH;
         this.idRoleP = idRoleP;
         this.idRoleC = idRoleC;
+    }
+
+    public RoleHierarchie(int idRoleH, int idRoleP, int idRoleC, String parentRoleName, String childRoleName) {
+        this.idRoleH = idRoleH;
+        this.idRoleP = idRoleP;
+        this.idRoleC = idRoleC;
+        this.parentRoleName = parentRoleName;
+        this.childRoleName = childRoleName;
     }
 
     public int getIdRoleH() {
@@ -35,36 +45,24 @@ public class RoleHierarchie {
         this.idRoleC = idRoleC;
     }
 
-    public Role getParentRole() {
-        return null;
+    public String getParentRoleName() {
+        return parentRoleName;
     }
 
-    public Role getChildRole() {
-        return null;
+    public void setParentRoleName(String parentRoleName) {
+        this.parentRoleName = parentRoleName;
     }
 
-    public void setParentRole(Role parentRole) {
-        if (parentRole != null) {
-            this.idRoleP = parentRole.getIdRole();
-        } else {
-            this.idRoleP = 0;
-        }
+    public String getChildRoleName() {
+        return childRoleName;
     }
 
-    public void setChildRole(Role childRole) {
-        if (childRole != null) {
-            this.idRoleC = childRole.getIdRole();
-        } else {
-            this.idRoleC = 0;
-        }
+    public void setChildRoleName(String childRoleName) {
+        this.childRoleName = childRoleName;
     }
 
     @Override
     public String toString() {
-        return "RoleHierarchie{" +
-                "idRoleH=" + idRoleH +
-                ", idRoleP=" + idRoleP +
-                ", idRoleC=" + idRoleC +
-                '}';
+        return parentRoleName + " - " + childRoleName;
     }
 }

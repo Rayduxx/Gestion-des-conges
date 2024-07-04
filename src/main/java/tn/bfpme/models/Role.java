@@ -2,6 +2,7 @@ package tn.bfpme.models;
 
 public class Role {
     private int idRole;
+    private int RoleParent;
     private String nom;
     private String description;
 
@@ -9,6 +10,12 @@ public class Role {
         this.idRole = idRole;
         this.nom = nom;
         this.description = description;
+    }
+    public Role(int idRole, String nom, String description, int RoleParent) {
+        this.idRole = idRole;
+        this.nom = nom;
+        this.description = description;
+        this.RoleParent = RoleParent;
     }
 
     // Getters and Setters
@@ -36,8 +43,16 @@ public class Role {
         this.description = description;
     }
 
+    public void setRoleParent(int RoleParent) {
+        this.RoleParent = RoleParent;
+    }
+
+    public int getRoleParent() {
+        return RoleParent;
+    }
+
     @Override
     public String toString() {
-        return nom+" - "+description;
+        return nom + " - " + description;
     }
 }
