@@ -41,6 +41,8 @@ public class RHController {
     @FXML
     private ComboBox<Departement> parentDeptComboBox;
     @FXML
+    private ComboBox<?> HierarchyComboBox;
+    @FXML
     private ListView<Role> roleListView;
     @FXML
     private TextField roleNameField, roleDescriptionField;

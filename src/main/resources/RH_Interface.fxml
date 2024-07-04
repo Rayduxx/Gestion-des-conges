@@ -61,7 +61,7 @@
                   </children>
                </VBox>
             </Pane>
-            <Pane fx:id="HierarchyPane" layoutX="177.0" layoutY="11.0" prefHeight="622.0" prefWidth="964.0" styleClass="pane1" visible="false">
+            <Pane fx:id="HierarchyPane" layoutX="177.0" layoutY="11.0" prefHeight="622.0" prefWidth="964.0" styleClass="pane1">
                <children>
                   <VBox layoutX="733.0" layoutY="407.0" spacing="10" />
                   <ListView fx:id="roleHListView" layoutX="103.0" layoutY="109.0" prefHeight="400" prefWidth="250.0" />
@@ -74,6 +74,7 @@
                   </HBox>
                   <ComboBox fx:id="parentRoleComboBox" layoutX="525.0" layoutY="260.0" prefHeight="31.0" prefWidth="226.0" promptText="Selectionner role parent" />
                   <ComboBox fx:id="RoleHComboBox" layoutX="525.0" layoutY="215.0" prefHeight="31.0" prefWidth="226.0" promptText="Selectionner role" />
+                  <ComboBox fx:id="HierarchyComboBox" layoutX="369.0" layoutY="28.0" prefHeight="31.0" prefWidth="226.0" promptText="Selectionner l'hierarchy" />
                </children>
             </Pane>
          </children>

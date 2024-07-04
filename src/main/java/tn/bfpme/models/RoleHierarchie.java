@@ -4,13 +4,15 @@ public class RoleHierarchie {
     private int idRoleH;
     private int idRoleP;
     private int idRoleC;
+    private String HierarchyName;
     private String parentRoleName;
     private String childRoleName;
 
-    public RoleHierarchie(int idRoleH, int idRoleP, int idRoleC) {
+    public RoleHierarchie(int idRoleH, int idRoleP, int idRoleC,String HierarchyName) {
         this.idRoleH = idRoleH;
         this.idRoleP = idRoleP;
         this.idRoleC = idRoleC;
+        this.HierarchyName = HierarchyName;
     }
 
     public RoleHierarchie(int idRoleH, int idRoleP, int idRoleC, String parentRoleName, String childRoleName) {
@@ -59,6 +61,14 @@ public class RoleHierarchie {
 
     public void setChildRoleName(String childRoleName) {
         this.childRoleName = childRoleName;
+    }
+
+    public String getHierarchyName() {
+        return HierarchyName;
+    }
+
+    public void setHierarchyName(String hierarchyName) {
+        HierarchyName = hierarchyName;
     }
 
     @Override

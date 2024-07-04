@@ -212,7 +212,7 @@ public class ServiceRole {
 
     public List<RoleHierarchie> getAllRoleHierarchies() {
         List<RoleHierarchie> roleHierarchies = new ArrayList<>();
-        String query = "SELECT rh.ID_RoleH, rh.ID_RoleP, rh.ID_RoleC, rp.nom AS parentRoleName, rc.nom AS childRoleName " +
+        String query = "SELECT rh.ID_RoleH, rh.ID_RoleP, rh.ID_RoleC,rh.HierarchyName rp.nom AS parentRoleName, rc.nom AS childRoleName " +
                 "FROM rolehierarchie rh " +
                 "JOIN role rp ON rh.ID_RoleP = rp.ID_Role " +
                 "JOIN role rc ON rh.ID_RoleC = rc.ID_Role";
@@ -223,7 +223,9 @@ public class ServiceRole {
                 RoleHierarchie roleHierarchie = new RoleHierarchie(
                         rs.getInt("ID_RoleH"),
                         rs.getInt("ID_RoleP"),
-                        rs.getInt("ID_RoleC")
+                        rs.getInt("ID_RoleC"),
+                        rs.getString("HierarchyName")
+
                 );
                 roleHierarchie.setParentRoleName(rs.getString("parentRoleName"));
                 roleHierarchie.setChildRoleName(rs.getString("childRoleName"));
