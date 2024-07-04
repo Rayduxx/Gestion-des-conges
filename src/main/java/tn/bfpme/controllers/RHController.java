@@ -80,7 +80,7 @@ public class RHController {
         loadDepartments();
         loadRoles();
         loadUsers();
-        loadRoleHeierarchie();
+        loadRoleHierarchie();
 
         departementListView.getSelectionModel().selectedItemProperty().addListener((observable, oldValue, newValue) -> {
             if (newValue != null) {
@@ -133,15 +133,9 @@ public class RHController {
 
         roleHListView.getSelectionModel().selectedItemProperty().addListener((observable, oldValue, newValue) -> {
             if (newValue != null) {
-                Role parentRole = parentRoleComboBox.getItems().stream()
-                        .filter(role -> role.getIdRole() == newValue.getIdRoleP())
-                        .findFirst()
-                        .orElse(null);
+                Role parentRole = parentRoleComboBox.getItems().stream().filter(role -> role.getIdRole() == newValue.getIdRoleP()).findFirst().orElse(null);
 
-                Role childRole = RoleHComboBox.getItems().stream()
-                        .filter(role -> role.getIdRole() == newValue.getIdRoleC())
-                        .findFirst()
-                        .orElse(null);
+                Role childRole = RoleHComboBox.getItems().stream().filter(role -> role.getIdRole() == newValue.getIdRoleC()).findFirst().orElse(null);
 
                 parentRoleComboBox.getSelectionModel().select(parentRole);
                 RoleHComboBox.getSelectionModel().select(childRole);
@@ -189,9 +183,7 @@ public class RHController {
                     return true;
                 }
                 String lowerCaseFilter = newValue.toLowerCase();
-                return user.getNom().toLowerCase().contains(lowerCaseFilter) ||
-                        user.getPrenom().toLowerCase().contains(lowerCaseFilter) ||
-                        user.getEmail().toLowerCase().contains(lowerCaseFilter);
+                return user.getNom().toLowerCase().contains(lowerCaseFilter) || user.getPrenom().toLowerCase().contains(lowerCaseFilter) || user.getEmail().toLowerCase().contains(lowerCaseFilter);
             });
         });
     }
@@ -228,6 +220,29 @@ public class RHController {
                 }
             });
             parentDeptComboBox.setButtonCell(new ListCell<Departement>() {
+                @Override
+                protected void updateItem(Departement item, boolean empty) {
+                    super.updateItem(item, empty);
+                    if (empty || item == null || item.getNom() == null) {
+                        setText(null);
+                    } else {
+                        setText(item.getNom());
+                    }
+                }
+            });
+            departmentComboBox.setItems(departments);
+            departmentComboBox.setCellFactory(param -> new ListCell<Departement>() {
+                @Override
+                protected void updateItem(Departement item, boolean empty) {
+                    super.updateItem(item, empty);
+                    if (empty || item == null || item.getNom() == null) {
+                        setText(null);
+                    } else {
+                        setText(item.getNom());
+                    }
+                }
+            });
+            departmentComboBox.setButtonCell(new ListCell<Departement>() {
                 @Override
                 protected void updateItem(Departement item, boolean empty) {
                     super.updateItem(item, empty);
@@ -430,7 +445,7 @@ public class RHController {
         String description = roleDescriptionField.getText();
         roleService.addRole(name, description);
         loadRoles();
-        loadRoleHeierarchie();
+        loadRoleHierarchie();
     }
 
     @FXML
@@ -441,7 +456,7 @@ public class RHController {
             String description = roleDescriptionField.getText();
             roleService.updateRole(selectedRole.getIdRole(), name, description);
             loadRoles();
-            loadRoleHeierarchie();
+            loadRoleHierarchie();
         }
     }
 
@@ -451,7 +466,7 @@ public class RHController {
         if (selectedRole != null) {
             roleService.deleteRole(selectedRole.getIdRole());
             loadRoles();
-            loadRoleHeierarchie();
+            loadRoleHierarchie();
         }
     }
 
@@ -460,7 +475,7 @@ public class RHController {
         Role parent = parentRoleComboBox.getSelectionModel().getSelectedItem();
         Role child = RoleHComboBox.getSelectionModel().getSelectedItem();
         roleService.addRoleHierarchy(parent, child);
-        loadRoleHeierarchie();
+        loadRoleHierarchie();
     }
 
     @FXML
@@ -468,7 +483,7 @@ public class RHController {
         Role selectedRole = roleListView.getSelectionModel().getSelectedItem();
         if (selectedRole != null) {
             roleService.deleteRoleHierarchy(selectedRole.getIdRole());
-            loadRoleHeierarchie();
+            loadRoleHierarchie();
         }
     }
 
@@ -480,7 +495,7 @@ public class RHController {
         int id = selectedRole.getIdRoleH();
         if (selectedRole != null) {
             roleService.updateRoleHierarchy(id, parent, child);
-            loadRoleHeierarchie();
+            loadRoleHierarchie();
         }
     }
 
@@ -527,7 +542,6 @@ public class RHController {
             showError("Please select a user to edit.");
         }
     }
-
 
 
     @FXML
