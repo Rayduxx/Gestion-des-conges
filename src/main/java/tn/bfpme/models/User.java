@@ -31,6 +31,14 @@ public class User {
         this.idRole = idRole;
     }
 
+    public User(String nom, String prenom, String email, int idDepartement, int idRole) {
+        this.nom = nom;
+        this.prenom = prenom;
+        this.email = email;
+        this.idDepartement = idDepartement;
+        this.idRole = idRole;
+    }
+
     public int getIdUser() {
         return idUser;
     }

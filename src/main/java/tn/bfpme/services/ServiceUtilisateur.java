@@ -386,24 +386,24 @@ public class ServiceUtilisateur implements IUtilisateur {
         }
         return new UserConge(users, conges);
     }
-    /*public UserConge Recherche() {
-        Departement departementEnum = SessionManager.getInstance().getDepartement();
-        String departement = departementEnum.name();
-        List<Utilisateur> users = new ArrayList<>();
-        List<Conge> conges = new ArrayList<>();
-        String query = "SELECT utilisateur.ID_User, utilisateur.Nom, utilisateur.Prenom, utilisateur.Email, utilisateur.Image, utilisateur.Solde_Annuel, utilisateur.Solde_Maladie, utilisateur.Solde_Exceptionnel, utilisateur.Solde_Maternité, " +
-                "conge.ID_Conge, conge.TypeConge, conge.Statut, conge.DateFin, conge.DateDebut, conge.description, conge.file " +
-                "FROM utilisateur " +
-                "JOIN employe ON utilisateur.ID_User = employe.ID_User " +
-                "JOIN conge ON utilisateur.ID_User = conge.ID_User"+
-                " WHERE employe.Departement = ? AND conge.Statut = ? AND utilisateur.Nom ";
-        try {
-            PreparedStatement ps = cnx.prepareStatement(query);
-            ps.setString(1, departement);
-            ps.setString(2, String.valueOf(Statut.En_Attente));
-            ResultSet rs = ps.executeQuery();
+    @Override
+    public List<User> RechrecheRH(String recherche) {
+        List<User> users = new ArrayList<>();
+        String sql = "SELECT ID_User, Nom, Prenom, Email, Image, Solde_Annuel, Solde_Maladie, Solde_Exceptionnel, Solde_Maternité, ID_Departement " +
+                "FROM `user` " +
+                "WHERE `ID_User` LIKE ? " +
+                "AND (`Nom` LIKE ? " +
+                "OR `Prenom` LIKE ? " +
+                "OR `Email` LIKE ? ";
+        try (PreparedStatement ste = cnx.prepareStatement(sql)) {
+            String searchPattern = "%" + recherche + "%";
+            ste.setString(1, "%" + SessionManager.getInstance().getUser().getIdUser() + "%");
+            ste.setString(2, searchPattern);
+            ste.setString(3, searchPattern);
+            ste.setString(4, searchPattern);
+            ResultSet rs = ste.executeQuery();
             while (rs.next()) {
-                Utilisateur user = new Utilisateur();
+                User user = new User();
                 user.setIdUser(rs.getInt("ID_User"));
                 user.setNom(rs.getString("Nom"));
                 user.setPrenom(rs.getString("Prenom"));
@@ -413,25 +413,16 @@ public class ServiceUtilisateur implements IUtilisateur {
                 user.setSoldeExceptionnel(rs.getInt("Solde_Exceptionnel"));
                 user.setSoldeMaladie(rs.getInt("Solde_Maladie"));
                 user.setSoldeMaternite(rs.getInt("Solde_Maternité"));
+                user.setIdDepartement(rs.getInt("ID_Departement"));
                 if (!users.contains(user)) {
                     users.add(user);
                 }
-                Conge conge = new Conge();
-                conge.setIdConge(rs.getInt("ID_Conge"));
-                conge.setDateDebut(rs.getDate("DateDebut").toLocalDate());
-                conge.setDateFin(rs.getDate("DateFin").toLocalDate());
-                conge.setTypeConge(TypeConge.valueOf(rs.getString("TypeConge")));
-                conge.setStatut(Statut.valueOf(rs.getString("Statut")));
-                conge.setDescription(rs.getString("description"));
-                conge.setFile(rs.getString("file"));
-                conge.setIdUser(rs.getInt("ID_User"));
-                conges.add(conge);
             }
         } catch (SQLException ex) {
-            ex.printStackTrace();
+            System.out.println(ex.getMessage());
         }
-        return new UserConge(users, conges);
-    }*/
+        return users;
+    }
     public User getChef() {
         User chef = null;
         Connection cnx = MyDataBase.getInstance().getCnx(); // Assuming MyDataBase is your connection manager
@@ -528,6 +519,27 @@ public class ServiceUtilisateur implements IUtilisateur {
                         rs.getInt("Solde_Maladie"),
                         rs.getInt("Solde_Exceptionnel"),
                         rs.getInt("Solde_Maternité"),
+                        rs.getInt("ID_Departement"),
+                        rs.getInt("ID_Role")
+                );
+                users.add(user);
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return users;
+    }
+    public List<User> getAllUsersInfo() {
+        List<User> users = new ArrayList<>();
+        String query = "SELECT u.*, ur.ID_Role FROM user u LEFT JOIN user_role ur ON u.ID_User = ur.ID_User";
+        try (Connection cnx = MyDataBase.getInstance().getCnx();
+             Statement stmt = cnx.createStatement();
+             ResultSet rs = stmt.executeQuery(query)) {
+            while (rs.next()) {
+                User user = new User(
+                        rs.getString("Nom"),
+                        rs.getString("Prenom"),
+                        rs.getString("Email"),
                         rs.getInt("ID_Departement"),
                         rs.getInt("ID_Role")
                 );

@@ -2,6 +2,7 @@ package tn.bfpme.controllers;
 
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
+import javafx.collections.transformation.FilteredList;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
@@ -52,6 +53,10 @@ public class RHController {
     private Button settingsButton;
     @FXML
     public Button NotifBtn;
+    @FXML
+    private TextField User_field;
+    private FilteredList<User> filteredData;
+
 
     private ServiceDepartement depService;
     private ServiceRole roleService;
@@ -66,11 +71,18 @@ public class RHController {
         loadDepartments();
         loadRoles();
         loadUsers();
+
         departementListView.getSelectionModel().selectedItemProperty().addListener((observable, oldValue, newValue) -> {
             if (newValue != null) {
                 deptNameField.setText(newValue.getNom());
                 deptDescriptionField.setText(newValue.getDescription());
                 parentDeptComboBox.getSelectionModel().select(newValue.getParentDept() != 0 ? depService.getDepartmentById(newValue.getParentDept()) : null);
+            }
+        });
+
+        userListView.getSelectionModel().selectedItemProperty().addListener((observable, oldValue, newValue) -> {
+            if (newValue != null) {
+                User_field.setText(newValue.getNom());
             }
         });
 
@@ -92,6 +104,35 @@ public class RHController {
         } catch (IOException e) {
             e.printStackTrace();
         }
+
+        List<User> userList = userService.getAllUsers();
+        ObservableList<User> users = FXCollections.observableArrayList(userList);
+        filteredData = new FilteredList<>(users, p -> true);
+        userListView.setItems(filteredData);
+        userListView.setCellFactory(param -> new ListCell<User>() {
+            @Override
+            protected void updateItem(User user, boolean empty) {
+                super.updateItem(user, empty);
+                if (empty || user == null) {
+                    setText(null);
+                } else {
+                    Departement departement = depService.getDepartmentById(user.getIdDepartement());
+                    Role role = roleService.getRoleById(user.getIdRole());
+                    setText(user.getPrenom() + " " + user.getNom() + " _ " + user.getEmail() + " _ " + (role != null ? role.getNom() : "N/A")+ " _ " + (departement != null ? departement.getNom() : "N/A"));
+                }
+            }
+        });
+        User_field.textProperty().addListener((observable, oldValue, newValue) -> {
+            filteredData.setPredicate(user -> {
+                if (newValue == null || newValue.isEmpty()) {
+                    return true;
+                }
+                String lowerCaseFilter = newValue.toLowerCase();
+                return user.getNom().toLowerCase().contains(lowerCaseFilter) ||
+                        user.getPrenom().toLowerCase().contains(lowerCaseFilter) ||
+                        user.getEmail().toLowerCase().contains(lowerCaseFilter);
+            });
+        });
     }
 
     private void loadDepartments() {
@@ -146,7 +187,7 @@ public class RHController {
     }
 
     private void loadUsers() {
-        ObservableList<User> users = FXCollections.observableArrayList(userService.getAllUsers());
+        ObservableList<User> users = FXCollections.observableArrayList(userService.getAllUsersInfo());
         userListView.setItems(users);
     }
 
@@ -337,4 +378,18 @@ public class RHController {
             e.printStackTrace();
         }
     }
+    @FXML
+    public void User_Recherche(ActionEvent actionEvent) {
+        String searchText =User_field.getText().trim();
+        for (User user : userService.getAllUsers()) {
+            if ((user.getNom() + " " + user.getPrenom()).equalsIgnoreCase(searchText) ||
+                    user.getEmail().equalsIgnoreCase(searchText) ||
+                    ((user.getPrenom() + " " + user.getNom()).equalsIgnoreCase(searchText))) {
+                User_field.setText(user.getEmail());
+                break;
+            }
+        }
+
+    }
+
 }
