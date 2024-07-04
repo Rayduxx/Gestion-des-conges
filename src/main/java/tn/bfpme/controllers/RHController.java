@@ -41,7 +41,7 @@ public class RHController {
     @FXML
     private ComboBox<Departement> parentDeptComboBox;
     @FXML
-    private ComboBox<?> HierarchyComboBox;
+    private ComboBox<Departement> DepHComboBox,ComboFilderDepHie;
     @FXML
     private ListView<Role> roleListView;
     @FXML
@@ -126,7 +126,7 @@ public class RHController {
                             roleComboBox.getSelectionModel().clearSelection();
                         }
                     } catch (Exception e) {
-                        e.printStackTrace(); // Log the exception to the console
+                        e.printStackTrace();
                         showError("An error occurred while selecting the user: " + e.getMessage());
                     }
                 }
@@ -245,6 +245,29 @@ public class RHController {
                 }
             });
             departmentComboBox.setButtonCell(new ListCell<Departement>() {
+                @Override
+                protected void updateItem(Departement item, boolean empty) {
+                    super.updateItem(item, empty);
+                    if (empty || item == null || item.getNom() == null) {
+                        setText(null);
+                    } else {
+                        setText(item.getNom());
+                    }
+                }
+            });
+            DepHComboBox.setItems(departments);
+            DepHComboBox.setCellFactory(param -> new ListCell<Departement>() {
+                @Override
+                protected void updateItem(Departement item, boolean empty) {
+                    super.updateItem(item, empty);
+                    if (empty || item == null || item.getNom() == null) {
+                        setText(null);
+                    } else {
+                        setText(item.getNom());
+                    }
+                }
+            });
+            DepHComboBox.setButtonCell(new ListCell<Departement>() {
                 @Override
                 protected void updateItem(Departement item, boolean empty) {
                     super.updateItem(item, empty);

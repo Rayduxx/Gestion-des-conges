@@ -74,7 +74,8 @@
                   </HBox>
                   <ComboBox fx:id="parentRoleComboBox" layoutX="525.0" layoutY="260.0" prefHeight="31.0" prefWidth="226.0" promptText="Selectionner role parent" />
                   <ComboBox fx:id="RoleHComboBox" layoutX="525.0" layoutY="215.0" prefHeight="31.0" prefWidth="226.0" promptText="Selectionner role" />
-                  <ComboBox fx:id="HierarchyComboBox" layoutX="369.0" layoutY="28.0" prefHeight="31.0" prefWidth="226.0" promptText="Selectionner l'hierarchy" />
+                  <ComboBox fx:id="DepHComboBox" layoutX="525.0" layoutY="171.0" prefHeight="31.0" prefWidth="226.0" promptText="Selectionner departement" />
+                  <ComboBox fx:id="ComboFilderDepHie" layoutX="384.0" layoutY="32.0" prefHeight="31.0" prefWidth="226.0" promptText="Selectionner departement" />
                </children>
             </Pane>
          </children>

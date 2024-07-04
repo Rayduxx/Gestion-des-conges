@@ -65,7 +65,7 @@ public class EmployeController implements Initializable {
         String userRole = SessionManager.getInstance().getUserRoleName();
         String userDep = SessionManager.getInstance().getUserDepartmentName();
         btnListe.setVisible(!userRole.equals("Employe"));
-        btnRH.setVisible(userDep.equals("RH"));
+        btnRH.setVisible(userDep.equals("RH") && userRole.equals("Directeur"));
         settingsPopup = new Popup();
         settingsPopup.setAutoHide(true);
 

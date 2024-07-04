@@ -4,23 +4,25 @@ public class RoleHierarchie {
     private int idRoleH;
     private int idRoleP;
     private int idRoleC;
-    private String HierarchyName;
+    private int idDepartement;
     private String parentRoleName;
     private String childRoleName;
 
-    public RoleHierarchie(int idRoleH, int idRoleP, int idRoleC,String HierarchyName) {
+    public RoleHierarchie(int idRoleH, int idRoleP, int idRoleC, int idDepartement) {
         this.idRoleH = idRoleH;
         this.idRoleP = idRoleP;
         this.idRoleC = idRoleC;
-        this.HierarchyName = HierarchyName;
+        this.idDepartement = idDepartement;
     }
 
-    public RoleHierarchie(int idRoleH, int idRoleP, int idRoleC, String parentRoleName, String childRoleName) {
+    public RoleHierarchie(int idRoleH, int idRoleP, int idRoleC, String parentRoleName, String childRoleName, int idDepartement) {
         this.idRoleH = idRoleH;
         this.idRoleP = idRoleP;
         this.idRoleC = idRoleC;
         this.parentRoleName = parentRoleName;
         this.childRoleName = childRoleName;
+        this.idDepartement = idDepartement;
+
     }
 
     public int getIdRoleH() {
@@ -63,12 +65,12 @@ public class RoleHierarchie {
         this.childRoleName = childRoleName;
     }
 
-    public String getHierarchyName() {
-        return HierarchyName;
+    public int getIdDepartement() {
+        return idDepartement;
     }
 
-    public void setHierarchyName(String hierarchyName) {
-        HierarchyName = hierarchyName;
+    public void setIdDepartement(int idDepartement) {
+        this.idDepartement = idDepartement;
     }
 
     @Override
