@@ -11,14 +11,10 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 public class ServiceUtilisateur implements IUtilisateur {
-    private final Connection cnx;
-
-    public ServiceUtilisateur() {
-        cnx = MyDataBase.getInstance().getCnx();
-    }
+    Connection cnx = MyDataBase.getInstance().getCnx();
 
     public UserConge afficherusers() {
-        String departement =String.valueOf(SessionManager.getInstance().getUser().getIdDepartement());
+        String departement = String.valueOf(SessionManager.getInstance().getUser().getIdDepartement());
         List<User> users = new ArrayList<>();
         List<Conge> conges = new ArrayList<>();
         String query = "SELECT user.ID_User, user.Nom, user.Prenom, user.Email, user.Image, user.Solde_Annuel, user.Solde_Maladie, user.Solde_Exceptionnel, user.Solde_Maternité, user.ID_Departement " +
@@ -66,7 +62,7 @@ public class ServiceUtilisateur implements IUtilisateur {
     }
 
     public UserConge AfficherApprove() {
-        String departement =String.valueOf(SessionManager.getInstance().getUser().getIdDepartement());
+        String departement = String.valueOf(SessionManager.getInstance().getUser().getIdDepartement());
         List<User> users = new ArrayList<>();
         List<Conge> conges = new ArrayList<>();
         String query = "SELECT user.ID_User, user.Nom, user.Prenom, user.Email, user.Image, user.Solde_Annuel, user.Solde_Maladie, user.Solde_Exceptionnel, user.Solde_Maternité, user.ID_Departement " +
@@ -112,7 +108,7 @@ public class ServiceUtilisateur implements IUtilisateur {
     }
 
     public UserConge AfficherReject() {
-        String departement =String.valueOf(SessionManager.getInstance().getUser().getIdDepartement());
+        String departement = String.valueOf(SessionManager.getInstance().getUser().getIdDepartement());
         List<User> users = new ArrayList<>();
         List<Conge> conges = new ArrayList<>();
         String query = "SELECT user.ID_User, user.Nom, user.Prenom, user.Email, user.Image, user.Solde_Annuel, user.Solde_Maladie, user.Solde_Exceptionnel, user.Solde_Maternité, user.ID_Departement " +
@@ -158,7 +154,7 @@ public class ServiceUtilisateur implements IUtilisateur {
     }
 
     public UserConge TriType() {
-        String departement =String.valueOf(SessionManager.getInstance().getUser().getIdDepartement());
+        String departement = String.valueOf(SessionManager.getInstance().getUser().getIdDepartement());
         List<User> users = new ArrayList<>();
         List<Conge> conges = new ArrayList<>();
         String query = "SELECT user.ID_User, user.Nom, user.Prenom, user.Email, user.Image, user.Solde_Annuel, user.Solde_Maladie, user.Solde_Exceptionnel, user.Solde_Maternité, user.ID_Departement " +
@@ -204,7 +200,7 @@ public class ServiceUtilisateur implements IUtilisateur {
     }
 
     public UserConge TriNom() {
-        String departement =String.valueOf(SessionManager.getInstance().getUser().getIdDepartement());
+        String departement = String.valueOf(SessionManager.getInstance().getUser().getIdDepartement());
         List<User> users = new ArrayList<>();
         List<Conge> conges = new ArrayList<>();
         String query = "SELECT user.ID_User, user.Nom, user.Prenom, user.Email, user.Image, user.Solde_Annuel, user.Solde_Maladie, user.Solde_Exceptionnel, user.Solde_Maternité, user.ID_Departement " +
@@ -250,34 +246,34 @@ public class ServiceUtilisateur implements IUtilisateur {
     }
 
     public UserConge TriPrenom() {
-            String departement =String.valueOf(SessionManager.getInstance().getUser().getIdDepartement());
-            List<User> users = new ArrayList<>();
-            List<Conge> conges = new ArrayList<>();
-            String query = "SELECT user.ID_User, user.Nom, user.Prenom, user.Email, user.Image, user.Solde_Annuel, user.Solde_Maladie, user.Solde_Exceptionnel, user.Solde_Maternité, user.ID_Departement " +
-                    "conge.ID_Conge, conge.TypeConge, conge.Statut, conge.DateFin, conge.DateDebut, conge.description, conge.file, conge.notification" +
-                    "FROM user" +
-                    "JOIN conge ON utilisateur.ID_User = conge.ID_User" +
-                    " WHERE user.ID_Departement = ? AND conge.Statut = ? ORDER BY user.Prenom";
-            try {
-                PreparedStatement ps = cnx.prepareStatement(query);
-                ps.setString(1, departement);
-                ps.setString(2, String.valueOf(Statut.En_Attente));
-                ResultSet rs = ps.executeQuery();
-                while (rs.next()) {
-                    User user = new User();
-                    user.setIdUser(rs.getInt("ID_User"));
-                    user.setNom(rs.getString("Nom"));
-                    user.setPrenom(rs.getString("Prenom"));
-                    user.setEmail(rs.getString("Email"));
-                    user.setImage(rs.getString("Image"));
-                    user.setSoldeAnnuel(rs.getInt("Solde_Annuel"));
-                    user.setSoldeExceptionnel(rs.getInt("Solde_Exceptionnel"));
-                    user.setSoldeMaladie(rs.getInt("Solde_Maladie"));
-                    user.setSoldeMaternite(rs.getInt("Solde_Maternité"));
-                    user.setIdDepartement(rs.getInt("ID_Departement"));
-                    if (!users.contains(user)) {
-                        users.add(user);
-                    }
+        String departement = String.valueOf(SessionManager.getInstance().getUser().getIdDepartement());
+        List<User> users = new ArrayList<>();
+        List<Conge> conges = new ArrayList<>();
+        String query = "SELECT user.ID_User, user.Nom, user.Prenom, user.Email, user.Image, user.Solde_Annuel, user.Solde_Maladie, user.Solde_Exceptionnel, user.Solde_Maternité, user.ID_Departement " +
+                "conge.ID_Conge, conge.TypeConge, conge.Statut, conge.DateFin, conge.DateDebut, conge.description, conge.file, conge.notification" +
+                "FROM user" +
+                "JOIN conge ON utilisateur.ID_User = conge.ID_User" +
+                " WHERE user.ID_Departement = ? AND conge.Statut = ? ORDER BY user.Prenom";
+        try {
+            PreparedStatement ps = cnx.prepareStatement(query);
+            ps.setString(1, departement);
+            ps.setString(2, String.valueOf(Statut.En_Attente));
+            ResultSet rs = ps.executeQuery();
+            while (rs.next()) {
+                User user = new User();
+                user.setIdUser(rs.getInt("ID_User"));
+                user.setNom(rs.getString("Nom"));
+                user.setPrenom(rs.getString("Prenom"));
+                user.setEmail(rs.getString("Email"));
+                user.setImage(rs.getString("Image"));
+                user.setSoldeAnnuel(rs.getInt("Solde_Annuel"));
+                user.setSoldeExceptionnel(rs.getInt("Solde_Exceptionnel"));
+                user.setSoldeMaladie(rs.getInt("Solde_Maladie"));
+                user.setSoldeMaternite(rs.getInt("Solde_Maternité"));
+                user.setIdDepartement(rs.getInt("ID_Departement"));
+                if (!users.contains(user)) {
+                    users.add(user);
+                }
                 Conge conge = new Conge();
                 conge.setIdConge(rs.getInt("ID_Conge"));
                 conge.setDateDebut(rs.getDate("DateDebut").toLocalDate());
@@ -296,7 +292,7 @@ public class ServiceUtilisateur implements IUtilisateur {
     }
 
     public UserConge TriDateDebut() {
-        String departement =String.valueOf(SessionManager.getInstance().getUser().getIdDepartement());
+        String departement = String.valueOf(SessionManager.getInstance().getUser().getIdDepartement());
         List<User> users = new ArrayList<>();
         List<Conge> conges = new ArrayList<>();
         String query = "SELECT user.ID_User, user.Nom, user.Prenom, user.Email, user.Image, user.Solde_Annuel, user.Solde_Maladie, user.Solde_Exceptionnel, user.Solde_Maternité, user.ID_Departement " +
@@ -342,7 +338,7 @@ public class ServiceUtilisateur implements IUtilisateur {
     }
 
     public UserConge TriDateFin() {
-        String departement =String.valueOf(SessionManager.getInstance().getUser().getIdDepartement());
+        String departement = String.valueOf(SessionManager.getInstance().getUser().getIdDepartement());
         List<User> users = new ArrayList<>();
         List<Conge> conges = new ArrayList<>();
         String query = "SELECT user.ID_User, user.Nom, user.Prenom, user.Email, user.Image, user.Solde_Annuel, user.Solde_Maladie, user.Solde_Exceptionnel, user.Solde_Maternité, user.ID_Departement " +
@@ -386,6 +382,7 @@ public class ServiceUtilisateur implements IUtilisateur {
         }
         return new UserConge(users, conges);
     }
+
     @Override
     public List<User> RechrecheRH(String recherche) {
         List<User> users = new ArrayList<>();
@@ -423,6 +420,7 @@ public class ServiceUtilisateur implements IUtilisateur {
         }
         return users;
     }
+
     public User getChef() {
         User chef = null;
         Connection cnx = MyDataBase.getInstance().getCnx(); // Assuming MyDataBase is your connection manager
@@ -529,6 +527,7 @@ public class ServiceUtilisateur implements IUtilisateur {
         }
         return users;
     }
+
     public List<User> getAllUsersInfo() {
         List<User> users = new ArrayList<>();
         String query = "SELECT u.*, ur.ID_Role FROM user u LEFT JOIN user_role ur ON u.ID_User = ur.ID_User";
@@ -617,13 +616,14 @@ public class ServiceUtilisateur implements IUtilisateur {
             e.printStackTrace();
         }
     }
-    public void assignRoleToUser(int userId, int roleId) {
-        String sql = "UPDATE user_role SET ID_Role = ? WHERE ID_User = ?";
 
-        try (cnx; PreparedStatement pstmt = cnx.prepareStatement(sql)) {
-            pstmt.setInt(1, roleId);
-            pstmt.setInt(2, userId);
-            pstmt.executeUpdate();
+    public void assignRoleToUser(int userId, int roleId) {
+        String sql = "INSERT INTO `user_role`(`ID_User`, `ID_Role`) VALUES (?,?)";
+        try (Connection cnx = MyDataBase.getInstance().getCnx();
+             PreparedStatement stm = cnx.prepareStatement(sql)) {
+            stm.setInt(1, userId);
+            stm.setInt(2, roleId);
+            stm.executeUpdate();
         } catch (SQLException e) {
             e.printStackTrace();
         }

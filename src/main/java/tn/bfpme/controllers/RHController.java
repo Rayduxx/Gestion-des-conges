@@ -58,9 +58,10 @@ public class RHController {
     @FXML
     public Button NotifBtn;
     @FXML
-    private ListView<RoleHierarchie> roleHListView;
+    private ComboBox<Role> RoleHComboBox;
     @FXML
-    private TextField User_field;
+    private ListView<RoleHierarchie> roleHListView;
+
     private FilteredList<User> filteredData;
 
 
@@ -69,8 +70,6 @@ public class RHController {
     private ServiceUtilisateur userService;
     private Popup settingsPopup;
     private Popup notifPopup;
-
-    private FilteredList<User> filteredData;
 
     public void initialize() {
         depService = new ServiceDepartement();
@@ -114,7 +113,24 @@ public class RHController {
                 }
             }
         });
+        roleHListView.getSelectionModel().selectedItemProperty().addListener((observable, oldValue, newValue) -> {
+            if (newValue != null) {
+                // Find the parent role based on the ID
+                Role parentRole = parentRoleComboBox.getItems().stream()
+                        .filter(role -> role.getIdRole() == newValue.getIdRoleP())
+                        .findFirst()
+                        .orElse(null);
 
+                // Find the child role based on the ID
+                Role childRole = RoleHComboBox.getItems().stream()
+                        .filter(role -> role.getIdRole() == newValue.getIdRoleC())
+                        .findFirst()
+                        .orElse(null);
+
+                parentRoleComboBox.getSelectionModel().select(parentRole);
+                RoleHComboBox.getSelectionModel().select(childRole);
+            }
+        });
         settingsPopup = new Popup();
         settingsPopup.setAutoHide(true);
 
@@ -248,7 +264,41 @@ public class RHController {
                 }
             }
         });
+        RoleHComboBox.setItems(roles);
+        RoleHComboBox.setCellFactory(param -> new ListCell<Role>() {
+            @Override
+            protected void updateItem(Role item, boolean empty) {
+                super.updateItem(item, empty);
+                if (empty || item == null || item.getNom() == null) {
+                    setText(null);
+                } else {
+                    setText(item.getNom());
+                }
+            }
+        });
+        RoleHComboBox.setButtonCell(new ListCell<Role>() {
+            @Override
+            protected void updateItem(Role item, boolean empty) {
+                super.updateItem(item, empty);
+                if (empty || item == null || item.getNom() == null) {
+                    setText(null);
+                } else {
+                    setText(item.getNom());
+                }
+            }
+        });
         roleComboBox.setItems(roles);
+        roleComboBox.setCellFactory(param -> new ListCell<Role>() {
+            @Override
+            protected void updateItem(Role item, boolean empty) {
+                super.updateItem(item, empty);
+                if (empty || item == null || item.getNom() == null) {
+                    setText(null);
+                } else {
+                    setText(item.getNom());
+                }
+            }
+        });
         roleComboBox.setButtonCell(new ListCell<Role>() {
             @Override
             protected void updateItem(Role item, boolean empty) {
@@ -261,13 +311,6 @@ public class RHController {
             }
         });
     }
-
-    /*private void loadRoles() {
-        ObservableList<Role> roles = FXCollections.observableArrayList(roleService.getAllRoles());
-        roleListView.setItems(roles);
-        parentRoleComboBox.setItems(roles);
-        roleComboBox.setItems(roles);
-    }*/
 
     private void loadUsers() {
         List<User> userList = userService.getAllUsers();
@@ -385,7 +428,7 @@ public class RHController {
         if (userId != null && selectedRole != null) {
             int roleId = selectedRole.getIdRole();
             userService.assignRoleToUser(userId, roleId);
-            loadUsers();  // Refresh the user list to reflect changes
+            loadUsers();
         } else {
             showError("Please select a user and a role to assign.");
         }

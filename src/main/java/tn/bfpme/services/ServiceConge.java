@@ -19,6 +19,7 @@ public class ServiceConge implements IConge<Conge> {
     public ServiceConge() {
         cnx = MyDataBase.getInstance().getCnx();
     }
+
     @Override
     public List<Conge> afficher() {
         List<Conge> conges = new ArrayList<>();
@@ -90,6 +91,7 @@ public class ServiceConge implements IConge<Conge> {
             System.out.println(ex.getMessage());
         }
     }
+
     @Override
     public void updateStatutConge(int id, Statut statut) {
         try {
@@ -102,6 +104,7 @@ public class ServiceConge implements IConge<Conge> {
             System.out.println(ex.getMessage());
         }
     }
+
     @Override
     public void updateSoldeAnnuel(int id, int solde) {
         try {
@@ -114,6 +117,7 @@ public class ServiceConge implements IConge<Conge> {
             System.out.println(ex.getMessage());
         }
     }
+
     @Override
     public void updateSoldeMaladie(int id, int solde) {
         try {
@@ -126,6 +130,7 @@ public class ServiceConge implements IConge<Conge> {
             System.out.println(ex.getMessage());
         }
     }
+
     @Override
     public void updateSoldeExceptionnel(int id, int solde) {
         try {
@@ -138,6 +143,7 @@ public class ServiceConge implements IConge<Conge> {
             System.out.println(ex.getMessage());
         }
     }
+
     @Override
     public void updateSoldeMaternité(int id, int solde) {
         try {
@@ -150,6 +156,7 @@ public class ServiceConge implements IConge<Conge> {
             System.out.println(ex.getMessage());
         }
     }
+
     @Override
     public void deleteConge(Conge conge) {
         try {
@@ -161,6 +168,7 @@ public class ServiceConge implements IConge<Conge> {
             System.out.println(ex.getMessage());
         }
     }
+
     @Override
     public void deleteCongeByID(int id) {
         try {
@@ -173,6 +181,7 @@ public class ServiceConge implements IConge<Conge> {
             System.out.println(ex.getMessage());
         }
     }
+
     @Override
     public List<Conge> TriparStatut() {
         List<Conge> conges = new ArrayList<>();
@@ -248,6 +257,7 @@ public class ServiceConge implements IConge<Conge> {
         }
         return conges;
     }
+
     @Override
     public List<Conge> TriparDateF() {
         List<Conge> conges = new ArrayList<>();
@@ -272,6 +282,7 @@ public class ServiceConge implements IConge<Conge> {
         }
         return conges;
     }
+
     @Override
     public List<Conge> TriparDesc() {
         List<Conge> conges = new ArrayList<>();
@@ -296,6 +307,7 @@ public class ServiceConge implements IConge<Conge> {
         }
         return conges;
     }
+
     @Override
     public List<Conge> Rechreche(String recherche) {
         List<Conge> conges = new ArrayList<>();
@@ -335,6 +347,7 @@ public class ServiceConge implements IConge<Conge> {
         }
         return conges;
     }
+
     public void updateNotificationText(int id, String text) {
         try {
             String qry = "UPDATE `conge` SET `Notification`=? WHERE `ID_Conge`=?";
@@ -386,6 +399,7 @@ public class ServiceConge implements IConge<Conge> {
         }
         return conges;
     }
+
     public void DeleteAllUserNotif() {
         try {
             String qry = "UPDATE `conge` SET `Notification`=? WHERE `ID_User`=?";
@@ -397,7 +411,8 @@ public class ServiceConge implements IConge<Conge> {
             System.out.println(ex.getMessage());
         }
     }
-    public void NewNotification(String NotfiText, int idUser,int idConge) {
+
+    public void NewNotification(String NotfiText, int idUser, int idConge) {
         try {
             String qry = "UPDATE `conge` SET `Notification`=? WHERE `ID_User`=? AND `ID_Conge`=?";
             PreparedStatement stm = cnx.prepareStatement(qry);
