@@ -234,5 +234,37 @@ public class ServiceRole {
         }
         return roleHierarchies;
     }
-
+    public void addRoleHierarchy(Role idP, Role idC) {
+        String query = "INSERT INTO `rolehierarchie`(`ID_RoleP`, `ID_RoleC`) VALUES (?,?)";
+        try (Connection cnx = MyDataBase.getInstance().getCnx();
+             PreparedStatement pstmt = cnx.prepareStatement(query)) {
+            pstmt.setInt(1, idP.getIdRole());
+            pstmt.setInt(2, idC.getIdRole());
+            pstmt.executeUpdate();
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+    }
+    public void updateRoleHierarchy(int idRole, Role parent, Role child) {
+        String query = "UPDATE `rolehierarchie` SET `ID_RoleP`=?,`ID_RoleC`=? WHERE `ID_RoleH`=?";
+        try (Connection cnx = MyDataBase.getInstance().getCnx();
+             PreparedStatement pstmt = cnx.prepareStatement(query)) {
+            pstmt.setInt(1, parent.getIdRole());
+            pstmt.setInt(2, child.getIdRole());
+            pstmt.setInt(3, idRole);
+            pstmt.executeUpdate();
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+    }
+    public void deleteRoleHierarchy(int idRole) {
+        String query = "DELETE FROM rolehierarchie WHERE ID_RoleH = ?";
+        try (Connection cnx = MyDataBase.getInstance().getCnx();
+             PreparedStatement pstmt = cnx.prepareStatement(query)) {
+            pstmt.setInt(1, idRole);
+            pstmt.executeUpdate();
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+    }
 }

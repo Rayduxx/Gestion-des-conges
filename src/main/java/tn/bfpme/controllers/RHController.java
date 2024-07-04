@@ -32,7 +32,7 @@ import java.util.List;
 
 public class RHController {
     @FXML
-    private Pane DepartementPane, RolesPane, UtilisateursPane;
+    private Pane DepartementPane, RolesPane, UtilisateursPane, HierarchyPane;
     @FXML
     private ListView<Departement> departementListView;
     @FXML
@@ -79,6 +79,7 @@ public class RHController {
         loadRoles();
         loadUsers();
         loadRoleHeierarchie();
+
         departementListView.getSelectionModel().selectedItemProperty().addListener((observable, oldValue, newValue) -> {
             if (newValue != null) {
                 deptNameField.setText(newValue.getNom());
@@ -113,6 +114,7 @@ public class RHController {
                 }
             }
         });
+
         roleHListView.getSelectionModel().selectedItemProperty().addListener((observable, oldValue, newValue) -> {
             if (newValue != null) {
                 // Find the parent role based on the ID
@@ -131,16 +133,15 @@ public class RHController {
                 RoleHComboBox.getSelectionModel().select(childRole);
             }
         });
+
         settingsPopup = new Popup();
         settingsPopup.setAutoHide(true);
-
         try {
             Parent settingsContent = FXMLLoader.load(getClass().getResource("/Settings.fxml"));
             settingsPopup.getContent().add(settingsContent);
         } catch (IOException e) {
             e.printStackTrace();
         }
-
         notifPopup = new Popup();
         notifPopup.setAutoHide(true);
         try {
@@ -386,6 +387,7 @@ public class RHController {
         String description = roleDescriptionField.getText();
         roleService.addRole(name, description);
         loadRoles();
+        loadRoleHeierarchie();
     }
 
     @FXML
@@ -396,6 +398,7 @@ public class RHController {
             String description = roleDescriptionField.getText();
             roleService.updateRole(selectedRole.getIdRole(), name, description);
             loadRoles();
+            loadRoleHeierarchie();
         }
     }
 
@@ -405,21 +408,39 @@ public class RHController {
         if (selectedRole != null) {
             roleService.deleteRole(selectedRole.getIdRole());
             loadRoles();
+            loadRoleHeierarchie();
         }
     }
 
     @FXML
     void handleAddRoleToH(ActionEvent event) {
-
+        Role parent = parentRoleComboBox.getSelectionModel().getSelectedItem();
+        Role child = RoleHComboBox.getSelectionModel().getSelectedItem();
+        roleService.addRoleHierarchy(parent, child);
+        loadRoleHeierarchie();
     }
+
     @FXML
     void handleDeleteRoleH(ActionEvent event) {
-
+        Role selectedRole = roleListView.getSelectionModel().getSelectedItem();
+        if (selectedRole != null) {
+            roleService.deleteRoleHierarchy(selectedRole.getIdRole());
+            loadRoleHeierarchie();
+        }
     }
+
     @FXML
     void handleEditRoleH(ActionEvent event) {
-
+        RoleHierarchie selectedRole = roleHListView.getSelectionModel().getSelectedItem();
+        Role parent = parentRoleComboBox.getSelectionModel().getSelectedItem();
+        Role child = RoleHComboBox.getSelectionModel().getSelectedItem();
+        int id = selectedRole.getIdRoleH();
+        if (selectedRole != null) {
+            roleService.updateRoleHierarchy(id, parent, child);
+            loadRoleHeierarchie();
+        }
     }
+
     @FXML
     private void handleAssignUser() {
         Integer userId = getSelectedUserId();
@@ -459,11 +480,14 @@ public class RHController {
             loadUsers();
         }
     }
+
     @FXML
     private void showDepartementPane() {
         DepartementPane.setVisible(true);
         RolesPane.setVisible(false);
         UtilisateursPane.setVisible(false);
+        HierarchyPane.setVisible(false);
+
     }
 
     @FXML
@@ -471,6 +495,15 @@ public class RHController {
         DepartementPane.setVisible(false);
         RolesPane.setVisible(true);
         UtilisateursPane.setVisible(false);
+        HierarchyPane.setVisible(false);
+    }
+
+    @FXML
+    void showHierarchyPane(ActionEvent event) {
+        DepartementPane.setVisible(false);
+        RolesPane.setVisible(false);
+        UtilisateursPane.setVisible(false);
+        HierarchyPane.setVisible(true);
     }
 
     @FXML
@@ -478,6 +511,8 @@ public class RHController {
         DepartementPane.setVisible(false);
         RolesPane.setVisible(false);
         UtilisateursPane.setVisible(true);
+        HierarchyPane.setVisible(false);
+
     }
 
     @FXML
@@ -538,13 +573,12 @@ public class RHController {
             e.printStackTrace();
         }
     }
+
     @FXML
     public void User_Recherche(ActionEvent actionEvent) {
-        String searchText =User_field.getText().trim();
+        String searchText = User_field.getText().trim();
         for (User user : userService.getAllUsers()) {
-            if ((user.getNom() + " " + user.getPrenom()).equalsIgnoreCase(searchText) ||
-                    user.getEmail().equalsIgnoreCase(searchText) ||
-                    ((user.getPrenom() + " " + user.getNom()).equalsIgnoreCase(searchText))) {
+            if ((user.getNom() + " " + user.getPrenom()).equalsIgnoreCase(searchText) || user.getEmail().equalsIgnoreCase(searchText) || ((user.getPrenom() + " " + user.getNom()).equalsIgnoreCase(searchText))) {
                 User_field.setText(user.getEmail());
                 break;
             }

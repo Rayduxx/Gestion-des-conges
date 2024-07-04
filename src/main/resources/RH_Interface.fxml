@@ -33,46 +33,16 @@
                <ComboBox fx:id="parentDeptComboBox" layoutX="386.0" layoutY="293.0" prefHeight="31.0" prefWidth="281.0" promptText="Selectionner departement parent" />
             </Pane>
 
-            <!-- Roles Pane -->
-            <Pane fx:id="RolesPane" layoutX="60.0" layoutY="11.0" prefHeight="622.0" prefWidth="1198.0" styleClass="pane1">
-               <Pane layoutX="52.0" layoutY="74.0" prefHeight="474.0" prefWidth="526.0" styleClass="pane1">
-                  <children>
-                     <ListView fx:id="roleListView" layoutX="14.0" layoutY="37.0" prefHeight="400" prefWidth="200" />
-                     <TextField fx:id="roleNameField" layoutX="231.0" layoutY="91.0" prefHeight="29.0" prefWidth="281.0" promptText="Nom role" />
-                     <TextField fx:id="roleDescriptionField" alignment="TOP_LEFT" layoutX="231.0" layoutY="136.0" prefHeight="104.0" prefWidth="281.0" promptText="Description" />
-                     <HBox alignment="CENTER" layoutX="231.0" layoutY="269.0" prefHeight="41.0" prefWidth="281.0" spacing="10">
-                        <Button onAction="#handleAddRole" styleClass="btn-primary" text="Ajouter" />
-                        <Button onAction="#handleEditRole" styleClass="btn-primary" text="Modifier" />
-                        <Button onAction="#handleDeleteRole" styleClass="btn-primary" text="Supprimer" />
-                     </HBox>
-                     <Label alignment="CENTER" layoutX="292.0" layoutY="17.0" prefHeight="41.0" prefWidth="160.0" text="Les roles">
-                        <styleClass>
-                           <String fx:value="FontSize-15" />
-                           <String fx:value="RobotoBoldItalic" />
-                        </styleClass>
-                     </Label>
-                  </children>
-               </Pane>
-               <Pane layoutX="620.0" layoutY="74.0" prefHeight="474.0" prefWidth="526.0" styleClass="pane1">
-                  <children>
-                     <HBox alignment="CENTER" layoutX="232.0" layoutY="263.0" prefHeight="41.0" prefWidth="281.0" spacing="10">
-                        <children>
-                           <Button onAction="#handleAddRoleToH" styleClass="btn-primary" text="Ajouter" />
-                           <Button onAction="#handleEditRoleH" styleClass="btn-primary" text="Modifier" />
-                           <Button onAction="#handleDeleteRoleH" styleClass="btn-primary" text="Supprimer" />
-                        </children>
-                     </HBox>
-                     <Label alignment="CENTER" layoutX="292.0" layoutY="17.0" prefHeight="41.0" prefWidth="160.0" text="L'hierarchie des roles">
-                        <styleClass>
-                           <String fx:value="FontSize-15" />
-                           <String fx:value="RobotoBoldItalic" />
-                        </styleClass>
-                     </Label>
-                     <ComboBox fx:id="parentRoleComboBox" layoutX="260.0" layoutY="216.0" prefHeight="31.0" prefWidth="226.0" promptText="Selectionner role parent" />
-                     <ListView fx:id="roleHListView" layoutX="14.0" layoutY="37.0" prefHeight="400" prefWidth="200" />
-                     <ComboBox fx:id="RoleHComboBox" layoutX="260.0" layoutY="171.0" prefHeight="31.0" prefWidth="226.0" promptText="Selectionner role" />
-                  </children>
-               </Pane>
+               <!-- Roles Pane -->
+            <Pane fx:id="RolesPane" layoutX="60.0" layoutY="11.0" prefHeight="622.0" prefWidth="1198.0" styleClass="pane1" visible="false">
+               <ListView fx:id="roleListView" layoutX="225.0" layoutY="111.0" prefHeight="400" prefWidth="200" />
+               <TextField fx:id="roleNameField" layoutX="505.0" layoutY="172.0" prefHeight="29.0" prefWidth="281.0" promptText="Nom role" />
+               <TextField fx:id="roleDescriptionField" alignment="TOP_LEFT" layoutX="505.0" layoutY="217.0" prefHeight="104.0" prefWidth="281.0" promptText="Description" />
+               <HBox alignment="CENTER" layoutX="505.0" layoutY="350.0" prefHeight="41.0" prefWidth="281.0" spacing="10">
+                  <Button onAction="#handleAddRole" styleClass="btn-primary" text="Ajouter" />
+                  <Button onAction="#handleEditRole" styleClass="btn-primary" text="Modifier" />
+                  <Button onAction="#handleDeleteRole" styleClass="btn-primary" text="Supprimer" />
+               </HBox>
             </Pane>
 
                <!-- Utilisateurs Pane -->
@@ -91,6 +61,21 @@
                      </HBox>
                   </children>
                </VBox>
+            </Pane>
+            <Pane fx:id="HierarchyPane" layoutX="177.0" layoutY="11.0" prefHeight="622.0" prefWidth="964.0" styleClass="pane1" visible="false">
+               <children>
+                  <VBox layoutX="733.0" layoutY="407.0" spacing="10" />
+                  <ListView fx:id="roleHListView" layoutX="103.0" layoutY="109.0" prefHeight="400" prefWidth="250.0" />
+                  <HBox alignment="CENTER" layoutX="497.0" layoutY="307.0" prefHeight="41.0" prefWidth="281.0" spacing="10">
+                     <children>
+                        <Button onAction="#handleAddRoleToH" styleClass="btn-primary" text="Ajouter" />
+                        <Button onAction="#handleEditRoleH" styleClass="btn-primary" text="Modifier" />
+                        <Button onAction="#handleDeleteRoleH" styleClass="btn-primary" text="Supprimer" />
+                     </children>
+                  </HBox>
+                  <ComboBox fx:id="parentRoleComboBox" layoutX="525.0" layoutY="260.0" prefHeight="31.0" prefWidth="226.0" promptText="Selectionner role parent" />
+                  <ComboBox fx:id="RoleHComboBox" layoutX="525.0" layoutY="215.0" prefHeight="31.0" prefWidth="226.0" promptText="Selectionner role" />
+               </children>
             </Pane>
          </children>
       </Pane>
@@ -196,6 +181,16 @@
                   <String fx:value="RobotoBold" />
                </styleClass>
             </Button>
+            <Button mnemonicParsing="false" onAction="#showHierarchyPane" prefHeight="38.0" prefWidth="140.0" text="Hierarchie">
+               <font>
+                  <Font size="14.0" />
+               </font>
+               <styleClass>
+                  <String fx:value="btn-primary" />
+                  <String fx:value="FontSize-15" />
+                  <String fx:value="RobotoBold" />
+               </styleClass>
+            </Button>
             <Button mnemonicParsing="false" onAction="#showUtilisateursPane" prefHeight="38.0" prefWidth="140.0" text="Utilisateurs">
                <font>
                   <Font size="14.0" />
@@ -208,12 +203,5 @@
             </Button>
          </children>
       </HBox>
-
-      <Label layoutX="239.0" layoutY="130.0" text="Departement : ">
-         <styleClass>
-            <String fx:value="RobotoBold" />
-            <String fx:value="FontSize-15" />
-         </styleClass>
-      </Label>
    </children>
 </AnchorPane>
