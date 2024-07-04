@@ -144,6 +144,20 @@ public class ServiceRole {
         }
         return roles;
     }
+    public int getRoleParents(int idRole) {
+        int RoleParents = 0;
+        String query = "SELECT `ID_RoleP` FROM rolehierarchie WHERE `ID_RoleC` = '%" + idRole +"%'";
+        try (Connection cnx = MyDataBase.getInstance().getCnx();
+             Statement stmt = cnx.createStatement();
+             ResultSet rs = stmt.executeQuery(query)) {
+            while (rs.next()) {
+                RoleParents = rs.getInt("ID_RoleP");
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return RoleParents;
+    }
 
     public void addRole(String nom, String description) {
         String query = "INSERT INTO role (nom, description) VALUES (?, ?)";

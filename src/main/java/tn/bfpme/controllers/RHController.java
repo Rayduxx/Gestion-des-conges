@@ -73,6 +73,15 @@ public class RHController {
                 parentDeptComboBox.getSelectionModel().select(newValue.getParentDept() != 0 ? depService.getDepartmentById(newValue.getParentDept()) : null);
             }
         });
+        roleListView.getSelectionModel().selectedItemProperty().addListener((observable, oldValue, newValue) -> {
+            if (newValue != null) {
+                roleNameField.setText(newValue.getNom());
+                roleDescriptionField.setText(newValue.getDescription());
+                //parentRoleComboBox.getSelectionModel().select(roleService.getRoleParents(newValue.getIdRole()));
+                parentDeptComboBox.getSelectionModel().select(roleService.getRoleParents(newValue.getIdRole()) != 0 ? roleService.getRoleParents(newValue.getIdRole()) : null);
+
+            }
+        });
 
         settingsPopup = new Popup();
         settingsPopup.setAutoHide(true);
@@ -137,13 +146,55 @@ public class RHController {
         });
     }
 
-
     private void loadRoles() {
+        List<Role> roleList = roleService.getAllRoles();
+        Role noParentRole = new Role(0, "", "");
+        roleList.add(0, noParentRole);
+        ObservableList<Role> roles = FXCollections.observableArrayList(roleList);
+        roleListView.setItems(roles);
+        roleListView.setCellFactory(param -> new ListCell<Role>() {
+            @Override
+            protected void updateItem(Role item, boolean empty) {
+                super.updateItem(item, empty);
+                if (empty || item == null || item.getNom() == null) {
+                    setText(null);
+                } else {
+                    setText(item.getNom());
+                }
+            }
+        });
+        parentRoleComboBox.setItems(roles);
+        parentRoleComboBox.setCellFactory(param -> new ListCell<Role>() {
+            @Override
+            protected void updateItem(Role item, boolean empty) {
+                super.updateItem(item, empty);
+                if (empty || item == null || item.getNom() == null) {
+                    setText(null);
+                } else {
+                    setText(item.getNom());
+                }
+            }
+        });
+        parentRoleComboBox.setButtonCell(new ListCell<Role>() {
+            @Override
+            protected void updateItem(Role item, boolean empty) {
+                super.updateItem(item, empty);
+                if (empty || item == null || item.getNom() == null) {
+                    setText(null);
+                } else {
+                    setText(item.getNom());
+                }
+            }
+        });
+        roleComboBox.setItems(roles);
+    }
+
+    /*private void loadRoles() {
         ObservableList<Role> roles = FXCollections.observableArrayList(roleService.getAllRoles());
         roleListView.setItems(roles);
         parentRoleComboBox.setItems(roles);
         roleComboBox.setItems(roles);
-    }
+    }*/
 
     private void loadUsers() {
         ObservableList<User> users = FXCollections.observableArrayList(userService.getAllUsers());
