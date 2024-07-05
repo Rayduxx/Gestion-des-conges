@@ -7,12 +7,19 @@ import tn.bfpme.utils.SessionManager;
 
 import java.sql.*;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.stream.Collectors;
 
 public class ServiceUtilisateur implements IUtilisateur {
     Connection cnx = MyDataBase.getInstance().getCnx();
+    private Map<Integer, Integer> userManagerMap = new HashMap<>();
 
+
+    public ServiceUtilisateur() {
+        loadHierarchy();
+    }
     public UserConge afficherusers() {
         String departement = String.valueOf(SessionManager.getInstance().getUser().getIdDepartement());
         List<User> users = new ArrayList<>();
@@ -39,6 +46,7 @@ public class ServiceUtilisateur implements IUtilisateur {
                 user.setSoldeMaladie(rs.getInt("Solde_Maladie"));
                 user.setSoldeMaternite(rs.getInt("Solde_Maternité"));
                 user.setIdDepartement(rs.getInt("ID_Departement"));
+
 
                 if (!users.contains(user)) {
                     users.add(user);
@@ -709,4 +717,34 @@ public class ServiceUtilisateur implements IUtilisateur {
         }
         return user;
     }
+
+
+
+    public void setUserManager(int userId, int managerId) {
+        userManagerMap.put(userId, managerId);
+    }
+
+    public User getUserManager(int userId) {
+        Integer managerId = userManagerMap.get(userId);
+        if (managerId != null) {
+            return getUserById(managerId);
+        }
+        return null;
+    }
+    private void loadHierarchy() {
+        userManagerMap.put(2, 1); // User with ID 2 has manager with ID 1
+        userManagerMap.put(3, 1); // User with ID 3 has manager with ID 1
+    }
+
+    public List<User> getAllUsersWithManagers() {
+        List<User> users = getAllUsers();
+        for (User user : users) {
+            User manager = getUserManager(user.getIdUser());
+            //user.setManager(manager);
+        }
+        return users;
+    }
+
+
+
 }
