@@ -20,5 +20,30 @@ public interface IUtilisateur {
     List<User> RechrecheRH(String recherche);
 
 
+    // Similar corrections for AfficherApprove, AfficherReject, TriType, TriNom, TriPrenom, TriDateDebut, TriDateFin
+    User getChef();
+
+    List<User> getUsersByDepartment(String departement);
+
+    List<User> getAllUsers();
+
+    List<User> getAllUsersInfo();
+
+    void addUser(String nom, String prenom, String email, String mdp, String image, int soldeAnnuel, int soldeMaladie, int soldeExceptionnel, int soldeMaternite, int idDepartement, int idRole);
+
+    void updateUser(int idUser, String nom, String prenom, String email, String mdp, String image, int soldeAnnuel, int soldeMaladie, int soldeExceptionnel, int soldeMaternite, int idDepartement, int idRole);
+
+    void deleteUser(int idUser);
+
+    void assignUserToDepartmentAndRole(int idUser, int idDepartement, int idRole);
+
     void assignRoleToUser(int userId, int roleId);
+
+    void updateUserRoleAndDepartment(int userId, int roleId, int departmentId);
+
+    void updateUserRole(int userId, int roleId);
+
+    void updateUserDepartment(int userId, int departmentId);
+
+    User getUserById(int userId);
 }
