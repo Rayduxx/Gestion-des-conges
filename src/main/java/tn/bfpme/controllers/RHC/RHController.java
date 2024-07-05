@@ -11,6 +11,7 @@ import javafx.scene.Node;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.control.*;
+import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.Pane;
 import javafx.stage.Popup;
 import javafx.stage.Stage;
@@ -33,9 +34,8 @@ public class RHController {
     private Pane PaneCont;
     @FXML
     private ComboBox<Role> parentRoleComboBox;
-
     @FXML
-    private Button settingsButton;
+    private AnchorPane MainAnchorPane;
     @FXML
     public Button NotifBtn;
     @FXML
@@ -44,26 +44,15 @@ public class RHController {
     private ListView<RoleHierarchie> roleHListView;
 
     private ServiceRole roleService;
-    private Popup settingsPopup;
-    private Popup notifPopup;
     private paneRoleController PRC;
     private paneDepController PDC;
     public void initialize() {
         roleService = new ServiceRole();
         loadRoleHierarchie();
-        settingsPopup = new Popup();
-        settingsPopup.setAutoHide(true);
         try {
-            Parent settingsContent = FXMLLoader.load(getClass().getResource("/Settings.fxml"));
-            settingsPopup.getContent().add(settingsContent);
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-        notifPopup = new Popup();
-        notifPopup.setAutoHide(true);
-        try {
-            Parent notifContent = FXMLLoader.load(getClass().getResource("/paneNotif.fxml"));
-            notifPopup.getContent().add(notifContent);
+            FXMLLoader loader = new FXMLLoader(getClass().getResource("/NavigationHeader.fxml"));
+            Pane departementPane = loader.load();
+            MainAnchorPane.getChildren().add(departementPane);
         } catch (IOException e) {
             e.printStackTrace();
         }
@@ -84,7 +73,6 @@ public class RHController {
         alert.setContentText(message);
         alert.showAndWait();
     }
-
 
     @FXML
     void handleAddRoleToH(ActionEvent event) {
@@ -171,65 +159,5 @@ public class RHController {
     void showHierarchyPane(ActionEvent event) {
 
     }
-
-    @FXML
-    void ListeDesDemandes(ActionEvent event) {
-        navigateToScene(event, "/DemandeDepListe.fxml", "Liste des demandes - " + SessionManager.getInstance().getUserDepartmentName());
-    }
-
-    @FXML
-    public void goto_profil(ActionEvent actionEvent) {
-        navigateToScene(actionEvent, "/profile.fxml", "Mon profil");
-    }
-
-    @FXML
-    public void Demander(ActionEvent actionEvent) {
-        navigateToScene(actionEvent, "/DemandeConge.fxml", "Demande congé");
-    }
-
-    @FXML
-    public void Historique(ActionEvent actionEvent) {
-        navigateToScene(actionEvent, "/HistoriqueConge.fxml", "Historique congé");
-    }
-
-    @FXML
-    void settings_button(ActionEvent event) {
-        if (settingsPopup.isShowing()) {
-            settingsPopup.hide();
-        } else {
-            Window window = ((Node) event.getSource()).getScene().getWindow();
-            double x = window.getX() + settingsButton.localToScene(0, 0).getX() + settingsButton.getScene().getX() - 150;
-            double y = window.getY() + settingsButton.localToScene(0, 0).getY() + settingsButton.getScene().getY() + settingsButton.getHeight();
-            settingsPopup.show(window, x, y);
-        }
-    }
-
-    @FXML
-    void OpenNotifPane(ActionEvent event) {
-        if (notifPopup.isShowing()) {
-            notifPopup.hide();
-        } else {
-            Window window = ((Node) event.getSource()).getScene().getWindow();
-            double x = window.getX() + NotifBtn.localToScene(0, 0).getX() + NotifBtn.getScene().getX() - 250;
-            double y = window.getY() + NotifBtn.localToScene(0, 0).getY() + NotifBtn.getScene().getY() + NotifBtn.getHeight();
-            notifPopup.show(window, x, y);
-        }
-    }
-
-    private void navigateToScene(ActionEvent actionEvent, String fxmlFile, String title) {
-        try {
-            FXMLLoader loader = new FXMLLoader(getClass().getResource(fxmlFile));
-            Parent root = loader.load();
-            Stage stage = (Stage) ((Node) actionEvent.getSource()).getScene().getWindow();
-            Scene scene = new Scene(root);
-            stage.setScene(scene);
-            stage.setTitle(title);
-            stage.show();
-            StageManager.addStage(title, stage);
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-    }
-
 
 }
