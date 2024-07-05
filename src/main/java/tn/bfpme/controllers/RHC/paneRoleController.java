@@ -4,6 +4,7 @@ import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
+import javafx.scene.control.Alert;
 import javafx.scene.control.ListCell;
 import javafx.scene.control.ListView;
 import javafx.scene.control.TextField;
@@ -133,32 +134,15 @@ public class paneRoleController implements Initializable {
                     }
                 }
             });*/
-            PaneUser.roleComboBox.setItems(roles);
-            PaneUser.roleComboBox.setCellFactory(param -> new ListCell<Role>() {
-                @Override
-                protected void updateItem(Role item, boolean empty) {
-                    super.updateItem(item, empty);
-                    if (empty || item == null || item.getNom() == null) {
-                        setText(null);
-                    } else {
-                        setText(item.getNom());
-                    }
-                }
-            });
-            PaneUser.roleComboBox.setButtonCell(new ListCell<Role>() {
-                @Override
-                protected void updateItem(Role item, boolean empty) {
-                    super.updateItem(item, empty);
-                    if (empty || item == null || item.getNom() == null) {
-                        setText(null);
-                    } else {
-                        setText(item.getNom());
-                    }
-                }
-            });
         } catch (Exception e) {
-            RHC.showError("Failed to load roles: " + e.getMessage());
+            showError("Failed to load roles: " + e.getMessage());
         }
     }
-
+    protected void showError(String message) {
+        Alert alert = new Alert(Alert.AlertType.ERROR);
+        alert.setTitle("Error");
+        alert.setHeaderText(null);
+        alert.setContentText(message);
+        alert.showAndWait();
+    }
 }

@@ -20,8 +20,8 @@
       </Pane>
       <Pane layoutX="28.0" layoutY="26.0" prefHeight="782.0" prefWidth="604.0" styleClass="pane1">
          <children>
-            <TextField fx:id="LoginEmail" layoutX="155.0" layoutY="204.0" prefHeight="28.0" prefWidth="235.0" promptText="email" text="rayduxxx1@gmail.com" />
-            <TextField fx:id="LoginMDP" layoutX="155.0" layoutY="253.0" onAction="#Login" prefHeight="28.0" prefWidth="235.0" promptText="mdp" text="123" />
+            <TextField fx:id="LoginEmail" layoutX="155.0" layoutY="204.0" prefHeight="28.0" prefWidth="235.0" promptText="email" text="999" />
+            <TextField fx:id="LoginMDP" layoutX="155.0" layoutY="253.0" onAction="#Login" prefHeight="28.0" prefWidth="235.0" promptText="mdp" text="999" />
             <Button layoutX="251.0" layoutY="300.0" mnemonicParsing="false" onAction="#Login" text="login" />
          </children>
       </Pane>
