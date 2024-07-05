@@ -33,73 +33,19 @@ public class RHController {
     @FXML
     private Pane PaneCont;
     @FXML
-    private ComboBox<Role> parentRoleComboBox;
-    @FXML
     private AnchorPane MainAnchorPane;
-    @FXML
-    public Button NotifBtn;
-    @FXML
-    private ComboBox<Role> RoleHComboBox;
-    @FXML
-    private ListView<RoleHierarchie> roleHListView;
-
     private ServiceRole roleService;
     private paneRoleController PRC;
     private paneDepController PDC;
     public void initialize() {
         roleService = new ServiceRole();
-        loadRoleHierarchie();
+        //loadRoleHierarchie();
         try {
             FXMLLoader loader = new FXMLLoader(getClass().getResource("/NavigationHeader.fxml"));
             Pane departementPane = loader.load();
             MainAnchorPane.getChildren().add(departementPane);
         } catch (IOException e) {
             e.printStackTrace();
-        }
-    }
-
-    private void loadRoleHierarchie() {
-        try {
-            ObservableList<RoleHierarchie> roleHierarchies = FXCollections.observableArrayList(roleService.getAllRoleHierarchies());
-            roleHListView.setItems(roleHierarchies);
-        } catch (Exception e) {
-            showError("Failed to load role hierarchies: " + e.getMessage());
-        }
-    }
-    protected void showError(String message) {
-        Alert alert = new Alert(Alert.AlertType.ERROR);
-        alert.setTitle("Error");
-        alert.setHeaderText(null);
-        alert.setContentText(message);
-        alert.showAndWait();
-    }
-
-    @FXML
-    void handleAddRoleToH(ActionEvent event) {
-        Role parent = parentRoleComboBox.getSelectionModel().getSelectedItem();
-        Role child = RoleHComboBox.getSelectionModel().getSelectedItem();
-        roleService.addRoleHierarchy(parent, child);
-        loadRoleHierarchie();
-    }
-
-    @FXML
-    void handleDeleteRoleH(ActionEvent event) {
-       /* Role selectedRole = roleListView.getSelectionModel().getSelectedItem();
-        if (selectedRole != null) {
-            roleService.deleteRoleHierarchy(selectedRole.getIdRole());
-            loadRoleHierarchie();
-        }*/
-    }
-
-    @FXML
-    void handleEditRoleH(ActionEvent event) {
-        RoleHierarchie selectedRole = roleHListView.getSelectionModel().getSelectedItem();
-        Role parent = parentRoleComboBox.getSelectionModel().getSelectedItem();
-        Role child = RoleHComboBox.getSelectionModel().getSelectedItem();
-        int id = selectedRole.getIdRoleH();
-        if (selectedRole != null) {
-            roleService.updateRoleHierarchy(id, parent, child);
-            loadRoleHierarchie();
         }
     }
 
@@ -157,7 +103,15 @@ public class RHController {
 
     @FXML
     void showHierarchyPane(ActionEvent event) {
-
+        try {
+            FXMLLoader loader = new FXMLLoader(getClass().getResource("/paneHierarchie.fxml"));
+            Pane userPane = loader.load();
+            PaneCont.getChildren().clear();
+            PaneCont.getChildren().add(userPane);
+            centerPane(PaneCont, userPane);
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
     }
 
 }
