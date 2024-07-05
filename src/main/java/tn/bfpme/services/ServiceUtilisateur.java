@@ -665,5 +665,34 @@ public class ServiceUtilisateur implements IUtilisateur {
         }
     }
 
+    public User getUserById(int userId) {
+        User user = null;
+        String sql = "SELECT * FROM `user` WHERE `ID_User` = ?";
 
+        try (Connection cnx = MyDataBase.getInstance().getCnx();
+             PreparedStatement stm = cnx.prepareStatement(sql)) {
+            stm.setInt(1, userId);
+            try (ResultSet rs = stm.executeQuery()) {
+                if (rs.next()) {
+                    user = new User(
+                            rs.getInt("ID_User"),
+                            rs.getString("nom"),
+                            rs.getString("prenom"),
+                            rs.getString("email"),
+                            rs.getString("mdp"),
+                            rs.getString("image"),
+                            rs.getInt("soldeAnnuel"),
+                            rs.getInt("soldeMaladie"),
+                            rs.getInt("soldeExceptionnel"),
+                            rs.getInt("soldeMaternite"),
+                            rs.getInt("idDepartement"),
+                            rs.getInt("idRole")
+                    );
+                }
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return user;
+    }
 }

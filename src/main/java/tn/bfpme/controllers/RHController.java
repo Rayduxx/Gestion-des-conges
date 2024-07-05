@@ -27,7 +27,7 @@ import tn.bfpme.utils.StageManager;
 
 import java.io.IOException;
 import java.sql.Connection;
-import java.sql.DriverManager;
+import java.sql.PreparedStatement;
 import java.sql.SQLException;
 import java.util.List;
 
@@ -74,6 +74,8 @@ public class RHController {
     private Popup settingsPopup;
     private Popup notifPopup;
 
+    private User selectedUser; // Store the selected user here
+
     public void initialize() {
         depService = new ServiceDepartement();
         roleService = new ServiceRole();
@@ -108,58 +110,10 @@ public class RHController {
         userListView.getSelectionModel().selectedItemProperty().addListener((observable, oldValue, newValue) -> {
             Platform.runLater(() -> {
                 if (newValue != null) {
-                    try {
-                        User_field.setText(newValue.getPrenom() + " " + newValue.getNom());
-
-                        Departement departement = depService.getDepartmentById(newValue.getIdDepartement());
-                        Role role = roleService.getRoleById(newValue.getIdRole());
-
-                        if (departement != null) {
-                            departmentComboBox.getSelectionModel().select(departement);
-                        } else {
-                            departmentComboBox.getSelectionModel().clearSelection();
-                        }
-
-                        if (role != null) {
-                            roleComboBox.getSelectionModel().select(role);
-                        } else {
-                            roleComboBox.getSelectionModel().clearSelection();
-                        }
-                    } catch (Exception e) {
-                        e.printStackTrace();
-                        showError("An error occurred while selecting the user: " + e.getMessage());
-                    }
+                    handleUserSelection(newValue);
                 }
             });
         });
-
-        roleHListView.getSelectionModel().selectedItemProperty().addListener((observable, oldValue, newValue) -> {
-            if (newValue != null) {
-                Role parentRole = parentRoleComboBox.getItems().stream().filter(role -> role.getIdRole() == newValue.getIdRoleP()).findFirst().orElse(null);
-
-                Role childRole = RoleHComboBox.getItems().stream().filter(role -> role.getIdRole() == newValue.getIdRoleC()).findFirst().orElse(null);
-
-                parentRoleComboBox.getSelectionModel().select(parentRole);
-                RoleHComboBox.getSelectionModel().select(childRole);
-            }
-        });
-
-        settingsPopup = new Popup();
-        settingsPopup.setAutoHide(true);
-        try {
-            Parent settingsContent = FXMLLoader.load(getClass().getResource("/Settings.fxml"));
-            settingsPopup.getContent().add(settingsContent);
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-        notifPopup = new Popup();
-        notifPopup.setAutoHide(true);
-        try {
-            Parent notifContent = FXMLLoader.load(getClass().getResource("/paneNotif.fxml"));
-            notifPopup.getContent().add(notifContent);
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
 
         List<User> userList = userService.getAllUsers();
         ObservableList<User> users = FXCollections.observableArrayList(userList);
@@ -188,6 +142,37 @@ public class RHController {
                 return user.getNom().toLowerCase().contains(lowerCaseFilter) || user.getPrenom().toLowerCase().contains(lowerCaseFilter) || user.getEmail().toLowerCase().contains(lowerCaseFilter);
             });
         });
+        settingsPopup = new Popup();
+        settingsPopup.setAutoHide(true);
+        try {
+            Parent settingsContent = FXMLLoader.load(getClass().getResource("/Settings.fxml"));
+            settingsPopup.getContent().add(settingsContent);
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        notifPopup = new Popup();
+        notifPopup.setAutoHide(true);
+        try {
+            Parent notifContent = FXMLLoader.load(getClass().getResource("/paneNotif.fxml"));
+            notifPopup.getContent().add(notifContent);
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        userListView.setCellFactory(param -> new ListCell<User>() {
+            @Override
+            protected void updateItem(User user, boolean empty) {
+                super.updateItem(user, empty);
+                if (empty || user == null) {
+                    setText(null);
+                } else {
+                    Departement departement = depService.getDepartmentById(user.getIdDepartement());
+                    Role role = roleService.getRoleById(user.getIdRole());
+                    setText(user.getPrenom() + " " + user.getNom() + " _ " + user.getEmail() + " _ " + (role != null ? role.getNom() : "N/A") + " _ " + (departement != null ? departement.getNom() : "N/A"));
+                }
+            }
+        });
+
+
     }
 
     private void loadDepartments() {
@@ -417,11 +402,7 @@ public class RHController {
     }
 
     public Integer getSelectedUserId() {
-        User selectedUser = userListView.getSelectionModel().getSelectedItem();
-        if (selectedUser != null) {
-            return selectedUser.getIdUser();
-        }
-        return null;
+        return selectedUser != null ? selectedUser.getIdUser() : null;
     }
 
     private void loadRoleHeierarchie() {
@@ -525,6 +506,89 @@ public class RHController {
     }
 
     @FXML
+    private void handleEditUser() {
+        // Debug statement to check if a user is selected
+        System.out.println("Selected User in handleEditUser: " + selectedUser);
+
+        if (selectedUser != null) {
+            Role selectedRole = roleComboBox.getSelectionModel().getSelectedItem();
+            Departement selectedDepartement = departmentComboBox.getSelectionModel().getSelectedItem();
+
+            // Debug statements to check selected role and department
+            System.out.println("Selected Role: " + selectedRole);
+            System.out.println("Selected Department: " + selectedDepartement);
+
+            boolean isUpdated = false;
+
+            try {
+                if (selectedRole != null && selectedDepartement != null) {
+                    userService.updateUserRoleAndDepartment(selectedUser.getIdUser(), selectedRole.getIdRole(), selectedDepartement.getIdDepartement());
+                    isUpdated = true;
+                } else if (selectedRole != null) {
+                    userService.updateUserRole(selectedUser.getIdUser(), selectedRole.getIdRole());
+                    isUpdated = true;
+                } else if (selectedDepartement != null) {
+                    userService.updateUserDepartment(selectedUser.getIdUser(), selectedDepartement.getIdDepartement());
+                    isUpdated = true;
+                }
+
+                if (isUpdated) {
+                    loadUsers();
+                    highlightSelectedUser(selectedUser);
+                } else {
+                    showError("Please select a role and/or department to assign.");
+                }
+            } catch (Exception e) {
+                // Log any exception that occurs during the update process
+                e.printStackTrace();
+                showError("An error occurred while updating the user: " + e.getMessage());
+            }
+        } else {
+            showError("Please select a user to edit.");
+        }
+    }
+
+    private void handleUserSelection(User newValue) {
+        selectedUser = newValue;
+        try {
+            User_field.setText(newValue.getPrenom() + " " + newValue.getNom());
+
+            Departement departement = depService.getDepartmentById(newValue.getIdDepartement());
+            Role role = roleService.getRoleById(newValue.getIdRole());
+
+            if (departement != null) {
+                departmentComboBox.getSelectionModel().select(departement);
+            } else {
+                departmentComboBox.getSelectionModel().clearSelection();
+            }
+
+            if (role != null) {
+                roleComboBox.getSelectionModel().select(role);
+            } else {
+                roleComboBox.getSelectionModel().clearSelection();
+            }
+
+            // Debugging to check the selected user
+            System.out.println("Selected User in Listener: " + newValue);
+
+        } catch (Exception e) {
+            e.printStackTrace(); // Log the exception to the console
+            showError("An error occurred while selecting the user: " + e.getMessage());
+        }
+    }
+
+    public void highlightSelectedUser(User user) {
+        Platform.runLater(() -> {
+            userListView.getItems().forEach(u -> {
+                if (u.equals(user)) {
+                    userListView.getSelectionModel().select(u);
+                    userListView.scrollTo(u);
+                }
+            });
+        });
+    }
+
+    @FXML
     private void handleAssignUser() {
         Integer userId = getSelectedUserId();
         Role selectedRole = roleComboBox.getSelectionModel().getSelectedItem();
@@ -533,41 +597,11 @@ public class RHController {
             int roleId = selectedRole.getIdRole();
             userService.assignRoleToUser(userId, roleId);
             loadUsers();
+            highlightSelectedUser(userService.getUserById(userId));
         } else {
             showError("Please select a user and a role to assign.");
         }
     }
-
-    @FXML
-    private void handleEditUser() {
-        User selectedUser = userListView.getSelectionModel().getSelectedItem();
-        if (selectedUser != null) {
-            Role selectedRole = roleComboBox.getSelectionModel().getSelectedItem();
-            Departement selectedDepartement = departmentComboBox.getSelectionModel().getSelectedItem();
-
-            boolean isUpdated = false;
-
-            if (selectedRole != null && selectedDepartement != null) {
-                userService.updateUserRoleAndDepartment(selectedUser.getIdUser(), selectedRole.getIdRole(), selectedDepartement.getIdDepartement());
-                isUpdated = true;
-            } else if (selectedRole != null) {
-                userService.updateUserRole(selectedUser.getIdUser(), selectedRole.getIdRole());
-                isUpdated = true;
-            } else if (selectedDepartement != null) {
-                userService.updateUserDepartment(selectedUser.getIdUser(), selectedDepartement.getIdDepartement());
-                isUpdated = true;
-            }
-
-            if (isUpdated) {
-                loadUsers();
-            } else {
-                showError("Please select a role and/or department to assign.");
-            }
-        } else {
-            showError("Please select a user to edit.");
-        }
-    }
-
 
     @FXML
     private void showDepartementPane() {
