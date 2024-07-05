@@ -695,4 +695,87 @@ public class ServiceUtilisateur implements IUtilisateur {
         }
         return user;
     }
+
+
+    public void setUserManager(int userId, int managerId) {
+        String query = "UPDATE user SET manager_id = ? WHERE id = ?";
+        try (PreparedStatement stmt = cnx.prepareStatement(query)) {
+            stmt.setInt(1, managerId);
+            stmt.setInt(2, userId);
+            stmt.executeUpdate();
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+    }
+
+    public User getUserManager(int userId) {
+        User manager = null;
+        String query = "SELECT m.* FROM user u JOIN user m ON u.manager_id = m.id WHERE u.id = ?";
+        try (PreparedStatement stmt = cnx.prepareStatement(query)) {
+            stmt.setInt(1, userId);
+            ResultSet rs = stmt.executeQuery();
+            if (rs.next()) {
+                manager = new User(
+                        rs.getInt("id"),
+                        rs.getString("firstName"),
+                        rs.getString("lastName"),
+                        rs.getString("email"),
+                        rs.getString("password"),
+                        rs.getString("image"),
+                        rs.getInt("soldeAnnuel"),
+                        rs.getInt("soldeMaladie"),
+                        rs.getInt("soldeExceptionnel"),
+                        rs.getInt("soldeMaternite"),
+                        rs.getInt("idDepartement"),
+                        rs.getInt("idRole")
+                );
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return manager;
+    }
+
+    public List<User> getAllUsersWithManagers(){
+        List<User> users = new ArrayList<>();
+        String query = "SELECT u.*, m.id AS managerId, m.firstName AS managerFirstName, m.lastName AS managerLastName " +
+                "FROM user u " +
+                "LEFT JOIN user m ON u.manager_id = m.id";
+        try (PreparedStatement stmt = cnx.prepareStatement(query)){
+            ResultSet rs = stmt.executeQuery();
+            {
+    while (rs.next()){
+        User user = new User(
+                rs.getInt("id"),
+                rs.getString("firstName"),
+                rs.getString("lastName"),
+                rs.getString("email"),
+                rs.getString("password"),
+                rs.getString("image"),
+                rs.getInt("soldeAnnuel"),
+                rs.getInt("soldeMaladie"),
+                rs.getInt("soldeExceptionnel"),
+                rs.getInt("soldeMaternite"),
+                rs.getInt("idDepartement"),
+                rs.getInt("idRole")
+        );
+        if (rs.getInt("managerId") !=0){
+            User manager = new User();
+            manager.setIdRole(rs.getInt("managerId"));
+            manager.setPrenom(rs.getString("managerFirstName"));
+            manager.setNom(rs.getString("manager LastName"));
+            //user.setManager(manager);
+        }
+        users.add(user);
+    }
+        }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return users;
+
+    }
+
+
+
 }
