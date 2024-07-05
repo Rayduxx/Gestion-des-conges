@@ -5,7 +5,6 @@
 <?import javafx.scene.control.ComboBox?>
 <?import javafx.scene.control.Label?>
 <?import javafx.scene.control.ListView?>
-<?import javafx.scene.control.TextField?>
 <?import javafx.scene.image.Image?>
 <?import javafx.scene.image.ImageView?>
 <?import javafx.scene.layout.AnchorPane?>
@@ -14,53 +13,10 @@
 <?import javafx.scene.layout.VBox?>
 <?import javafx.scene.text.Font?>
 
-<AnchorPane prefHeight="830.0" prefWidth="1340.0" styleClass="grad-bg" stylesheets="@assets/css/style.css" xmlns="http://javafx.com/javafx/21" xmlns:fx="http://javafx.com/fxml/1" fx:controller="tn.bfpme.controllers.RHController">
+<AnchorPane prefHeight="830.0" prefWidth="1340.0" styleClass="grad-bg" stylesheets="@assets/css/style.css" xmlns="http://javafx.com/javafx/21" xmlns:fx="http://javafx.com/fxml/1" fx:controller="tn.bfpme.controllers.RHC.RHController">
    <children>
-      <Pane layoutX="9.0" layoutY="165.0" prefHeight="643.0" prefWidth="1320.0" styleClass="pane1">
+      <Pane fx:id="PaneCont" layoutX="9.0" layoutY="165.0" prefHeight="643.0" prefWidth="1320.0" styleClass="pane1">
          <children>
-            <!-- Departement Pane -->
-            <Pane fx:id="DepartementPane" layoutX="178.0" layoutY="11.0" prefHeight="622.0" prefWidth="964.0" styleClass="pane1" visible="false">
-               <VBox layoutX="387.0" layoutY="353.0" prefHeight="41.0" prefWidth="281.0" spacing="10">
-                  <HBox alignment="CENTER" prefHeight="76.0" prefWidth="281.0" spacing="10">
-                     <Button alignment="CENTER" onAction="#handleAddDepartment" styleClass="btn-primary" text="Ajouter" />
-                     <Button alignment="CENTER" onAction="#handleEditDepartment" styleClass="btn-primary" text="Modifier" />
-                     <Button alignment="CENTER" onAction="#handleDeleteDepartment" styleClass="btn-primary" text="Supprimer" />
-                  </HBox>
-               </VBox>
-               <ListView fx:id="departementListView" layoutX="100.0" layoutY="108.0" prefHeight="400" prefWidth="200" />
-               <TextField fx:id="deptNameField" layoutX="387.0" layoutY="114.0" prefHeight="29.0" prefWidth="281.0" promptText="Nom departement" />
-               <TextField fx:id="deptDescriptionField" alignment="TOP_LEFT" layoutX="387.0" layoutY="159.0" prefHeight="104.0" prefWidth="281.0" promptText="Description" />
-               <ComboBox fx:id="parentDeptComboBox" layoutX="386.0" layoutY="293.0" prefHeight="31.0" prefWidth="281.0" promptText="Selectionner departement parent" />
-            </Pane>
-
-               <!-- Roles Pane -->
-            <Pane fx:id="RolesPane" layoutX="60.0" layoutY="11.0" prefHeight="622.0" prefWidth="1198.0" styleClass="pane1" visible="false">
-               <ListView fx:id="roleListView" layoutX="225.0" layoutY="111.0" prefHeight="400" prefWidth="200" />
-               <TextField fx:id="roleNameField" layoutX="505.0" layoutY="172.0" prefHeight="29.0" prefWidth="281.0" promptText="Nom role" />
-               <TextField fx:id="roleDescriptionField" alignment="TOP_LEFT" layoutX="505.0" layoutY="217.0" prefHeight="104.0" prefWidth="281.0" promptText="Description" />
-               <HBox alignment="CENTER" layoutX="505.0" layoutY="350.0" prefHeight="41.0" prefWidth="281.0" spacing="10">
-                  <Button onAction="#handleAddRole" styleClass="btn-primary" text="Ajouter" />
-                  <Button onAction="#handleEditRole" styleClass="btn-primary" text="Modifier" />
-                  <Button onAction="#handleDeleteRole" styleClass="btn-primary" text="Supprimer" />
-               </HBox>
-            </Pane>
-
-               <!-- Utilisateurs Pane -->
-            <Pane fx:id="UtilisateursPane" layoutX="177.0" layoutY="11.0" prefHeight="622.0" prefWidth="964.0" styleClass="pane1" visible="false">
-               <VBox layoutX="733.0" layoutY="407.0" spacing="10" />
-               <ListView fx:id="userListView" layoutX="69.0" layoutY="109.0" prefHeight="400" prefWidth="326.0" />
-               <VBox alignment="CENTER" layoutX="469.0" layoutY="111.0" prefHeight="400.0" prefWidth="393.0" spacing="30.0">
-                  <children>
-                     <TextField fx:id="User_field" maxHeight="31.0" maxWidth="281.0" minHeight="31.0" onAction="#User_Recherche" prefHeight="29.0" prefWidth="264.0" />
-                     <ComboBox fx:id="departmentComboBox" maxHeight="-Infinity" maxWidth="-Infinity" prefHeight="31.0" prefWidth="281.0" promptText="Selectionner department" />
-                     <ComboBox fx:id="roleComboBox" maxHeight="-Infinity" maxWidth="-Infinity" prefHeight="31.0" prefWidth="281.0" promptText="Selectionner role" />
-                     <HBox alignment="CENTER" maxHeight="-Infinity" maxWidth="-Infinity" prefHeight="41.0" prefWidth="281.0" spacing="10">
-                        <Button onAction="#handleAssignUser" styleClass="btn-primary" text="Affecter" />
-                        <Button onAction="#handleEditUser" styleClass="btn-primary" text="Modifier" />
-                     </HBox>
-                  </children>
-               </VBox>
-            </Pane>
             <Pane fx:id="HierarchyPane" layoutX="177.0" layoutY="11.0" prefHeight="622.0" prefWidth="964.0" styleClass="pane1" visible="false">
                <children>
                   <VBox layoutX="733.0" layoutY="407.0" spacing="10" />
@@ -74,6 +30,8 @@
                   </HBox>
                   <ComboBox fx:id="parentRoleComboBox" layoutX="525.0" layoutY="260.0" prefHeight="31.0" prefWidth="226.0" promptText="Selectionner role parent" />
                   <ComboBox fx:id="RoleHComboBox" layoutX="525.0" layoutY="215.0" prefHeight="31.0" prefWidth="226.0" promptText="Selectionner role" />
+                  <ComboBox fx:id="DepHComboBox" layoutX="525.0" layoutY="171.0" prefHeight="31.0" prefWidth="226.0" promptText="Selectionner departement" />
+                  <ComboBox fx:id="ComboFilderDepHie" layoutX="384.0" layoutY="32.0" prefHeight="31.0" prefWidth="226.0" promptText="Selectionner departement" />
                </children>
             </Pane>
          </children>
