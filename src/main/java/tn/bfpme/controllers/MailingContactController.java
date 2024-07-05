@@ -201,25 +201,8 @@ public class MailingContactController implements Initializable {
     }
 
     public void loadMail() {
-        if (SessionManager.getInstance().getUserRoleName().equals("Employé")) {
-            User chef = UserS.getChef();
-            if (chef != null) {
-                mail_dest.setText(chef.getEmail());
-                mail_dest.setDisable(true);
-            }
-        }
+        mail_dest.setText("slimchouaib2003@gmail.com");
+        mail_dest.setDisable(true);
     }
 
-    @FXML
-    void searchButton(ActionEvent event) {
-        String searchText = mail_dest.getText().trim();
-        for (User user : usersInDepartment) {
-            if ((user.getNom() + " " + user.getPrenom()).equalsIgnoreCase(searchText) ||
-                    user.getEmail().equalsIgnoreCase(searchText) ||
-                    ((user.getPrenom() + " " + user.getNom()).equalsIgnoreCase(searchText))) {
-                mail_dest.setText(user.getEmail());
-                break;
-            }
-        }
-    }
 }

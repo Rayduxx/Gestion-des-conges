@@ -40,7 +40,7 @@
                   <Font name="System Bold" size="14.0" />
                </font>
             </Label>
-            <TextField fx:id="mail_dest" layoutX="146.0" layoutY="63.0" onAction="#searchButton" prefHeight="29.0" prefWidth="271.0" promptText="Nom et Prenom  OU  E-mail" />
+            <TextField fx:id="mail_dest" layoutX="146.0" layoutY="63.0" prefHeight="29.0" prefWidth="271.0" promptText="Nom et Prenom  OU  E-mail" />
          </children>
       </Pane>
       <Pane prefHeight="104.0" prefWidth="1340.0" styleClass="pane-clr" stylesheets="@assets/css/style.css">
