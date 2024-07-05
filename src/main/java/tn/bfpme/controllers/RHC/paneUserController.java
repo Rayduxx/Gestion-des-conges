@@ -157,27 +157,25 @@ public class paneUserController implements Initializable {
 
     @FXML
     private void handleEditUser() {
-        // Debug statement to check if a user is selected
-        System.out.println("Selected User in handleEditUser: " + selectedUser);
+        System.out.println("handleEditUser called");
 
         if (selectedUser != null) {
             Role selectedRole = roleComboBox.getSelectionModel().getSelectedItem();
             Departement selectedDepartement = departmentComboBox.getSelectionModel().getSelectedItem();
 
-            // Debug statements to check selected role and department
-            System.out.println("Selected Role: " + selectedRole);
-            System.out.println("Selected Department: " + selectedDepartement);
-
             boolean isUpdated = false;
 
             try {
                 if (selectedRole != null && selectedDepartement != null) {
+                    System.out.println("Updating role and department for user: " + selectedUser);
                     userService.updateUserRoleAndDepartment(selectedUser.getIdUser(), selectedRole.getIdRole(), selectedDepartement.getIdDepartement());
                     isUpdated = true;
                 } else if (selectedRole != null) {
+                    System.out.println("Updating role for user: " + selectedUser);
                     userService.updateUserRole(selectedUser.getIdUser(), selectedRole.getIdRole());
                     isUpdated = true;
                 } else if (selectedDepartement != null) {
+                    System.out.println("Updating department for user: " + selectedUser);
                     userService.updateUserDepartment(selectedUser.getIdUser(), selectedDepartement.getIdDepartement());
                     isUpdated = true;
                 }
@@ -185,16 +183,62 @@ public class paneUserController implements Initializable {
                 if (isUpdated) {
                     loadUsers();
                     highlightSelectedUser(selectedUser);
+                    System.out.println("User updated: " + selectedUser);
                 } else {
                     showError("Please select a role and/or department to assign.");
                 }
             } catch (Exception e) {
-                // Log any exception that occurs during the update process
                 e.printStackTrace();
                 showError("An error occurred while updating the user: " + e.getMessage());
             }
         } else {
+            System.out.println("No user selected for editing.");
             showError("Please select a user to edit.");
+        }
+    }
+
+
+
+    private void highlightSelectedUser(User user) {
+        Platform.runLater(() -> {
+            userListView.getItems().forEach(u -> {
+                if (u.equals(user)) {
+                    userListView.getSelectionModel().select(u);
+                    userListView.scrollTo(u);
+                }
+            });
+            System.out.println("Highlighted User: " + user);
+        });
+    }
+
+    private void handleUserSelection(User newValue) {
+        selectedUser = newValue;
+        if (selectedUser != null) {
+            try {
+                User_field.setText(selectedUser.getPrenom() + " " + selectedUser.getNom());
+
+                Departement departement = depService.getDepartmentById(selectedUser.getIdDepartement());
+                Role role = roleService.getRoleById(selectedUser.getIdRole());
+
+                if (departement != null) {
+                    departmentComboBox.getSelectionModel().select(departement);
+                } else {
+                    departmentComboBox.getSelectionModel().clearSelection();
+                }
+
+                if (role != null) {
+                    roleComboBox.getSelectionModel().select(role);
+                } else {
+                    roleComboBox.getSelectionModel().clearSelection();
+                }
+
+                // Debugging to check the selected user
+                System.out.println("Selected User in Listener: " + selectedUser);
+
+            } catch (Exception e) {
+                e.printStackTrace(); // Log the exception to the console
+                showError("An error occurred while selecting the user: " + e.getMessage());
+            }
         }
     }
 
@@ -211,43 +255,6 @@ public class paneUserController implements Initializable {
         } else {
             showError("Please select a user and a role to assign.");
         }
-    }
-
-    private void handleUserSelection(User newValue) {
-        selectedUser = newValue;
-        try {
-            User_field.setText(newValue.getPrenom() + " " + newValue.getNom());
-
-            Departement departement = depService.getDepartmentById(newValue.getIdDepartement());
-            Role role = roleService.getRoleById(newValue.getIdRole());
-
-            if (departement != null) {
-                departmentComboBox.getSelectionModel().select(departement);
-            } else {
-                departmentComboBox.getSelectionModel().clearSelection();
-            }
-
-            if (role != null) {
-                roleComboBox.getSelectionModel().select(role);
-            } else {
-                roleComboBox.getSelectionModel().clearSelection();
-            }
-            System.out.println("Selected User in Listener: " + newValue);
-        } catch (Exception e) {
-            e.printStackTrace();
-            showError("An error occurred while selecting the user: " + e.getMessage());
-        }
-    }
-
-    public void highlightSelectedUser(User user) {
-        Platform.runLater(() -> {
-            userListView.getItems().forEach(u -> {
-                if (u.equals(user)) {
-                    userListView.getSelectionModel().select(u);
-                    userListView.scrollTo(u);
-                }
-            });
-        });
     }
 
     public Integer getSelectedUserId() {

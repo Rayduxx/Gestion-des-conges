@@ -1,5 +1,7 @@
 package tn.bfpme.models;
 
+import java.util.Objects;
+
 public class User {
     private int idUser;
     private String nom;
@@ -152,4 +154,17 @@ public class User {
                 ", idRole=" + idRole +
                 '}';
     }
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        User user = (User) o;
+        return idUser == user.idUser;
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(idUser);
+    }
+
 }
