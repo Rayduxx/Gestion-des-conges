@@ -1,0 +1,26 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+
+<BorderPane xmlns:fx="http://javafx.com/fxml" fx:controller="tn.bfpme.controllers.ResponsableStructure">
+    <center>
+        <VBox spacing="10" padding="10">
+            <TableView fx:id="userTable">
+                <columns>
+                    <TableColumn text="ID" fx:id="userIdColumn" />
+                    <TableColumn text="Name" fx:id="userNameColumn" />
+                    <TableColumn text="Email" fx:id="userEmailColumn" />
+                    <TableColumn text="Manager" fx:id="userManagerColumn" />
+                </columns>
+            </TableView>
+            <HBox spacing="10">
+                <Label text="User:" />
+                <ComboBox fx:id="userComboBox" />
+                <Label text="Manager:" />
+                <ComboBox fx:id="managerComboBox" />
+                <Button text="Set Manager" onAction="#setManager" />
+            </HBox>
+        </VBox>
+    </center>
+</BorderPane>

@@ -7,12 +7,19 @@ import tn.bfpme.utils.SessionManager;
 
 import java.sql.*;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.stream.Collectors;
 
 public class ServiceUtilisateur implements IUtilisateur {
     Connection cnx = MyDataBase.getInstance().getCnx();
+    private Map<Integer, Integer> userManagerMap = new HashMap<>();
 
+
+    public ServiceUtilisateur() {
+        loadHierarchy();
+    }
     public UserConge afficherusers() {
         String departement = String.valueOf(SessionManager.getInstance().getUser().getIdDepartement());
         List<User> users = new ArrayList<>();
@@ -699,82 +706,28 @@ public class ServiceUtilisateur implements IUtilisateur {
 
 
     public void setUserManager(int userId, int managerId) {
-        String query = "UPDATE user SET manager_id = ? WHERE id = ?";
-        try (PreparedStatement stmt = cnx.prepareStatement(query)) {
-            stmt.setInt(1, managerId);
-            stmt.setInt(2, userId);
-            stmt.executeUpdate();
-        } catch (SQLException e) {
-            e.printStackTrace();
-        }
+        userManagerMap.put(userId, managerId);
     }
 
     public User getUserManager(int userId) {
-        User manager = null;
-        String query = "SELECT m.* FROM user u JOIN user m ON u.manager_id = m.id WHERE u.id = ?";
-        try (PreparedStatement stmt = cnx.prepareStatement(query)) {
-            stmt.setInt(1, userId);
-            ResultSet rs = stmt.executeQuery();
-            if (rs.next()) {
-                manager = new User(
-                        rs.getInt("id"),
-                        rs.getString("firstName"),
-                        rs.getString("lastName"),
-                        rs.getString("email"),
-                        rs.getString("password"),
-                        rs.getString("image"),
-                        rs.getInt("soldeAnnuel"),
-                        rs.getInt("soldeMaladie"),
-                        rs.getInt("soldeExceptionnel"),
-                        rs.getInt("soldeMaternite"),
-                        rs.getInt("idDepartement"),
-                        rs.getInt("idRole")
-                );
-            }
-        } catch (SQLException e) {
-            e.printStackTrace();
+        Integer managerId = userManagerMap.get(userId);
+        if (managerId != null) {
+            return getUserById(managerId);
         }
-        return manager;
+        return null;
+    }
+    private void loadHierarchy() {
+        userManagerMap.put(2, 1); // User with ID 2 has manager with ID 1
+        userManagerMap.put(3, 1); // User with ID 3 has manager with ID 1
     }
 
-    public List<User> getAllUsersWithManagers(){
-        List<User> users = new ArrayList<>();
-        String query = "SELECT u.*, m.id AS managerId, m.firstName AS managerFirstName, m.lastName AS managerLastName " +
-                "FROM user u " +
-                "LEFT JOIN user m ON u.manager_id = m.id";
-        try (PreparedStatement stmt = cnx.prepareStatement(query)){
-            ResultSet rs = stmt.executeQuery();
-            {
-    while (rs.next()){
-        User user = new User(
-                rs.getInt("id"),
-                rs.getString("firstName"),
-                rs.getString("lastName"),
-                rs.getString("email"),
-                rs.getString("password"),
-                rs.getString("image"),
-                rs.getInt("soldeAnnuel"),
-                rs.getInt("soldeMaladie"),
-                rs.getInt("soldeExceptionnel"),
-                rs.getInt("soldeMaternite"),
-                rs.getInt("idDepartement"),
-                rs.getInt("idRole")
-        );
-        if (rs.getInt("managerId") !=0){
-            User manager = new User();
-            manager.setIdRole(rs.getInt("managerId"));
-            manager.setPrenom(rs.getString("managerFirstName"));
-            manager.setNom(rs.getString("manager LastName"));
+    public List<User> getAllUsersWithManagers() {
+        List<User> users = getAllUsers();
+        for (User user : users) {
+            User manager = getUserManager(user.getIdUser());
             //user.setManager(manager);
         }
-        users.add(user);
-    }
-        }
-        } catch (SQLException e) {
-            e.printStackTrace();
-        }
         return users;
-
     }
 
 
