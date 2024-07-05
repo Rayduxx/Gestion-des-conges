@@ -277,6 +277,7 @@ public class paneUserController implements Initializable {
             showError("Failed to load users: " + e.getMessage());
         }
     }
+
     protected void showError(String message) {
         Alert alert = new Alert(Alert.AlertType.ERROR);
         alert.setTitle("Error");

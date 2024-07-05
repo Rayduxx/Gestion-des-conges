@@ -138,6 +138,7 @@ public class paneRoleController implements Initializable {
             showError("Failed to load roles: " + e.getMessage());
         }
     }
+
     protected void showError(String message) {
         Alert alert = new Alert(Alert.AlertType.ERROR);
         alert.setTitle("Error");
