@@ -1,69 +1,171 @@
 package tn.bfpme.utils;
 
+import tn.bfpme.models.Departement;
 import tn.bfpme.models.Role;
+import tn.bfpme.models.User;
+import tn.bfpme.services.ServiceDepartement;
+import tn.bfpme.services.ServiceRole;
 
-import java.sql.Date;
+import java.sql.Connection;
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
+import java.sql.SQLException;
+import java.util.List;
 
 public class SessionManager {
     private static SessionManager instance;
+    private User user;
 
-    private static int id_user;
-    private static String nom;
-    private static String prenom;
-    private static String email;
-    private static Role role;
-    private static String image;
-    private static int soldeConge;
-
-    private SessionManager(int id_user , String nom , String prenom , String email, Role role, String image, int soldeConge) {
-        SessionManager.id_user=id_user;
-        SessionManager.nom=nom;
-        SessionManager.prenom=prenom;
-        SessionManager.soldeConge=soldeConge;
-        SessionManager.email=email;
-        SessionManager.role=role;
-        SessionManager.image=image;
+    private SessionManager(User user) {
+        this.user = user;
     }
-    public static SessionManager getInstace(int id_user , String nom , String prenom , String email , Role role, String image, int soldeConge) {
-        if(instance == null) {
-            instance = new SessionManager(id_user, nom , prenom, email, role, image, soldeConge);
+
+    public static SessionManager getInstance(User user) {
+        if (instance == null) {
+            instance = new SessionManager(user);
         }
         return instance;
     }
 
-    public static SessionManager getInstance() {return instance;}
-
-    public static int getId_user() {return id_user;}
-    public static void setId_user(int id_user) {SessionManager.id_user = id_user;}
-
-    public static String getNom() {return nom;}
-    public static void setNom(String nom) {SessionManager.nom = nom;}
-
-    public static String getPrenom() {return prenom;}
-    public static void setPrenom(String prenom) {SessionManager.prenom = prenom;}
-
-    public static String getEmail() {return email;}
-    public static void setEmail(String email) {SessionManager.email = email;}
-
-    public static Role getRole() {return role;}
-    public static void setRole(Role role) {SessionManager.role = role;}
-
-    public static String getImage() {return image;}
-    public static void setImage(String image) {SessionManager.image = image;}
-
-    public static void setInstance(SessionManager instance) {SessionManager.instance = instance;}
-
-    public static int getSoldeConge() {return soldeConge;}
-    public static void setsoldeConge(int soldeConge) {SessionManager.soldeConge  = soldeConge;}
-
-    public static void cleanUserSession() {
-        id_user=0;
-        nom="";
-        prenom="";
-        soldeConge=0;
-        email="";
-        role= Role.valueOf("");
-        image="";
+    public static SessionManager getInstance() {
+        if (instance == null) {
+            throw new IllegalStateException("SessionManager is not initialized. Call getInstance(User) first.");
+        }
+        return instance;
     }
 
+    public void updateSession(User user) {
+        this.user = user;
+    }
+
+    public User getUser() {
+        return user;
+    }
+
+    public static void cleanUserSession() {
+        instance = null;
+    }
+
+    public Departement getUserDepartment() {
+        return ServiceDepartement.getDepartmentById(user.getIdDepartement());
+    }
+
+    public String getUserDepartmentName() {
+        Departement departement = getUserDepartment();
+        return departement != null ? departement.getNom() : null;
+    }
+
+    public Departement getParentDepartment() {
+        return ServiceDepartement.getParentDepartment(user.getIdDepartement());
+    }
+
+    public Role getUserRole() {
+        return ServiceRole.getRoleByUserId(user.getIdUser());
+    }
+
+    public String getUserRoleName() {
+        Role role = getUserRole();
+        return role != null ? role.getNom() : null;
+    }
+
+    public List<Role> getParentRoles() {
+        Role role = getUserRole();
+        return ServiceRole.getParentRoles(role.getIdRole());
+    }
+
+    public List<Role> getChildRoles() {
+        Role role = getUserRole();
+        return ServiceRole.getChildRoles(role.getIdRole());
+    }
+
+    public User getUserChef() {
+        Role userRole = getUserRole();
+        List<Integer> parentRoleIds = ServiceRole.getParentRoleIds(userRole.getIdRole());
+        if (parentRoleIds.isEmpty()) {
+            return null;
+        }
+
+        String sql = "SELECT u.*, ur.ID_Role FROM user u JOIN user_role ur ON u.ID_User = ur.ID_User WHERE u.ID_Departement = ? AND ur.ID_Role IN (";
+        for (int i = 0; i < parentRoleIds.size(); i++) {
+            sql += parentRoleIds.get(i);
+            if (i < parentRoleIds.size() - 1) {
+                sql += ", ";
+            }
+        }
+        sql += ") LIMIT 1";
+
+        try (Connection cnx = MyDataBase.getInstance().getCnx();
+             PreparedStatement stmt = cnx.prepareStatement(sql)) {
+            stmt.setInt(1, user.getIdDepartement());
+            ResultSet rs = stmt.executeQuery();
+            if (rs.next()) {
+                User chef = new User(
+                        rs.getInt("ID_User"),
+                        rs.getString("Nom"),
+                        rs.getString("Prenom"),
+                        rs.getString("Email"),
+                        rs.getString("MDP"),
+                        rs.getString("Image"),
+                        rs.getInt("Solde_Annuel"),
+                        rs.getInt("Solde_Maladie"),
+                        rs.getInt("Solde_Exceptionnel"),
+                        rs.getInt("Solde_Maternite"),
+                        rs.getInt("ID_Departement"),
+                        rs.getInt("ID_Role")
+                );
+                return chef;
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return null;
+    }
+
+    public User getUserChefByDeptAndRole(String deptName, String roleName) {
+        Departement departement = ServiceDepartement.getDepartmentByName(deptName);
+        Role role = ServiceRole.getRoleByName(roleName);
+        if (departement == null || role == null) {
+            return null;
+        }
+
+        List<Integer> parentRoleIds = ServiceRole.getParentRoleIds(role.getIdRole());
+        if (parentRoleIds.isEmpty()) {
+            return null;
+        }
+
+        String sql = "SELECT u.*, ur.ID_Role FROM user u JOIN user_role ur ON u.ID_User = ur.ID_User WHERE u.ID_Departement = ? AND ur.ID_Role IN (";
+        for (int i = 0; i < parentRoleIds.size(); i++) {
+            sql += parentRoleIds.get(i);
+            if (i < parentRoleIds.size() - 1) {
+                sql += ", ";
+            }
+        }
+        sql += ") LIMIT 1";
+
+        try (Connection cnx = MyDataBase.getInstance().getCnx();
+             PreparedStatement stmt = cnx.prepareStatement(sql)) {
+            stmt.setInt(1, departement.getIdDepartement());
+            ResultSet rs = stmt.executeQuery();
+            if (rs.next()) {
+                User chef = new User(
+                        rs.getInt("ID_User"),
+                        rs.getString("Nom"),
+                        rs.getString("Prenom"),
+                        rs.getString("Email"),
+                        rs.getString("MDP"),
+                        rs.getString("Image"),
+                        rs.getInt("Solde_Annuel"),
+                        rs.getInt("Solde_Maladie"),
+                        rs.getInt("Solde_Exceptionnel"),
+                        rs.getInt("Solde_Maternite"),
+                        rs.getInt("ID_Departement"),
+                        rs.getInt("ID_Role")
+                );
+                return chef;
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return null;
+    }
 }
