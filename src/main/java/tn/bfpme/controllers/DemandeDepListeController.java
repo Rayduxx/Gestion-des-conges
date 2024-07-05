@@ -17,11 +17,8 @@ import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.control.*;
 import javafx.scene.input.KeyEvent;
-import javafx.scene.layout.ColumnConstraints;
-import javafx.scene.layout.GridPane;
+import javafx.scene.layout.*;
 import javafx.scene.control.ContextMenu;
-import javafx.scene.layout.Pane;
-import javafx.scene.layout.Priority;
 import javafx.stage.Popup;
 import javafx.stage.Stage;
 import javafx.stage.Window;
@@ -37,115 +34,28 @@ public class DemandeDepListeController implements Initializable {
     @FXML
     private TextField Recherche_demande;
     @FXML
+    private AnchorPane MainAnchorPane;
+    @FXML
     private ComboBox<String> comboTri;
-    @FXML
-    private Button settingsButton;
-    @FXML
-    private Button btnListe;
-    private ContextMenu contextMenu;
-    private Popup settingsPopup;
-    private Popup notifPopup;
     @FXML public Button NotifBtn;
     private Conge conge;
     private final ServiceConge CongeS = new ServiceConge();
     private final ServiceUtilisateur UserS = new ServiceUtilisateur();
-
-    public void load() {
-        DemandesContainer.getColumnConstraints().clear();
-        for (int i = 0; i < 3; i++) { // Three columns
-            ColumnConstraints columnConstraints = new ColumnConstraints();
-            columnConstraints.setHgrow(Priority.ALWAYS);
-            DemandesContainer.getColumnConstraints().add(columnConstraints);
-        }
-        DemandesContainer.setVgap(10);
-        DemandesContainer.setHgap(10);
-        DemandesContainer.setPadding(new Insets(10));
-
-        int row = 0;
-        int column = 0;
-        try {
-            UserConge userConge = UserS.afficherusers();
-            List<User> users = userConge.getUsers();
-            List<Conge> conges = userConge.getConges();
-            for (Conge conge : conges) {
-                for (User user : users) {
-                    if (conge.getIdUser() == user.getIdUser()) {
-                        FXMLLoader fxmlLoader = new FXMLLoader();
-                        fxmlLoader.setLocation(getClass().getResource("/UserCarte.fxml"));
-                        try {
-                            Pane cardBox = fxmlLoader.load();
-                            UserCarteController cardu = fxmlLoader.getController();
-                            cardu.setData(conge, user);
-                            DemandesContainer.add(cardBox, column, row);
-                            GridPane.setMargin(cardBox, new Insets(10));
-                            cardBox.setMaxWidth(Double.MAX_VALUE);
-                            column++;
-                            if (column == 3) {
-                                column = 0;
-                                row++;
-                            }
-                        } catch (IOException e) {
-                            System.err.println("Error loading UserCarte.fxml: " + e.getMessage());
-                        }
-                        break;
-                    }
-                }
-            }
-        } catch (Exception e) {
-            System.err.println("Error in load method: " + e.getMessage());
-            e.printStackTrace();
-        }
-    }
-
     ObservableList<String> TriListe = FXCollections.observableArrayList("Type", "Nom", "Prenom", "Date Debut", "Date Fin");
+
 
     @Override
     public void initialize(URL url, ResourceBundle rb) {
         load();
         comboTri.setValue("Selectioner");
         comboTri.setItems(TriListe);
-        String userRole = SessionManager.getInstance().getUserRoleName();
-        btnListe.setVisible(!userRole.equals("Employe"));
-        settingsPopup = new Popup();
-        settingsPopup.setAutoHide(true);
-
         try {
-            Parent settingsContent = FXMLLoader.load(getClass().getResource("/Settings.fxml"));
-            settingsPopup.getContent().add(settingsContent);
+            FXMLLoader loader = new FXMLLoader(getClass().getResource("/NavigationHeader.fxml"));
+            Pane departementPane = loader.load();
+            MainAnchorPane.getChildren().add(departementPane);
         } catch (IOException e) {
             e.printStackTrace();
         }
-        notifPopup =new Popup();
-        notifPopup.setAutoHide(true);
-        try {
-            Parent settingsContent = FXMLLoader.load(getClass().getResource("/paneNotif.fxml"));
-            notifPopup.getContent().add(settingsContent);
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-    }
-    @FXML
-    void settings_button(ActionEvent event) {
-        if (settingsPopup.isShowing()) {
-            settingsPopup.hide();
-        } else {
-            Window window = ((Node) event.getSource()).getScene().getWindow();
-            double x = window.getX() + settingsButton.localToScene(0, 0).getX() + settingsButton.getScene().getX() - 150;
-            double y = window.getY() + settingsButton.localToScene(0, 0).getY() + settingsButton.getScene().getY() + settingsButton.getHeight();
-            settingsPopup.show(window, x, y);
-        }
-    }
-    @FXML
-    void OpenNotifPane(ActionEvent event) {
-        if (notifPopup.isShowing()) {
-            notifPopup.hide();
-        } else {
-            Window window = ((Node) event.getSource()).getScene().getWindow();
-            double x = window.getX() + NotifBtn.localToScene(0, 0).getX() + NotifBtn.getScene().getX() - 250;
-            double y = window.getY() + NotifBtn.localToScene(0, 0).getY() + NotifBtn.getScene().getY() + NotifBtn.getHeight();
-            notifPopup.show(window, x, y);
-        }
-
     }
     @FXML void Recherche(KeyEvent event) {
     }
@@ -210,62 +120,48 @@ public class DemandeDepListeController implements Initializable {
             e.printStackTrace();
         }
     }
-
-
-
-    @FXML void Demander(ActionEvent event) {
-        try {
-            FXMLLoader loader = new FXMLLoader(getClass().getResource("/DemandeConge.fxml"));
-            Parent root = loader.load();
-            Stage stage = (Stage) ((Node) event.getSource()).getScene().getWindow();
-            Scene scene = new Scene(root);
-            stage.setScene(scene);
-            stage.setTitle("Demande congé");
-            stage.show();
-            StageManager.addStage("DemandeConge", stage);
-        } catch (IOException e) {
-            e.printStackTrace();
+    public void load() {
+        DemandesContainer.getColumnConstraints().clear();
+        for (int i = 0; i < 3; i++) { // Three columns
+            ColumnConstraints columnConstraints = new ColumnConstraints();
+            columnConstraints.setHgrow(Priority.ALWAYS);
+            DemandesContainer.getColumnConstraints().add(columnConstraints);
         }
-    }
-    @FXML void Historique(ActionEvent event) {
+        DemandesContainer.setVgap(10);
+        DemandesContainer.setHgap(10);
+        DemandesContainer.setPadding(new Insets(10));
+        int row = 0;
+        int column = 0;
         try {
-            FXMLLoader loader = new FXMLLoader(getClass().getResource("/HistoriqueConge.fxml"));
-            Parent root = loader.load();
-            Stage stage = (Stage) ((Node) event.getSource()).getScene().getWindow();
-            Scene scene = new Scene(root);
-            stage.setScene(scene);
-            stage.setTitle("Historique congé");
-            stage.show();
-            StageManager.addStage("HistoriqueConge", stage);
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-    }
-    @FXML void goto_profil(ActionEvent event) {
-        try {
-            FXMLLoader loader = new FXMLLoader(getClass().getResource("/profile.fxml"));
-            Parent root = loader.load();
-            Stage stage = (Stage) ((Node) event.getSource()).getScene().getWindow();
-            Scene scene = new Scene(root);
-            stage.setScene(scene);
-            stage.setTitle("Mon profil");
-            stage.show();
-            StageManager.addStage("Profile", stage);
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-    }
-    @FXML void ListeDesDemandes(ActionEvent event) {
-        try {
-            FXMLLoader loader = new FXMLLoader(getClass().getResource("/DemandeDepListe.fxml"));
-            Parent root = loader.load();
-            Stage stage = (Stage) ((Node) event.getSource()).getScene().getWindow();
-            Scene scene = new Scene(root);
-            stage.setScene(scene);
-            stage.setTitle("Liste des demandes - " + SessionManager.getInstance().getUserDepartmentName());
-            stage.show();
-            StageManager.addStage("DemandeDepListe", stage);
-        } catch (IOException e) {
+            UserConge userConge = UserS.afficherusers();
+            List<User> users = userConge.getUsers();
+            List<Conge> conges = userConge.getConges();
+            for (Conge conge : conges) {
+                for (User user : users) {
+                    if (conge.getIdUser() == user.getIdUser()) {
+                        FXMLLoader fxmlLoader = new FXMLLoader();
+                        fxmlLoader.setLocation(getClass().getResource("/UserCarte.fxml"));
+                        try {
+                            Pane cardBox = fxmlLoader.load();
+                            UserCarteController cardu = fxmlLoader.getController();
+                            cardu.setData(conge, user);
+                            DemandesContainer.add(cardBox, column, row);
+                            GridPane.setMargin(cardBox, new Insets(10));
+                            cardBox.setMaxWidth(Double.MAX_VALUE);
+                            column++;
+                            if (column == 3) {
+                                column = 0;
+                                row++;
+                            }
+                        } catch (IOException e) {
+                            System.err.println("Error loading UserCarte.fxml: " + e.getMessage());
+                        }
+                        break;
+                    }
+                }
+            }
+        } catch (Exception e) {
+            System.err.println("Error in load method: " + e.getMessage());
             e.printStackTrace();
         }
     }
