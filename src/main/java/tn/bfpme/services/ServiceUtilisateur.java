@@ -697,6 +697,7 @@ public class ServiceUtilisateur implements IUtilisateur {
     }
 
 
+
     public void setUserManager(int userId, int managerId) {
         String query = "UPDATE user SET manager_id = ? WHERE id = ?";
         try (PreparedStatement stmt = cnx.prepareStatement(query)) {
