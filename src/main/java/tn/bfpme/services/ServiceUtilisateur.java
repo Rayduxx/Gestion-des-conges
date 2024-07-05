@@ -4,6 +4,7 @@ import tn.bfpme.interfaces.IUtilisateur;
 import tn.bfpme.models.*;
 import tn.bfpme.utils.MyDataBase;
 import tn.bfpme.utils.SessionManager;
+import tn.bfpme.controllers.ResponsableStructure;
 
 import java.sql.*;
 import java.util.ArrayList;
@@ -723,7 +724,6 @@ public class ServiceUtilisateur implements IUtilisateur {
     public void setUserManager(int userId, int managerId) {
         userManagerMap.put(userId, managerId);
     }
-
     public User getUserManager(int userId) {
         Integer managerId = userManagerMap.get(userId);
         if (managerId != null) {
@@ -740,7 +740,7 @@ public class ServiceUtilisateur implements IUtilisateur {
         List<User> users = getAllUsers();
         for (User user : users) {
             User manager = getUserManager(user.getIdUser());
-            //user.setManager(manager);
+            user.setNom(user.getNom() + (manager != null ? " (Manager: " + manager.getNom() + ")" : " (No Manager)"));
         }
         return users;
     }
