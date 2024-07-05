@@ -4,10 +4,7 @@ import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
-import javafx.scene.control.ComboBox;
-import javafx.scene.control.ListCell;
-import javafx.scene.control.ListView;
-import javafx.scene.control.TextField;
+import javafx.scene.control.*;
 import tn.bfpme.models.Departement;
 import tn.bfpme.services.ServiceDepartement;
 
@@ -116,8 +113,8 @@ public class paneDepController implements Initializable {
                     }
                 }
             });
-            PUC.departmentComboBox.setItems(departments);
-            PUC.departmentComboBox.setCellFactory(param -> new ListCell<Departement>() {
+            /*departmentComboBox.setItems(departments);
+            departmentComboBox.setCellFactory(param -> new ListCell<Departement>() {
                 @Override
                 protected void updateItem(Departement item, boolean empty) {
                     super.updateItem(item, empty);
@@ -128,7 +125,7 @@ public class paneDepController implements Initializable {
                     }
                 }
             });
-            PUC.departmentComboBox.setButtonCell(new ListCell<Departement>() {
+            departmentComboBox.setButtonCell(new ListCell<Departement>() {
                 @Override
                 protected void updateItem(Departement item, boolean empty) {
                     super.updateItem(item, empty);
@@ -139,7 +136,7 @@ public class paneDepController implements Initializable {
                     }
                 }
             });
-            /*DepHComboBox.setItems(departments);
+            DepHComboBox.setItems(departments);
             DepHComboBox.setCellFactory(param -> new ListCell<Departement>() {
                 @Override
                 protected void updateItem(Departement item, boolean empty) {
@@ -163,7 +160,16 @@ public class paneDepController implements Initializable {
                 }
             });*/
         } catch (Exception e) {
-            RHC.showError("Failed to load departments: " + e.getMessage());
+            showError("Failed to load departments: " + e.getMessage());
         }
     }
+
+    protected void showError(String message) {
+        Alert alert = new Alert(Alert.AlertType.ERROR);
+        alert.setTitle("Error");
+        alert.setHeaderText(null);
+        alert.setContentText(message);
+        alert.showAndWait();
+    }
+
 }

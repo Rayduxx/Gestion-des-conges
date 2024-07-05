@@ -50,9 +50,6 @@ public class RHController {
     private paneDepController PDC;
     public void initialize() {
         roleService = new ServiceRole();
-        PDC.loadDepartments();
-        PRC.loadRoles();
-        //loadUsers();
         loadRoleHierarchie();
         settingsPopup = new Popup();
         settingsPopup.setAutoHide(true);
@@ -80,7 +77,6 @@ public class RHController {
             showError("Failed to load role hierarchies: " + e.getMessage());
         }
     }
-
     protected void showError(String message) {
         Alert alert = new Alert(Alert.AlertType.ERROR);
         alert.setTitle("Error");
@@ -88,6 +84,7 @@ public class RHController {
         alert.setContentText(message);
         alert.showAndWait();
     }
+
 
     @FXML
     void handleAddRoleToH(ActionEvent event) {

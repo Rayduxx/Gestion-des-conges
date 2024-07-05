@@ -7,10 +7,7 @@ import javafx.collections.transformation.FilteredList;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
-import javafx.scene.control.ComboBox;
-import javafx.scene.control.ListCell;
-import javafx.scene.control.ListView;
-import javafx.scene.control.TextField;
+import javafx.scene.control.*;
 import tn.bfpme.models.Departement;
 import tn.bfpme.models.Role;
 import tn.bfpme.models.User;
@@ -28,7 +25,7 @@ public class paneUserController implements Initializable {
     @FXML
     private TextField User_field;
     @FXML
-    protected ComboBox<Departement> departmentComboBox;
+    public ComboBox<Departement> departmentComboBox;
     @FXML
     protected ComboBox<Role> roleComboBox;
 
@@ -45,6 +42,14 @@ public class paneUserController implements Initializable {
         loadUsers();
         List<User> userList = userService.getAllUsers();
         ObservableList<User> users = FXCollections.observableArrayList(userList);
+        List<Departement> departmentList = depService.getAllDepartments();
+        Departement noParentDept = new Departement(0, "", "", 0);
+        departmentList.add(0, noParentDept);
+        List<Role> roleList = roleService.getAllRoles();
+        Role noParentRole = new Role(0, "", "");
+        roleList.add(0, noParentRole);
+        ObservableList<Role> roles = FXCollections.observableArrayList(roleList);
+        ObservableList<Departement> departments = FXCollections.observableArrayList(departmentList);
         filteredData = new FilteredList<>(users, p -> true);
         userListView.getSelectionModel().selectedItemProperty().addListener((observable, oldValue, newValue) -> {
             Platform.runLater(() -> {
@@ -87,6 +92,52 @@ public class paneUserController implements Initializable {
                     Departement departement = depService.getDepartmentById(user.getIdDepartement());
                     Role role = roleService.getRoleById(user.getIdRole());
                     setText(user.getPrenom() + " " + user.getNom() + " _ " + user.getEmail() + " _ " + (role != null ? role.getNom() : "N/A") + " _ " + (departement != null ? departement.getNom() : "N/A"));
+                }
+            }
+        });
+        departmentComboBox.setItems(departments);
+        departmentComboBox.setCellFactory(param -> new ListCell<Departement>() {
+            @Override
+            protected void updateItem(Departement item, boolean empty) {
+                super.updateItem(item, empty);
+                if (empty || item == null || item.getNom() == null) {
+                    setText(null);
+                } else {
+                    setText(item.getNom());
+                }
+            }
+        });
+        departmentComboBox.setButtonCell(new ListCell<Departement>() {
+            @Override
+            protected void updateItem(Departement item, boolean empty) {
+                super.updateItem(item, empty);
+                if (empty || item == null || item.getNom() == null) {
+                    setText(null);
+                } else {
+                    setText(item.getNom());
+                }
+            }
+        });
+        roleComboBox.setItems(roles);
+        roleComboBox.setCellFactory(param -> new ListCell<Role>() {
+            @Override
+            protected void updateItem(Role item, boolean empty) {
+                super.updateItem(item, empty);
+                if (empty || item == null || item.getNom() == null) {
+                    setText(null);
+                } else {
+                    setText(item.getNom());
+                }
+            }
+        });
+        roleComboBox.setButtonCell(new ListCell<Role>() {
+            @Override
+            protected void updateItem(Role item, boolean empty) {
+                super.updateItem(item, empty);
+                if (empty || item == null || item.getNom() == null) {
+                    setText(null);
+                } else {
+                    setText(item.getNom());
                 }
             }
         });
@@ -135,15 +186,15 @@ public class paneUserController implements Initializable {
                     loadUsers();
                     highlightSelectedUser(selectedUser);
                 } else {
-                    RHC.showError("Please select a role and/or department to assign.");
+                    showError("Please select a role and/or department to assign.");
                 }
             } catch (Exception e) {
                 // Log any exception that occurs during the update process
                 e.printStackTrace();
-                RHC.showError("An error occurred while updating the user: " + e.getMessage());
+                showError("An error occurred while updating the user: " + e.getMessage());
             }
         } else {
-            RHC.showError("Please select a user to edit.");
+            showError("Please select a user to edit.");
         }
     }
 
@@ -158,7 +209,7 @@ public class paneUserController implements Initializable {
             loadUsers();
             highlightSelectedUser(userService.getUserById(userId));
         } else {
-            RHC.showError("Please select a user and a role to assign.");
+            showError("Please select a user and a role to assign.");
         }
     }
 
@@ -184,7 +235,7 @@ public class paneUserController implements Initializable {
             System.out.println("Selected User in Listener: " + newValue);
         } catch (Exception e) {
             e.printStackTrace();
-            RHC.showError("An error occurred while selecting the user: " + e.getMessage());
+            showError("An error occurred while selecting the user: " + e.getMessage());
         }
     }
 
@@ -223,7 +274,15 @@ public class paneUserController implements Initializable {
                 }
             });
         } catch (Exception e) {
-            RHC.showError("Failed to load users: " + e.getMessage());
+            showError("Failed to load users: " + e.getMessage());
         }
+    }
+
+    protected void showError(String message) {
+        Alert alert = new Alert(Alert.AlertType.ERROR);
+        alert.setTitle("Error");
+        alert.setHeaderText(null);
+        alert.setContentText(message);
+        alert.showAndWait();
     }
 }
