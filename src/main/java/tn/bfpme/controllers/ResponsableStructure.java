@@ -4,6 +4,8 @@ import javafx.beans.property.SimpleStringProperty;
 import javafx.collections.FXCollections;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
+
+import javafx.fxml.Initializable;
 import javafx.scene.control.ComboBox;
 import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableView;
@@ -11,9 +13,11 @@ import javafx.scene.control.cell.PropertyValueFactory;
 import tn.bfpme.models.User;
 import tn.bfpme.services.ServiceUtilisateur;
 
+import java.net.URL;
 import java.util.List;
+import java.util.ResourceBundle;
 
-public class ResponsableStructure {
+public class ResponsableStructure implements Initializable {
 
     @FXML
     private TableView<User> userTable;
@@ -32,21 +36,6 @@ public class ResponsableStructure {
 
     private ServiceUtilisateur serviceUtilisateur;
 
-    @FXML
-    public void initialize() {
-        serviceUtilisateur = new ServiceUtilisateur();
-
-        userIdColumn.setCellValueFactory(new PropertyValueFactory<>("id"));
-        userNameColumn.setCellValueFactory(new PropertyValueFactory<>("fullName"));
-        userEmailColumn.setCellValueFactory(new PropertyValueFactory<>("email"));
-        userManagerColumn.setCellValueFactory(cellData -> {
-            User manager = cellData.getValue();
-            return new SimpleStringProperty(manager != null ? manager.getNom() : "No Manager");
-        });
-
-        loadUsers();
-    }
-
     private void loadUsers() {
         List<User> users = serviceUtilisateur.getAllUsersWithManagers();
         userTable.setItems(FXCollections.observableArrayList(users));
@@ -63,5 +52,20 @@ public class ResponsableStructure {
             serviceUtilisateur.setUserManager(selectedUser.getIdUser(), selectedManager.getIdUser());
             loadUsers(); // Refresh the table view
         }
+    }
+
+    @Override
+    public void initialize(URL url, ResourceBundle resourceBundle) {
+        serviceUtilisateur = new ServiceUtilisateur();
+
+        userIdColumn.setCellValueFactory(new PropertyValueFactory<>("idUser"));
+        userNameColumn.setCellValueFactory(new PropertyValueFactory<>("fullName"));
+        userEmailColumn.setCellValueFactory(new PropertyValueFactory<>("email"));
+        userManagerColumn.setCellValueFactory(cellData -> {
+            User manager = serviceUtilisateur.getUserManager(cellData.getValue().getIdUser());
+            return new SimpleStringProperty(manager != null ? manager.getNom() + " " + manager.getPrenom() : "No Manager");
+        });
+
+        loadUsers();
     }
 }

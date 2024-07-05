@@ -31,7 +31,7 @@
       </Label>
       <HBox alignment="CENTER" layoutX="520.0" layoutY="21.0" prefHeight="63.0" prefWidth="806.0" spacing="22.0">
          <children>
-            <Button fx:id="btnRH" mnemonicParsing="false" onAction="#RH_Interface" prefHeight="38.0" prefWidth="75.0" text="RH" visible="false">
+            <Button fx:id="btnRH" mnemonicParsing="false" onAction="#RH_Interface" prefHeight="38.0" prefWidth="75.0" text="RH">
                <font>
                   <Font size="14.0" />
                </font>
@@ -41,7 +41,7 @@
                   <String fx:value="RobotoBold" />
                </styleClass>
             </Button>
-            <Button fx:id="btnListe" mnemonicParsing="false" onAction="#ListeDesDemandes" prefHeight="38.0" prefWidth="182.0" text="Liste des demandes" visible="false">
+            <Button fx:id="btnListe" mnemonicParsing="false" onAction="#ListeDesDemandes" prefHeight="38.0" prefWidth="182.0" text="Liste des demandes">
                <font>
                   <Font size="14.0" />
                </font>
@@ -95,5 +95,15 @@
             </HBox>
          </children>
       </HBox>
+      <Button fx:id="test_interfaceID" layoutX="385.0" layoutY="35.0" mnemonicParsing="false" onAction="#test_interface" prefHeight="38.0" prefWidth="75.0" text="test">
+         <font>
+            <Font size="14.0" />
+         </font>
+         <styleClass>
+            <String fx:value="btn-secondary" />
+            <String fx:value="FontSize-15" />
+            <String fx:value="RobotoBold" />
+         </styleClass>
+      </Button>
    </children>
 </Pane>
