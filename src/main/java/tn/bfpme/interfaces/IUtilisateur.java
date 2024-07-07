@@ -46,4 +46,14 @@ public interface IUtilisateur {
     void updateUserDepartment(int userId, int departmentId);
 
     User getUserById(int userId);
+
+    void Add(User user);
+
+    void Update(User user);
+
+    List<User> Show();
+
+    void Delete(User user);
+
+    void DeleteByID(int id);
 }
