@@ -4,7 +4,6 @@ import tn.bfpme.interfaces.IUtilisateur;
 import tn.bfpme.models.*;
 import tn.bfpme.utils.MyDataBase;
 import tn.bfpme.utils.SessionManager;
-import tn.bfpme.controllers.ResponsableStructure;
 
 import java.sql.*;
 import java.util.ArrayList;
@@ -850,6 +849,133 @@ public class ServiceUtilisateur implements IUtilisateur {
         }
         return users;
     }
+    @Override
+    public void Add(User user) {
+        String qry = "INSERT INTO `user` ('Nom', 'Prenom', 'Email', 'MDP', 'Image', 'Solde_Annuel', 'Solde_Maladie', 'Solde_Exceptionnel', 'Solde_Maternité') VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)";
+
+        try (PreparedStatement stm = cnx.prepareStatement(qry)) {
+            stm.setString(1, user.getNom());
+            stm.setString(2, user.getPrenom());
+            stm.setString(3, user.getEmail());
+            stm.setString(4, user.getMdp());
+            stm.setString(5, user.getImage());
+            stm.setInt(6, user.getSoldeAnnuel());
+            stm.setInt(7, user.getSoldeMaladie());
+            stm.setInt(8, user.getSoldeExceptionnel());
+            stm.setInt(9, user.getSoldeMaternite());
+
+            stm.executeUpdate();
+        } catch (SQLException e) {
+            System.out.println(e.getMessage());
+        }
+    }
+
+    @Override
+    public void Update(User user) {
+        String qry = "UPDATE `user` SET `Nom`=?, `Prenom`=?, `Email`=?, `MDP`=?, `Image`=?, `Solde_Annuel`=?, `Solde_Maladie`=?, `Solde_Exceptionnel`=?,`Solde_Maternité`=? WHERE `Id_User`=?";
+
+        try (PreparedStatement stm = cnx.prepareStatement(qry)) {
+            stm.setString(1, user.getNom());
+            stm.setString(2, user.getPrenom());
+            stm.setString(3, user.getEmail());
+            stm.setString(4, user.getMdp());
+            stm.setString(5, user.getImage());
+            stm.setInt(6, user.getSoldeAnnuel());
+            stm.setInt(7, user.getSoldeMaladie());
+            stm.setInt(8, user.getSoldeExceptionnel());
+            stm.setInt(9, user.getSoldeMaternite());
+            stm.executeUpdate();
+        } catch (Exception ex) {
+            System.out.println(ex.getMessage());
+        }
+    }
+
+    @Override
+    public List<User> Show() {
+        List<User> users = new ArrayList<>();
+        String sql = "SELECT `ID_User`, 'Nom', 'Prenom', 'Email', 'MDP', 'Image', 'Solde_Annuel', 'Solde_Maladie', 'Solde_Exceptionnel', 'Solde_Maternité' FROM `user`";
+        try {
+            Statement ste = cnx.createStatement();
+            ResultSet rs = ste.executeQuery(sql);
+            while (rs.next()) {
+                User user = new User();
+                user.setIdUser(rs.getInt("ID_User"));
+                user.setNom(rs.getString("Nom"));
+                user.setPrenom(rs.getString("Prenom"));
+                user.setEmail(rs.getString("Email"));
+                user.setImage(rs.getString("Image"));
+                user.setSoldeAnnuel(rs.getInt("Solde_Annuel"));
+                user.setSoldeExceptionnel(rs.getInt("Solde_Exceptionnel"));
+                user.setSoldeMaladie(rs.getInt("Solde_Maladie"));
+                user.setSoldeMaternite(rs.getInt("Solde_Maternité"));
+                users.add(user);
+            }
+        } catch (SQLException ex) {
+            System.out.println(ex.getMessage());
+        }
+        return users;
+    }
+    @Override
+    public void Delete(User user) {
+        try {
+            String qry = "DELETE FROM `user` WHERE ID_User=?";
+            PreparedStatement smt = cnx.prepareStatement(qry);
+            smt.setInt(1, user.getIdUser());
+            smt.executeUpdate();
+        } catch (SQLException ex) {
+            System.out.println(ex.getMessage());
+        }
+    }
+    @Override
+    public void DeleteByID(int id) {
+        try {
+            String qry = "DELETE FROM `user` WHERE ID_User=?";
+            PreparedStatement smt = cnx.prepareStatement(qry);
+            smt.setInt(1, id);
+            smt.executeUpdate();
+            System.out.println("Suppression Effectué");
+        } catch (SQLException ex) {
+            System.out.println(ex.getMessage());
+        }
+    }
+    public boolean checkUserExists(String email) {
+        String req = "SELECT count(1) FROM `usertable` WHERE `Email`=?";
+        boolean exists = false;
+        try {
+            PreparedStatement ps = cnx.prepareStatement(req);
+            ps.setString(1, email);
+            ResultSet res = ps.executeQuery();
+            if (res.next()) {
+                exists = res.getInt(1) > 0;
+            }
+        } catch (SQLException e) {
+            System.out.println("Error checking if user exists: " + e.getMessage());
+        }
+        return exists;
+    }
+    public boolean checkPhoneExists(String phoneNumber) {
+        String req = "SELECT count(1) FROM `usertable` WHERE `NumTel`=?";
+        boolean exists = false;
+        try {
+            PreparedStatement ps = cnx.prepareStatement(req);
+            ps.setString(1, phoneNumber);
+            ResultSet res = ps.executeQuery();
+            if (res.next()) {
+                exists = res.getInt(1) > 0;
+            }
+        } catch (SQLException e) {
+            System.out.println("Error checking if phone number exists: " + e.getMessage());
+        }
+        return exists;
+    }
+
+
+
+    public boolean isValidEmail(String email) {
+        String emailRegex = "^[a-zA-Z0-9_+&*-]+(?:\\.[a-zA-Z0-9_+&*-]+)*\\.?[a-zA-Z0-9_+&*-]+@(?:[a-zA-Z0-9-]+\\.)+[a-zA-Z]{2,7}$";
+        return email.matches(emailRegex);
+    }
+
 
 
 

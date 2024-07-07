@@ -40,6 +40,9 @@ public class NavigationHeaderController implements Initializable {
     @FXML
     private ImageView pdp2;
 
+    @FXML
+    private Button admin_interface;
+
 
     @FXML
     private Button settingsButton;
@@ -52,7 +55,8 @@ public class NavigationHeaderController implements Initializable {
         String userDep = SessionManager.getInstance().getUserDepartmentName();
         btnListe.setVisible(!userRole.equals("Employe"));
         btnRH.setVisible(userDep.equals("RH") && userRole.equals("Directeur"));
-        test_interfaceID.setVisible(userRole.equals("RH_Employee"));
+        admin_interface.setVisible(userRole.equals("AdminIT"));
+        test_interfaceID.setVisible(userRole.equals("Zokolomo"));
         settingsPopup = new Popup();
         settingsPopup.setAutoHide(true);
 
@@ -114,6 +118,11 @@ public class NavigationHeaderController implements Initializable {
     @FXML
     void test_interface(ActionEvent event) {
         navigateToScene(event, "/ResponsableStructure.fxml", "TEST");
+
+    }
+    @FXML
+    void admin_interfacebtn(ActionEvent event) {
+        navigateToScene(event, "/AdminIT.fxml", "AdminIT");
 
     }
 
