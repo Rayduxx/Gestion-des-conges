@@ -996,5 +996,7 @@ public class ServiceUtilisateur implements IUtilisateur {
     }
 
 
-
+    public int getUserIdCard() {
+        return 0;
+    }
 }

@@ -96,7 +96,7 @@ public class AdminITController implements Initializable {
 
     @FXML
     void modifier_user(ActionEvent event) {
-      /*  String Nom = nom_A.getText();
+        String Nom = nom_A.getText();
         String Prenom = Prenom_A.getText();
         String Email = email_A.getText();
         String Mdp = MDP_A.getText();
@@ -108,7 +108,7 @@ public class AdminITController implements Initializable {
 
         if (Email.matches("^[_A-Za-z0-9-\\+]+(\\.[_A-Za-z0-9-]+)*@(bfpme\\.tn|gmail\\.com)$")) {
             try {
-                int userId = UserS.getUserById();
+                int userId = UserS.getUserIdCard();
                 if (!emailExists(Email) || isCurrentUser(userId, Email)) {
                     UserS.Update(new User(userId, Nom, Prenom, Email, Mdp, Image, solde_annuel, solde_maladie, solde_exceptionnel, solde_maternite, 0, 0));
                     infolabel.setText("Modification Effectuée");
@@ -120,7 +120,7 @@ public class AdminITController implements Initializable {
             }
         } else {
             infolabel.setText("Email est invalide");
-        }*/
+        }
 
     }
 
@@ -131,7 +131,19 @@ public class AdminITController implements Initializable {
 
     @FXML
     void supprimer_user(ActionEvent event) {
+        int userId = UserS.getUserIdCard(); // Implement this method to get the current user ID to delete
 
+        if (userId > 0) {
+            User user = UserS.getUserById(userId);
+            if (user != null) {
+                UserS.Delete(user);
+                infolabel.setText("Suppression Effectuée");
+            } else {
+                infolabel.setText("Utilisateur non trouvé");
+            }
+        } else {
+            infolabel.setText("Sélectionnez un utilisateur valide à supprimer");
+        }
     }
 
     @FXML
