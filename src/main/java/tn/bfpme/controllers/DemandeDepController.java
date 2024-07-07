@@ -133,8 +133,7 @@ public class DemandeDepController implements Initializable {
             if (conge.getTypeConge().equals(TypeConge.Maternité)){
                 serviceConge.updateSoldeMaternité(this.user.getIdUser(), this.user.getSoldeMaternite()-CongeDays);
             }
-            NotifContent = "Votre demande de conge "+ conge.getTypeConge()+" est approuvée pour la période "+conge.getDateDebut()+" jusqu'à "+conge.getDateFin()+".";
-            serviceConge.NewNotification(NotifContent,user.getIdUser(),conge.getIdConge());
+            //NotifContent = "Votre demande de conge "+ conge.getTypeConge()+" est approuvée pour la période "+conge.getDateDebut()+" jusqu'à "+conge.getDateFin()+".";
             Stage stage = (Stage) ((Node) event.getSource()).getScene().getWindow();
             stage.close();
             Alert cbon = new Alert(Alert.AlertType.INFORMATION);
@@ -186,6 +185,8 @@ public class DemandeDepController implements Initializable {
                 Subject="Refus de Demande de Congé";
                 MessageText=Mails.generateRefusDemande(employeeName, startDate, endDate, managerName, managerRole);
                 Mails.sendEmail(to,Subject,MessageText);
+                serviceConge.NewMessage(Subject,user.getIdUser(),conge.getIdConge());
+
                 try {
                     FXMLLoader loader = new FXMLLoader(getClass().getResource("/DemandeDepListe.fxml"));
                     Parent root = loader.load();
@@ -203,7 +204,7 @@ public class DemandeDepController implements Initializable {
                 }
             }
         }
-        serviceConge.NewNotification( "Votre demande de conge "+ conge.getTypeConge()+" est refusé pour la période "+conge.getDateDebut()+" jusqu'à "+conge.getDateFin()+".",user.getIdUser(),conge.getIdConge());
+        //serviceConge.NewNotification( "Votre demande de conge "+ conge.getTypeConge()+" est refusé pour la période "+conge.getDateDebut()+" jusqu'à "+conge.getDateFin()+".",user.getIdUser(),conge.getIdConge());
     }
 
     @FXML void retour(ActionEvent event) {
