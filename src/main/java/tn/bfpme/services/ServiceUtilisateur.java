@@ -615,34 +615,7 @@ public class ServiceUtilisateur implements IUtilisateur {
         return users;
     }
 
-    public List<User> getAllUsers() {
-        List<User> users = new ArrayList<>();
-        String query = "SELECT u.*, ur.ID_Role FROM user u LEFT JOIN user_role ur ON u.ID_User = ur.ID_User";
-        try (Connection cnx = MyDataBase.getInstance().getCnx();
-             Statement stmt = cnx.createStatement();
-             ResultSet rs = stmt.executeQuery(query)) {
-            while (rs.next()) {
-                User user = new User(
-                        rs.getInt("ID_User"),
-                        rs.getString("Nom"),
-                        rs.getString("Prenom"),
-                        rs.getString("Email"),
-                        rs.getString("MDP"),
-                        rs.getString("Image"),
-                        rs.getInt("Solde_Annuel"),
-                        rs.getInt("Solde_Maladie"),
-                        rs.getInt("Solde_Exceptionnel"),
-                        rs.getInt("Solde_Maternité"),
-                        rs.getInt("ID_Departement"),
-                        rs.getInt("ID_Role")
-                );
-                users.add(user);
-            }
-        } catch (SQLException e) {
-            e.printStackTrace();
-        }
-        return users;
-    }
+
 
     public List<User> getAllUsersInfo() {
         List<User> users = new ArrayList<>();
@@ -825,28 +798,6 @@ public class ServiceUtilisateur implements IUtilisateur {
         return user;
     }
 
-
-
-    public String getManagerNameByUserId(int userId) {
-        String managerName = null;
-        String query = "SELECT m.Nom, m.Prenom FROM user u " +
-                "JOIN user m ON u.ID_Manager = m.ID_User " +
-                "WHERE u.ID_User = ?";
-
-        try (Connection cnx = MyDataBase.getInstance().getCnx();
-             PreparedStatement ps = cnx.prepareStatement(query)) {
-            ps.setInt(1, userId);
-            ResultSet rs = ps.executeQuery();
-
-            if (rs.next()) {
-                managerName = rs.getString("Nom") + " " + rs.getString("Prenom");
-            }
-        } catch (SQLException e) {
-            e.printStackTrace();
-        }
-
-        return managerName;
-    }
     public Integer getManagerIdByUserId(int userId) {
         Integer managerId = null;
         String query = "SELECT ID_Manager FROM user WHERE ID_User = ?";
@@ -866,19 +817,61 @@ public class ServiceUtilisateur implements IUtilisateur {
         return managerId;
     }
 
+    public List<User> getAllUsers() {
+        List<User> users = new ArrayList<>();
+        String query = "SELECT * FROM user";
+        try (Statement stmt = cnx.createStatement(); ResultSet rs = stmt.executeQuery(query)) {
+            while (rs.next()) {
+                User user = new User(
+                        rs.getInt("ID_User"),
+                        rs.getString("Nom"),
+                        rs.getString("Prenom"),
+                        rs.getString("Email"),
+                        rs.getString("MDP"),
+                        rs.getString("Image"),
+                        rs.getInt("Solde_Annuel"),
+                        rs.getInt("Solde_Maladie"),
+                        rs.getInt("Solde_Exceptionnel"),
+                        rs.getInt("Solde_Maternité"),
+                        rs.getInt("ID_Departement"),
+                        rs.getInt("ID_Manager"),
+                        rs.getInt("ID_Role")
+                );
+                users.add(user);
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return users;
+    }
+
     public void setManagerForUser(int userId, int managerId) {
         String query = "UPDATE user SET ID_Manager = ? WHERE ID_User = ?";
-
-        try (Connection cnx = MyDataBase.getInstance().getCnx();
-             PreparedStatement ps = cnx.prepareStatement(query)) {
-            ps.setInt(1, managerId);
-            ps.setInt(2, userId);
-            ps.executeUpdate();
-            System.out.println("Manager set successfully.");
+        try (PreparedStatement pstmt = cnx.prepareStatement(query)) {
+            pstmt.setInt(1, managerId);
+            pstmt.setInt(2, userId);
+            pstmt.executeUpdate();
         } catch (SQLException e) {
             e.printStackTrace();
         }
     }
+
+    public String getManagerNameByUserId(int userId) {
+        String query = "SELECT Nom, Prenom FROM user WHERE ID_User = ?";
+        try (PreparedStatement pstmt = cnx.prepareStatement(query)) {
+            pstmt.setInt(1, userId);
+            try (ResultSet rs = pstmt.executeQuery()) {
+                if (rs.next()) {
+                    return rs.getString("Nom") + " " + rs.getString("Prenom");
+                }
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return null;
+    }
+
+
 
 
     public List<User> loadHierarchy() {
