@@ -1004,6 +1004,39 @@ public class ServiceUtilisateur implements IUtilisateur {
         String emailRegex = "^[a-zA-Z0-9_+&*-]+(?:\\.[a-zA-Z0-9_+&*-]+)*\\.?[a-zA-Z0-9_+&*-]+@(?:[a-zA-Z0-9-]+\\.)+[a-zA-Z]{2,7}$";
         return email.matches(emailRegex);
     }
+    public List<User> searchUsers(String query) {
+        List<User> users = new ArrayList<>();
+        String sql = "SELECT * FROM user WHERE ID_User LIKE ? OR Nom LIKE ? OR Prenom LIKE ? OR Email LIKE ?";
+        try (PreparedStatement ps = cnx.prepareStatement(sql)) {
+            String searchQuery = "%" + query + "%";
+            ps.setString(1, searchQuery);
+            ps.setString(2, searchQuery);
+            ps.setString(3, searchQuery);
+            ps.setString(4, searchQuery);
+            ResultSet rs = ps.executeQuery();
+            while (rs.next()) {
+                User user = new User(
+                        rs.getInt("ID_User"),
+                        rs.getString("Nom"),
+                        rs.getString("Prenom"),
+                        rs.getString("Email"),
+                        rs.getString("MDP"),
+                        rs.getString("Image"),
+                        rs.getInt("Solde_Annuel"),
+                        rs.getInt("Solde_Maladie"),
+                        rs.getInt("Solde_Exceptionnel"),
+                        rs.getInt("Solde_Maternité"),
+                        rs.getInt("ID_Departement"),
+                        rs.getInt("ID_Manager"),
+                        rs.getInt("ID_Role")
+                );
+                users.add(user);
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return users;
+    }
 
 
     public int getUserIdCard() {
