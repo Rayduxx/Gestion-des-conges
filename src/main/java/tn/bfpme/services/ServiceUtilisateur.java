@@ -27,13 +27,14 @@ public class ServiceUtilisateur implements IUtilisateur {
                 "conge.ID_Conge, conge.TypeConge, conge.Statut, conge.DateFin, conge.DateDebut, conge.description, conge.file, conge.notification " +
                 "FROM user " +
                 "JOIN conge ON user.ID_User = conge.ID_User " +
-                "WHERE user.ID_Departement = ? " +
-                "AND user.ID_Manager = ?";
+                "WHERE user.ID_Manager = ?";
 
         try {
+            if (cnx == null || cnx.isClosed()) {
+                cnx = MyDataBase.getInstance().getCnx();
+            }
             PreparedStatement ps = cnx.prepareStatement(query);
-            ps.setInt(1, Integer.parseInt(SessionManager.getInstance().getUserDepartmentName()));
-            ps.setInt(2, SessionManager.getInstance().getUser().getIdUser());
+            ps.setInt(1, SessionManager.getInstance().getUser().getIdUser());
             ResultSet rs = ps.executeQuery();
             while (rs.next()) {
                 User user = new User();
@@ -67,10 +68,7 @@ public class ServiceUtilisateur implements IUtilisateur {
         return new UserConge(users, conges);
     }
 
-
     public UserConge AfficherApprove() {
-        int departement = SessionManager.getInstance().getUser().getIdDepartement();
-        int userRole = SessionManager.getInstance().getUser().getIdRole(); // Assuming getRoleId() returns the role ID
         List<User> users = new ArrayList<>();
         List<Conge> conges = new ArrayList<>();
 
@@ -85,7 +83,6 @@ public class ServiceUtilisateur implements IUtilisateur {
             if (cnx == null || cnx.isClosed()) {
                 cnx = MyDataBase.getInstance().getCnx();
             }
-
             PreparedStatement ps = cnx.prepareStatement(query);
             ps.setString(1, String.valueOf(Statut.Approuvé));
             ps.setInt(2, SessionManager.getInstance().getUser().getIdUser());
@@ -125,7 +122,6 @@ public class ServiceUtilisateur implements IUtilisateur {
         return new UserConge(users, conges);
     }
 
-
     public UserConge AfficherReject() {
         List<User> users = new ArrayList<>();
         List<Conge> conges = new ArrayList<>();
@@ -138,7 +134,7 @@ public class ServiceUtilisateur implements IUtilisateur {
 
         try {
             if (cnx == null || cnx.isClosed()) {
-                cnx = MyDataBase.getInstance().getCnx();
+                cnx = MyDataBase.getInstance().getCnx(); // Re-establish the connection if necessary
             }
             PreparedStatement ps = cnx.prepareStatement(query);
             ps.setString(1, String.valueOf(Statut.Rejeté));
@@ -542,7 +538,6 @@ public class ServiceUtilisateur implements IUtilisateur {
         return users;
     }
 
-
     public List<User> getAllUsersInfo() {
         List<User> users = new ArrayList<>();
         String query = "SELECT u.*, ur.ID_Role FROM user u LEFT JOIN user_role ur ON u.ID_User = ur.ID_User";
@@ -693,7 +688,6 @@ public class ServiceUtilisateur implements IUtilisateur {
         }
     }
 
-
     public User getUserById(int userId) {
         User user = null;
         String query = "SELECT u.*, ur.ID_Role FROM user u LEFT JOIN user_role ur ON u.ID_User = ur.ID_User WHERE u.ID_User = ?";
@@ -782,9 +776,6 @@ public class ServiceUtilisateur implements IUtilisateur {
         return users;
     }
 
-
-
-
     public void setManagerForUser(int userId, int managerId) {
         String query = "UPDATE user SET ID_Manager = ? WHERE ID_User = ?";
         try {
@@ -818,7 +809,6 @@ public class ServiceUtilisateur implements IUtilisateur {
         }
         return null;
     }
-
 
     public List<User> loadHierarchy() {
         List<User> users = new ArrayList<>();
@@ -857,7 +847,6 @@ public class ServiceUtilisateur implements IUtilisateur {
 
         return users;
     }
-
 
     public List<User> getAllUsersWithManagers() {
         List<User> users = getAllUsers();
@@ -935,6 +924,7 @@ public class ServiceUtilisateur implements IUtilisateur {
         }
         return users;
     }
+
     @Override
     public void Delete(User user) {
         try {
@@ -946,6 +936,7 @@ public class ServiceUtilisateur implements IUtilisateur {
             System.out.println(ex.getMessage());
         }
     }
+
     @Override
     public void DeleteByID(int id) {
         try {
@@ -958,6 +949,7 @@ public class ServiceUtilisateur implements IUtilisateur {
             System.out.println(ex.getMessage());
         }
     }
+
     public boolean checkUserExists(String email) {
         String req = "SELECT count(1) FROM `usertable` WHERE `Email`=?";
         boolean exists = false;
@@ -973,6 +965,7 @@ public class ServiceUtilisateur implements IUtilisateur {
         }
         return exists;
     }
+
     public boolean checkPhoneExists(String phoneNumber) {
         String req = "SELECT count(1) FROM `usertable` WHERE `NumTel`=?";
         boolean exists = false;
