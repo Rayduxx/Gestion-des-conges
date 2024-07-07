@@ -23,7 +23,7 @@ public class ServiceConge implements IConge<Conge> {
     @Override
     public List<Conge> afficher() {
         List<Conge> conges = new ArrayList<>();
-        String sql = "SELECT ID_Conge, DateDebut, DateFin, TypeConge, Statut, ID_User, file, description FROM conge WHERE ID_User LIKE '%" + SessionManager.getInstance().getUser().getIdUser() + "%'";
+        String sql = "SELECT ID_Conge, DateDebut, DateFin, TypeConge, Statut, ID_User, file, description, Message FROM conge WHERE ID_User LIKE '%" + SessionManager.getInstance().getUser().getIdUser() + "%'";
         try {
             Statement ste = cnx.createStatement();
             ResultSet rs = ste.executeQuery(sql);
@@ -47,6 +47,7 @@ public class ServiceConge implements IConge<Conge> {
                 conge.setIdUser(rs.getInt("ID_User"));
                 conge.setFile(rs.getString("file"));
                 conge.setDescription(rs.getString("description"));
+                conge.setMessage(rs.getString("Message"));
                 conges.add(conge);
             }
         } catch (SQLException ex) {
@@ -425,13 +426,16 @@ public class ServiceConge implements IConge<Conge> {
         }
     }
 
-    public String AfficherMessage() {
+    public String AfficherMessage(int id) {
         String Message ="";
-        String sql ="SELECT `Message` FROM `conge` WHERE `ID_Conge`=? AND `Message` IS NOT NULL AND `Notification` <> '' ";
+        String sql ="SELECT `Message` FROM `conge` WHERE `ID_Conge`=? AND `Message` IS NOT NULL AND `Message` <> '' ";
         try {
-            Statement ste = cnx.createStatement();
-            ResultSet rs = ste.executeQuery(sql);
-
+            PreparedStatement stm = cnx.prepareStatement(sql);
+            stm.setInt(1, id);
+            ResultSet rs = stm.executeQuery(sql);
+            while (rs.next()) {
+                Message = rs.getString("Message");
+            }
         } catch (SQLException ex) {
             System.out.println(ex.getMessage());
         }

@@ -27,15 +27,12 @@ public class ServiceUtilisateur implements IUtilisateur {
                 "conge.ID_Conge, conge.TypeConge, conge.Statut, conge.DateFin, conge.DateDebut, conge.description, conge.file, conge.notification " +
                 "FROM user " +
                 "JOIN conge ON user.ID_User = conge.ID_User " +
-                "WHERE conge.Statut = ? " +
+                "WHERE user.ID_Departement = ? " +
                 "AND user.ID_Manager = ?";
 
         try {
-            if (cnx == null || cnx.isClosed()) {
-                cnx = MyDataBase.getInstance().getCnx();
-            }
             PreparedStatement ps = cnx.prepareStatement(query);
-            ps.setString(1, String.valueOf(Statut.En_Attente));
+            ps.setInt(1, Integer.parseInt(SessionManager.getInstance().getUserDepartmentName()));
             ps.setInt(2, SessionManager.getInstance().getUser().getIdUser());
             ResultSet rs = ps.executeQuery();
             while (rs.next()) {
@@ -69,6 +66,7 @@ public class ServiceUtilisateur implements IUtilisateur {
         }
         return new UserConge(users, conges);
     }
+
 
     public UserConge AfficherApprove() {
         int departement = SessionManager.getInstance().getUser().getIdDepartement();
@@ -750,7 +748,7 @@ public class ServiceUtilisateur implements IUtilisateur {
 
     public List<User> getAllUsers() {
         List<User> users = new ArrayList<>();
-        String query = "SELECT * FROM user";
+        String query = "SELECT u.*, ur.ID_Role FROM user u LEFT JOIN user_role ur ON u.ID_User = ur.ID_User";
         try {
             if (cnx == null || cnx.isClosed()) {
                 cnx = MyDataBase.getInstance().getCnx(); // Re-establish the connection if necessary
@@ -758,6 +756,9 @@ public class ServiceUtilisateur implements IUtilisateur {
             Statement stmt = cnx.createStatement();
             ResultSet rs = stmt.executeQuery(query);
             while (rs.next()) {
+                // Handle potential null values for ID_Role
+                int idRole = rs.getObject("ID_Role") != null ? rs.getInt("ID_Role") : -1; // -1 or any default value if ID_Role is null
+
                 User user = new User(
                         rs.getInt("ID_User"),
                         rs.getString("Nom"),
@@ -771,7 +772,7 @@ public class ServiceUtilisateur implements IUtilisateur {
                         rs.getInt("Solde_Maternité"),
                         rs.getInt("ID_Departement"),
                         rs.getInt("ID_Manager"),
-                        rs.getInt("ID_Role")
+                        idRole
                 );
                 users.add(user);
             }
@@ -780,6 +781,9 @@ public class ServiceUtilisateur implements IUtilisateur {
         }
         return users;
     }
+
+
+
 
     public void setManagerForUser(int userId, int managerId) {
         String query = "UPDATE user SET ID_Manager = ? WHERE ID_User = ?";
