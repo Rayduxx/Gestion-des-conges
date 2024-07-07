@@ -64,10 +64,10 @@ public class AdminITController implements Initializable {
             String email = email_A.getText();
             String mdp = MDP_A.getText();
             String image = image_A.getText();
-            int soldeAnnuel = (int) Double.parseDouble(S_Ann.getText());
-            int soldeMaladie = (int) Double.parseDouble(S_mal.getText());
-            int soldeExceptionnel = (int) Double.parseDouble(S_exc.getText());
-            int soldeMaternite = (int) Double.parseDouble(S_mat.getText());
+            int soldeAnnuel = Integer.valueOf(String.valueOf(S_Ann));
+            int soldeMaladie = Integer.valueOf(String.valueOf(S_mal));
+            int soldeExceptionnel = Integer.valueOf(String.valueOf(S_exc));
+            int soldeMaternite = Integer.valueOf(String.valueOf(S_mat));
 
             if (email.matches("^[_A-Za-z0-9-\\+]+(\\.[_A-Za-z0-9-]+)*@(bfpme\\.tn|gmail\\.com)$")) {
                 try {

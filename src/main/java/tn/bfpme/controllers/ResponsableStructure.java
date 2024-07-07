@@ -4,11 +4,15 @@ import javafx.beans.property.SimpleIntegerProperty;
 import javafx.beans.property.SimpleStringProperty;
 import javafx.beans.value.ObservableValue;
 import javafx.collections.FXCollections;
+import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.fxml.Initializable;
 import javafx.scene.control.ComboBox;
+import javafx.scene.control.ListCell;
+import javafx.scene.control.SelectionMode;
+import javafx.scene.control.TextField;
 import javafx.scene.control.TreeItem;
 import javafx.scene.control.TreeTableColumn;
 import javafx.scene.control.TreeTableView;
@@ -45,8 +49,11 @@ public class ResponsableStructure implements Initializable {
     private ComboBox<User> userComboBox;
     @FXML
     private AnchorPane MainAnchorPane;
+    @FXML
+    private TextField searchField; // Add a TextField for search input
 
     private ServiceUtilisateur serviceUtilisateur;
+    private boolean isFirstSelection = true;
 
     private void loadUsers() {
         List<User> users = serviceUtilisateur.getAllUsers();
@@ -55,8 +62,37 @@ public class ResponsableStructure implements Initializable {
             return;
         }
 
-        managerComboBox.setItems(FXCollections.observableArrayList(users));
-        userComboBox.setItems(FXCollections.observableArrayList(users));
+        populateTable(users);
+    }
+
+    private void populateTable(List<User> users) {
+        ObservableList<User> userList = FXCollections.observableArrayList(users);
+        managerComboBox.setItems(userList);
+        userComboBox.setItems(userList);
+
+        managerComboBox.setCellFactory(param -> new ListCell<User>() {
+            @Override
+            protected void updateItem(User user, boolean empty) {
+                super.updateItem(user, empty);
+                if (empty || user == null) {
+                    setText(null);
+                } else {
+                    setText(user.getNom() + " " + user.getPrenom());
+                }
+            }
+        });
+
+        userComboBox.setCellFactory(param -> new ListCell<User>() {
+            @Override
+            protected void updateItem(User user, boolean empty) {
+                super.updateItem(user, empty);
+                if (empty || user == null) {
+                    setText(null);
+                } else {
+                    setText(user.getNom() + " " + user.getPrenom());
+                }
+            }
+        });
 
         Map<Integer, TreeItem<User>> userItems = new HashMap<>();
         TreeItem<User> root = new TreeItem<>(new User(0, "Root", "", "", "", "", 0, 0, 0, 0, 0, 0, 0));
@@ -73,21 +109,22 @@ public class ResponsableStructure implements Initializable {
             }
         }
 
-        System.out.println("Loaded users into tree structure.");
-
         userTable.setRoot(root);
         userTable.setShowRoot(false);
-    }
+        userTable.getSelectionModel().setSelectionMode(SelectionMode.SINGLE);
 
-    @FXML
-    public void setManager(ActionEvent event) {
-        User selectedUser = userComboBox.getSelectionModel().getSelectedItem();
-        User selectedManager = managerComboBox.getSelectionModel().getSelectedItem();
-
-        if (selectedUser != null && selectedManager != null) {
-            serviceUtilisateur.setManagerForUser(selectedUser.getIdUser(), selectedManager.getIdUser());
-            loadUsers();
-        }
+        userTable.getSelectionModel().selectedItemProperty().addListener((observable, oldValue, newValue) -> {
+            if (newValue != null) {
+                User selectedUser = newValue.getValue();
+                if (isFirstSelection) {
+                    userComboBox.getSelectionModel().select(selectedUser);
+                    isFirstSelection = false;
+                } else {
+                    managerComboBox.getSelectionModel().select(selectedUser);
+                    isFirstSelection = true; // Reset for the next pair of selections
+                }
+            }
+        });
     }
 
     @Override
@@ -139,5 +176,24 @@ public class ResponsableStructure implements Initializable {
         });
 
         loadUsers();
+    }
+
+    @FXML
+    void recherche_hierarchie(ActionEvent event) {
+        String query = searchField.getText().trim();
+        if (!query.isEmpty()) {
+            List<User> searchResults = serviceUtilisateur.searchUsers(query);
+            populateTable(searchResults);
+        }
+    }
+
+    public void Affecter_manager(ActionEvent actionEvent) {
+        User selectedUser = userComboBox.getSelectionModel().getSelectedItem();
+        User selectedManager = managerComboBox.getSelectionModel().getSelectedItem();
+
+        if (selectedUser != null && selectedManager != null) {
+            serviceUtilisateur.setManagerForUser(selectedUser.getIdUser(), selectedManager.getIdUser());
+            loadUsers();
+        }
     }
 }

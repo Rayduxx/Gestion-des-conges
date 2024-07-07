@@ -19,7 +19,7 @@
                     <children>
                         <ComboBox fx:id="userComboBox" prefHeight="40.0" prefWidth="192.0" promptText="Utilisateur" />
                         <Separator orientation="VERTICAL" prefHeight="40.0" prefWidth="83.0" />
-                        <Button mnemonicParsing="false" prefHeight="40.0" prefWidth="137.0" styleClass="btn-primary" text="Affecter">
+                        <Button mnemonicParsing="false" onAction="#Affecter_manager" prefHeight="40.0" prefWidth="137.0" styleClass="btn-primary" text="Affecter">
                             <font>
                                 <Font size="14.0" />
                             </font>
@@ -37,7 +37,7 @@
                         <TreeTableColumn fx:id="managerUserColumn" prefWidth="300.0" text="Manager" />
                     </columns>
                 </TreeTableView>
-            <TextField layoutX="435.0" layoutY="35.0" prefHeight="29.0" prefWidth="408.0" />
+            <TextField layoutX="435.0" layoutY="35.0" onAction="#recherche_hierarchie" prefHeight="29.0" prefWidth="408.0" />
             </children>
         </Pane>
     </children>

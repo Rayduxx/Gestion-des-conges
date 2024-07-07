@@ -56,7 +56,7 @@ public class NavigationHeaderController implements Initializable {
         btnListe.setVisible(!userRole.equals("Employe"));
         btnRH.setVisible(userDep.equals("RH") && userRole.equals("Directeur"));
         admin_interface.setVisible(userRole.equals("AdminIT"));
-        test_interfaceID.setVisible(userRole.equals("RH_Employee"));
+        test_interfaceID.setVisible(userRole.equals("Zokolomo"));
         settingsPopup = new Popup();
         settingsPopup.setAutoHide(true);
 
