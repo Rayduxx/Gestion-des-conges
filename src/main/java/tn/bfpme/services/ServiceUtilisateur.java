@@ -27,14 +27,14 @@ public class ServiceUtilisateur implements IUtilisateur {
                 "conge.ID_Conge, conge.TypeConge, conge.Statut, conge.DateFin, conge.DateDebut, conge.description, conge.file, conge.notification " +
                 "FROM user " +
                 "JOIN conge ON user.ID_User = conge.ID_User " +
-                "WHERE user.ID_Manager = ?";
-
+                "WHERE user.ID_Manager = ? AND conge.Statut = ?";
         try {
             if (cnx == null || cnx.isClosed()) {
                 cnx = MyDataBase.getInstance().getCnx();
             }
             PreparedStatement ps = cnx.prepareStatement(query);
             ps.setInt(1, SessionManager.getInstance().getUser().getIdUser());
+            ps.setString(2, String.valueOf(Statut.En_Attente));
             ResultSet rs = ps.executeQuery();
             while (rs.next()) {
                 User user = new User();
@@ -718,13 +718,32 @@ public class ServiceUtilisateur implements IUtilisateur {
         return user;
     }
 
+    public int getManagerIdByUserId2(int userId) {
+        String query = "SELECT ID_Manager FROM user WHERE ID_User = ?";
+        int managerId = 0;
+        try {
+            if (cnx == null || cnx.isClosed()) {
+                cnx = MyDataBase.getInstance().getCnx();
+            }
+            PreparedStatement ps = cnx.prepareStatement(query);
+            ps.setInt(1, userId);
+            ResultSet rs = ps.executeQuery();
+
+            if (rs.next()) {
+                managerId = rs.getInt("ID_Manager");
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return managerId;
+    }
     public Integer getManagerIdByUserId(int userId) {
         Integer managerId = null;
         String query = "SELECT ID_Manager FROM user WHERE ID_User = ?";
 
         try {
             if (cnx == null || cnx.isClosed()) {
-                cnx = MyDataBase.getInstance().getCnx(); // Re-establish the connection if necessary
+                cnx = MyDataBase.getInstance().getCnx();
             }
             PreparedStatement ps = cnx.prepareStatement(query);
             ps.setInt(1, userId);

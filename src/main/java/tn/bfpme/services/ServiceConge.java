@@ -4,6 +4,7 @@ import tn.bfpme.interfaces.IConge;
 import tn.bfpme.models.Conge;
 import tn.bfpme.models.Statut;
 import tn.bfpme.models.TypeConge;
+import tn.bfpme.models.User;
 import tn.bfpme.utils.MyDataBase;
 import tn.bfpme.utils.SessionManager;
 
@@ -441,4 +442,5 @@ public class ServiceConge implements IConge<Conge> {
         }
         return Message;
     }
+
 }
