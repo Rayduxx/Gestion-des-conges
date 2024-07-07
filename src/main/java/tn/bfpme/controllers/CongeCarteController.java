@@ -34,16 +34,9 @@ import java.util.logging.Logger;
 
 public class CongeCarteController {
     @FXML private Pane Card;
-    @FXML private Label cardDatedeb;
-    @FXML private Label cardDatefin;
-    @FXML private Label cardDescription;
-    @FXML private Label cardStatus;
-    @FXML private Button btnDelete;
-    @FXML private Button btnEdit;
-    @FXML private Label cardType;
-    @FXML private Tooltip tooltip_desc;
-    @FXML private Tooltip TTViewFile;
-    @FXML private Button btnViewFile;
+    @FXML private Label cardStatus,cardType,cardDescription,cardDatefin,cardDatedeb;
+    @FXML private Tooltip tooltip_desc,TTViewFile;
+    @FXML private Button btnViewFile,btnViewMsg,btnEdit,btnDelete;
     private int cUser, cid;
     private String cdesc, cfile;
     private LocalDate cdebut, cfin;
@@ -70,6 +63,9 @@ public class CongeCarteController {
                 if (rs.getString("Statut").equals(String.valueOf(Statut.En_Attente))){
                     btnDelete.setDisable(false);
                     btnEdit.setDisable(false);
+                }
+                if (rs.getString("Statut").equals(String.valueOf(Statut.Rejeté))){
+                    btnViewMsg.setDisable(false);
                 }
                 if (rs.getString("TypeConge").equals(String.valueOf(TypeConge.Annuel)) || rs.getString("TypeConge").equals(String.valueOf(TypeConge.Sous_solde))){
                     btnViewFile.setDisable(true);
@@ -145,5 +141,12 @@ public class CongeCarteController {
         } else {
             System.out.println("File not found: " + filePath);
         }
+    }
+    @FXML
+    void ViewMessage(ActionEvent event) {
+        Alert alert = new Alert(Alert.AlertType.INFORMATION);
+        alert.setTitle("Message de refus");
+        alert.setHeaderText(null);
+        alert.setContentText(conge.getDescription());
     }
 }
