@@ -690,10 +690,9 @@ public class ServiceUtilisateur implements IUtilisateur {
 
     public User getUserById(int userId) {
         User user = null;
-        String sql = "SELECT * FROM user WHERE ID_User = ?";
-
+        String query = "SELECT u.*, ur.ID_Role FROM user u LEFT JOIN user_role ur ON u.ID_User = ur.ID_User WHERE u.ID_User = ?";
         try (Connection cnx = MyDataBase.getInstance().getCnx();
-             PreparedStatement stm = cnx.prepareStatement(sql)) {
+             PreparedStatement stm = cnx.prepareStatement(query)) {
             stm.setInt(1, userId);
             try (ResultSet rs = stm.executeQuery()) {
                 if (rs.next()) {
