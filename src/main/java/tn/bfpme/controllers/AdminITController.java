@@ -59,30 +59,42 @@ public class AdminITController implements Initializable {
 
     @FXML
     void ajouter_user(ActionEvent actionEvent) {
-            String nom = nom_A.getText();
-            String prenom = Prenom_A.getText();
-            String email = email_A.getText();
-            String mdp = MDP_A.getText();
-            String image = image_A.getText();
-            int soldeAnnuel = (int) Double.parseDouble(S_Ann.getText());
-            int soldeMaladie = (int) Double.parseDouble(S_mal.getText());
-            int soldeExceptionnel = (int) Double.parseDouble(S_exc.getText());
-            int soldeMaternite = (int) Double.parseDouble(S_mat.getText());
+        String nom = nom_A.getText();
+        String prenom = Prenom_A.getText();
+        String email = email_A.getText();
+        String mdp = MDP_A.getText();
+        String image = image_A.getText();
 
-            if (email.matches("^[_A-Za-z0-9-\\+]+(\\.[_A-Za-z0-9-]+)*@(bfpme\\.tn|gmail\\.com)$")) {
-                try {
-                    if (!emailExists(email)) {
-                        UserS.Add(new User(0, nom, prenom, email, mdp, image, soldeAnnuel, soldeMaladie, soldeExceptionnel, soldeMaternite, 0, 0));
-                        infolabel.setText("Ajout Effectue");
-                    } else {
-                        infolabel.setText("Email déjà existe");
-                    }
-                } catch (SQLException e) {
-                    throw new RuntimeException(e);
+        int soldeAnnuel = parseIntOrZero(S_Ann.getText());
+        int soldeMaladie = parseIntOrZero(S_mal.getText());
+        int soldeExceptionnel = parseIntOrZero(S_exc.getText());
+        int soldeMaternite = parseIntOrZero(S_mat.getText());
+
+        if (email.matches("^[_A-Za-z0-9-\\+]+(\\.[_A-Za-z0-9-]+)*@(bfpme\\.tn|gmail\\.com)$")) {
+            try {
+                if (!emailExists(email)) {
+                    UserS.Add(new User(0, nom, prenom, email, mdp, image, soldeAnnuel, soldeMaladie, soldeExceptionnel, soldeMaternite, 0, 0));
+                    infolabel.setText("Ajout Effectué");
+                } else {
+                    infolabel.setText("Email déjà existe");
                 }
-            } else {
-                infolabel.setText("Email est invalide");
+            } catch (SQLException e) {
+                throw new RuntimeException(e);
             }
+        } else {
+            infolabel.setText("Email est invalide");
+        }
+    }
+
+    private int parseIntOrZero(String text) {
+        if (text == null || text.trim().isEmpty()) {
+            return 0;
+        }
+        try {
+            return (int) Double.parseDouble(text);
+        } catch (NumberFormatException e) {
+            return 0;
+        }
     }
 
     @FXML
@@ -97,12 +109,54 @@ public class AdminITController implements Initializable {
 
     @FXML
     void modifier_user(ActionEvent event) {
+        String Nom = nom_A.getText();
+        String Prenom = Prenom_A.getText();
+        String Email = email_A.getText();
+        String Mdp = MDP_A.getText();
+        String Image = image_A.getText();
+        int solde_annuel= (int) Double.parseDouble(S_Ann.getText());
+        int solde_maladie = (int) Double.parseDouble(S_mal.getText());
+        int solde_exceptionnel = (int) Double.parseDouble(S_exc.getText());
+        int solde_maternite = (int) Double.parseDouble(S_mat.getText());
 
+        if (Email.matches("^[_A-Za-z0-9-\\+]+(\\.[_A-Za-z0-9-]+)*@(bfpme\\.tn|gmail\\.com)$")) {
+            try {
+                int userId = UserS.getUserIdCard();
+                if (!emailExists(Email) || isCurrentUser(userId, Email)) {
+                    UserS.Update(new User(userId, Nom, Prenom, Email, Mdp, Image, solde_annuel, solde_maladie, solde_exceptionnel, solde_maternite, 0, 0));
+                    infolabel.setText("Modification Effectuée");
+                } else {
+                    infolabel.setText("Email déjà existe");
+                }
+            } catch (SQLException e) {
+                throw new RuntimeException(e);
+            }
+        } else {
+            infolabel.setText("Email est invalide");
+        }
+
+    }
+
+    private boolean isCurrentUser(int userId, String email) {
+        User user = UserS.getUserById(userId);
+        return user != null && user.getEmail().equals(email);
     }
 
     @FXML
     void supprimer_user(ActionEvent event) {
+        int userId = UserS.getUserIdCard(); // Implement this method to get the current user ID to delete
 
+        if (userId > 0) {
+            User user = UserS.getUserById(userId);
+            if (user != null) {
+                UserS.Delete(user);
+                infolabel.setText("Suppression Effectuée");
+            } else {
+                infolabel.setText("Utilisateur non trouvé");
+            }
+        } else {
+            infolabel.setText("Sélectionnez un utilisateur valide à supprimer");
+        }
     }
 
     @FXML
