@@ -15,7 +15,7 @@ import java.util.stream.Collectors;
 public class ServiceUtilisateur implements IUtilisateur {
     Connection cnx = MyDataBase.getInstance().getCnx();
     private Map<Integer, Integer> userManagerMap = new HashMap<>();
-    int  departement = SessionManager.getInstance().getUser().getIdDepartement();
+    int departement = SessionManager.getInstance().getUser().getIdDepartement();
     int userRole = SessionManager.getInstance().getUser().getIdRole();
 
     public ServiceUtilisateur() {
@@ -185,7 +185,6 @@ public class ServiceUtilisateur implements IUtilisateur {
         }
         return new UserConge(users, conges);
     }
-
 
     public UserConge AfficherReject() {
         List<User> users = new ArrayList<>();
@@ -616,7 +615,6 @@ public class ServiceUtilisateur implements IUtilisateur {
     }
 
 
-
     public List<User> getAllUsersInfo() {
         List<User> users = new ArrayList<>();
         String query = "SELECT u.*, ur.ID_Role FROM user u LEFT JOIN user_role ur ON u.ID_User = ur.ID_User";
@@ -802,8 +800,11 @@ public class ServiceUtilisateur implements IUtilisateur {
         Integer managerId = null;
         String query = "SELECT ID_Manager FROM user WHERE ID_User = ?";
 
-        try (Connection cnx = MyDataBase.getInstance().getCnx();
-             PreparedStatement ps = cnx.prepareStatement(query)) {
+        try {
+            if (cnx == null || cnx.isClosed()) {
+                cnx = MyDataBase.getInstance().getCnx(); // Re-establish the connection if necessary
+            }
+            PreparedStatement ps = cnx.prepareStatement(query);
             ps.setInt(1, userId);
             ResultSet rs = ps.executeQuery();
 
@@ -820,7 +821,12 @@ public class ServiceUtilisateur implements IUtilisateur {
     public List<User> getAllUsers() {
         List<User> users = new ArrayList<>();
         String query = "SELECT * FROM user";
-        try (Statement stmt = cnx.createStatement(); ResultSet rs = stmt.executeQuery(query)) {
+        try {
+            if (cnx == null || cnx.isClosed()) {
+                cnx = MyDataBase.getInstance().getCnx(); // Re-establish the connection if necessary
+            }
+            Statement stmt = cnx.createStatement();
+            ResultSet rs = stmt.executeQuery(query);
             while (rs.next()) {
                 User user = new User(
                         rs.getInt("ID_User"),
@@ -847,7 +853,11 @@ public class ServiceUtilisateur implements IUtilisateur {
 
     public void setManagerForUser(int userId, int managerId) {
         String query = "UPDATE user SET ID_Manager = ? WHERE ID_User = ?";
-        try (PreparedStatement pstmt = cnx.prepareStatement(query)) {
+        try {
+            if (cnx == null || cnx.isClosed()) {
+                cnx = MyDataBase.getInstance().getCnx(); // Re-establish the connection if necessary
+            }
+            PreparedStatement pstmt = cnx.prepareStatement(query);
             pstmt.setInt(1, managerId);
             pstmt.setInt(2, userId);
             pstmt.executeUpdate();
@@ -858,7 +868,11 @@ public class ServiceUtilisateur implements IUtilisateur {
 
     public String getManagerNameByUserId(int userId) {
         String query = "SELECT Nom, Prenom FROM user WHERE ID_User = ?";
-        try (PreparedStatement pstmt = cnx.prepareStatement(query)) {
+        try {
+            if (cnx == null || cnx.isClosed()) {
+                cnx = MyDataBase.getInstance().getCnx(); // Re-establish the connection if necessary
+            }
+            PreparedStatement pstmt = cnx.prepareStatement(query);
             pstmt.setInt(1, userId);
             try (ResultSet rs = pstmt.executeQuery()) {
                 if (rs.next()) {
@@ -870,8 +884,6 @@ public class ServiceUtilisateur implements IUtilisateur {
         }
         return null;
     }
-
-
 
 
     public List<User> loadHierarchy() {
@@ -989,6 +1001,7 @@ public class ServiceUtilisateur implements IUtilisateur {
         }
         return users;
     }
+
     @Override
     public void Delete(User user) {
         try {
@@ -1000,6 +1013,7 @@ public class ServiceUtilisateur implements IUtilisateur {
             System.out.println(ex.getMessage());
         }
     }
+
     @Override
     public void DeleteByID(int id) {
         try {
@@ -1012,6 +1026,7 @@ public class ServiceUtilisateur implements IUtilisateur {
             System.out.println(ex.getMessage());
         }
     }
+
     public boolean checkUserExists(String email) {
         String req = "SELECT count(1) FROM `usertable` WHERE `Email`=?";
         boolean exists = false;
@@ -1027,6 +1042,7 @@ public class ServiceUtilisateur implements IUtilisateur {
         }
         return exists;
     }
+
     public boolean checkPhoneExists(String phoneNumber) {
         String req = "SELECT count(1) FROM `usertable` WHERE `NumTel`=?";
         boolean exists = false;
@@ -1044,13 +1060,10 @@ public class ServiceUtilisateur implements IUtilisateur {
     }
 
 
-
     public boolean isValidEmail(String email) {
         String emailRegex = "^[a-zA-Z0-9_+&*-]+(?:\\.[a-zA-Z0-9_+&*-]+)*\\.?[a-zA-Z0-9_+&*-]+@(?:[a-zA-Z0-9-]+\\.)+[a-zA-Z]{2,7}$";
         return email.matches(emailRegex);
     }
-
-
 
 
 }

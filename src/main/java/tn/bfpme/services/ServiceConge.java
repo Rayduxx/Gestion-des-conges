@@ -431,7 +431,7 @@ public class ServiceConge implements IConge<Conge> {
         try {
             Statement ste = cnx.createStatement();
             ResultSet rs = ste.executeQuery(sql);
-// ena wselt houni
+
         } catch (SQLException ex) {
             System.out.println(ex.getMessage());
         }
