@@ -1,56 +1,82 @@
 package tn.bfpme.controllers;
 
+import javafx.beans.property.SimpleIntegerProperty;
 import javafx.beans.property.SimpleStringProperty;
+import javafx.beans.value.ObservableValue;
 import javafx.collections.FXCollections;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.fxml.Initializable;
 import javafx.scene.control.ComboBox;
-import javafx.scene.control.TableColumn;
-import javafx.scene.control.TableView;
-import javafx.scene.control.TreeView;
-import javafx.scene.control.cell.PropertyValueFactory;
+import javafx.scene.control.TreeItem;
+import javafx.scene.control.TreeTableColumn;
+import javafx.scene.control.TreeTableView;
 import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.Pane;
+import javafx.util.Callback;
 import tn.bfpme.models.User;
 import tn.bfpme.services.ServiceUtilisateur;
 
 import java.io.IOException;
 import java.net.URL;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.ResourceBundle;
 
 public class ResponsableStructure implements Initializable {
 
     @FXML
-    private TableView<User> userTable;
+    private TreeTableView<User> userTable;
     @FXML
-    private TableColumn<User, Integer> userIdColumn;
+    private TreeTableColumn<User, Integer> idUserColumn;
     @FXML
-    private TableColumn<User, String> userNameColumn;
+    private TreeTableColumn<User, String> nomUserColumn;
     @FXML
-    private TableColumn<User, String> userEmailColumn;
+    private TreeTableColumn<User, String> prenomUserColumn;
     @FXML
-    private TableColumn<User, String> userManagerColumn;
+    private TreeTableColumn<User, String> emailUserColumn;
     @FXML
-    private TableColumn<User, String> userPrenomColumn;
+    private TreeTableColumn<User, String> managerUserColumn;
     @FXML
     private ComboBox<User> managerComboBox;
     @FXML
     private ComboBox<User> userComboBox;
     @FXML
     private AnchorPane MainAnchorPane;
-    @FXML
-    private TreeView<?> treeview;
 
     private ServiceUtilisateur serviceUtilisateur;
 
     private void loadUsers() {
-        List<User> users = serviceUtilisateur.getAllUsersWithManagers();
-        userTable.setItems(FXCollections.observableArrayList(users));
+        List<User> users = serviceUtilisateur.getAllUsers();
+        if (users == null || users.isEmpty()) {
+            System.out.println("No users found.");
+            return;
+        }
+
         managerComboBox.setItems(FXCollections.observableArrayList(users));
         userComboBox.setItems(FXCollections.observableArrayList(users));
+
+        Map<Integer, TreeItem<User>> userItems = new HashMap<>();
+        TreeItem<User> root = new TreeItem<>(new User(0, "Root", "", "", "", "", 0, 0, 0, 0, 0, 0, 0));
+
+        for (User user : users) {
+            TreeItem<User> userItem = new TreeItem<>(user);
+            userItems.put(user.getIdUser(), userItem);
+
+            Integer managerId = user.getIdManager();
+            if (managerId == 0 || !userItems.containsKey(managerId)) {
+                root.getChildren().add(userItem);
+            } else {
+                userItems.get(managerId).getChildren().add(userItem);
+            }
+        }
+
+        System.out.println("Loaded users into tree structure.");
+
+        userTable.setRoot(root);
+        userTable.setShowRoot(false);
     }
 
     @FXML
@@ -75,14 +101,41 @@ public class ResponsableStructure implements Initializable {
         }
         serviceUtilisateur = new ServiceUtilisateur();
 
-        userIdColumn.setCellValueFactory(new PropertyValueFactory<>("idUser"));
-        userNameColumn.setCellValueFactory(new PropertyValueFactory<>("nom"));
-        userPrenomColumn.setCellValueFactory(new PropertyValueFactory<>("prenom"));
-        userEmailColumn.setCellValueFactory(new PropertyValueFactory<>("email"));
-        userManagerColumn.setCellValueFactory(cellData -> {
-            Integer managerId = serviceUtilisateur.getManagerIdByUserId(cellData.getValue().getIdUser());
-            String managerName = managerId != null ? serviceUtilisateur.getManagerNameByUserId(managerId) : "Pas de Manager";
-            return new SimpleStringProperty(managerName);
+        idUserColumn.setCellValueFactory(new Callback<TreeTableColumn.CellDataFeatures<User, Integer>, ObservableValue<Integer>>() {
+            @Override
+            public ObservableValue<Integer> call(TreeTableColumn.CellDataFeatures<User, Integer> param) {
+                return new SimpleIntegerProperty(param.getValue().getValue().getIdUser()).asObject();
+            }
+        });
+
+        nomUserColumn.setCellValueFactory(new Callback<TreeTableColumn.CellDataFeatures<User, String>, ObservableValue<String>>() {
+            @Override
+            public ObservableValue<String> call(TreeTableColumn.CellDataFeatures<User, String> param) {
+                return new SimpleStringProperty(param.getValue().getValue().getNom());
+            }
+        });
+
+        prenomUserColumn.setCellValueFactory(new Callback<TreeTableColumn.CellDataFeatures<User, String>, ObservableValue<String>>() {
+            @Override
+            public ObservableValue<String> call(TreeTableColumn.CellDataFeatures<User, String> param) {
+                return new SimpleStringProperty(param.getValue().getValue().getPrenom());
+            }
+        });
+
+        emailUserColumn.setCellValueFactory(new Callback<TreeTableColumn.CellDataFeatures<User, String>, ObservableValue<String>>() {
+            @Override
+            public ObservableValue<String> call(TreeTableColumn.CellDataFeatures<User, String> param) {
+                return new SimpleStringProperty(param.getValue().getValue().getEmail());
+            }
+        });
+
+        managerUserColumn.setCellValueFactory(new Callback<TreeTableColumn.CellDataFeatures<User, String>, ObservableValue<String>>() {
+            @Override
+            public ObservableValue<String> call(TreeTableColumn.CellDataFeatures<User, String> param) {
+                Integer managerId = param.getValue().getValue().getIdManager();
+                String managerName = managerId != 0 ? serviceUtilisateur.getManagerNameByUserId(managerId) : "Pas de Manager";
+                return new SimpleStringProperty(managerName);
+            }
         });
 
         loadUsers();

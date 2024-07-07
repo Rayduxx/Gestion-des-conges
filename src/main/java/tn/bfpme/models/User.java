@@ -13,7 +13,7 @@ public class User {
     private int soldeMaladie;
     private int soldeExceptionnel;
     private int soldeMaternite;
-    private int idmanager;
+    private int idManager;
     private int idDepartement;
     private int idRole;
 
@@ -33,7 +33,8 @@ public class User {
         this.idDepartement = idDepartement;
         this.idRole = idRole;
     }
-    public User(int idUser, String nom, String prenom, String email, String mdp, String image, int soldeAnnuel, int soldeMaladie, int soldeExceptionnel, int soldeMaternite, int idDepartement, int idmanager, int idRole) {
+
+    public User(int idUser, String nom, String prenom, String email, String mdp, String image, int soldeAnnuel, int soldeMaladie, int soldeExceptionnel, int soldeMaternite, int idDepartement, int idManager, int idRole) {
         this.idUser = idUser;
         this.nom = nom;
         this.prenom = prenom;
@@ -45,15 +46,15 @@ public class User {
         this.soldeExceptionnel = soldeExceptionnel;
         this.soldeMaternite = soldeMaternite;
         this.idDepartement = idDepartement;
-        this.idmanager= idmanager;
+        this.idManager = idManager;
         this.idRole = idRole;
     }
 
-    public User(String nom, String prenom, String email,int idmanager, int idDepartement, int idRole) {
+    public User(String nom, String prenom, String email, int idManager, int idDepartement, int idRole) {
         this.nom = nom;
         this.prenom = prenom;
         this.email = email;
-        this.idmanager= idmanager;
+        this.idManager = idManager;
         this.idDepartement = idDepartement;
         this.idRole = idRole;
     }
@@ -137,12 +138,13 @@ public class User {
     public void setSoldeMaternite(int soldeMaternite) {
         this.soldeMaternite = soldeMaternite;
     }
+
     public int getIdManager() {
-        return idmanager;
+        return idManager;
     }
 
-    public void setIdmanager(int idmanager) {
-        this.idmanager = idmanager;
+    public void setIdManager(int idManager) {
+        this.idManager = idManager;
     }
 
     public int getIdDepartement() {
@@ -174,10 +176,12 @@ public class User {
                 ", soldeMaladie=" + soldeMaladie +
                 ", soldeExceptionnel=" + soldeExceptionnel +
                 ", soldeMaternite=" + soldeMaternite +
+                ", idManager=" + idManager +
                 ", idDepartement=" + idDepartement +
                 ", idRole=" + idRole +
                 '}';
     }
+
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
@@ -190,6 +194,4 @@ public class User {
     public int hashCode() {
         return Objects.hash(idUser);
     }
-
-
 }
