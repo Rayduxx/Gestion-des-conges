@@ -6,21 +6,35 @@ import javafx.fxml.FXMLLoader;
 import javafx.fxml.Initializable;
 import javafx.scene.control.Label;
 import javafx.scene.control.TextField;
+import javafx.scene.image.ImageView;
 import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.Pane;
+import javafx.stage.FileChooser;
+import javafx.stage.Stage;
 import tn.bfpme.models.User;
+import javafx.scene.image.*;
+
 import tn.bfpme.services.ServiceUtilisateur;
 import tn.bfpme.utils.MyDataBase;
-
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
 import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
+import java.nio.file.StandardCopyOption;
 import java.net.URL;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ResourceBundle;
+import java.util.UUID;
 
 public class AdminITController implements Initializable {
+    @FXML
+    public ImageView PDPimageHolder;
     @FXML
     private AnchorPane MainAnchorPane;
     @FXML
@@ -165,6 +179,39 @@ public class AdminITController implements Initializable {
 
     @FXML
     void upload_image(ActionEvent event) {
+
+        String imagePath = null;
+        FileChooser fileChooser = new FileChooser();
+        fileChooser.setTitle("Choose Image File");
+        fileChooser.getExtensionFilters().addAll(new FileChooser.ExtensionFilter("Image Files", "*.png", "*.jpg", "*.gif"));
+        Stage stage = (Stage) nom_A.getScene().getWindow();
+        File selectedFile = fileChooser.showOpenDialog(stage);
+        if (selectedFile != null) {
+            try {
+                Path destinationFolder = Paths.get("src/main/resources/assets/imgs");
+                if (!Files.exists(destinationFolder)) {
+                    Files.createDirectories(destinationFolder);
+                }
+                String fileName = UUID.randomUUID().toString() + "_" + selectedFile.getName();
+                Path destinationPath = destinationFolder.resolve(fileName);
+                Files.copy(selectedFile.toPath(), destinationPath, StandardCopyOption.REPLACE_EXISTING);
+                imagePath = destinationPath.toString();
+                System.out.println("Image uploaded successfully: " + imagePath);
+                image_A.setText(fileName);
+                if (imagePath != null) {
+                    try {
+                        File file = new File(imagePath);
+                        FileInputStream inputStream = new FileInputStream(file);
+                        Image image = new Image(inputStream);
+                        PDPimageHolder.setImage(image);
+                    } catch (FileNotFoundException e) {
+                        e.printStackTrace();
+                    }
+                }
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+        }
 
     }
 
