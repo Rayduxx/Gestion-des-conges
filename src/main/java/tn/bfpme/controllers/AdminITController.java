@@ -114,32 +114,35 @@ public class AdminITController implements Initializable {
         String Email = email_A.getText();
         String Mdp = MDP_A.getText();
         String Image = image_A.getText();
-        int solde_annuel= (int) Double.parseDouble(S_Ann.getText());
-        int solde_maladie = (int) Double.parseDouble(S_mal.getText());
-        int solde_exceptionnel = (int) Double.parseDouble(S_exc.getText());
-        int solde_maternite = (int) Double.parseDouble(S_mat.getText());
+        int solde_annuel = parseIntOrZero(S_Ann.getText());
+        int solde_maladie = parseIntOrZero(S_mal.getText());
+        int solde_exceptionnel = parseIntOrZero(S_exc.getText());
+        int solde_maternite = parseIntOrZero(S_mat.getText());
 
         if (Email.matches("^[_A-Za-z0-9-\\+]+(\\.[_A-Za-z0-9-]+)*@(bfpme\\.tn|gmail\\.com)$")) {
+            int IdUser = Integer.parseInt(ID_A.getText());
             try {
-                int userId = UserS.getUserIdCard();
-                if (!emailExists(Email) || isCurrentUser(userId, Email)) {
-                    UserS.Update(new User(userId, Nom, Prenom, Email, Mdp, Image, solde_annuel, solde_maladie, solde_exceptionnel, solde_maternite, 0, 0));
+                if (!emailExistss(Email, IdUser) || isCurrentUser(IdUser, Email)) {
+                    User user = new User(IdUser, Nom, Prenom, Email, Mdp, Image, solde_annuel, solde_maladie, solde_exceptionnel, solde_maternite, 0, 0);
+                    UserS.Update(user);
                     infolabel.setText("Modification Effectuée");
+                    System.out.println("User updated: " + user);
                 } else {
                     infolabel.setText("Email déjà existe");
                 }
             } catch (SQLException e) {
-                throw new RuntimeException(e);
+                infolabel.setText("Erreur de base de données: " + e.getMessage());
+                e.printStackTrace();
             }
         } else {
             infolabel.setText("Email est invalide");
         }
-
     }
 
     private boolean isCurrentUser(int userId, String email) {
-        User user = UserS.getUserById(userId);
-        return user != null && user.getEmail().equals(email);
+       User user = UserS.getUserById(userId);
+
+    return UserS != null  && user.getEmail().equals(email);
     }
 
     @FXML
@@ -181,5 +184,20 @@ public class AdminITController implements Initializable {
         statement.setString(1, email);
         ResultSet resultSet = statement.executeQuery();
         return resultSet.next();
+    }
+
+    private boolean emailExistss(String email, int excludeUserId) throws SQLException {
+        String query = "SELECT COUNT(*) FROM user WHERE Email = ? AND ID_User != ?";
+        try (Connection cnx = MyDataBase.getInstance().getCnx();
+             PreparedStatement stm = cnx.prepareStatement(query)) {
+            stm.setString(1, email);
+            stm.setInt(2, excludeUserId);
+            try (ResultSet rs = stm.executeQuery()) {
+                if (rs.next()) {
+                    return rs.getInt(1) > 0;
+                }
+            }
+        }
+        return false;
     }
 }
