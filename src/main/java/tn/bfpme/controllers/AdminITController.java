@@ -4,13 +4,14 @@ import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.fxml.Initializable;
+import javafx.geometry.Insets;
 import javafx.scene.control.Label;
 import javafx.scene.control.TextField;
 import javafx.scene.image.ImageView;
-import javafx.scene.layout.AnchorPane;
-import javafx.scene.layout.Pane;
+import javafx.scene.layout.*;
 import javafx.stage.FileChooser;
 import javafx.stage.Stage;
+import tn.bfpme.controllers.RHC.CardViewUserController;
 import tn.bfpme.models.User;
 import javafx.scene.image.*;
 
@@ -29,12 +30,19 @@ import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.util.List;
 import java.util.ResourceBundle;
 import java.util.UUID;
+import javafx.scene.layout.AnchorPane;
+
 
 public class AdminITController implements Initializable {
     @FXML
     public ImageView PDPimageHolder;
+
+    @FXML
+    private VBox userContainer;
+
     @FXML
     private AnchorPane MainAnchorPane;
     @FXML
@@ -68,6 +76,21 @@ public class AdminITController implements Initializable {
     private TextField nom_A;
     @FXML
     private Label infolabel;
+
+    @FXML
+    private ImageView imageView;
+    @FXML
+    private Label nameLabel;
+    @FXML
+    private Label emailLabel;
+    @FXML
+    private Label soldeAnnuelLabel;
+    @FXML
+    private Label soldeMaladieLabel;
+    @FXML
+    private Label soldeExceptionnelLabel;
+    @FXML
+    private Label soldeMaterniteLabel;
     ServiceUtilisateur UserS =new ServiceUtilisateur();
     Connection cnx = MyDataBase.getInstance().getCnx();
 
@@ -248,4 +271,22 @@ public class AdminITController implements Initializable {
         }
         return false;
     }
+
+    @FXML
+    public void initialize() {
+        List<User> users = UserS.Show();
+        for (User user : users) {
+            try {
+                FXMLLoader loader = new FXMLLoader(getClass().getResource("/UserCardView.fxml"));
+                VBox userCard = loader.load();
+                CardViewUserController controller = loader.getController();
+                controller.setData(user);
+                userContainer.getChildren().add(userCard);
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+        }
+    }
+
+
 }
