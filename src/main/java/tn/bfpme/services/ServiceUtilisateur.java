@@ -952,21 +952,33 @@ public class ServiceUtilisateur implements IUtilisateur {
 
     @Override
     public void Delete(User user) {
-        try {
-            String qry = "DELETE FROM `user` WHERE ID_User=?";
-            PreparedStatement smt = cnx.prepareStatement(qry);
-            smt.setInt(1, user.getIdUser());
-            smt.executeUpdate();
+
+        String updateManagerQuery = "UPDATE `user` SET `ID_Manager` = NULL WHERE `ID_Manager` = ?";
+        String deleteUserQuery = "DELETE FROM `user` WHERE `ID_User` = ?";
+
+        try (Connection cnx = MyDataBase.getInstance().getCnx();
+             PreparedStatement updateStmt = cnx.prepareStatement(updateManagerQuery);
+             PreparedStatement deleteStmt = cnx.prepareStatement(deleteUserQuery)) {
+
+            // Update references to the user
+            updateStmt.setInt(1, user.getIdUser());
+            updateStmt.executeUpdate();
+
+            // Delete the user
+            deleteStmt.setInt(1, user.getIdUser());
+            deleteStmt.executeUpdate();
         } catch (SQLException ex) {
             System.out.println(ex.getMessage());
         }
     }
 
+
     @Override
     public void DeleteByID(int id) {
-        try {
-            String qry = "DELETE FROM `user` WHERE ID_User=?";
-            PreparedStatement smt = cnx.prepareStatement(qry);
+        String qry = "DELETE FROM `user` WHERE ID_User=?";
+
+        try (Connection cnx = MyDataBase.getInstance().getCnx();
+             PreparedStatement smt = cnx.prepareStatement(qry)) {
             smt.setInt(1, id);
             smt.executeUpdate();
             System.out.println("Suppression Effectué");

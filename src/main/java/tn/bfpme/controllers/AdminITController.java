@@ -147,18 +147,19 @@ public class AdminITController implements Initializable {
 
     @FXML
     void supprimer_user(ActionEvent event) {
-        int userId = UserS.getUserIdCard(); // Implement this method to get the current user ID to delete
+        try {
+            int userId = Integer.parseInt(ID_A.getText());
 
-        if (userId > 0) {
             User user = UserS.getUserById(userId);
             if (user != null) {
                 UserS.Delete(user);
                 infolabel.setText("Suppression Effectuée");
+                System.out.println("User deleted: " + user);
             } else {
                 infolabel.setText("Utilisateur non trouvé");
             }
-        } else {
-            infolabel.setText("Sélectionnez un utilisateur valide à supprimer");
+        } catch (NumberFormatException e) {
+            infolabel.setText("L'ID de l'utilisateur doit être un nombre.");
         }
     }
 
