@@ -960,11 +960,9 @@ public class ServiceUtilisateur implements IUtilisateur {
              PreparedStatement updateStmt = cnx.prepareStatement(updateManagerQuery);
              PreparedStatement deleteStmt = cnx.prepareStatement(deleteUserQuery)) {
 
-            // Update references to the user
             updateStmt.setInt(1, user.getIdUser());
             updateStmt.executeUpdate();
 
-            // Delete the user
             deleteStmt.setInt(1, user.getIdUser());
             deleteStmt.executeUpdate();
         } catch (SQLException ex) {

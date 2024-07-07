@@ -6,19 +6,34 @@ import javafx.fxml.FXMLLoader;
 import javafx.fxml.Initializable;
 import javafx.scene.control.Label;
 import javafx.scene.control.TextField;
+import javafx.scene.image.ImageView;
 import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.Pane;
+import javafx.scene.shape.Path;
+import javafx.stage.FileChooser;
+import javafx.stage.Stage;
+
+import java.io.File;
+import java.nio.file.Files; // Ensure this is java.nio.file.Files
+import java.nio.file.Paths;
+import java.nio.file.StandardCopyOption;
+import java.io.IOException;
+
 import tn.bfpme.models.User;
 import tn.bfpme.services.ServiceUtilisateur;
 import tn.bfpme.utils.MyDataBase;
 
-import java.io.IOException;
+import java.util.UUID;
+
 import java.net.URL;
+
+
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ResourceBundle;
+
 
 public class AdminITController implements Initializable {
     @FXML
@@ -54,6 +69,10 @@ public class AdminITController implements Initializable {
     private TextField nom_A;
     @FXML
     private Label infolabel;
+
+    @FXML
+    private ImageView imageView;
+
     ServiceUtilisateur UserS =new ServiceUtilisateur();
     Connection cnx = MyDataBase.getInstance().getCnx();
 
@@ -165,6 +184,7 @@ public class AdminITController implements Initializable {
 
     @FXML
     void upload_image(ActionEvent event) {
+
 
     }
 
