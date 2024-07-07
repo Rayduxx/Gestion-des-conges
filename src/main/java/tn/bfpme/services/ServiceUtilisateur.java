@@ -871,9 +871,14 @@ public class ServiceUtilisateur implements IUtilisateur {
 
     @Override
     public void Add(User user) {
-        String qry = "INSERT INTO `user` ('Nom', 'Prenom', 'Email', 'MDP', 'Image', 'Solde_Annuel', 'Solde_Maladie', 'Solde_Exceptionnel', 'Solde_Maternité') VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)";
+        String qry = "INSERT INTO `user`(`Nom`, `Prenom`, `Email`, `MDP`, `Image`, `Solde_Annuel`, `Solde_Maladie`, `Solde_Exceptionnel`, `Solde_Maternité`) VALUES (?,?,?,?,?,?,?,?,?)";
 
-        try (PreparedStatement stm = cnx.prepareStatement(qry)) {
+        try {
+            if (cnx == null || cnx.isClosed()) {
+                cnx = MyDataBase.getInstance().getCnx();
+            }
+            PreparedStatement stm = cnx.prepareStatement(qry);
+
             stm.setString(1, user.getNom());
             stm.setString(2, user.getPrenom());
             stm.setString(3, user.getEmail());
@@ -894,7 +899,12 @@ public class ServiceUtilisateur implements IUtilisateur {
     public void Update(User user) {
         String qry = "UPDATE `user` SET `Nom`=?, `Prenom`=?, `Email`=?, `MDP`=?, `Image`=?, `Solde_Annuel`=?, `Solde_Maladie`=?, `Solde_Exceptionnel`=?,`Solde_Maternité`=? WHERE `Id_User`=?";
 
-        try (PreparedStatement stm = cnx.prepareStatement(qry)) {
+        try {
+            if (cnx == null || cnx.isClosed()) {
+                cnx = MyDataBase.getInstance().getCnx();
+            }
+            PreparedStatement stm = cnx.prepareStatement(qry);
+
             stm.setString(1, user.getNom());
             stm.setString(2, user.getPrenom());
             stm.setString(3, user.getEmail());
