@@ -32,7 +32,7 @@ public class CardNotifController implements Initializable {
     public void setData(Conge conge) {
         this.conge = conge;
         String iconN = "";
-        NotifContent.setText(conge.getNotification());
+        //NotifContent.setText(conge.getNotification());
         if (conge.getStatut().equals(Statut.Approuvé)) {
             iconN = "src/main/resources/assets/imgs/approved.png";
         }
@@ -57,7 +57,7 @@ public class CardNotifController implements Initializable {
 
     @FXML
     void DeleteNotif(ActionEvent event) {
-        CongeS.updateNotificationText(this.conge.getIdConge(), "");
+        //CongeS.updateNotificationText(this.conge.getIdConge(), "");
         if (paneNotifController != null) {
             paneNotifController.load();
         }

@@ -27,7 +27,7 @@ public class paneNotifController implements Initializable {
         NotifContainer.setVgap(4);
         NotifContainer.setPadding(new Insets(4));
         int row = 0;
-        try {
+       /* try {
             NotifContainer.getChildren().clear();
             for (Conge conge : CongeS.AfficherNotifications()) {
                 FXMLLoader fxmlLoader = new FXMLLoader();
@@ -44,7 +44,7 @@ public class paneNotifController implements Initializable {
             }
         } catch (IOException e) {
             e.printStackTrace();
-        }
+        }*/
     }
 
     @FXML

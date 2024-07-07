@@ -86,11 +86,11 @@
             </Pane>
             <Pane prefHeight="75.0" prefWidth="166.0" HBox.hgrow="NEVER">
                <children>
-                  <HBox alignment="CENTER" layoutX="16.0" layoutY="21.0" prefHeight="25.0" prefWidth="92.0" spacing="6.0">
+                  <HBox alignment="CENTER" layoutX="-1.0" layoutY="21.0" prefHeight="35.0" prefWidth="152.0">
                      <children>
-                        <Button fx:id="btnDelete" disable="true" mnemonicParsing="false" onAction="#suppConge" prefHeight="33.0" prefWidth="44.0" styleClass="settingsButton">
+                        <Button fx:id="btnDelete" disable="true" mnemonicParsing="false" onAction="#suppConge" prefHeight="34.0" prefWidth="0.0" styleClass="settingsButton">
                            <graphic>
-                              <ImageView disable="true" fitHeight="25.0" fitWidth="25.0" pickOnBounds="true" preserveRatio="true">
+                              <ImageView disable="true" fitHeight="24.0" fitWidth="24.0" pickOnBounds="true" preserveRatio="true">
                                  <image>
                                     <Image url="@assets/imgs/delete.png" />
                                  </image>
@@ -100,9 +100,9 @@
                               <Tooltip text="Supprimer congé" />
                            </tooltip>
                         </Button>
-                        <Button fx:id="btnEdit" disable="true" mnemonicParsing="false" onAction="#modifConge" prefHeight="33.0" prefWidth="44.0" styleClass="settingsButton">
+                        <Button fx:id="btnEdit" disable="true" mnemonicParsing="false" onAction="#modifConge" prefHeight="34.0" prefWidth="25.0" styleClass="settingsButton">
                            <graphic>
-                              <ImageView fitHeight="25.0" fitWidth="31.0" pickOnBounds="true" preserveRatio="true">
+                              <ImageView fitHeight="24.0" fitWidth="24.0" pickOnBounds="true" preserveRatio="true">
                                  <image>
                                     <Image url="@assets/imgs/update.png" />
                                  </image>
@@ -112,9 +112,9 @@
                               <Tooltip text="Modifier congé" />
                            </tooltip>
                         </Button>
-                        <Button fx:id="btnViewFile" mnemonicParsing="false" onAction="#ViewFile" prefHeight="33.0" prefWidth="44.0" styleClass="settingsButton">
+                        <Button fx:id="btnViewFile" mnemonicParsing="false" onAction="#ViewFile" prefHeight="34.0" prefWidth="0.0" styleClass="settingsButton">
                            <graphic>
-                              <ImageView fitHeight="25.0" fitWidth="31.0" pickOnBounds="true" preserveRatio="true">
+                              <ImageView fitHeight="24.0" fitWidth="24.0" pickOnBounds="true" preserveRatio="true">
                                  <image>
                                     <Image url="@assets/imgs/file.png" />
                                  </image>
@@ -122,6 +122,18 @@
                            </graphic>
                            <tooltip>
                               <Tooltip fx:id="TTViewFile" text="Afficher document" />
+                           </tooltip>
+                        </Button>
+                        <Button fx:id="btnViewMsg" mnemonicParsing="false" onAction="#ViewMessage" prefHeight="34.0" prefWidth="0.0" styleClass="settingsButton">
+                           <graphic>
+                              <ImageView fitHeight="19.0" fitWidth="34.0" pickOnBounds="true" preserveRatio="true">
+                                 <image>
+                                    <Image url="@assets/imgs/response.png" />
+                                 </image>
+                              </ImageView>
+                           </graphic>
+                           <tooltip>
+                              <Tooltip fx:id="TTViewFile1" text="Afficher document" />
                            </tooltip>
                         </Button>
                      </children>

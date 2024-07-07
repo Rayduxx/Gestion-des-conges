@@ -348,7 +348,7 @@ public class ServiceConge implements IConge<Conge> {
         return conges;
     }
 
-    public void updateNotificationText(int id, String text) {
+    /*public void updateNotificationText(int id, String text) {
         try {
             String qry = "UPDATE `conge` SET `Notification`=? WHERE `ID_Conge`=?";
             PreparedStatement stm = cnx.prepareStatement(qry);
@@ -358,11 +358,11 @@ public class ServiceConge implements IConge<Conge> {
         } catch (SQLException ex) {
             System.out.println(ex.getMessage());
         }
-    }
+    }*/
 
-    public List<Conge> AfficherNotifications() {
+    /*public List<Conge> AfficherNotifications() {
         List<Conge> conges = new ArrayList<>();
-        String sql = "SELECT ID_Conge, DateDebut, DateFin, TypeConge, Statut, ID_User, file, description, Notification " +
+        String sql = "SELECT ID_Conge, DateDebut, DateFin, TypeConge, Statut, ID_User, file, description, message " +
                 "FROM conge " +
                 "WHERE ID_User LIKE '%" + SessionManager.getInstance().getUser().getIdUser() + "%' " +
                 "AND Notification IS NOT NULL " +
@@ -398,7 +398,7 @@ public class ServiceConge implements IConge<Conge> {
             System.out.println(ex.getMessage());
         }
         return conges;
-    }
+    }*/
 
     public void DeleteAllUserNotif() {
         try {
@@ -412,11 +412,11 @@ public class ServiceConge implements IConge<Conge> {
         }
     }
 
-    public void NewNotification(String NotfiText, int idUser, int idConge) {
+    public void NewMessage(String message, int idUser, int idConge) {
         try {
-            String qry = "UPDATE `conge` SET `Notification`=? WHERE `ID_User`=? AND `ID_Conge`=?";
+            String qry = "UPDATE `conge` SET `Message`=? WHERE `ID_User`=? AND `ID_Conge`=?";
             PreparedStatement stm = cnx.prepareStatement(qry);
-            stm.setString(1, NotfiText);
+            stm.setString(1, message);
             stm.setInt(2, idUser);
             stm.setInt(3, idConge);
             stm.executeUpdate();
@@ -425,4 +425,16 @@ public class ServiceConge implements IConge<Conge> {
         }
     }
 
+    public String AfficherMessage() {
+        String Message ="";
+        String sql ="SELECT `Message` FROM `conge` WHERE `ID_Conge`=? AND `Message` IS NOT NULL AND `Notification` <> '' ";
+        try {
+            Statement ste = cnx.createStatement();
+            ResultSet rs = ste.executeQuery(sql);
+
+        } catch (SQLException ex) {
+            System.out.println(ex.getMessage());
+        }
+        return Message;
+    }
 }

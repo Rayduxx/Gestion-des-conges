@@ -13,6 +13,7 @@ public class User {
     private int soldeMaladie;
     private int soldeExceptionnel;
     private int soldeMaternite;
+    private int idManager;
     private int idDepartement;
     private int idRole;
 
@@ -33,10 +34,27 @@ public class User {
         this.idRole = idRole;
     }
 
-    public User(String nom, String prenom, String email, int idDepartement, int idRole) {
+    public User(int idUser, String nom, String prenom, String email, String mdp, String image, int soldeAnnuel, int soldeMaladie, int soldeExceptionnel, int soldeMaternite, int idDepartement, int idManager, int idRole) {
+        this.idUser = idUser;
         this.nom = nom;
         this.prenom = prenom;
         this.email = email;
+        this.mdp = mdp;
+        this.image = image;
+        this.soldeAnnuel = soldeAnnuel;
+        this.soldeMaladie = soldeMaladie;
+        this.soldeExceptionnel = soldeExceptionnel;
+        this.soldeMaternite = soldeMaternite;
+        this.idDepartement = idDepartement;
+        this.idManager = idManager;
+        this.idRole = idRole;
+    }
+
+    public User(String nom, String prenom, String email, int idManager, int idDepartement, int idRole) {
+        this.nom = nom;
+        this.prenom = prenom;
+        this.email = email;
+        this.idManager = idManager;
         this.idDepartement = idDepartement;
         this.idRole = idRole;
     }
@@ -121,6 +139,14 @@ public class User {
         this.soldeMaternite = soldeMaternite;
     }
 
+    public int getIdManager() {
+        return idManager;
+    }
+
+    public void setIdManager(int idManager) {
+        this.idManager = idManager;
+    }
+
     public int getIdDepartement() {
         return idDepartement;
     }
@@ -150,10 +176,12 @@ public class User {
                 ", soldeMaladie=" + soldeMaladie +
                 ", soldeExceptionnel=" + soldeExceptionnel +
                 ", soldeMaternite=" + soldeMaternite +
+                ", idManager=" + idManager +
                 ", idDepartement=" + idDepartement +
                 ", idRole=" + idRole +
                 '}';
     }
+
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
@@ -166,6 +194,4 @@ public class User {
     public int hashCode() {
         return Objects.hash(idUser);
     }
-
-
 }

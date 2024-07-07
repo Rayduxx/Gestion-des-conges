@@ -17,6 +17,7 @@ import javafx.stage.Stage;
 import javafx.stage.Window;
 import tn.bfpme.models.Conge;
 import tn.bfpme.models.User;
+import tn.bfpme.services.ServiceConge;
 import tn.bfpme.utils.Mails;
 import tn.bfpme.utils.SessionManager;
 import tn.bfpme.utils.StageManager;
@@ -49,6 +50,7 @@ public class MailingDemandeController implements Initializable {
     String employeeName, startDate, endDate, managerName, managerRole;
     private Conge conge;
     private User user;
+    private final ServiceConge serviceConge = new ServiceConge();
 
     @Override
     public void initialize(URL url, ResourceBundle resourceBundle) {
@@ -127,6 +129,7 @@ public class MailingDemandeController implements Initializable {
         String subject = mail_obj.getText();
         String messageText = mail_text.getText();
         Mails.sendEmail(to,subject,messageText);
+        serviceConge.NewMessage(subject,user.getIdUser(),conge.getIdConge());
         try {
             FXMLLoader loader = new FXMLLoader(getClass().getResource("/DemandeDepListe.fxml"));
             Parent root = loader.load();
