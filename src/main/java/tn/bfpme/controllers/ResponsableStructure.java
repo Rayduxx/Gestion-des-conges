@@ -4,7 +4,6 @@ import javafx.beans.property.SimpleStringProperty;
 import javafx.collections.FXCollections;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
-
 import javafx.fxml.FXMLLoader;
 import javafx.fxml.Initializable;
 import javafx.scene.control.ComboBox;
@@ -60,9 +59,8 @@ public class ResponsableStructure implements Initializable {
         User selectedManager = managerComboBox.getSelectionModel().getSelectedItem();
 
         if (selectedUser != null && selectedManager != null) {
-            serviceUtilisateur.setUserManager(selectedUser.getIdUser(), selectedManager.getIdUser());
+            serviceUtilisateur.setManagerForUser(selectedUser.getIdUser(), selectedManager.getIdUser());
             loadUsers();
-
         }
     }
 
@@ -77,13 +75,14 @@ public class ResponsableStructure implements Initializable {
         }
         serviceUtilisateur = new ServiceUtilisateur();
 
-        userIdColumn.setCellValueFactory(new PropertyValueFactory<>("ID_User"));
-        userNameColumn.setCellValueFactory(new PropertyValueFactory<>("Nom"));
-        userPrenomColumn.setCellValueFactory(new PropertyValueFactory<>("Prenom"));
-        userEmailColumn.setCellValueFactory(new PropertyValueFactory<>("Email"));
+        userIdColumn.setCellValueFactory(new PropertyValueFactory<>("idUser"));
+        userNameColumn.setCellValueFactory(new PropertyValueFactory<>("nom"));
+        userPrenomColumn.setCellValueFactory(new PropertyValueFactory<>("prenom"));
+        userEmailColumn.setCellValueFactory(new PropertyValueFactory<>("email"));
         userManagerColumn.setCellValueFactory(cellData -> {
-            User manager = serviceUtilisateur.getUserManager(cellData.getValue().getIdUser());
-            return new SimpleStringProperty(manager != null ? manager.getNom() + " " + manager.getPrenom() : "Pas de Manager");
+            Integer managerId = serviceUtilisateur.getManagerIdByUserId(cellData.getValue().getIdUser());
+            String managerName = managerId != null ? serviceUtilisateur.getManagerNameByUserId(managerId) : "Pas de Manager";
+            return new SimpleStringProperty(managerName);
         });
 
         loadUsers();

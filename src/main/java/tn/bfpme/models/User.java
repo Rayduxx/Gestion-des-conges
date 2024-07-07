@@ -13,6 +13,7 @@ public class User {
     private int soldeMaladie;
     private int soldeExceptionnel;
     private int soldeMaternite;
+    private int idmanager;
     private int idDepartement;
     private int idRole;
 
@@ -32,11 +33,27 @@ public class User {
         this.idDepartement = idDepartement;
         this.idRole = idRole;
     }
-
-    public User(String nom, String prenom, String email, int idDepartement, int idRole) {
+    public User(int idUser, String nom, String prenom, String email, String mdp, String image, int soldeAnnuel, int soldeMaladie, int soldeExceptionnel, int soldeMaternite, int idDepartement, int idmanager, int idRole) {
+        this.idUser = idUser;
         this.nom = nom;
         this.prenom = prenom;
         this.email = email;
+        this.mdp = mdp;
+        this.image = image;
+        this.soldeAnnuel = soldeAnnuel;
+        this.soldeMaladie = soldeMaladie;
+        this.soldeExceptionnel = soldeExceptionnel;
+        this.soldeMaternite = soldeMaternite;
+        this.idDepartement = idDepartement;
+        this.idmanager= idmanager;
+        this.idRole = idRole;
+    }
+
+    public User(String nom, String prenom, String email,int idmanager, int idDepartement, int idRole) {
+        this.nom = nom;
+        this.prenom = prenom;
+        this.email = email;
+        this.idmanager= idmanager;
         this.idDepartement = idDepartement;
         this.idRole = idRole;
     }
@@ -119,6 +136,13 @@ public class User {
 
     public void setSoldeMaternite(int soldeMaternite) {
         this.soldeMaternite = soldeMaternite;
+    }
+    public int getIdManager() {
+        return idmanager;
+    }
+
+    public void setIdmanager(int idmanager) {
+        this.idmanager = idmanager;
     }
 
     public int getIdDepartement() {
