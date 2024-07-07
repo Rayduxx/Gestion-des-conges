@@ -147,6 +147,7 @@ public class CongeCarteController {
         Alert alert = new Alert(Alert.AlertType.INFORMATION);
         alert.setTitle("Message de refus");
         alert.setHeaderText(null);
-        alert.setContentText(conge.getDescription());
+        alert.setContentText(this.conge.getMessage());
+        alert.showAndWait();
     }
 }
