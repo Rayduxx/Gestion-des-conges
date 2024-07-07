@@ -2,7 +2,6 @@
 
 <?import java.lang.String?>
 <?import javafx.scene.control.Button?>
-<?import javafx.scene.control.Label?>
 <?import javafx.scene.image.Image?>
 <?import javafx.scene.image.ImageView?>
 <?import javafx.scene.layout.HBox?>
@@ -20,18 +19,29 @@
             </ImageView>
          </graphic>
       </Button>
-      <Label layoutX="117.0" layoutY="26.0" text="Les demandes des congés" textFill="WHITE">
-         <font>
-            <Font name="Roboto Bold" size="22.0" />
-         </font>
-         <styleClass>
-            <String fx:value="FontSize-20" />
-            <String fx:value="RobotoBoldItalic" />
-         </styleClass>
-      </Label>
-      <HBox alignment="CENTER" layoutX="520.0" layoutY="21.0" prefHeight="63.0" prefWidth="806.0" spacing="22.0">
+      <HBox alignment="CENTER" layoutX="253.0" layoutY="21.0" prefHeight="63.0" prefWidth="1073.0" spacing="22.0">
          <children>
             <Button fx:id="btnRH" mnemonicParsing="false" onAction="#RH_Interface" prefHeight="38.0" prefWidth="75.0" text="RH">
+               <font>
+                  <Font size="14.0" />
+               </font>
+               <styleClass>
+                  <String fx:value="btn-secondary" />
+                  <String fx:value="FontSize-15" />
+                  <String fx:value="RobotoBold" />
+               </styleClass>
+            </Button>
+            <Button fx:id="admin_interface" mnemonicParsing="false" onAction="#admin_interfacebtn" prefHeight="38.0" prefWidth="66.0" text="Admin">
+               <font>
+                  <Font size="14.0" />
+               </font>
+               <styleClass>
+                  <String fx:value="btn-secondary" />
+                  <String fx:value="FontSize-15" />
+                  <String fx:value="RobotoBold" />
+               </styleClass>
+            </Button>
+            <Button fx:id="test_interfaceID" mnemonicParsing="false" onAction="#test_interface" prefHeight="38.0" prefWidth="66.0" text="test">
                <font>
                   <Font size="14.0" />
                </font>
@@ -95,25 +105,5 @@
             </HBox>
          </children>
       </HBox>
-      <Button fx:id="test_interfaceID" layoutX="445.0" layoutY="35.0" mnemonicParsing="false" onAction="#test_interface" prefHeight="38.0" prefWidth="66.0" text="test">
-         <font>
-            <Font size="14.0" />
-         </font>
-         <styleClass>
-            <String fx:value="btn-secondary" />
-            <String fx:value="FontSize-15" />
-            <String fx:value="RobotoBold" />
-         </styleClass>
-      </Button>
-      <Button fx:id="admin_interface" layoutX="370.0" layoutY="35.0" mnemonicParsing="false" onAction="#admin_interfacebtn" prefHeight="38.0" prefWidth="66.0" text="Admin">
-         <font>
-            <Font size="14.0" />
-         </font>
-         <styleClass>
-            <String fx:value="btn-secondary" />
-            <String fx:value="FontSize-15" />
-            <String fx:value="RobotoBold" />
-         </styleClass>
-      </Button>
    </children>
 </Pane>
