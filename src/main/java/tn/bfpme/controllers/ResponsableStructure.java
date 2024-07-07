@@ -50,7 +50,8 @@ public class ResponsableStructure implements Initializable {
 
         if (selectedUser != null && selectedManager != null) {
             serviceUtilisateur.setUserManager(selectedUser.getIdUser(), selectedManager.getIdUser());
-            loadUsers(); // Refresh the table view
+            loadUsers();
+
         }
     }
 
@@ -58,12 +59,12 @@ public class ResponsableStructure implements Initializable {
     public void initialize(URL url, ResourceBundle resourceBundle) {
         serviceUtilisateur = new ServiceUtilisateur();
 
-        userIdColumn.setCellValueFactory(new PropertyValueFactory<>("idUser"));
-        userNameColumn.setCellValueFactory(new PropertyValueFactory<>("fullName"));
-        userEmailColumn.setCellValueFactory(new PropertyValueFactory<>("email"));
+        userIdColumn.setCellValueFactory(new PropertyValueFactory<>("ID Utilisateur"));
+        userNameColumn.setCellValueFactory(new PropertyValueFactory<>("Nom Complet"));
+        userEmailColumn.setCellValueFactory(new PropertyValueFactory<>("Email"));
         userManagerColumn.setCellValueFactory(cellData -> {
             User manager = serviceUtilisateur.getUserManager(cellData.getValue().getIdUser());
-            return new SimpleStringProperty(manager != null ? manager.getNom() + " " + manager.getPrenom() : "No Manager");
+            return new SimpleStringProperty(manager != null ? manager.getNom() + " " + manager.getPrenom() : "Pas de Manager");
         });
 
         loadUsers();
