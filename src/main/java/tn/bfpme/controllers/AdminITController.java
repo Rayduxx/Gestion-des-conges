@@ -200,7 +200,6 @@ public class AdminITController implements Initializable {
 
     @FXML
     void upload_image(ActionEvent event) {
-
         String imagePath = null;
         FileChooser fileChooser = new FileChooser();
         fileChooser.setTitle("Choose Image File");
