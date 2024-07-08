@@ -4,7 +4,7 @@
 <?import javafx.scene.image.ImageView?>
 <?import javafx.scene.layout.HBox?>
 <?import javafx.scene.layout.VBox?>
-<HBox fx:id="card" xmlns:fx="http://javafx.com/fxml" fx:controller="tn.bfpme.controllers.RHC.CardViewUserController" spacing="10">
+<HBox fx:id="card" xmlns:fx="http://javafx.com/fxml" fx:controller="tn.bfpme.controllers.CardViewUserController" spacing="10">
     <ImageView fx:id="imageView" fitWidth="100" fitHeight="100" />
     <VBox spacing="5">
         <Label fx:id="nameLabel" style="-fx-font-size: 16px; -fx-font-weight: bold;" />

@@ -1,4 +1,4 @@
-package tn.bfpme.controllers.RHC;
+package tn.bfpme.controllers;
 
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
