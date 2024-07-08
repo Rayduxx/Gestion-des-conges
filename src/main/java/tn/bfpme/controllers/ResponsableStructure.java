@@ -97,17 +97,38 @@ public class ResponsableStructure implements Initializable {
         Map<Integer, TreeItem<User>> userItems = new HashMap<>();
         TreeItem<User> root = new TreeItem<>(new User(0, "Root", "", "", "", "", 0, 0, 0, 0, 0, 0, 0));
 
+        // First pass to create TreeItems
         for (User user : users) {
             TreeItem<User> userItem = new TreeItem<>(user);
             userItems.put(user.getIdUser(), userItem);
+        }
 
+        // Second pass to set up the hierarchy
+        for (User user : users) {
+            TreeItem<User> userItem = userItems.get(user.getIdUser());
             Integer managerId = user.getIdManager();
+
+            // Check for cyclic references
+            if (managerId.equals(user.getIdUser())) {
+                System.err.println("User " + user.getNom() + " " + user.getPrenom() + " is their own manager. Skipping to avoid cycle.");
+                continue;
+            }
+
             if (managerId == 0 || !userItems.containsKey(managerId)) {
                 root.getChildren().add(userItem);
             } else {
-                userItems.get(managerId).getChildren().add(userItem);
+                TreeItem<User> managerItem = userItems.get(managerId);
+                // Check for potential cycle
+                if (isAncestor(managerItem, userItem)) {
+                    System.err.println("Cycle detected: User " + user.getNom() + " " + user.getPrenom() + " cannot be added under manager " + managerItem.getValue().getNom() + " " + managerItem.getValue().getPrenom());
+                    continue;
+                }
+                managerItem.getChildren().add(userItem);
             }
         }
+
+        // Add logging to trace the tree structure
+        printTree(root, " ");
 
         userTable.setRoot(root);
         userTable.setShowRoot(false);
@@ -126,6 +147,25 @@ public class ResponsableStructure implements Initializable {
             }
         });
     }
+
+    private boolean isAncestor(TreeItem<User> ancestor, TreeItem<User> node) {
+        TreeItem<User> parent = node.getParent();
+        while (parent != null) {
+            if (parent == ancestor) {
+                return true;
+            }
+            parent = parent.getParent();
+        }
+        return false;
+    }
+
+    private void printTree(TreeItem<User> root, String indent) {
+        System.out.println(indent + root.getValue().getNom() + " " + root.getValue().getPrenom());
+        for (TreeItem<User> child : root.getChildren()) {
+            printTree(child, indent + "  ");
+        }
+    }
+
 
     @Override
     public void initialize(URL url, ResourceBundle resourceBundle) {
