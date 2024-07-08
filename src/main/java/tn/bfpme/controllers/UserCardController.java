@@ -40,7 +40,8 @@ public class UserCardController {
 
     int uid,unumtel;
     String unom, uprenom, uemail, umdp, urole;
-    public void setData(User user) {
+
+    /*public void setData(User user) {
         String imagePath = user.getImage();
         if (imagePath != null) {
             try {
@@ -77,7 +78,7 @@ public class UserCardController {
     @FXML
     void SupprimerUser(ActionEvent event) {
 
-    }
+    }*/
 
 }
 */
