@@ -29,7 +29,7 @@
                            <children>
                               <Pane layoutX="75.0" layoutY="76.0" prefHeight="545.0" prefWidth="412.0" styleClass="paneRoundedCornders">
                                  <children>
-                                    <GridPane layoutX="19.0" layoutY="23.0" prefHeight="502.0" prefWidth="372.0">
+                                     <GridPane layoutX="19.0" layoutY="140.0" prefHeight="385.0" prefWidth="372.0">
                                       <columnConstraints>
                                         <ColumnConstraints halignment="CENTER" hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0" />
                                         <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0" />
@@ -57,6 +57,8 @@
                                           <TextField fx:id="MDP_A" GridPane.columnIndex="1" GridPane.rowIndex="4" />
                                        </children>
                                     </GridPane>
+                                     <ImageView fx:id="PDPimageHolder" fitHeight="101.0" fitWidth="117.0" layoutX="148.0" layoutY="26.0" pickOnBounds="true" preserveRatio="true" />
+
                                  </children>
                               </Pane>
                               <Pane layoutX="633.0" layoutY="76.0" prefHeight="285.0" prefWidth="412.0" styleClass="paneRoundedCornders">
@@ -122,7 +124,10 @@
                 </Tab>
                 <Tab text="Affichage">
                   <content>
-                    <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="180.0" prefWidth="200.0" />
+                    <AnchorPane fx:id="userContainers" minHeight="0.0" minWidth="0.0" prefHeight="180.0" prefWidth="200.0">
+                           <children>
+                              <VBox fx:id="userContainer" layoutX="14.0" layoutY="23.0" prefHeight="200.0" prefWidth="100.0" />
+                           </children></AnchorPane>
                   </content>
                 </Tab>
               </tabs>

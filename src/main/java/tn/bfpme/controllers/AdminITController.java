@@ -7,35 +7,40 @@ import javafx.fxml.Initializable;
 import javafx.scene.control.Label;
 import javafx.scene.control.TextField;
 import javafx.scene.image.ImageView;
-import javafx.scene.layout.AnchorPane;
-import javafx.scene.layout.Pane;
-import javafx.scene.shape.Path;
+import javafx.scene.layout.*;
 import javafx.stage.FileChooser;
 import javafx.stage.Stage;
-
-import java.io.File;
-import java.nio.file.Files; // Ensure this is java.nio.file.Files
-import java.nio.file.Paths;
-import java.nio.file.StandardCopyOption;
-import java.io.IOException;
-
 import tn.bfpme.models.User;
+import javafx.scene.image.*;
+
 import tn.bfpme.services.ServiceUtilisateur;
 import tn.bfpme.utils.MyDataBase;
-
-import java.util.UUID;
-
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
+import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
+import java.nio.file.StandardCopyOption;
 import java.net.URL;
-
-
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.util.List;
 import java.util.ResourceBundle;
+import java.util.UUID;
+import javafx.scene.layout.AnchorPane;
 
 
 public class AdminITController implements Initializable {
+    @FXML
+    public ImageView PDPimageHolder;
+
+    @FXML
+    private VBox userContainer;
+
     @FXML
     private AnchorPane MainAnchorPane;
     @FXML
@@ -72,7 +77,18 @@ public class AdminITController implements Initializable {
 
     @FXML
     private ImageView imageView;
-
+    @FXML
+    private Label nameLabel;
+    @FXML
+    private Label emailLabel;
+    @FXML
+    private Label soldeAnnuelLabel;
+    @FXML
+    private Label soldeMaladieLabel;
+    @FXML
+    private Label soldeExceptionnelLabel;
+    @FXML
+    private Label soldeMaterniteLabel;
     ServiceUtilisateur UserS =new ServiceUtilisateur();
     Connection cnx = MyDataBase.getInstance().getCnx();
 
@@ -184,7 +200,38 @@ public class AdminITController implements Initializable {
 
     @FXML
     void upload_image(ActionEvent event) {
-
+        String imagePath = null;
+        FileChooser fileChooser = new FileChooser();
+        fileChooser.setTitle("Choose Image File");
+        fileChooser.getExtensionFilters().addAll(new FileChooser.ExtensionFilter("Image Files", "*.png", "*.jpg", "*.gif"));
+        Stage stage = (Stage) nom_A.getScene().getWindow();
+        File selectedFile = fileChooser.showOpenDialog(stage);
+        if (selectedFile != null) {
+            try {
+                Path destinationFolder = Paths.get("src/main/resources/assets/imgs");
+                if (!Files.exists(destinationFolder)) {
+                    Files.createDirectories(destinationFolder);
+                }
+                String fileName = UUID.randomUUID().toString() + "_" + selectedFile.getName();
+                Path destinationPath = destinationFolder.resolve(fileName);
+                Files.copy(selectedFile.toPath(), destinationPath, StandardCopyOption.REPLACE_EXISTING);
+                imagePath = destinationPath.toString();
+                System.out.println("Image uploaded successfully: " + imagePath);
+                image_A.setText(fileName);
+                if (imagePath != null) {
+                    try {
+                        File file = new File(imagePath);
+                        FileInputStream inputStream = new FileInputStream(file);
+                        Image image = new Image(inputStream);
+                        PDPimageHolder.setImage(image);
+                    } catch (FileNotFoundException e) {
+                        e.printStackTrace();
+                    }
+                }
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+        }
 
     }
 
@@ -221,4 +268,22 @@ public class AdminITController implements Initializable {
         }
         return false;
     }
+
+    @FXML
+    public void initialize() {
+        List<User> users = UserS.Show();
+        for (User user : users) {
+            try {
+                FXMLLoader loader = new FXMLLoader(getClass().getResource("/UserCardView.fxml"));
+                VBox userCard = loader.load();
+                CardViewUserController controller = loader.getController();
+                controller.setData(user);
+                userContainer.getChildren().add(userCard);
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+        }
+    }
+
+
 }
