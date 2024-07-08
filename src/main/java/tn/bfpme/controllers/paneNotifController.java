@@ -5,15 +5,18 @@ import javafx.fxml.*;
 import javafx.geometry.Insets;
 import javafx.scene.layout.*;
 import tn.bfpme.models.Conge;
+import tn.bfpme.models.Notification;
 import tn.bfpme.services.ServiceConge;
+import tn.bfpme.services.ServiceNotification;
 
 import java.io.IOException;
 import java.net.URL;
 import java.util.ResourceBundle;
 
 public class paneNotifController implements Initializable {
-    @FXML private GridPane NotifContainer;
-    private final ServiceConge CongeS = new ServiceConge();
+    @FXML
+    private GridPane NotifContainer;
+    private final ServiceNotification ServiceNotif = new ServiceNotification();
 
     @Override
     public void initialize(URL url, ResourceBundle resourceBundle) {
@@ -27,14 +30,14 @@ public class paneNotifController implements Initializable {
         NotifContainer.setVgap(4);
         NotifContainer.setPadding(new Insets(4));
         int row = 0;
-       /* try {
+        try {
             NotifContainer.getChildren().clear();
-            for (Conge conge : CongeS.AfficherNotifications()) {
+            for (Notification notification : ServiceNotif.AfficherNotifUser()) {
                 FXMLLoader fxmlLoader = new FXMLLoader();
                 fxmlLoader.setLocation(getClass().getResource("/CardNotif.fxml"));
                 Pane CardBox = fxmlLoader.load();
                 CardNotifController NotifCardC = fxmlLoader.getController();
-                NotifCardC.setData(conge);
+                NotifCardC.setData(notification);
                 NotifCardC.setPaneNotifController(this);
                 NotifContainer.add(CardBox, 0, row++);
                 GridPane.setMargin(CardBox, new Insets(4, 4, 4, 4));
@@ -44,12 +47,12 @@ public class paneNotifController implements Initializable {
             }
         } catch (IOException e) {
             e.printStackTrace();
-        }*/
+        }
     }
 
     @FXML
     void EffacerTout(ActionEvent event) {
-        CongeS.DeleteAllUserNotif();
+        ServiceNotif.DeleteAllUserNotif();
         load();
     }
 }

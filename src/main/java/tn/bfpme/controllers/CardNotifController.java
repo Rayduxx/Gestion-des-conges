@@ -7,8 +7,10 @@ import javafx.scene.control.*;
 import javafx.scene.image.*;
 import javafx.scene.layout.Pane;
 import tn.bfpme.models.Conge;
+import tn.bfpme.models.Notification;
 import tn.bfpme.models.Statut;
 import tn.bfpme.services.ServiceConge;
+import tn.bfpme.services.ServiceNotification;
 
 import java.io.File;
 import java.io.FileInputStream;
@@ -21,23 +23,25 @@ public class CardNotifController implements Initializable {
     @FXML private Label NotifContent;
     @FXML private Pane Card;
 
-    private Conge conge;
-    private final ServiceConge CongeS = new ServiceConge();
+    private Notification notification;
+    private final ServiceNotification ServiceNotif = new ServiceNotification();
     private paneNotifController paneNotifController;
 
     public void setPaneNotifController(paneNotifController paneNotifController) {
         this.paneNotifController = paneNotifController;
     }
 
-    public void setData(Conge conge) {
-        this.conge = conge;
+    public void setData(Notification notification) {
+        this.notification = notification;
         String iconN = "";
-        //NotifContent.setText(conge.getNotification());
-        if (conge.getStatut().equals(Statut.Approuvé)) {
+        if (notification.getStatut().equals(Statut.Approuvé)) {
             iconN = "src/main/resources/assets/imgs/approved.png";
         }
-        if (conge.getStatut().equals(Statut.Rejeté)) {
+        if (notification.getStatut().equals(Statut.Rejeté)) {
             iconN = "src/main/resources/assets/imgs/declined.png";
+        }
+        if (notification.getStatut() == null){
+            iconN = "1";
         }
         try {
             File file = new File(iconN);
@@ -57,7 +61,7 @@ public class CardNotifController implements Initializable {
 
     @FXML
     void DeleteNotif(ActionEvent event) {
-        //CongeS.updateNotificationText(this.conge.getIdConge(), "");
+        ServiceNotif.DeleteNotif(this.notification.getIdNotif());
         if (paneNotifController != null) {
             paneNotifController.load();
         }
