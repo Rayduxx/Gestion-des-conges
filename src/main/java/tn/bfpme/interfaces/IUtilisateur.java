@@ -3,6 +3,7 @@ package tn.bfpme.interfaces;
 import tn.bfpme.models.User;
 import tn.bfpme.models.UserConge;
 
+import java.sql.SQLException;
 import java.util.List;
 
 public interface IUtilisateur {
@@ -53,7 +54,7 @@ public interface IUtilisateur {
 
     List<User> Show();
 
-    void Delete(User user);
+    void Delete(User user) throws SQLException;
 
     void DeleteByID(int id);
 }

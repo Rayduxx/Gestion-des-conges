@@ -979,14 +979,9 @@ public class ServiceUtilisateur implements IUtilisateur {
 
     @Override
     public void Update(User user) {
-        String qry = "UPDATE `user` SET `Nom`=?, `Prenom`=?, `Email`=?, `MDP`=?, `Image`=?, `Solde_Annuel`=?, `Solde_Maladie`=?, `Solde_Exceptionnel`=?,`Solde_Maternité`=? WHERE `Id_User`=?";
-
-        try {
-            if (cnx == null || cnx.isClosed()) {
-                cnx = MyDataBase.getInstance().getCnx();
-            }
-            PreparedStatement stm = cnx.prepareStatement(qry);
-
+        String query = "UPDATE user SET Nom = ?, Prenom = ?, Email = ?, MDP = ?, Image = ?, Solde_Annuel = ?, Solde_Maladie = ?, Solde_Exceptionnel = ?, Solde_Maternité = ? WHERE ID_User = ?";
+        try (Connection cnx = MyDataBase.getInstance().getCnx();
+             PreparedStatement stm = cnx.prepareStatement(query)) {
             stm.setString(1, user.getNom());
             stm.setString(2, user.getPrenom());
             stm.setString(3, user.getEmail());
@@ -996,6 +991,7 @@ public class ServiceUtilisateur implements IUtilisateur {
             stm.setInt(7, user.getSoldeMaladie());
             stm.setInt(8, user.getSoldeExceptionnel());
             stm.setInt(9, user.getSoldeMaternite());
+            stm.setInt(10, user.getIdUser());
             stm.executeUpdate();
         } catch (Exception ex) {
             System.out.println(ex.getMessage());
@@ -1005,7 +1001,7 @@ public class ServiceUtilisateur implements IUtilisateur {
     @Override
     public List<User> Show() {
         List<User> users = new ArrayList<>();
-        String sql = "SELECT `ID_User`, 'Nom', 'Prenom', 'Email', 'MDP', 'Image', 'Solde_Annuel', 'Solde_Maladie', 'Solde_Exceptionnel', 'Solde_Maternité' FROM `user`";
+        String sql = "SELECT `ID_User`, `Nom`,`Prenom`,`Email`,`MDP`,`Image`,`Solde_Annuel`,`Solde_Maladie`,`Solde_Exceptionnel`,`Solde_Maternité` FROM `user`";
         try {
             Statement ste = cnx.createStatement();
             ResultSet rs = ste.executeQuery(sql);
@@ -1030,21 +1026,31 @@ public class ServiceUtilisateur implements IUtilisateur {
 
     @Override
     public void Delete(User user) {
-        try {
-            String qry = "DELETE FROM `user` WHERE ID_User=?";
-            PreparedStatement smt = cnx.prepareStatement(qry);
-            smt.setInt(1, user.getIdUser());
-            smt.executeUpdate();
+
+        String updateManagerQuery = "UPDATE `user` SET `ID_Manager` = NULL WHERE `ID_Manager` = ?";
+        String deleteUserQuery = "DELETE FROM `user` WHERE `ID_User` = ?";
+
+        try (Connection cnx = MyDataBase.getInstance().getCnx();
+             PreparedStatement updateStmt = cnx.prepareStatement(updateManagerQuery);
+             PreparedStatement deleteStmt = cnx.prepareStatement(deleteUserQuery)) {
+
+            updateStmt.setInt(1, user.getIdUser());
+            updateStmt.executeUpdate();
+
+            deleteStmt.setInt(1, user.getIdUser());
+            deleteStmt.executeUpdate();
         } catch (SQLException ex) {
             System.out.println(ex.getMessage());
         }
     }
 
+
     @Override
     public void DeleteByID(int id) {
-        try {
-            String qry = "DELETE FROM `user` WHERE ID_User=?";
-            PreparedStatement smt = cnx.prepareStatement(qry);
+        String qry = "DELETE FROM `user` WHERE ID_User=?";
+
+        try (Connection cnx = MyDataBase.getInstance().getCnx();
+             PreparedStatement smt = cnx.prepareStatement(qry)) {
             smt.setInt(1, id);
             smt.executeUpdate();
             System.out.println("Suppression Effectué");
