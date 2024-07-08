@@ -1,35 +1,46 @@
 package tn.bfpme.models;
 
-public class Notification extends User{
+public class Notification {
     private int idNotif;
+    private int idUser;
     private String notification;
-    public static Notification Current_Notif;
 
-    public Notification(){super();}
-    public Notification(int idNotif, int idUser, String nom, String prenom, String email, String mdp, Role role, String image,  int soldeAnnuel,int soldeMaladie, int soldeExceptionnel,int soldeMaternite, String notification,int idDepartement, int idRole) {
-        super(idUser, nom, prenom, email, mdp, image, soldeAnnuel,soldeMaladie,soldeExceptionnel,soldeMaternite,idDepartement,idRole);
+    public Notification(int idUser, int idNotif, String notification) {
+        this.idUser = idUser;
         this.idNotif = idNotif;
         this.notification = notification;
     }
-    public Notification(int idNotif, String notification, User utilisateur) {
-        super(utilisateur.getIdUser(), utilisateur.getNom(), utilisateur.getPrenom(), utilisateur.getEmail(), utilisateur.getMdp(), utilisateur.getImage(), utilisateur.getSoldeAnnuel(), utilisateur.getSoldeMaladie(),utilisateur.getSoldeExceptionnel(),utilisateur.getSoldeMaternite(), utilisateur.getIdDepartement(), utilisateur.getIdRole());
-        this.idNotif = idNotif;
-        this.notification = notification;
-    }
+
     public int getIdNotif() {
         return idNotif;
     }
+
     public void setIdNotif(int idNotif) {
         this.idNotif = idNotif;
     }
 
-    public String getnotification() {
+    public int getIdUser() {
+        return idUser;
+    }
+
+    public void setIdUser(int idUser) {
+        this.idUser = idUser;
+    }
+
+    public String getNotification() {
         return notification;
     }
+
     public void setNotification(String notification) {
         this.notification = notification;
     }
 
-    public static Notification getCurrent_Notif() {return Current_Notif;}
-    public static void setCurrent_Notif(Notification Current_Notif) {Notification.Current_Notif = Current_Notif;}
+    @Override
+    public String toString() {
+        return "Notification{" +
+                "idNotif=" + idNotif +
+                ", idUser=" + idUser +
+                ", notification='" + notification + '\'' +
+                '}';
+    }
 }
