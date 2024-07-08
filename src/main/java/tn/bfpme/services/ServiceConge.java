@@ -15,12 +15,7 @@ import java.util.*;
 
 
 public class ServiceConge implements IConge<Conge> {
-    private final Connection cnx;
-
-    public ServiceConge() {
-        cnx = MyDataBase.getInstance().getCnx();
-    }
-
+    Connection cnx = MyDataBase.getInstance().getCnx();
     @Override
     public List<Conge> afficher() {
         List<Conge> conges = new ArrayList<>();
@@ -61,6 +56,9 @@ public class ServiceConge implements IConge<Conge> {
     public void Add(Conge conge) {
         String qry = "INSERT INTO `conge`(`DateDebut`, `DateFin`, `TypeConge`, `Statut`, `ID_User`, `file`, `description`) VALUES (?,?,?,?,?,?,?)";
         try {
+            if (cnx == null || cnx.isClosed()) {
+                cnx = MyDataBase.getInstance().getCnx();
+            }
             PreparedStatement stm = cnx.prepareStatement(qry);
             stm.setDate(1, Date.valueOf(conge.getDateDebut()));
             stm.setDate(2, Date.valueOf(conge.getDateFin()));

@@ -472,7 +472,6 @@ public class DemandeCongeController implements Initializable {
                 e.printStackTrace();
             }
         } else {
-            // Close the current scene or perform other actions
             System.out.println("Closing current scene...");
         }
     }
