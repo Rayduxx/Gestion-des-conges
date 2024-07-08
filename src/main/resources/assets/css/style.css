@@ -467,6 +467,9 @@
 .grad-bg {
     -fx-background-color: linear-gradient(to right, rgba(17, 35, 73, 0.2), rgba(233, 169, 31, 0.06));
 }
+.grad-bg2 {
+    -fx-background-color: linear-gradient(to right, rgba(17, 35, 73, 0.2), rgba(233, 169, 31, 0.06));
+}
 .transparent-background {
     -fx-border-width: 2;
     -fx-effect: dropshadow(gaussian, rgb(255, 196, 0), 10, 0.2, 0, 0);
