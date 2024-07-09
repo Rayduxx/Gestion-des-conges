@@ -92,6 +92,8 @@ public class NavigationHeaderController implements Initializable {
         navigateToScene(event, "/DemandeDepListe.fxml", "Liste des demandes - " + SessionManager.getInstance().getUserDepartmentName());
 
     }
+    @FXML
+    void ListeEmployés(ActionEvent event) {navigateToScene(event, "/ListeEmployés.fxml", "Liste des employés");}
 
     @FXML
     void OpenNotifPane(ActionEvent event) {

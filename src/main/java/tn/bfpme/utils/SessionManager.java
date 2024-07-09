@@ -68,6 +68,7 @@ public class SessionManager {
         return role != null ? role.getNom() : null;
     }
 
+
     public List<Role> getParentRoles() {
         Role role = getUserRole();
         return ServiceRole.getParentRoles(role.getIdRole());

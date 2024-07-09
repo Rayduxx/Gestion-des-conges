@@ -64,7 +64,6 @@ public class HistoriqueCongeController implements Initializable {
                 Pane CardBox = fxmlLoader.load();
                 CongeCarteController cardC = fxmlLoader.getController();
                 cardC.setData(conge);
-
                 congeContainer.add(CardBox, 0, row++);
                 GridPane.setMargin(CardBox, new Insets(4, 4, 4, 4));
                 CardBox.setMaxWidth(Double.MAX_VALUE);

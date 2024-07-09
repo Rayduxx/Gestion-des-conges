@@ -30,7 +30,7 @@ public class LoginController {
     @FXML
     void Login(ActionEvent event) {
         cnx = MyDataBase.getInstance().getCnx();
-        String qry =  "SELECT u.*, ur.ID_Role " +
+        String qry = "SELECT u.*, ur.ID_Role " +
                 "FROM `user` as u " +
                 "JOIN `user_role` ur ON ur.ID_User = u.ID_User " +
                 "WHERE u.`Email`=? AND u.`MDP`=?";

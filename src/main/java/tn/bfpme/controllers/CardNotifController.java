@@ -34,15 +34,14 @@ public class CardNotifController implements Initializable {
     public void setData(Notification notification) {
         this.notification = notification;
         String iconN = "";
-        if (notification.getStatut().equals(Statut.Approuvé)) {
+        if (notification.getStatut() == 1) {
             iconN = "src/main/resources/assets/imgs/approved.png";
         }
-        if (notification.getStatut().equals(Statut.Rejeté)) {
+        if (notification.getStatut() == 0) {
             iconN = "src/main/resources/assets/imgs/declined.png";
         }
-        if (notification.getStatut() == null){
-            iconN = "1";
-        }
+
+        NotifContent.setText(notification.getNotification());
         try {
             File file = new File(iconN);
             FileInputStream inputStream = new FileInputStream(file);

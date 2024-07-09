@@ -23,9 +23,7 @@ public class ServiceUtilisateur implements IUtilisateur {
     private Map<Integer, Integer> userManagerMap = new HashMap<>();
 
     public ServiceUtilisateur() {
-
         this.cnx = MyDataBase.getInstance().getCnx();
-
         loadHierarchy();
     }
 
@@ -1044,8 +1042,14 @@ public class ServiceUtilisateur implements IUtilisateur {
     @Override
     public List<User> Show() {
         List<User> users = new ArrayList<>();
-        String sql = "SELECT `ID_User`, `Nom`,`Prenom`,`Email`,`MDP`,`Image`,`Solde_Annuel`,`Solde_Maladie`,`Solde_Exceptionnel`,`Solde_Maternité` FROM `user`";
+        String sql = "SELECT u.*, d.nom AS DepartementNom, r.nom AS RoleNom, ur.ID_Role FROM `user` u " +
+                "LEFT JOIN `departement` d ON u.ID_Departement = d.ID_Departement " +
+                "LEFT JOIN `user_role` ur ON u.ID_User = ur.ID_User " +
+                "LEFT JOIN `role` r ON ur.ID_Role = r.ID_Role";
         try {
+            if (cnx == null || cnx.isClosed()) {
+                cnx = MyDataBase.getInstance().getCnx();
+            }
             Statement ste = cnx.createStatement();
             ResultSet rs = ste.executeQuery(sql);
             while (rs.next()) {
@@ -1054,11 +1058,17 @@ public class ServiceUtilisateur implements IUtilisateur {
                 user.setNom(rs.getString("Nom"));
                 user.setPrenom(rs.getString("Prenom"));
                 user.setEmail(rs.getString("Email"));
+                user.setMdp(rs.getString("MDP"));
                 user.setImage(rs.getString("Image"));
                 user.setSoldeAnnuel(rs.getInt("Solde_Annuel"));
                 user.setSoldeExceptionnel(rs.getInt("Solde_Exceptionnel"));
                 user.setSoldeMaladie(rs.getInt("Solde_Maladie"));
                 user.setSoldeMaternite(rs.getInt("Solde_Maternité"));
+                user.setIdDepartement(rs.getInt("ID_Departement"));
+                user.setIdManager(rs.getInt("ID_Manager"));
+                user.setIdRole(rs.getInt("ID_Role"));
+                user.setDepartementNom(rs.getString("DepartementNom"));
+                user.setRoleNom(rs.getString("RoleNom"));
                 users.add(user);
             }
         } catch (SQLException ex) {
@@ -1173,11 +1183,41 @@ public class ServiceUtilisateur implements IUtilisateur {
         return users;
     }
 
+    public String getRoleNameById(int roleId) {
+        String roleName = null;
+        String query = "SELECT nom FROM role WHERE ID_Role = ?";
+        try (Connection cnx = MyDataBase.getInstance().getCnx();
+             PreparedStatement ps = cnx.prepareStatement(query)) {
+            ps.setInt(1, roleId);
+            ResultSet rs = ps.executeQuery();
+            if (rs.next()) {
+                roleName = rs.getString("nom");
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return roleName;
+    }
+
+    public String getDepartmentNameById(int departmentId) {
+        String departmentName = null;
+        String query = "SELECT nom FROM departement WHERE ID_Departement = ?";
+        try (Connection cnx = MyDataBase.getInstance().getCnx();
+             PreparedStatement ps = cnx.prepareStatement(query)) {
+            ps.setInt(1, departmentId);
+            ResultSet rs = ps.executeQuery();
+            if (rs.next()) {
+                departmentName = rs.getString("nom");
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return departmentName;
+    }
 
     public int getUserIdCard() {
         return 0;
     }
-
     public void recalculateSolde(User user) {
         user.setSoldeAnnuel(SoldeLogicController.calculateSoldeAnnuelle(user.getCreationDate()));
         user.setSoldeMaladie(SoldeLogicController.calculateSoldeMaladie(user.getCreationDate()));
@@ -1196,10 +1236,187 @@ public class ServiceUtilisateur implements IUtilisateur {
             e.printStackTrace();
         }
     }
+    @Override
+    public List<User> SortDepart() {
+        List<User> users = new ArrayList<>();
+        String sql = "SELECT u.*, d.nom AS DepartementNom, r.nom AS RoleNom, ur.ID_Role FROM `user` u " +
+                "LEFT JOIN `departement` d ON u.ID_Departement = d.ID_Departement " +
+                "LEFT JOIN `user_role` ur ON u.ID_User = ur.ID_User " +
+                "LEFT JOIN `role` r ON ur.ID_Role = r.ID_Role " +
+                "ORDER BY u.ID_Departement";
+        try {
+            if (cnx == null || cnx.isClosed()) {
+                cnx = MyDataBase.getInstance().getCnx();
+            }
+            Statement ste = cnx.createStatement();
+            ResultSet rs = ste.executeQuery(sql);
+            while (rs.next()) {
+                User user = new User();
+                user.setIdUser(rs.getInt("ID_User"));
+                user.setNom(rs.getString("Nom"));
+                user.setPrenom(rs.getString("Prenom"));
+                user.setEmail(rs.getString("Email"));
+                user.setMdp(rs.getString("MDP"));
+                user.setImage(rs.getString("Image"));
+                user.setSoldeAnnuel(rs.getInt("Solde_Annuel"));
+                user.setSoldeExceptionnel(rs.getInt("Solde_Exceptionnel"));
+                user.setSoldeMaladie(rs.getInt("Solde_Maladie"));
+                user.setSoldeMaternite(rs.getInt("Solde_Maternité"));
+                user.setIdDepartement(rs.getInt("ID_Departement"));
+                user.setIdManager(rs.getInt("ID_Manager"));
+                user.setIdRole(rs.getInt("ID_Role"));
+                user.setDepartementNom(rs.getString("DepartementNom"));
+                user.setRoleNom(rs.getString("RoleNom"));
+                users.add(user);
+            }
+        } catch (SQLException ex) {
+            System.out.println(ex.getMessage());
+        }
+        return users;
+    }
 
+    @Override
+    public List<User> SortRole() {
+        List<User> users = new ArrayList<>();
+        String sql = "SELECT u.*, d.nom AS DepartementNom, r.nom AS RoleNom, ur.ID_Role FROM `user` u " +
+                "LEFT JOIN `departement` d ON u.ID_Departement = d.ID_Departement " +
+                "LEFT JOIN `user_role` ur ON u.ID_User = ur.ID_User " +
+                "LEFT JOIN `role` r ON ur.ID_Role = r.ID_Role " +
+                "ORDER BY ur.ID_Role";
+        try {
+            if (cnx == null || cnx.isClosed()) {
+                cnx = MyDataBase.getInstance().getCnx();
+            }
+            Statement ste = cnx.createStatement();
+            ResultSet rs = ste.executeQuery(sql);
+            while (rs.next()) {
+                User user = new User();
+                user.setIdUser(rs.getInt("ID_User"));
+                user.setNom(rs.getString("Nom"));
+                user.setPrenom(rs.getString("Prenom"));
+                user.setEmail(rs.getString("Email"));
+                user.setMdp(rs.getString("MDP"));
+                user.setImage(rs.getString("Image"));
+                user.setSoldeAnnuel(rs.getInt("Solde_Annuel"));
+                user.setSoldeExceptionnel(rs.getInt("Solde_Exceptionnel"));
+                user.setSoldeMaladie(rs.getInt("Solde_Maladie"));
+                user.setSoldeMaternite(rs.getInt("Solde_Maternité"));
+                user.setIdDepartement(rs.getInt("ID_Departement"));
+                user.setIdManager(rs.getInt("ID_Manager"));
+                user.setIdRole(rs.getInt("ID_Role"));
+                user.setDepartementNom(rs.getString("DepartementNom"));
+                user.setRoleNom(rs.getString("RoleNom"));
+                users.add(user);
+            }
+        } catch (SQLException ex) {
+            System.out.println(ex.getMessage());
+        }
+        return users;
+    }
+    @Override
+    public List<User> search(String query) {
+        List<User> users = new ArrayList<>();
+        String sql = "SELECT u.*, d.nom AS DepartementNom, r.nom AS RoleNom FROM `user` u " +
+                "LEFT JOIN `departement` d ON u.ID_Departement = d.ID_Departement " +
+                "LEFT JOIN `user_role` ur ON u.ID_User = ur.ID_User " +
+                "LEFT JOIN `role` r ON ur.ID_Role = r.ID_Role " +
+                "WHERE u.Nom LIKE ? OR u.Prenom LIKE ? OR u.Email LIKE ? OR d.nom LIKE ? OR r.nom LIKE ?";
+        Connection cnx = null;
+        PreparedStatement ps = null;
+        ResultSet rs = null;
+        try {
+            cnx = MyDataBase.getInstance().getCnx();
+            if (cnx == null || cnx.isClosed()) {
+                throw new SQLException("Failed to establish a database connection.");
+            }
+            ps = cnx.prepareStatement(sql);
+            String searchQuery = "%" + query + "%";
+            ps.setString(1, searchQuery);
+            ps.setString(2, searchQuery);
+            ps.setString(3, searchQuery);
+            ps.setString(4, searchQuery);
+            ps.setString(5, searchQuery);
+            rs = ps.executeQuery();
+            while (rs.next()) {
+                User user = new User();
+                user.setIdUser(rs.getInt("ID_User"));
+                user.setNom(rs.getString("Nom"));
+                user.setPrenom(rs.getString("Prenom"));
+                user.setEmail(rs.getString("Email"));
+                user.setMdp(rs.getString("MDP"));
+                user.setImage(rs.getString("Image"));
+                user.setSoldeAnnuel(rs.getInt("Solde_Annuel"));
+                user.setSoldeExceptionnel(rs.getInt("Solde_Exceptionnel"));
+                user.setSoldeMaladie(rs.getInt("Solde_Maladie"));
+                user.setSoldeMaternite(rs.getInt("Solde_Maternité"));
+                user.setIdDepartement(rs.getInt("ID_Departement"));
+                user.setIdManager(rs.getInt("ID_Manager"));
+                user.setIdRole(rs.getInt("ID_Role"));
+                user.setDepartementNom(rs.getString("DepartementNom"));
+                user.setRoleNom(rs.getString("RoleNom"));
+                users.add(user);
+            }
+        } catch (SQLException ex) {
+            System.out.println(ex.getMessage());
+        } finally {
+            try {
+                if (rs != null) rs.close();
+                if (ps != null) ps.close();
+                if (cnx != null && !cnx.isClosed()) cnx.close();
+            } catch (SQLException ex) {
+                System.out.println(ex.getMessage());
+            }
+        }
+        return users;
+    }
+    @Override
+    public List<User> ShowUnder() {
+        List<User> users = new ArrayList<>();
+        int currentUserId = SessionManager.getInstance().getUser().getIdUser(); // Assuming SessionManager manages the current user's session
+        String sql = "WITH RECURSIVE Subordinates AS (" +
+                "SELECT u.ID_User, u.Nom, u.Prenom, u.Email, u.MDP, u.Image, u.Solde_Annuel, u.Solde_Maladie, u.Solde_Exceptionnel, u.Solde_Maternité, u.ID_Departement, u.ID_Manager, ur.ID_Role " +
+                "FROM user u " +
+                "LEFT JOIN user_role ur ON u.ID_User = ur.ID_User " +
+                "WHERE u.ID_Manager = ? " +
+                "UNION ALL " +
+                "SELECT u.ID_User, u.Nom, u.Prenom, u.Email, u.MDP, u.Image, u.Solde_Annuel, u.Solde_Maladie, u.Solde_Exceptionnel, u.Solde_Maternité, u.ID_Departement, u.ID_Manager, ur.ID_Role " +
+                "FROM user u " +
+                "INNER JOIN Subordinates s ON s.ID_User = u.ID_Manager " +
+                "LEFT JOIN user_role ur ON u.ID_User = ur.ID_User" +
+                ") " +
+                "SELECT s.ID_User, s.Nom, s.Prenom, s.Email, s.MDP, s.Image, s.Solde_Annuel, s.Solde_Maladie, s.Solde_Exceptionnel, s.Solde_Maternité, s.ID_Departement, s.ID_Manager, s.ID_Role, d.nom AS DepartementNom, r.nom AS RoleNom " +
+                "FROM Subordinates s " +
+                "LEFT JOIN departement d ON s.ID_Departement = d.ID_Departement " +
+                "LEFT JOIN role r ON s.ID_Role = r.ID_Role " +
+                "WHERE s.ID_User != ?";
 
-
-
-
-
+        try (Connection cnx = MyDataBase.getInstance().getCnx();
+             PreparedStatement ps = cnx.prepareStatement(sql)) {
+            ps.setInt(1, currentUserId);
+            ps.setInt(2, currentUserId); // Exclude current user
+            ResultSet rs = ps.executeQuery();
+            while (rs.next()) {
+                User user = new User();
+                user.setIdUser(rs.getInt("ID_User"));
+                user.setNom(rs.getString("Nom"));
+                user.setPrenom(rs.getString("Prenom"));
+                user.setEmail(rs.getString("Email"));
+                user.setMdp(rs.getString("MDP"));
+                user.setImage(rs.getString("Image"));
+                user.setSoldeAnnuel(rs.getInt("Solde_Annuel"));
+                user.setSoldeExceptionnel(rs.getInt("Solde_Exceptionnel"));
+                user.setSoldeMaladie(rs.getInt("Solde_Maladie"));
+                user.setSoldeMaternite(rs.getInt("Solde_Maternité"));
+                user.setIdDepartement(rs.getInt("ID_Departement"));
+                user.setIdManager(rs.getInt("ID_Manager"));
+                user.setIdRole(rs.getInt("ID_Role"));
+                user.setDepartementNom(rs.getString("DepartementNom"));
+                user.setRoleNom(rs.getString("RoleNom"));
+                users.add(user);
+            }
+        } catch (SQLException ex) {
+            System.out.println(ex.getMessage());
+        }
+        return users;
+    }
 }

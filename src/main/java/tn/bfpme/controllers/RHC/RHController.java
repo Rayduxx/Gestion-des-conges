@@ -47,6 +47,7 @@ public class RHController {
         } catch (IOException e) {
             e.printStackTrace();
         }
+
     }
 
     @FXML
