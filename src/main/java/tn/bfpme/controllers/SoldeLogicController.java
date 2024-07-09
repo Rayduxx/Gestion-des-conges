@@ -15,7 +15,7 @@ public class SoldeLogicController {
         if (creationDate == null) {
             creationDate = LocalDate.now();
         }
-        return (double) ChronoUnit.YEARS.between(creationDate, LocalDate.now()) * 2.5;
+        return ChronoUnit.YEARS.between(creationDate, LocalDate.now()) * 2.5;
     }
 
     public static int calculateSoldeExceptionnel(LocalDate creationDate) {

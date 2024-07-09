@@ -27,12 +27,13 @@ public interface IUtilisateur {
     List<User> getUsersByDepartment(String departement);
 
     List<User> getAllUsers();
+    public void updateUser(User user);
 
-    List<User> getAllUsersInfo();
 
-    void addUser(String nom, String prenom, String email, String mdp, String image, int soldeAnnuel, int soldeMaladie, int soldeExceptionnel, int soldeMaternite, int idDepartement, int idRole);
+        List<User> getAllUsersInfo();
 
-    void updateUser(int idUser, String nom, String prenom, String email, String mdp, String image, int soldeAnnuel, int soldeMaladie, int soldeExceptionnel, int soldeMaternite, int idDepartement, int idRole);
+    void addUser(String nom, String prenom, String email, String mdp, String image, double soldeAnnuel, int soldeMaladie, int soldeExceptionnel, int soldeMaternite, int idDepartement, int idRole);
+
 
     void deleteUser(int idUser);
 

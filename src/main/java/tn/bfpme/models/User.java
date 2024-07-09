@@ -14,7 +14,7 @@ public class User {
     private String image;
     private LocalDate creationDate;
     private int soldeMaternite;
-    private int soldeAnnuel;
+    private double soldeAnnuel;
     private double soldeAnnuelle;
     private int soldeExceptionnel;
     private int soldeMaladie;
@@ -56,19 +56,19 @@ public class User {
         this.idManager = idManager;
         this.idRole = idRole;
     }
-    public User(int idUser, String nom, String prenom, String email, String mdp, String image, LocalDate creationDate, int idDepartement, int idRole) {
+    public User(int idUser, String nom, String prenom, String email, String mdp, String image, LocalDate creationDate, int idDepartement) {
         this.idUser = idUser;
         this.nom = nom;
         this.prenom = prenom;
         this.email = email;
+        this.mdp = mdp;
         this.image = image;
         this.creationDate = (creationDate != null) ? creationDate : LocalDate.now();
-        this.soldeMaternite = SoldeLogicController.calculateSoldeMaternite(this.creationDate);
         this.soldeAnnuelle = SoldeLogicController.calculateSoldeAnnuelle(this.creationDate);
-        this.soldeExceptionnel = SoldeLogicController.calculateSoldeExceptionnel(this.creationDate);
         this.soldeMaladie = SoldeLogicController.calculateSoldeMaladie(this.creationDate);
+        this.soldeExceptionnel = SoldeLogicController.calculateSoldeExceptionnel(this.creationDate);
+        this.soldeMaternite = SoldeLogicController.calculateSoldeMaternite(this.creationDate);
         this.idDepartement = idDepartement;
-        this.idRole = idRole;
     }
 
     public User(String nom, String prenom, String email, int idManager, int idDepartement, int idRole) {
@@ -80,7 +80,20 @@ public class User {
         this.idRole = idRole;
     }
 
-    // Getters and Setters
+    public User(int idUser, String nom, String prenom, String email, String mdp, String image, LocalDate creationDate, int idDepartement, int idRole) {
+        this.idUser = idUser;
+        this.nom = nom;
+        this.prenom = prenom;
+        this.email = email;
+        this.mdp = mdp;
+        this.image = image;
+        this.creationDate = (creationDate != null) ? creationDate : LocalDate.now();
+        this.idDepartement = idDepartement;
+        this.idRole = idRole;
+
+    }
+
+
     public int getIdUser() {
         return idUser;
     }
@@ -129,11 +142,11 @@ public class User {
         this.image = image;
     }
 
-    public int getSoldeAnnuel() {
+    public double getSoldeAnnuel() {
         return soldeAnnuel;
     }
 
-    public void setSoldeAnnuel(int soldeAnnuel) {
+    public void setSoldeAnnuel(double soldeAnnuel) {
         this.soldeAnnuel = soldeAnnuel;
     }
 
@@ -184,7 +197,6 @@ public class User {
     public void setIdRole(int idRole) {
         this.idRole = idRole;
     }
-
     public String getDepartementNom() {
         return departementNom;
     }
@@ -199,6 +211,13 @@ public class User {
 
     public void setRoleNom(String roleNom) {
         this.roleNom = roleNom;
+    }
+    public LocalDate getCreationDate() {
+        return creationDate;
+    }
+
+    public void setCreationDate(LocalDate creationDate) {
+        this.creationDate = creationDate;
     }
 
     @Override
