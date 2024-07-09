@@ -28,6 +28,7 @@ import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.time.LocalDate;
 import java.util.List;
 import java.util.ResourceBundle;
 import java.util.UUID;
@@ -100,16 +101,17 @@ public class AdminITController implements Initializable {
         String mdp = MDP_A.getText();
         String image = image_A.getText();
 
-        int soldeAnnuel = parseIntOrZero(S_Ann.getText());
+       /* int soldeAnnuel = parseIntOrZero(S_Ann.getText());
         int soldeMaladie = parseIntOrZero(S_mal.getText());
         int soldeExceptionnel = parseIntOrZero(S_exc.getText());
-        int soldeMaternite = parseIntOrZero(S_mat.getText());
+        int soldeMaternite = parseIntOrZero(S_mat.getText());*/
 
         if (email.matches("^[_A-Za-z0-9-\\+]+(\\.[_A-Za-z0-9-]+)*@(bfpme\\.tn|gmail\\.com)$")) {
             try {
                 if (!emailExists(email)) {
-                    UserS.Add(new User(0, nom, prenom, email, mdp, image, soldeAnnuel, soldeMaladie, soldeExceptionnel, soldeMaternite, 0, 0));
+                    UserS.Add(new User(0, nom, prenom, email, mdp, image, LocalDate.now(), 0, 0));
                     infolabel.setText("Ajout Effectué");
+                    infolabel.setText("Ajour Effectué");
                 } else {
                     infolabel.setText("Email déjà existe");
                 }
