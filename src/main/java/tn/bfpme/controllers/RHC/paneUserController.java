@@ -169,7 +169,7 @@ public class paneUserController implements Initializable {
                 }
             }
         });
-        /*departmentComboBox.setItems(departments);
+        departmentComboBox.setItems(departments);
         departmentComboBox.setCellFactory(param -> new ListCell<Departement>() {
             @Override
             protected void updateItem(Departement item, boolean empty) {
@@ -191,7 +191,7 @@ public class paneUserController implements Initializable {
                     setText(item.getNom());
                 }
             }
-        });*/
+        });
         roleComboBox.setItems(roles);
         roleComboBox.setCellFactory(param -> new ListCell<Role>() {
             @Override
