@@ -6,7 +6,7 @@
 <?import javafx.scene.layout.HBox?>
 <?import javafx.scene.layout.Pane?>
 
-<Pane fx:id="RolesPane" prefHeight="622.0" prefWidth="1198.0" styleClass="pane1" stylesheets="@assets/css/style.css" xmlns="http://javafx.com/javafx/21" xmlns:fx="http://javafx.com/fxml/1" fx:controller="tn.bfpme.controllers.RHC.paneRoleController">
+<Pane fx:id="RolesPane" prefHeight="650.0" prefWidth="1000.0" styleClass="pane1" stylesheets="@assets/css/style.css" xmlns="http://javafx.com/javafx/21" xmlns:fx="http://javafx.com/fxml/1" fx:controller="tn.bfpme.controllers.RHC.paneRoleController">
    <children>
       <ListView fx:id="roleListView" layoutX="225.0" layoutY="111.0" prefHeight="400" prefWidth="200" />
       <TextField fx:id="roleNameField" layoutX="505.0" layoutY="172.0" prefHeight="29.0" prefWidth="281.0" promptText="Nom role" />

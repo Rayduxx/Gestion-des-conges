@@ -7,7 +7,7 @@
 <?import javafx.scene.layout.Pane?>
 <?import javafx.scene.layout.VBox?>
 
-<Pane fx:id="HierarchyPane" prefHeight="622.0" prefWidth="964.0" styleClass="pane1" stylesheets="@assets/css/style.css" xmlns="http://javafx.com/javafx/21" xmlns:fx="http://javafx.com/fxml/1" fx:controller="tn.bfpme.controllers.RHC.paneHieController">
+<Pane fx:id="HierarchyPane" prefHeight="650.0" prefWidth="1000.0" styleClass="pane1" stylesheets="@assets/css/style.css" xmlns="http://javafx.com/javafx/21" xmlns:fx="http://javafx.com/fxml/1" fx:controller="tn.bfpme.controllers.RHC.paneHieController">
    <children>
       <VBox layoutX="733.0" layoutY="407.0" spacing="10" />
       <ListView fx:id="roleHListView" layoutX="103.0" layoutY="109.0" prefHeight="400" prefWidth="250.0" />
