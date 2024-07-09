@@ -2,6 +2,7 @@ package tn.bfpme.models;
 
 import java.sql.Date;
 import java.time.LocalDate;
+import java.time.temporal.ChronoUnit;
 
 public class Conge {
     private int idConge;
@@ -121,5 +122,12 @@ public class Conge {
                 ", description='" + description +
                 ", message='" + message +
                 '}';
+    }
+
+    public double getCongeDays() {
+        if (dateDebut != null && dateFin != null) {
+            return ChronoUnit.DAYS.between(dateDebut, dateFin) + 1;
+        }
+        return 0;
     }
 }
