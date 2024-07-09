@@ -6,6 +6,7 @@ import tn.bfpme.utils.MyDataBase;
 import tn.bfpme.utils.SessionManager;
 
 import java.sql.*;
+import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -770,6 +771,8 @@ public class ServiceUtilisateur implements IUtilisateur {
             stm.setInt(1, userId);
             try (ResultSet rs = stm.executeQuery()) {
                 if (rs.next()) {
+                    LocalDate creationDate = rs.getDate("Creation_Date") != null ? rs.getDate("Creation_Date").toLocalDate() : null;
+
                     user = new User(
                             rs.getInt("ID_User"),
                             rs.getString("Nom"),
@@ -777,10 +780,7 @@ public class ServiceUtilisateur implements IUtilisateur {
                             rs.getString("Email"),
                             rs.getString("MDP"),
                             rs.getString("Image"),
-                            rs.getInt("Solde_Annuel"),
-                            rs.getInt("Solde_Maladie"),
-                            rs.getInt("Solde_Exceptionnel"),
-                            rs.getInt("Solde_Maternité"),
+                            creationDate,
                             rs.getInt("ID_Departement"),
                             rs.getInt("ID_Role")
                     );
@@ -791,6 +791,7 @@ public class ServiceUtilisateur implements IUtilisateur {
         }
         return user;
     }
+
 
     public int getManagerIdByUserId2(int userId) {
         String query = "SELECT ID_Manager FROM user WHERE ID_User = ?";
