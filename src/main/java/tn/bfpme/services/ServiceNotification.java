@@ -19,7 +19,7 @@ public class ServiceNotification implements INotification {
 
     public List<Notification> AfficherNotifUser() {
         List<Notification> notifs = new ArrayList<>();
-        String query = "SELECT ID_Notif, ID_User, NotfiMessage, Statut FROM `notification` WHERE `ID_User` = ?";
+        String query = "SELECT * FROM `notification` WHERE `ID_User` = ?";
         try {
             PreparedStatement ps = cnx.prepareStatement(query);
             ps.setInt(1, SessionManager.getInstance().getUser().getIdUser());
@@ -29,7 +29,7 @@ public class ServiceNotification implements INotification {
                         rs.getInt("ID_User"),
                         rs.getInt("ID_Notif"),
                         rs.getString("NotfiMessage"),
-                        Statut.valueOf(rs.getString("Statut"))
+                        rs.getInt("Statut")
                 );
                 notifs.add(notif);
             }

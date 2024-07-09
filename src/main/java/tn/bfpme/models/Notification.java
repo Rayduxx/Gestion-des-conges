@@ -4,11 +4,11 @@ public class Notification {
     private int idNotif;
     private int idUser;
     private String notification;
-    private Statut statut;
+    private int statut;
 
     public Notification() {}
 
-    public Notification(int idUser, int idNotif, String notification, Statut statut) {
+    public Notification(int idUser, int idNotif, String notification, int statut) {
         this.idUser = idUser;
         this.idNotif = idNotif;
         this.notification = notification;
@@ -26,7 +26,7 @@ public class Notification {
         this.notification = notification;
     }
 
-    public Notification(int idUser, String notification, Statut statut) {
+    public Notification(int idUser, String notification, int statut) {
         this.idUser = idUser;
         this.notification = notification;
         this.statut = statut;
@@ -56,11 +56,11 @@ public class Notification {
         this.notification = notification;
     }
 
-    public Statut getStatut() {
+    public int getStatut() {
         return statut;
     }
 
-    public void setStatut(Statut statut) {
+    public void setStatut(int statut) {
         this.statut = statut;
     }
 
