@@ -11,6 +11,7 @@ import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.layout.Background;
 import javafx.scene.layout.GridPane;
+import javafx.scene.layout.HBox;
 import javafx.scene.layout.Pane;
 import javafx.scene.paint.Color;
 import javafx.stage.Stage;
@@ -24,22 +25,18 @@ import java.io.IOException;
 
 
 public class UserCardController {
-
     @FXML
     private Pane Card;
-
     @FXML
     private Label carddepart;
-
     @FXML
     private Label cardemail;
-
     @FXML
     private ImageView cardimage;
-
     @FXML
     private Label cardnameprename;
-
+    @FXML
+    public HBox HBoxBtns;
     @FXML
     private Label cardrole;
 
@@ -82,7 +79,7 @@ public class UserCardController {
         SAnn = user.getSoldeAnnuel();
         SMala = user.getSoldeMaladie();
         SMater = user.getSoldeMaternite();
-        SExp= user.getSoldeExceptionnel();
+        SExp = user.getSoldeExceptionnel();
     }
 
 

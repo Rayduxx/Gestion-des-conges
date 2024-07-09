@@ -44,23 +44,23 @@ public class ListeEmployésController implements Initializable {
         }
     }
     public void load(List<User> users) {
-        UserContainer.getChildren().clear(); // Clear existing items
+        UserContainer.getChildren().clear();
         int column = 0;
-        int row = 0; // Start row from 0
+        int row = 0;
         try {
-
             for (User user : users) {
                 FXMLLoader fxmlLoader = new FXMLLoader();
                 fxmlLoader.setLocation(getClass().getResource("/UserCard.fxml"));
                 Pane userBox = fxmlLoader.load();
                 UserCardController cardC = fxmlLoader.getController();
+                cardC.HBoxBtns.setVisible(false);
                 cardC.setData(user);
                 if (column == 3) {
                     column = 0;
                     ++row;
                 }
-                UserContainer.add(userBox, column++, row); // Ensure correct row and column
-                GridPane.setMargin(userBox, new Insets(10));
+                UserContainer.add(userBox, column++, row);
+                GridPane.setMargin(userBox, new Insets(12));
             }
         } catch (IOException e) {
             e.printStackTrace();
@@ -68,7 +68,6 @@ public class ListeEmployésController implements Initializable {
     }
 
     public void load() {
-
         List<User> users = UserS.ShowUnder();
         load(users);
     }
