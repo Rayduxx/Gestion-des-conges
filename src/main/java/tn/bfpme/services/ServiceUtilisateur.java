@@ -1,5 +1,6 @@
 package tn.bfpme.services;
 
+import tn.bfpme.controllers.SoldeLogicController;
 import tn.bfpme.interfaces.IUtilisateur;
 import tn.bfpme.models.*;
 import tn.bfpme.utils.MyDataBase;
@@ -14,10 +15,17 @@ import java.util.Map;
 import java.util.stream.Collectors;
 
 public class ServiceUtilisateur implements IUtilisateur {
-    Connection cnx = MyDataBase.getInstance().getCnx();
+    private Connection cnx;
+
+    public ServiceUtilisateur(Connection cnx) {
+        this.cnx = cnx;
+    }
     private Map<Integer, Integer> userManagerMap = new HashMap<>();
 
     public ServiceUtilisateur() {
+
+        this.cnx = MyDataBase.getInstance().getCnx();
+
         loadHierarchy();
     }
 
@@ -636,7 +644,7 @@ public class ServiceUtilisateur implements IUtilisateur {
         return users;
     }
 
-    public void addUser(String nom, String prenom, String email, String mdp, String image, int soldeAnnuel, int soldeMaladie, int soldeExceptionnel, int soldeMaternite, int idDepartement, int idRole) {
+    public void addUser(String nom, String prenom, String email, String mdp, String image, double soldeAnnuel, int soldeMaladie, int soldeExceptionnel, int soldeMaternite, int idDepartement, int idRole) {
         String query = "INSERT INTO user (Nom, Prenom, Email, MDP, Image, Solde_Annuel, Solde_Maladie, Solde_Exceptionnel, Solde_Maternité, ID_Departement, ID_Role) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
         try (Connection cnx = MyDataBase.getInstance().getCnx();
              PreparedStatement pstmt = cnx.prepareStatement(query)) {
@@ -645,7 +653,7 @@ public class ServiceUtilisateur implements IUtilisateur {
             pstmt.setString(3, email);
             pstmt.setString(4, mdp);
             pstmt.setString(5, image);
-            pstmt.setInt(6, soldeAnnuel);
+            pstmt.setDouble(6, soldeAnnuel);
             pstmt.setInt(7, soldeMaladie);
             pstmt.setInt(8, soldeExceptionnel);
             pstmt.setInt(9, soldeMaternite);
@@ -657,23 +665,40 @@ public class ServiceUtilisateur implements IUtilisateur {
         }
     }
 
-    public void updateUser(int idUser, String nom, String prenom, String email, String mdp, String image, int soldeAnnuel, int soldeMaladie, int soldeExceptionnel, int soldeMaternite, int idDepartement, int idRole) {
-        String query = "UPDATE user SET Nom = ?, Prenom = ?, Email = ?, MDP = ?, Image = ?, Solde_Annuel = ?, Solde_Maladie = ?, Solde_Exceptionnel = ?, Solde_Maternité = ?, ID_Departement = ?, ID_Role = ? WHERE ID_User = ?";
-        try (Connection cnx = MyDataBase.getInstance().getCnx();
-             PreparedStatement pstmt = cnx.prepareStatement(query)) {
-            pstmt.setString(1, nom);
-            pstmt.setString(2, prenom);
-            pstmt.setString(3, email);
-            pstmt.setString(4, mdp);
-            pstmt.setString(5, image);
-            pstmt.setInt(6, soldeAnnuel);
-            pstmt.setInt(7, soldeMaladie);
-            pstmt.setInt(8, soldeExceptionnel);
-            pstmt.setInt(9, soldeMaternite);
-            pstmt.setInt(10, idDepartement);
-            pstmt.setInt(11, idRole);
-            pstmt.setInt(12, idUser);
-            pstmt.executeUpdate();
+
+
+        public void addUser2(User user) {
+            String query = "INSERT INTO user (Nom, Prenom, Email, MDP, Image, Creation_Date, Solde_Annuel, Solde_Maladie, Solde_Exceptionnel, Solde_Maternité, ID_Departement) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
+            try (PreparedStatement stm = cnx.prepareStatement(query, PreparedStatement.RETURN_GENERATED_KEYS)) {
+                stm.setString(1, user.getNom());
+                stm.setString(2, user.getPrenom());
+                stm.setString(3, user.getEmail());
+                stm.setString(4, user.getMdp());
+                stm.setString(5, user.getImage());
+                stm.setDate(6, java.sql.Date.valueOf(user.getCreationDate()));
+                stm.setDouble(7, user.getSoldeAnnuel());
+                stm.setInt(8, user.getSoldeMaladie());
+                stm.setInt(9, user.getSoldeExceptionnel());
+                stm.setInt(10, user.getSoldeMaternite());
+                stm.setInt(11, user.getIdDepartement());
+                stm.executeUpdate();
+                try (ResultSet generatedKeys = stm.getGeneratedKeys()) {
+                    if (generatedKeys.next()) {
+                        user.setIdUser(generatedKeys.getInt(1));
+                    }
+                }
+            } catch (SQLException e) {
+                e.printStackTrace();
+            }
+        }
+
+
+    public void updateSoldeAnnuel(int id, double solde) {
+        String query = "UPDATE user SET Solde_Annuel = ? WHERE ID_User = ?";
+        try (PreparedStatement stm = cnx.prepareStatement(query)) {
+            stm.setDouble(1, solde);
+            stm.setInt(2, id);
+            stm.executeUpdate();
         } catch (SQLException e) {
             e.printStackTrace();
         }
@@ -765,14 +790,11 @@ public class ServiceUtilisateur implements IUtilisateur {
 
     public User getUserById(int userId) {
         User user = null;
-        String query = "SELECT u.*, ur.ID_Role FROM user u LEFT JOIN user_role ur ON u.ID_User = ur.ID_User WHERE u.ID_User = ?";
-        try (Connection cnx = MyDataBase.getInstance().getCnx();
-             PreparedStatement stm = cnx.prepareStatement(query)) {
+        String query = "SELECT * FROM user WHERE ID_User = ?";
+        try (PreparedStatement stm = cnx.prepareStatement(query)) {
             stm.setInt(1, userId);
             try (ResultSet rs = stm.executeQuery()) {
                 if (rs.next()) {
-                    LocalDate creationDate = rs.getDate("Creation_Date") != null ? rs.getDate("Creation_Date").toLocalDate() : null;
-
                     user = new User(
                             rs.getInt("ID_User"),
                             rs.getString("Nom"),
@@ -780,10 +802,14 @@ public class ServiceUtilisateur implements IUtilisateur {
                             rs.getString("Email"),
                             rs.getString("MDP"),
                             rs.getString("Image"),
-                            creationDate,
+                            rs.getDate("Creation_Date").toLocalDate(),
                             rs.getInt("ID_Departement"),
-                            rs.getInt("ID_Role")
+                            0 // Assigning a default value as ID_Role does not exist in user table
                     );
+                    user.setSoldeAnnuel(rs.getDouble("Solde_Annuel"));
+                    user.setSoldeMaladie(rs.getInt("Solde_Maladie"));
+                    user.setSoldeExceptionnel(rs.getInt("Solde_Exceptionnel"));
+                    user.setSoldeMaternite(rs.getInt("Solde_Maternité"));
                 }
             }
         } catch (SQLException e) {
@@ -812,7 +838,6 @@ public class ServiceUtilisateur implements IUtilisateur {
         }
         return managerId;
     }
-
     public Integer getManagerIdByUserId(int userId) {
         Integer managerId = null;
         String query = "SELECT ID_Manager FROM user WHERE ID_User = ?";
@@ -869,6 +894,21 @@ public class ServiceUtilisateur implements IUtilisateur {
             e.printStackTrace();
         }
         return users;
+    }
+
+    @Override
+    public void updateUser(User user) {
+        String query = "UPDATE user SET Solde_Annuel = ?, Solde_Maladie = ?, Solde_Exceptionnel = ?, Solde_Maternité = ? WHERE ID_User = ?";
+        try (PreparedStatement stm = cnx.prepareStatement(query)) {
+            stm.setDouble(1, user.getSoldeAnnuel());
+            stm.setInt(2, user.getSoldeMaladie());
+            stm.setInt(3, user.getSoldeExceptionnel());
+            stm.setInt(4, user.getSoldeMaternite());
+            stm.setInt(5, user.getIdUser());
+            stm.executeUpdate();
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
     }
 
     public void setManagerForUser(int userId, int managerId) {
@@ -955,7 +995,7 @@ public class ServiceUtilisateur implements IUtilisateur {
 
     @Override
     public void Add(User user) {
-        String qry = "INSERT INTO `user`(`Nom`, `Prenom`, `Email`, `MDP`, `Image`, `Solde_Annuel`, `Solde_Maladie`, `Solde_Exceptionnel`, `Solde_Maternité`) VALUES (?,?,?,?,?,?,?,?,?)";
+        String qry = "INSERT INTO `user`(`Nom`, `Prenom`, `Email`, `MDP`, `Image`, `Solde_Annuel`, `Solde_Maladie`, `Solde_Exceptionnel`, `Solde_Maternité`, `Creation_Date`) VALUES (?,?,?,?,?,?,?,?,?,?)";
 
         try {
             if (cnx == null || cnx.isClosed()) {
@@ -968,10 +1008,11 @@ public class ServiceUtilisateur implements IUtilisateur {
             stm.setString(3, user.getEmail());
             stm.setString(4, user.getMdp());
             stm.setString(5, user.getImage());
-            stm.setInt(6, user.getSoldeAnnuel());
+            stm.setDouble(6, user.getSoldeAnnuel());
             stm.setInt(7, user.getSoldeMaladie());
             stm.setInt(8, user.getSoldeExceptionnel());
-            stm.setInt(9, user.getSoldeMaternite());
+            stm.setInt(9, user.getSoldeMaternite());;
+            stm.setDate(10, java.sql.Date.valueOf(user.getCreationDate()));
 
             stm.executeUpdate();
         } catch (SQLException e) {
@@ -989,7 +1030,7 @@ public class ServiceUtilisateur implements IUtilisateur {
             stm.setString(3, user.getEmail());
             stm.setString(4, user.getMdp());
             stm.setString(5, user.getImage());
-            stm.setInt(6, user.getSoldeAnnuel());
+            stm.setDouble(6, user.getSoldeAnnuel());
             stm.setInt(7, user.getSoldeMaladie());
             stm.setInt(8, user.getSoldeExceptionnel());
             stm.setInt(9, user.getSoldeMaternite());
@@ -1110,7 +1151,6 @@ public class ServiceUtilisateur implements IUtilisateur {
         String emailRegex = "^[a-zA-Z0-9_+&*-]+(?:\\.[a-zA-Z0-9_+&*-]+)*\\.?[a-zA-Z0-9_+&*-]+@(?:[a-zA-Z0-9-]+\\.)+[a-zA-Z]{2,7}$";
         return email.matches(emailRegex);
     }
-
     public List<User> searchUsers(String query) {
         List<User> users = new ArrayList<>();
         String sql = "SELECT * FROM user WHERE ID_User LIKE ? OR Nom LIKE ? OR Prenom LIKE ? OR Email LIKE ?";
@@ -1180,6 +1220,32 @@ public class ServiceUtilisateur implements IUtilisateur {
     public int getUserIdCard() {
         return 0;
     }
+
+    public void recalculateSolde(User user) {
+        user.setSoldeAnnuel(SoldeLogicController.calculateSoldeAnnuelle(user.getCreationDate()));
+        user.setSoldeMaladie(SoldeLogicController.calculateSoldeMaladie(user.getCreationDate()));
+        user.setSoldeExceptionnel(SoldeLogicController.calculateSoldeExceptionnel(user.getCreationDate()));
+        user.setSoldeMaternite(SoldeLogicController.calculateSoldeMaternite(user.getCreationDate()));
+
+        String query = "UPDATE user SET Solde_Annuel = ?, Solde_Maladie = ?, Solde_Exceptionnel = ?, Solde_Maternité = ? WHERE ID_User = ?";
+        try (PreparedStatement stm = cnx.prepareStatement(query)) {
+            stm.setDouble(1, user.getSoldeAnnuel());
+            stm.setInt(2, user.getSoldeMaladie());
+            stm.setInt(3, user.getSoldeExceptionnel());
+            stm.setInt(4, user.getSoldeMaternite());
+            stm.setInt(5, user.getIdUser());
+            stm.executeUpdate();
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+    }
+
+
+
+
+
+
+}
 
     @Override
     public List<User> SortDepart() {
