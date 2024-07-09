@@ -836,7 +836,6 @@ public class ServiceUtilisateur implements IUtilisateur {
         }
         return managerId;
     }
-
     public Integer getManagerIdByUserId(int userId) {
         Integer managerId = null;
         String query = "SELECT ID_Manager FROM user WHERE ID_User = ?";
@@ -1150,7 +1149,6 @@ public class ServiceUtilisateur implements IUtilisateur {
         String emailRegex = "^[a-zA-Z0-9_+&*-]+(?:\\.[a-zA-Z0-9_+&*-]+)*\\.?[a-zA-Z0-9_+&*-]+@(?:[a-zA-Z0-9-]+\\.)+[a-zA-Z]{2,7}$";
         return email.matches(emailRegex);
     }
-
     public List<User> searchUsers(String query) {
         List<User> users = new ArrayList<>();
         String sql = "SELECT * FROM user WHERE ID_User LIKE ? OR Nom LIKE ? OR Prenom LIKE ? OR Email LIKE ?";

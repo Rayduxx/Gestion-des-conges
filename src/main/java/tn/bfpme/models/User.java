@@ -90,9 +90,7 @@ public class User {
         this.creationDate = (creationDate != null) ? creationDate : LocalDate.now();
         this.idDepartement = idDepartement;
         this.idRole = idRole;
-
     }
-
 
     public int getIdUser() {
         return idUser;
@@ -197,6 +195,7 @@ public class User {
     public void setIdRole(int idRole) {
         this.idRole = idRole;
     }
+
     public String getDepartementNom() {
         return departementNom;
     }
