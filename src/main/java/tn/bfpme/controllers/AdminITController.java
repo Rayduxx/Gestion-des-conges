@@ -4,6 +4,7 @@ import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.fxml.Initializable;
+import javafx.geometry.Insets;
 import javafx.scene.control.Label;
 import javafx.scene.control.TextField;
 import javafx.scene.image.ImageView;
@@ -36,18 +37,16 @@ import javafx.scene.layout.AnchorPane;
 
 public class AdminITController implements Initializable {
     @FXML
-    public ImageView PDPimageHolder;
-
-    @FXML
-    private VBox userContainer;
-
-    @FXML
-    private AnchorPane MainAnchorPane;
-    @FXML
     private TextField ID_A;
 
     @FXML
     private TextField MDP_A;
+
+    @FXML
+    private AnchorPane MainAnchorPane;
+
+    @FXML
+    private ImageView PDPimageHolder;
 
     @FXML
     private TextField Prenom_A;
@@ -65,32 +64,38 @@ public class AdminITController implements Initializable {
     private TextField S_mat;
 
     @FXML
+    private GridPane UserContainers;
+
+    @FXML
     private TextField email_A;
 
     @FXML
     private TextField image_A;
 
     @FXML
-    private TextField nom_A;
-    @FXML
     private Label infolabel;
 
     @FXML
-    private ImageView imageView;
+    private TextField nom_A;
     @FXML
-    private Label nameLabel;
-    @FXML
-    private Label emailLabel;
-    @FXML
-    private Label soldeAnnuelLabel;
-    @FXML
-    private Label soldeMaladieLabel;
-    @FXML
-    private Label soldeExceptionnelLabel;
-    @FXML
-    private Label soldeMaterniteLabel;
+    private TextField Recherche;
+
+
     ServiceUtilisateur UserS =new ServiceUtilisateur();
     Connection cnx = MyDataBase.getInstance().getCnx();
+    @Override
+    public void initialize(URL location, ResourceBundle resources) {
+        load();
+        try {
+            FXMLLoader loader = new FXMLLoader(getClass().getResource("/NavigationHeader.fxml"));
+            Pane departementPane = loader.load();
+            MainAnchorPane.getChildren().add(departementPane);
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
+
+
 
     @FXML
     void ajouter_user(ActionEvent actionEvent) {
@@ -235,16 +240,6 @@ public class AdminITController implements Initializable {
 
     }
 
-    @Override
-    public void initialize(URL location, ResourceBundle resources) {
-        try {
-            FXMLLoader loader = new FXMLLoader(getClass().getResource("/NavigationHeader.fxml"));
-            Pane departementPane = loader.load();
-            MainAnchorPane.getChildren().add(departementPane);
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-    }
     private boolean emailExists(String email) throws SQLException {
         cnx = MyDataBase.getInstance().getCnx();
         String query = "SELECT * FROM `user` WHERE Email=?";
@@ -269,21 +264,98 @@ public class AdminITController implements Initializable {
         return false;
     }
 
-    @FXML
-    public void initialize() {
-        List<User> users = UserS.Show();
-        for (User user : users) {
-            try {
-                FXMLLoader loader = new FXMLLoader(getClass().getResource("/UserCardView.fxml"));
-                VBox userCard = loader.load();
-                CardViewUserController controller = loader.getController();
-                controller.setData(user);
-                userContainer.getChildren().add(userCard);
-            } catch (IOException e) {
-                e.printStackTrace();
+
+    public void load(List<User> users) {
+        UserContainers.getChildren().clear(); // Clear existing items
+        int column = 0;
+        int row = 0; // Start row from 0
+        try {
+
+            for (User user : users) {
+                FXMLLoader fxmlLoader = new FXMLLoader();
+                fxmlLoader.setLocation(getClass().getResource("/UserCard.fxml"));
+                Pane userBox = fxmlLoader.load();
+                UserCardController cardC = fxmlLoader.getController();
+                cardC.setData(user);
+                if (column == 3) {
+                    column = 0;
+                    ++row;
+                }
+                UserContainers.add(userBox, column++, row); // Ensure correct row and column
+                GridPane.setMargin(userBox, new Insets(10));
             }
+        } catch (IOException e) {
+            e.printStackTrace();
         }
     }
+
+    public void load() {
+
+        List<User> users = UserS.Show();
+        load(users);
+    }
+
+
+    @FXML
+    void Tri_Departement(ActionEvent actionEvent) {
+        UserContainers.getChildren().clear();
+        int column = 0;
+        int row = 1;
+        try {
+            for (User user : UserS.SortDepart()) {
+                FXMLLoader fxmlLoader = new FXMLLoader();
+                fxmlLoader.setLocation(getClass().getResource("/UserCard.fxml"));
+                Pane userBox = fxmlLoader.load();
+                UserCardController cardC = fxmlLoader.getController();
+                cardC.setData(user);
+                if (column == 3) {
+                    column = 0;
+                    ++row;
+                }
+                UserContainers.add(userBox, column++, row);
+                GridPane.setMargin(userBox, new Insets(10));
+            }
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
+
+    @FXML
+    void Tri_Role(ActionEvent actionEvent) {
+        UserContainers.getChildren().clear();
+        int column = 0;
+        int row = 1;
+        try {
+            for (User user : UserS.SortRole()) {
+                FXMLLoader fxmlLoader = new FXMLLoader();
+                fxmlLoader.setLocation(getClass().getResource("/UserCard.fxml"));
+                Pane userBox = fxmlLoader.load();
+                UserCardController cardC = fxmlLoader.getController();
+                cardC.setData(user);
+                if (column == 3) {
+                    column = 0;
+                    ++row;
+                }
+                UserContainers.add(userBox, column++, row);
+                GridPane.setMargin(userBox, new Insets(10));
+            }
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
+
+    @FXML
+    void Recherche(ActionEvent event) {
+        String searchQuery = Recherche.getText().trim();
+        if (!searchQuery.isEmpty()) {
+
+            List<User> users = UserS.search(searchQuery);
+            load(users);
+        } else {
+            load();
+        }
+    }
+
 
 
 }
