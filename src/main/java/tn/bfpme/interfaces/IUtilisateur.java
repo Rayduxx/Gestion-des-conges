@@ -65,4 +65,6 @@ public interface IUtilisateur {
     List<User> searchUsers(String query);
 
     List<User> search(String query);
+
+    List<User> ShowUnder();
 }

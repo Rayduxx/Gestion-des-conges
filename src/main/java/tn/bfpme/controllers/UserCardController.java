@@ -77,10 +77,13 @@ public class UserCardController {
     @FXML
     void ModifierUser(ActionEvent event) {
 
+
     }
 
     @FXML
     void SupprimerUser(ActionEvent event) {
+        UserS.DeleteByID(uid);
+
 
     }
 }
