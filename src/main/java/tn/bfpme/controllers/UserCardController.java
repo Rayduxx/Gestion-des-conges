@@ -43,9 +43,9 @@ public class UserCardController {
 
     private final ServiceUtilisateur UserS = new ServiceUtilisateur();
 
-    int uid, SAnn, SExp, SMala, SMater;
+    int uid, SExp, SMala, SMater;
     String unom, uprenom, uemail, umdp, urole, udepart, updp;
-
+    double SAnn;
     public void setData(User user) {
         String imagePath = user.getImage();
         if (imagePath != null) {
