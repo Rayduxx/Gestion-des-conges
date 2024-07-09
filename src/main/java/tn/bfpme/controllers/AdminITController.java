@@ -16,6 +16,7 @@ import javafx.scene.image.*;
 
 import tn.bfpme.services.ServiceUtilisateur;
 import tn.bfpme.utils.MyDataBase;
+
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
@@ -32,57 +33,46 @@ import java.sql.SQLException;
 import java.util.List;
 import java.util.ResourceBundle;
 import java.util.UUID;
+
 import javafx.scene.layout.AnchorPane;
 
 
 public class AdminITController implements Initializable {
     @FXML
-    private TextField ID_A;
-
+    public TextField ID_A;
     @FXML
-    private TextField MDP_A;
-
+    public TextField MDP_A;
     @FXML
     private AnchorPane MainAnchorPane;
-
     @FXML
-    private ImageView PDPimageHolder;
-
+    public ImageView PDPimageHolder;
     @FXML
-    private TextField Prenom_A;
-
+    public TextField Prenom_A;
     @FXML
-    private TextField S_Ann;
-
+    public TextField S_Ann;
     @FXML
-    private TextField S_exc;
-
+    public TextField S_exc;
     @FXML
-    private TextField S_mal;
-
+    public TextField S_mal;
     @FXML
-    private TextField S_mat;
-
+    public TextField S_mat;
     @FXML
     private GridPane UserContainers;
-
     @FXML
-    private TextField email_A;
-
+    public TextField email_A;
     @FXML
-    private TextField image_A;
-
+    public TextField image_A;
     @FXML
     private Label infolabel;
-
     @FXML
-    private TextField nom_A;
+    public TextField nom_A;
     @FXML
     private TextField Recherche;
 
 
-    ServiceUtilisateur UserS =new ServiceUtilisateur();
+    ServiceUtilisateur UserS = new ServiceUtilisateur();
     Connection cnx = MyDataBase.getInstance().getCnx();
+
     @Override
     public void initialize(URL location, ResourceBundle resources) {
         load();
@@ -94,7 +84,6 @@ public class AdminITController implements Initializable {
             e.printStackTrace();
         }
     }
-
 
 
     @FXML
@@ -180,9 +169,9 @@ public class AdminITController implements Initializable {
     }
 
     private boolean isCurrentUser(int userId, String email) {
-       User user = UserS.getUserById(userId);
+        User user = UserS.getUserById(userId);
 
-    return UserS != null  && user.getEmail().equals(email);
+        return UserS != null && user.getEmail().equals(email);
     }
 
     @FXML
@@ -264,7 +253,6 @@ public class AdminITController implements Initializable {
         return false;
     }
 
-
     public void load(List<User> users) {
         UserContainers.getChildren().clear(); // Clear existing items
         int column = 0;
@@ -294,7 +282,6 @@ public class AdminITController implements Initializable {
         List<User> users = UserS.Show();
         load(users);
     }
-
 
     @FXML
     void Tri_Departement(ActionEvent actionEvent) {
@@ -355,7 +342,6 @@ public class AdminITController implements Initializable {
             load();
         }
     }
-
 
 
 }
