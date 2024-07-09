@@ -1,4 +1,4 @@
-/*package tn.bfpme.controllers;
+package tn.bfpme.controllers;
 
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
@@ -38,10 +38,10 @@ public class UserCardController {
 
     private final ServiceUtilisateur UserS = new ServiceUtilisateur();
 
-    int uid,unumtel;
-    String unom, uprenom, uemail, umdp, urole;
+    int uid;
+    String unom, uprenom, uemail, umdp, urole, udepart;
 
-    /*public void setData(User user) {
+    public void setData(User user) {
         String imagePath = user.getImage();
         if (imagePath != null) {
             try {
@@ -57,18 +57,22 @@ public class UserCardController {
         }
         cardnameprename.setText(user.getNom() + " " + user.getPrenom());
         cardemail.setText(user.getEmail());
-        cardrole.setText(user.getIdRole());
-        carddepart
+        String roleName = UserS.getRoleNameById(user.getIdRole());
+        String departmentName = UserS.getDepartmentNameById(user.getIdDepartement());
+
+        cardrole.setText(roleName);
+        carddepart.setText(departmentName);
         Card.setStyle("-fx-border-radius: 5px;-fx-border-color:#808080");
 
         uprenom = user.getPrenom();
-        uid = user.getId();
+        uid = user.getIdUser();
         unom = user.getNom();
         uemail = user.getEmail();
-        umdp = user.getPassword();
-        urole = user.getRole();
-        unumtel = user.getNumtel();
+        umdp = user.getMdp();
+        urole = roleName;
+        udepart = departmentName;
     }
+
 
     @FXML
     void ModifierUser(ActionEvent event) {
@@ -78,5 +82,6 @@ public class UserCardController {
     @FXML
     void SupprimerUser(ActionEvent event) {
 
-    }*/
+    }
+}
 

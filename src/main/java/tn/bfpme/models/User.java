@@ -16,6 +16,8 @@ public class User {
     private int idManager;
     private int idDepartement;
     private int idRole;
+    private String departementNom; // New field for department name
+    private String roleNom; // New field for role name
 
     public User() {}
 
@@ -59,6 +61,7 @@ public class User {
         this.idRole = idRole;
     }
 
+    // Getters and Setters
     public int getIdUser() {
         return idUser;
     }
@@ -163,6 +166,22 @@ public class User {
         this.idRole = idRole;
     }
 
+    public String getDepartementNom() {
+        return departementNom;
+    }
+
+    public void setDepartementNom(String departementNom) {
+        this.departementNom = departementNom;
+    }
+
+    public String getRoleNom() {
+        return roleNom;
+    }
+
+    public void setRoleNom(String roleNom) {
+        this.roleNom = roleNom;
+    }
+
     @Override
     public String toString() {
         return "User{" +
@@ -179,6 +198,8 @@ public class User {
                 ", idManager=" + idManager +
                 ", idDepartement=" + idDepartement +
                 ", idRole=" + idRole +
+                ", departementNom='" + departementNom + '\'' +
+                ", roleNom='" + roleNom + '\'' +
                 '}';
     }
 

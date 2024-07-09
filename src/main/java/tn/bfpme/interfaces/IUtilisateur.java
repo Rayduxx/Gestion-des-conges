@@ -57,4 +57,12 @@ public interface IUtilisateur {
     void Delete(User user) throws SQLException;
 
     void DeleteByID(int id);
+
+    List<User> SortDepart();
+
+    List<User> SortRole();
+
+    List<User> searchUsers(String query);
+
+    List<User> search(String query);
 }
