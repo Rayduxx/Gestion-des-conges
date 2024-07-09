@@ -4,7 +4,6 @@ import tn.bfpme.interfaces.IConge;
 import tn.bfpme.models.Conge;
 import tn.bfpme.models.Statut;
 import tn.bfpme.models.TypeConge;
-import tn.bfpme.models.User;
 import tn.bfpme.utils.MyDataBase;
 import tn.bfpme.utils.SessionManager;
 
@@ -15,7 +14,16 @@ import java.util.*;
 
 
 public class ServiceConge implements IConge<Conge> {
-    Connection cnx = MyDataBase.getInstance().getCnx();
+    private Connection cnx;
+
+    public ServiceConge(Connection cnx) {
+        this.cnx = cnx;
+    }
+
+    public ServiceConge() {
+
+    }
+
     @Override
     public List<Conge> afficher() {
         List<Conge> conges = new ArrayList<>();
@@ -107,16 +115,22 @@ public class ServiceConge implements IConge<Conge> {
 
     @Override
     public void updateSoldeAnnuel(int id, int solde) {
-        try {
-            String qry = "UPDATE `utilisateur` SET `Solde_Annuel`=? WHERE `ID_User`=?";
-            PreparedStatement stm = cnx.prepareStatement(qry);
-            stm.setInt(1, solde);
+        return;
+    }
+
+    @Override
+    public void updateSoldeAnnuel(int id, double solde) {
+        String query = "UPDATE user SET Solde_Annuel = ? WHERE ID_User = ?";
+        try (PreparedStatement stm = cnx.prepareStatement(query)) {
+            stm.setDouble(1, solde);
             stm.setInt(2, id);
             stm.executeUpdate();
-        } catch (SQLException ex) {
-            System.out.println(ex.getMessage());
+        } catch (SQLException e) {
+            e.printStackTrace();
         }
     }
+
+
 
     @Override
     public void updateSoldeMaladie(int id, int solde) {
@@ -389,5 +403,6 @@ public class ServiceConge implements IConge<Conge> {
         }
         return Message;
     }
+
 
 }
