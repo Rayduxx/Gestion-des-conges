@@ -15,12 +15,7 @@ import java.util.*;
 
 
 public class ServiceConge implements IConge<Conge> {
-    private final Connection cnx;
-
-    public ServiceConge() {
-        cnx = MyDataBase.getInstance().getCnx();
-    }
-
+    Connection cnx = MyDataBase.getInstance().getCnx();
     @Override
     public List<Conge> afficher() {
         List<Conge> conges = new ArrayList<>();
@@ -61,6 +56,9 @@ public class ServiceConge implements IConge<Conge> {
     public void Add(Conge conge) {
         String qry = "INSERT INTO `conge`(`DateDebut`, `DateFin`, `TypeConge`, `Statut`, `ID_User`, `file`, `description`) VALUES (?,?,?,?,?,?,?)";
         try {
+            if (cnx == null || cnx.isClosed()) {
+                cnx = MyDataBase.getInstance().getCnx();
+            }
             PreparedStatement stm = cnx.prepareStatement(qry);
             stm.setDate(1, Date.valueOf(conge.getDateDebut()));
             stm.setDate(2, Date.valueOf(conge.getDateFin()));
@@ -362,57 +360,6 @@ public class ServiceConge implements IConge<Conge> {
         }
     }*/
 
-    /*public List<Conge> AfficherNotifications() {
-        List<Conge> conges = new ArrayList<>();
-        String sql = "SELECT ID_Conge, DateDebut, DateFin, TypeConge, Statut, ID_User, file, description, message " +
-                "FROM conge " +
-                "WHERE ID_User LIKE '%" + SessionManager.getInstance().getUser().getIdUser() + "%' " +
-                "AND Notification IS NOT NULL " +
-                "AND Notification <> '' " +
-                "AND Statut <> 'En_Attente'";
-        try {
-            Statement ste = cnx.createStatement();
-            ResultSet rs = ste.executeQuery(sql);
-            while (rs.next()) {
-                Conge conge = new Conge();
-                conge.setIdConge(rs.getInt("ID_Conge"));
-                conge.setDateDebut(rs.getDate("DateDebut").toLocalDate());
-                conge.setDateFin(rs.getDate("DateFin").toLocalDate());
-                try {
-                    conge.setTypeConge(TypeConge.valueOf(rs.getString("TypeConge")));
-                } catch (IllegalArgumentException e) {
-                    System.out.println("Unknown TypeConge value: " + rs.getString("TypeConge"));
-                    continue;
-                }
-                try {
-                    conge.setStatut(Statut.valueOf(rs.getString("Statut")));
-                } catch (IllegalArgumentException e) {
-                    System.out.println("Unknown Statut value: " + rs.getString("Statut"));
-                    continue;
-                }
-                conge.setIdUser(rs.getInt("ID_User"));
-                conge.setFile(rs.getString("file"));
-                conge.setDescription(rs.getString("description"));
-                conge.setNotification(rs.getString("Notification"));
-                conges.add(conge);
-            }
-        } catch (SQLException ex) {
-            System.out.println(ex.getMessage());
-        }
-        return conges;
-    }*/
-
-    public void DeleteAllUserNotif() {
-        try {
-            String qry = "UPDATE `conge` SET `Notification`=? WHERE `ID_User`=?";
-            PreparedStatement stm = cnx.prepareStatement(qry);
-            stm.setString(1, "");
-            stm.setInt(2, SessionManager.getInstance().getUser().getIdUser());
-            stm.executeUpdate();
-        } catch (SQLException ex) {
-            System.out.println(ex.getMessage());
-        }
-    }
 
     public void NewMessage(String message, int idUser, int idConge) {
         try {

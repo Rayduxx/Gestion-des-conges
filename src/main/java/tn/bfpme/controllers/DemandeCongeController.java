@@ -175,6 +175,9 @@ public class DemandeCongeController implements Initializable {
         }
         String qry = "SELECT `Solde_Annuel` FROM `user` WHERE `ID_User`=?";
         try {
+            if (cnx == null || cnx.isClosed()) {
+                cnx = MyDataBase.getInstance().getCnx();
+            }
             PreparedStatement pstm = cnx.prepareStatement(qry);
             pstm.setInt(1, SessionManager.getInstance().getUser().getIdUser());
             ResultSet rs = pstm.executeQuery();
@@ -202,7 +205,6 @@ public class DemandeCongeController implements Initializable {
                             e.printStackTrace();
                         }
                     } else {
-                        // Close the current scene or perform other actions
                         System.out.println("Closing current scene...");
                     }
                 } else {
@@ -472,7 +474,6 @@ public class DemandeCongeController implements Initializable {
                 e.printStackTrace();
             }
         } else {
-            // Close the current scene or perform other actions
             System.out.println("Closing current scene...");
         }
     }

@@ -4,11 +4,32 @@ public class Notification {
     private int idNotif;
     private int idUser;
     private String notification;
+    private int statut;
+
+    public Notification() {}
+
+    public Notification(int idUser, int idNotif, String notification, int statut) {
+        this.idUser = idUser;
+        this.idNotif = idNotif;
+        this.notification = notification;
+        this.statut = statut;
+    }
 
     public Notification(int idUser, int idNotif, String notification) {
         this.idUser = idUser;
         this.idNotif = idNotif;
         this.notification = notification;
+    }
+
+    public Notification(int idUser, String notification) {
+        this.idUser = idUser;
+        this.notification = notification;
+    }
+
+    public Notification(int idUser, String notification, int statut) {
+        this.idUser = idUser;
+        this.notification = notification;
+        this.statut = statut;
     }
 
     public int getIdNotif() {
@@ -35,12 +56,21 @@ public class Notification {
         this.notification = notification;
     }
 
+    public int getStatut() {
+        return statut;
+    }
+
+    public void setStatut(int statut) {
+        this.statut = statut;
+    }
+
     @Override
     public String toString() {
         return "Notification{" +
                 "idNotif=" + idNotif +
                 ", idUser=" + idUser +
                 ", notification='" + notification + '\'' +
+                ", statut=" + statut +
                 '}';
     }
 }
