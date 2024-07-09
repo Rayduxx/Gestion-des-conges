@@ -1265,18 +1265,22 @@ public class ServiceUtilisateur implements IUtilisateur {
                 "LEFT JOIN `user_role` ur ON u.ID_User = ur.ID_User " +
                 "LEFT JOIN `role` r ON ur.ID_Role = r.ID_Role " +
                 "WHERE u.Nom LIKE ? OR u.Prenom LIKE ? OR u.Email LIKE ? OR d.nom LIKE ? OR r.nom LIKE ?";
+        Connection cnx = null;
+        PreparedStatement ps = null;
+        ResultSet rs = null;
         try {
+            cnx = MyDataBase.getInstance().getCnx();
             if (cnx == null || cnx.isClosed()) {
-                cnx = MyDataBase.getInstance().getCnx();
+                throw new SQLException("Failed to establish a database connection.");
             }
-            PreparedStatement ps = cnx.prepareStatement(sql);
+            ps = cnx.prepareStatement(sql);
             String searchQuery = "%" + query + "%";
             ps.setString(1, searchQuery);
             ps.setString(2, searchQuery);
             ps.setString(3, searchQuery);
             ps.setString(4, searchQuery);
             ps.setString(5, searchQuery);
-            ResultSet rs = ps.executeQuery();
+            rs = ps.executeQuery();
             while (rs.next()) {
                 User user = new User();
                 user.setIdUser(rs.getInt("ID_User"));
@@ -1298,9 +1302,18 @@ public class ServiceUtilisateur implements IUtilisateur {
             }
         } catch (SQLException ex) {
             System.out.println(ex.getMessage());
+        } finally {
+            try {
+                if (rs != null) rs.close();
+                if (ps != null) ps.close();
+                if (cnx != null && !cnx.isClosed()) cnx.close();
+            } catch (SQLException ex) {
+                System.out.println(ex.getMessage());
+            }
         }
         return users;
     }
+
 
 
 }
