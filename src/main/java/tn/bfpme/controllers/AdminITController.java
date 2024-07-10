@@ -95,6 +95,8 @@ public class AdminITController implements Initializable {
         String mdp = MDP_A.getText();
         String image = image_A.getText();
 
+        double soldeAnnuel = 2.5;
+
        /* int soldeAnnuel = parseIntOrZero(S_Ann.getText());
         int soldeMaladie = parseIntOrZero(S_mal.getText());
         int soldeExceptionnel = parseIntOrZero(S_exc.getText());
@@ -103,7 +105,7 @@ public class AdminITController implements Initializable {
         if (email.matches("^[_A-Za-z0-9-\\+]+(\\.[_A-Za-z0-9-]+)*@(bfpme\\.tn|gmail\\.com)$")) {
             try {
                 if (!emailExists(email)) {
-                    UserS.Add(new User(0, nom, prenom, email, mdp, image, LocalDate.now(), 0, 0));
+                    UserS.Add(new User(0, nom, prenom, email, mdp, image,soldeAnnuel, LocalDate.now(), 0, 0));
                     infolabel.setText("Ajout Effectué");
                     infolabel.setText("Ajour Effectué");
                 } else {
