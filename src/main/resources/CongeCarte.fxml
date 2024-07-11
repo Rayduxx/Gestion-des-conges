@@ -124,7 +124,7 @@
                               <Tooltip fx:id="TTViewFile" text="Afficher document" />
                            </tooltip>
                         </Button>
-                        <Button fx:id="btnViewMsg" disable="true" mnemonicParsing="false" onAction="#ViewMessage" prefHeight="34.0" prefWidth="0.0" styleClass="settingsButton">
+                        <Button fx:id="btnViewMsg" mnemonicParsing="false" onAction="#ViewMessage" prefHeight="34.0" prefWidth="0.0" styleClass="settingsButton">
                            <graphic>
                               <ImageView fitHeight="19.0" fitWidth="34.0" pickOnBounds="true" preserveRatio="true">
                                  <image>

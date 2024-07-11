@@ -180,34 +180,33 @@ public class DemandeDepController implements Initializable {
         ButtonType Non = new ButtonType("Non");
         alert.getButtonTypes().setAll(Oui, Non);
         Optional<ButtonType> result = alert.showAndWait();
+
         if (result.isPresent() && result.get() == Oui) {
             try {
-                System.out.println("test envoie");
                 serviceConge.updateStatutConge(this.conge.getIdConge(), Statut.Rejeté);
-                System.out.println("test envoie0");
-
                 FXMLLoader loader = new FXMLLoader(getClass().getResource("/MailingDemande.fxml"));
-                System.out.println("test envoie1");
-
                 Parent root = loader.load();
                 MailingDemandeController controller = loader.getController();
                 controller.setData(conge, user);
                 Stage currentStage = (Stage) ((Node) event.getSource()).getScene().getWindow();
-                System.out.println("test envoie2");
-
                 currentStage.close();
-                Stage demandeDepListeStage = StageManager.getStage("DemandeDepListe");
-                if (demandeDepListeStage != null) {
-                    Scene scene = new Scene(root);
-                    demandeDepListeStage.setScene(scene);
-                    demandeDepListeStage.setTitle("Mailing de Demande");
-                    demandeDepListeStage.show();
+                Stage newStage = StageManager.getStage("DemandeDepListe");
+                if (newStage == null) {
+                    newStage = new Stage();
+                    StageManager.addStage("DemandeDepListe", newStage);
                 }
+                Scene scene = new Scene(root);
+                newStage.setScene(scene);
+                newStage.setTitle("Mailing de Demande");
+                newStage.show();
             } catch (IOException e) {
                 e.printStackTrace();
+                System.err.println("Failed to load the MailingDemande.fxml");
+            } catch (Exception e) {
+                e.printStackTrace();
+                System.err.println("An unexpected error occurred");
             }
         }
-        //serviceConge.NewNotification( "Votre demande de conge "+ conge.getTypeConge()+" est refusé pour la période "+conge.getDateDebut()+" jusqu'à "+conge.getDateFin()+".",user.getIdUser(),conge.getIdConge());
     }
 
     @FXML
