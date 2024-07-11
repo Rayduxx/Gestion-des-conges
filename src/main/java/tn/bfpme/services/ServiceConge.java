@@ -20,15 +20,14 @@ public class ServiceConge implements IConge<Conge> {
         this.cnx = cnx;
     }
 
-    public ServiceConge() {
-
-    }
+    public ServiceConge() {}
 
     @Override
     public List<Conge> afficher() {
         List<Conge> conges = new ArrayList<>();
         String sql = "SELECT ID_Conge, DateDebut, DateFin, TypeConge, Statut, ID_User, file, description, Message FROM conge WHERE ID_User LIKE '%" + SessionManager.getInstance().getUser().getIdUser() + "%'";
         try {
+            cnx = MyDataBase.getInstance().getCnx();
             Statement ste = cnx.createStatement();
             ResultSet rs = ste.executeQuery(sql);
             while (rs.next()) {
