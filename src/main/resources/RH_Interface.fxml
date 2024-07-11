@@ -48,18 +48,7 @@
                      </styleClass>
                   </Button>
                   <Separator prefHeight="40.0" prefWidth="200.0" />
-                  <Button mnemonicParsing="false" onAction="#showCongesPane" prefHeight="55.0" prefWidth="204.0" text="Gestion des Congés">
-                     <font>
-                        <Font size="14.0" />
-                     </font>
-                     <styleClass>
-                        <String fx:value="btn-primary" />
-                        <String fx:value="FontSize-15" />
-                        <String fx:value="RobotoBold" />
-                     </styleClass>
-                  </Button>
-                  <Separator prefHeight="40.0" prefWidth="200.0" />
-                  <Button mnemonicParsing="false" onAction="#showHierarchyPane" prefHeight="55.0" prefWidth="204.0" text="Gestion des structures">
+                  <Button mnemonicParsing="false" prefHeight="55.0" prefWidth="204.0" text="Gestion des Congés">
                      <font>
                         <Font size="14.0" />
                      </font>
