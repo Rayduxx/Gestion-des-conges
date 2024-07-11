@@ -16,14 +16,18 @@ import javafx.stage.Popup;
 import javafx.stage.Stage;
 import javafx.stage.Window;
 import tn.bfpme.models.Conge;
+import tn.bfpme.models.EmailsTemplates;
+import tn.bfpme.models.Role;
 import tn.bfpme.models.User;
 import tn.bfpme.services.ServiceConge;
+import tn.bfpme.services.ServiceEmailTemp;
 import tn.bfpme.utils.Mails;
 import tn.bfpme.utils.SessionManager;
 import tn.bfpme.utils.StageManager;
 
 import java.io.IOException;
 import java.net.URL;
+import java.util.List;
 import java.util.ResourceBundle;
 
 public class MailingDemandeController implements Initializable {
@@ -45,22 +49,52 @@ public class MailingDemandeController implements Initializable {
     @FXML
     private AnchorPane MainAnchorPane;
     @FXML
-    private ComboBox<String> raison_mail;
+    private ComboBox<EmailsTemplates> raison_mail;
 
     String employeeName, startDate, endDate, managerName, managerRole;
     private Conge conge;
     private User user;
     private final ServiceConge serviceConge = new ServiceConge();
+    private final ServiceEmailTemp emailtempService = new ServiceEmailTemp();
 
     @Override
     public void initialize(URL url, ResourceBundle resourceBundle) {
-        raison_mail.setValue("Sélectionner une raison");
-        raison_mail.setItems(RaisonsList);
+        /*raison_mail.setValue("Sélectionner une raison");
+        raison_mail.setItems(RaisonsList);*/
         try {
             FXMLLoader loader = new FXMLLoader(getClass().getResource("/NavigationHeader.fxml"));
             Pane departementPane = loader.load();
             MainAnchorPane.getChildren().add(departementPane);
         } catch (IOException e) {
+            e.printStackTrace();
+        }
+        try {
+            List<EmailsTemplates> emailtempList = emailtempService.getAllEmailsTemplates();
+            ObservableList<EmailsTemplates> emailstemps = FXCollections.observableArrayList(emailtempList);
+            raison_mail.setItems(emailstemps);
+            raison_mail.setCellFactory(param -> new ListCell<EmailsTemplates>() {
+                @Override
+                protected void updateItem(EmailsTemplates item, boolean empty) {
+                    super.updateItem(item, empty);
+                    if (empty || item == null || item.getObject() == null) {
+                        setText(null);
+                    } else {
+                        setText(item.getObject());
+                    }
+                }
+            });
+            raison_mail.setButtonCell(new ListCell<EmailsTemplates>() {
+                @Override
+                protected void updateItem(EmailsTemplates item, boolean empty) {
+                    super.updateItem(item, empty);
+                    if (empty || item == null || item.getObject() == null) {
+                        setText(null);
+                    } else {
+                        setText(item.getObject());
+                    }
+                }
+            });
+        } catch (Exception e) {
             e.printStackTrace();
         }
         User manager = SessionManager.getInstance().getUser();
@@ -82,38 +116,12 @@ public class MailingDemandeController implements Initializable {
 
     @FXML
     void selectRaison(ActionEvent event) {
-        String selectedReason = raison_mail.getValue();
-        if (selectedReason != null) {
-            switch (selectedReason) {
-                case "Alternative Proposée":
-                    mail_obj.setText("Refus de Demande de Congé - Proposition d'Alternative");
-                    mail_text.setText(Mails.generateAlternativeProposee(employeeName, startDate, endDate, managerName, managerRole));
-                    break;
-                case "Équité et Équilibre":
-                    mail_obj.setText("Refus de Demande de Congé - Équité et Équilibre");
-                    mail_text.setText(Mails.generateEquiteEtEquilibre(employeeName, startDate, endDate, managerName, managerRole));
-                    break;
-                case "Politique de Rotation des Congés":
-                    mail_obj.setText("Refus de Demande de Congé - Politique de Rotation");
-                    mail_text.setText(Mails.generatePolitiqueDeRotationDesConges(employeeName, startDate, endDate, managerName, managerRole));
-                    break;
-                case "Congés Cumulés Non Autorisés":
-                    mail_obj.setText("Refus de Demande de Congé - Congés Cumulés Non Autorisés");
-                    mail_text.setText(Mails.generateCongesCumulesNonAutorises(employeeName, startDate, endDate, managerName, managerRole, 10)); // Adjust the 10 to the actual limit
-                    break;
-                case "Remplacement Non Disponible":
-                    mail_obj.setText("Refus de Demande de Congé - Remplacement Non Disponible");
-                    mail_text.setText(Mails.generateRemplacementNonDisponible(employeeName, startDate, endDate, managerName, managerRole));
-                    break;
-                case "Évaluation de Performance ou Audit":
-                    mail_obj.setText("Refus de Demande de Congé - Évaluation de Performance ou Audit");
-                    mail_text.setText(Mails.generateEvaluationDePerformanceOuAudit(employeeName, startDate, endDate, managerName, managerRole));
-                    break;
-                default:
-                    mail_text.setText("");
-                    break;
+        raison_mail.getSelectionModel().selectedItemProperty().addListener((observable, oldValue, newValue) -> {
+            if (newValue != null) {
+                mail_obj.setText(newValue.getObject());
+                mail_text.setText(newValue.getMessage());
             }
-        }
+        });
     }
 
     @FXML
