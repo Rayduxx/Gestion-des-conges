@@ -80,17 +80,20 @@ public class User {
         this.idRole = idRole;
     }
 
-    public User(int idUser, String nom, String prenom, String email, String mdp, String image, LocalDate creationDate, int idDepartement, int idRole) {
+    public User(int idUser, String nom, String prenom, String email, String mdp, String image,Double soldeAnnuel, LocalDate creationDate, int idDepartement, int idRole) {
         this.idUser = idUser;
         this.nom = nom;
         this.prenom = prenom;
         this.email = email;
         this.mdp = mdp;
         this.image = image;
+        this.soldeAnnuel = soldeAnnuel;
         this.creationDate = (creationDate != null) ? creationDate : LocalDate.now();
         this.idDepartement = idDepartement;
         this.idRole = idRole;
     }
+
+
 
     public int getIdUser() {
         return idUser;

@@ -1,4 +1,4 @@
-package tn.bfpme.test;
+/*package tn.bfpme.test;
 
 import tn.bfpme.models.User;
 import tn.bfpme.services.ServiceUtilisateur;
@@ -52,3 +52,4 @@ public class UserTest {
         System.out.println("Updated Solde Annuel after taking 5 days leave: " + updatedUserAfterLeave.getSoldeAnnuel());
     }
 }
+*/

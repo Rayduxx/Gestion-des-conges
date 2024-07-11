@@ -778,8 +778,8 @@ public class ServiceUtilisateur implements IUtilisateur {
         try (Connection cnx = MyDataBase.getInstance().getCnx();
              PreparedStatement stm = cnx.prepareStatement(sql)) {
 
-            stm.setInt(1, departmentId);
-            stm.setInt(2, userId);
+            stm.setInt(1,departmentId);
+            stm.setInt(2,userId);
             stm.executeUpdate();
         } catch (SQLException e) {
             e.printStackTrace();
@@ -800,6 +800,7 @@ public class ServiceUtilisateur implements IUtilisateur {
                             rs.getString("Email"),
                             rs.getString("MDP"),
                             rs.getString("Image"),
+                            rs.getDouble("SoldeAnnuel"),
                             rs.getDate("Creation_Date").toLocalDate(),
                             rs.getInt("ID_Departement"),
                             0 // Assigning a default value as ID_Role does not exist in user table
