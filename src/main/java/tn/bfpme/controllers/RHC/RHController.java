@@ -105,7 +105,7 @@ public class RHController {
     @FXML
     void showHierarchyPane(ActionEvent event) {
         try {
-            FXMLLoader loader = new FXMLLoader(getClass().getResource("/paneHierarchie.fxml"));
+            FXMLLoader loader = new FXMLLoader(getClass().getResource("/ResponsableStructure.fxml"));
             Pane userPane = loader.load();
             PaneCont.getChildren().clear();
             PaneCont.getChildren().add(userPane);
