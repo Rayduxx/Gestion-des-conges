@@ -115,7 +115,7 @@ public class RHController {
         }
     }
 
-    public void showCongesPane(ActionEvent actionEvent) {
+    public void showCongePane(ActionEvent actionEvent) {
         try {
             FXMLLoader loader = new FXMLLoader(getClass().getResource("/paneConges.fxml"));
             Pane userPane = loader.load();
@@ -126,4 +126,6 @@ public class RHController {
             e.printStackTrace();
         }
     }
+
+
 }
