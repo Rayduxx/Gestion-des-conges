@@ -49,8 +49,12 @@ public class ResponsableStructure implements Initializable {
     private ComboBox<User> userComboBox;
     @FXML
     private AnchorPane MainAnchorPane;
+
     @FXML
-    private TextField searchField; // Add a TextField for search input
+    private TextField searchField;
+
+    @FXML
+    private TextField searchField1;
 
     private ServiceUtilisateur serviceUtilisateur;
     private boolean isFirstSelection = true;
@@ -210,7 +214,15 @@ public class ResponsableStructure implements Initializable {
 
         loadUsers();
     }
+    @FXML
+    void rechercheManager(ActionEvent event) {
 
+    }
+
+    @FXML
+    void rechercheUser(ActionEvent event) {
+
+    }
     @FXML
     void recherche_hierarchie(ActionEvent event) {
         String query = searchField.getText().trim();
