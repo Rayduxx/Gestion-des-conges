@@ -1419,4 +1419,59 @@ public class ServiceUtilisateur implements IUtilisateur {
         }
         return users;
     }
+    public List<User> RechercheUnder(String input) {
+        List<User> users = new ArrayList<>();
+        int currentUserId = SessionManager.getInstance().getUser().getIdUser(); // Assuming SessionManager manages the current user's session
+        String sql = "WITH RECURSIVE Subordinates AS (" +
+                "SELECT u.ID_User, u.Nom, u.Prenom, u.Email, u.MDP, u.Image, u.Solde_Annuel, u.Solde_Maladie, u.Solde_Exceptionnel, u.Solde_Maternité, u.ID_Departement, u.ID_Manager, ur.ID_Role " +
+                "FROM user u " +
+                "LEFT JOIN user_role ur ON u.ID_User = ur.ID_User " +
+                "WHERE u.ID_Manager = ? " +
+                "UNION ALL " +
+                "SELECT u.ID_User, u.Nom, u.Prenom, u.Email, u.MDP, u.Image, u.Solde_Annuel, u.Solde_Maladie, u.Solde_Exceptionnel, u.Solde_Maternité, u.ID_Departement, u.ID_Manager, ur.ID_Role " +
+                "FROM user u " +
+                "INNER JOIN Subordinates s ON s.ID_User = u.ID_Manager " +
+                "LEFT JOIN user_role ur ON u.ID_User = ur.ID_User" +
+                ") " +
+                "SELECT s.ID_User, s.Nom, s.Prenom, s.Email, s.MDP, s.Image, s.Solde_Annuel, s.Solde_Maladie, s.Solde_Exceptionnel, s.Solde_Maternité, s.ID_Departement, s.ID_Manager, s.ID_Role, d.nom AS DepartementNom, r.nom AS RoleNom " +
+                "FROM Subordinates s " +
+                "LEFT JOIN departement d ON s.ID_Departement = d.ID_Departement " +
+                "LEFT JOIN role r ON s.ID_Role = r.ID_Role " +
+                "WHERE s.ID_User != ? " +
+                "AND (s.Nom LIKE ? OR s.Prenom LIKE ? OR s.Email LIKE ?)";
+
+        try (Connection cnx = MyDataBase.getInstance().getCnx();
+             PreparedStatement ps = cnx.prepareStatement(sql)) {
+            ps.setInt(1, currentUserId);
+            ps.setInt(2, currentUserId); // Exclude current user
+            String searchInput = "%" + input + "%";
+            ps.setString(3, searchInput);
+            ps.setString(4, searchInput);
+            ps.setString(5, searchInput);
+            ResultSet rs = ps.executeQuery();
+            while (rs.next()) {
+                User user = new User();
+                user.setIdUser(rs.getInt("ID_User"));
+                user.setNom(rs.getString("Nom"));
+                user.setPrenom(rs.getString("Prenom"));
+                user.setEmail(rs.getString("Email"));
+                user.setMdp(rs.getString("MDP"));
+                user.setImage(rs.getString("Image"));
+                user.setSoldeAnnuel(rs.getInt("Solde_Annuel"));
+                user.setSoldeExceptionnel(rs.getInt("Solde_Exceptionnel"));
+                user.setSoldeMaladie(rs.getInt("Solde_Maladie"));
+                user.setSoldeMaternite(rs.getInt("Solde_Maternité"));
+                user.setIdDepartement(rs.getInt("ID_Departement"));
+                user.setIdManager(rs.getInt("ID_Manager"));
+                user.setIdRole(rs.getInt("ID_Role"));
+                user.setDepartementNom(rs.getString("DepartementNom"));
+                user.setRoleNom(rs.getString("RoleNom"));
+                users.add(user);
+            }
+        } catch (SQLException ex) {
+            System.out.println(ex.getMessage());
+        }
+        return users;
+    }
+
 }

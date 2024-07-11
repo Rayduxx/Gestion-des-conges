@@ -74,6 +74,27 @@ public class ListeEmployésController implements Initializable {
 
     @FXML
     void Recherche(KeyEvent event) {
-
+        UserContainer.getChildren().clear();
+        String recherche = Recherche_conge.getText();
+        int column = 0;
+        int row = 0;
+        try {
+            for (User user : UserS.RechercheUnder(recherche)) {
+                FXMLLoader fxmlLoader = new FXMLLoader();
+                fxmlLoader.setLocation(getClass().getResource("/UserCard.fxml"));
+                Pane userBox = fxmlLoader.load();
+                UserCardController cardC = fxmlLoader.getController();
+                cardC.HBoxBtns.setVisible(false);
+                cardC.setData(user);
+                if (column == 3) {
+                    column = 0;
+                    ++row;
+                }
+                UserContainer.add(userBox, column++, row);
+                GridPane.setMargin(userBox, new Insets(12));
+            }
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
     }
 }
