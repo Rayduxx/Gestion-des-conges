@@ -2,11 +2,16 @@ package tn.bfpme.controllers;
 
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
+import javafx.fxml.FXMLLoader;
 import javafx.fxml.Initializable;
+import javafx.scene.Node;
+import javafx.scene.Parent;
+import javafx.scene.Scene;
 import javafx.scene.control.*;
 import javafx.scene.image.*;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.Pane;
+import javafx.stage.*;
 import tn.bfpme.models.Conge;
 import tn.bfpme.models.Notification;
 import tn.bfpme.models.Statut;
@@ -16,6 +21,7 @@ import tn.bfpme.services.ServiceNotification;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
+import java.io.IOException;
 import java.net.URL;
 import java.util.ResourceBundle;
 
@@ -68,11 +74,43 @@ public class CardNotifController implements Initializable {
     }
     @FXML
     void ViewMessage(MouseEvent event) {
-        Alert alert = new Alert(Alert.AlertType.INFORMATION);
-        alert.setTitle("Notification Message");
+        try {
+            // Load the FXML file
+            FXMLLoader loader = new FXMLLoader(getClass().getResource("/Message.fxml"));
+            Parent root = loader.load();
+
+            // Get the controller and pass data if needed
+            MessageController msgController = loader.getController();
+            msgController.setData(this.notification); // Ensure 'this.notification' is properly initialized
+
+            // Create a new stage for the dialog
+            Stage newStage = new Stage();
+            newStage.setScene(new Scene(root));
+            newStage.initModality(Modality.WINDOW_MODAL);
+            newStage.initStyle(StageStyle.TRANSPARENT);
+
+            // Set the owner window
+            newStage.initOwner(((Node) event.getSource()).getScene().getWindow());
+
+            // Show the dialog and wait until it is closed
+            newStage.showAndWait();
+        } catch (IOException e) {
+            e.printStackTrace();
+            showError("Failed to load the message window: " + e.getMessage());
+        } catch (Exception e) {
+            e.printStackTrace();
+            showError("An unexpected error occurred: " + e.getMessage());
+        }
+
+    }
+
+    protected void showError(String message) {
+        Alert alert = new Alert(Alert.AlertType.ERROR);
+        alert.setTitle("Error");
         alert.setHeaderText(null);
-        alert.setContentText(notification.getNotifcontent());
+        alert.setContentText(message);
         alert.showAndWait();
     }
+
 
 }
