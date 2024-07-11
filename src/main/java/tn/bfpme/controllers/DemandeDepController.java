@@ -181,14 +181,6 @@ public class DemandeDepController implements Initializable {
         alert.getButtonTypes().setAll(Oui, Non);
         Optional<ButtonType> result = alert.showAndWait();
         if (result.isPresent() && result.get() == Oui) {
-            Alert alert2 = new Alert(Alert.AlertType.CONFIRMATION);
-            alert2.setTitle("Confirmation de l'envoi?");
-            alert2.setHeaderText("Voulez-vous envoyer un email ?");
-            ButtonType Oui2 = new ButtonType("Oui");
-            ButtonType Non2 = new ButtonType("Non");
-            alert2.getButtonTypes().setAll(Oui2, Non2);
-            Optional<ButtonType> result2 = alert2.showAndWait();
-            if (result2.isPresent() && result2.get() == Oui2) {
                 try {
                     serviceConge.updateStatutConge(this.conge.getIdConge(), Statut.Rejeté);
                     FXMLLoader loader = new FXMLLoader(getClass().getResource("/MailingDemande.fxml"));
@@ -207,30 +199,6 @@ public class DemandeDepController implements Initializable {
                 } catch (IOException e) {
                     e.printStackTrace();
                 }
-            }
-            if (result2.isPresent() && result2.get() == Non2) {
-                serviceConge.updateStatutConge(this.conge.getIdConge(), Statut.Rejeté);
-                Subject = "Refus de Demande de Congé";
-                MessageText = Mails.generateRefusDemande(employeeName, startDate, endDate, managerName, managerRole);
-                Mails.sendEmail(to, Subject, MessageText);
-                serviceConge.NewMessage(Subject, user.getIdUser(), conge.getIdConge());
-
-                try {
-                    FXMLLoader loader = new FXMLLoader(getClass().getResource("/DemandeDepListe.fxml"));
-                    Parent root = loader.load();
-                    DemandeDepListeController controller = loader.getController();
-                    StageManager.closeAllStages();
-                    Stage demandeDepListeStage = new Stage();
-                    Scene scene = new Scene(root);
-                    demandeDepListeStage.setScene(scene);
-                    demandeDepListeStage.setTitle("Mailing de Demande");
-                    demandeDepListeStage.show();
-                    StageManager.addStage("DemandeDepListe", demandeDepListeStage);
-
-                } catch (IOException e) {
-                    e.printStackTrace();
-                }
-            }
         }
         //serviceConge.NewNotification( "Votre demande de conge "+ conge.getTypeConge()+" est refusé pour la période "+conge.getDateDebut()+" jusqu'à "+conge.getDateFin()+".",user.getIdUser(),conge.getIdConge());
     }
