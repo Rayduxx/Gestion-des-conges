@@ -15,12 +15,10 @@ import javafx.scene.layout.Pane;
 import javafx.stage.Popup;
 import javafx.stage.Stage;
 import javafx.stage.Window;
-import tn.bfpme.models.Conge;
-import tn.bfpme.models.EmailsTemplates;
-import tn.bfpme.models.Role;
-import tn.bfpme.models.User;
+import tn.bfpme.models.*;
 import tn.bfpme.services.ServiceConge;
 import tn.bfpme.services.ServiceEmailTemp;
+import tn.bfpme.services.ServiceNotification;
 import tn.bfpme.utils.Mails;
 import tn.bfpme.utils.SessionManager;
 import tn.bfpme.utils.StageManager;
@@ -56,6 +54,7 @@ public class MailingDemandeController implements Initializable {
     private User user;
     private final ServiceConge serviceConge = new ServiceConge();
     private final ServiceEmailTemp emailtempService = new ServiceEmailTemp();
+    private final ServiceNotification notifService = new ServiceNotification();
 
     @Override
     public void initialize(URL url, ResourceBundle resourceBundle) {
@@ -136,8 +135,16 @@ public class MailingDemandeController implements Initializable {
         String to = mail_dest.getText();
         String subject = mail_obj.getText();
         String messageText = mail_text.getText();
-        Mails.sendEmail(to,subject,messageText);
-        serviceConge.NewMessage(subject,user.getIdUser(),conge.getIdConge());
+        //serviceConge.NewMessage(subject,user.getIdUser(),conge.getIdConge());
+        int stat=0;
+        if(conge.getStatut().equals(Statut.Approuvé)){
+            stat=1;
+        }
+        if(conge.getStatut().equals(Statut.Rejeté)){
+            stat=0;
+        }
+        notifService.NewNotification(user.getIdUser(),subject,stat,messageText);
+        //Mails.sendEmail(to,subject,messageText);
         try {
             FXMLLoader loader = new FXMLLoader(getClass().getResource("/DemandeDepListe.fxml"));
             Parent root = loader.load();

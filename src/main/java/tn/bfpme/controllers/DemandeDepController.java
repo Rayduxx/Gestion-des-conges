@@ -128,6 +128,7 @@ public class DemandeDepController implements Initializable {
         Optional<ButtonType> result = alert.showAndWait();
         if (result.isPresent() && result.get() == Oui) {
             serviceConge.updateStatutConge(this.conge.getIdConge(), Statut.Approuvé);
+
             Subject = "Approbation de Demande de Congé";
             String NotifContent = "";
             MessageText = Mails.generateApprobationDemande(employeeName, startDate, endDate, managerName, managerRole);

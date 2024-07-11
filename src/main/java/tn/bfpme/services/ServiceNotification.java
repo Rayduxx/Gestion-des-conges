@@ -39,7 +39,19 @@ public class ServiceNotification implements INotification {
         }
         return notifs;
     }
-
+    public void NewNotification(int idUser, String NotifMsg, int Statut, String NotifContent) {
+        String query = "INSERT INTO `notification`(`ID_User`, `NotfiMessage`, `Statut`, `NotifContent`) VALUES (?,?,?,?)";
+        try (Connection cnx = MyDataBase.getInstance().getCnx();
+             PreparedStatement pstmt = cnx.prepareStatement(query)) {
+            pstmt.setInt(1, idUser);
+            pstmt.setString(2, NotifMsg);
+            pstmt.setInt(3, Statut);
+            pstmt.setString(4, NotifContent);
+            pstmt.executeUpdate();
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+    }
 
     public void DeleteAllUserNotif() {
         try {
