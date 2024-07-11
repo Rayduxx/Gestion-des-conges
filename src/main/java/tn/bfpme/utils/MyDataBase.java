@@ -15,7 +15,7 @@ public class MyDataBase {
   private final String URL = "jdbc:mysql://127.0.0.1:3306/bfpmeconge";
    private final String USERNAME = "root";
    private final String PASSWORD = "";
-*/
+
 
     private Connection cnx;
 
