@@ -103,9 +103,9 @@ public class RHController {
     }
 
     @FXML
-    void showHierarchyPane(ActionEvent event) {
+    void showEmailTempPane(ActionEvent event) {
         try {
-            FXMLLoader loader = new FXMLLoader(getClass().getResource("/ResponsableStructure.fxml"));
+            FXMLLoader loader = new FXMLLoader(getClass().getResource("/paneEmailTemp.fxml"));
             Pane userPane = loader.load();
             PaneCont.getChildren().clear();
             PaneCont.getChildren().add(userPane);
