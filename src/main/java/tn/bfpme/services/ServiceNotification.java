@@ -29,7 +29,8 @@ public class ServiceNotification implements INotification {
                         rs.getInt("ID_User"),
                         rs.getInt("ID_Notif"),
                         rs.getString("NotfiMessage"),
-                        rs.getInt("Statut")
+                        rs.getInt("Statut"),
+                        rs.getString("NotifContent")
                 );
                 notifs.add(notif);
             }

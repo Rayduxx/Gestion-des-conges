@@ -271,8 +271,6 @@ public class paneUserController implements Initializable {
         }
     }
 
-
-
     private void highlightSelectedUser(User user) {
         Platform.runLater(() -> {
             userListView.getItems().forEach(u -> {
@@ -366,6 +364,7 @@ public class paneUserController implements Initializable {
         alert.setContentText(message);
         alert.showAndWait();
     }
+
     @FXML
     void ajouter_user(ActionEvent actionEvent) {
         String nom = nom_A.getText();
@@ -533,7 +532,6 @@ public class paneUserController implements Initializable {
         return false;
     }
 
-
     public void load(List<User> users) {
         UserContainers.getChildren().clear(); // Clear existing items
         int column = 0;
@@ -563,7 +561,6 @@ public class paneUserController implements Initializable {
         List<User> users = UserS.Show();
         load(users);
     }
-
 
     @FXML
     void Tri_Departement(ActionEvent actionEvent) {

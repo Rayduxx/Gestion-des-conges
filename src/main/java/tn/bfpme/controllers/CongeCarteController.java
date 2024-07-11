@@ -39,7 +39,7 @@ public class CongeCarteController {
     @FXML private Tooltip tooltip_desc,TTViewFile;
     @FXML private Button btnViewFile,btnViewMsg,btnEdit,btnDelete;
     private int cUser, cid;
-    private String cdesc, cfile;
+    private String cdesc, cfile,cmessage;
     private LocalDate cdebut, cfin;
     private Statut cstatut;
     private TypeConge ctype;
@@ -98,6 +98,7 @@ public class CongeCarteController {
         cfin = conge.getDateFin();
         cfile = conge.getFile();
         cstatut = conge.getStatut();
+        cmessage = conge.getMessage();
     }
 
     public void refreshData(Conge conge) {
@@ -149,7 +150,7 @@ public class CongeCarteController {
         Alert alert = new Alert(Alert.AlertType.INFORMATION);
         alert.setTitle("Message de refus");
         alert.setHeaderText(null);
-        alert.setContentText(this.conge.getMessage());
+        alert.setContentText(cmessage);
         alert.showAndWait();
     }
 }

@@ -5,20 +5,24 @@ public class Notification {
     private int idUser;
     private String notification;
     private int statut;
+    private String notifcontent;
 
     public Notification() {}
 
-    public Notification(int idUser, int idNotif, String notification, int statut) {
+    public Notification(int idUser, int idNotif, String notification, int statut, String notifcontent) {
         this.idUser = idUser;
         this.idNotif = idNotif;
         this.notification = notification;
         this.statut = statut;
+        this.notifcontent = notifcontent;
     }
 
-    public Notification(int idUser, int idNotif, String notification) {
+    public Notification(int idUser, int idNotif, String notification, String notifcontent) {
         this.idUser = idUser;
         this.idNotif = idNotif;
         this.notification = notification;
+        this.notifcontent = notifcontent;
+
     }
 
     public Notification(int idUser, String notification) {
