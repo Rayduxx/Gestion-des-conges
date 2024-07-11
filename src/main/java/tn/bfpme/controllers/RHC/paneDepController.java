@@ -74,7 +74,7 @@ public class paneDepController implements Initializable {
     protected void loadDepartments() {
         try {
             List<Departement> departmentList = depService.getAllDepartments();
-            Departement noParentDept = new Departement(0, "", "", 0);
+            Departement noParentDept = new Departement(0, "Pas de département", "", 0);
             departmentList.add(0, noParentDept);
 
             ObservableList<Departement> departments = FXCollections.observableArrayList(departmentList);

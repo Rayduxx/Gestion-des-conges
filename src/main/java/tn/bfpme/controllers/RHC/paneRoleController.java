@@ -73,7 +73,7 @@ public class paneRoleController implements Initializable {
     void loadRoles() {
         try {
             List<Role> roleList = roleService.getAllRoles();
-            Role noParentRole = new Role(0, "", "");
+            Role noParentRole = new Role(0, "Pas de rôle", "");
             roleList.add(0, noParentRole);
             ObservableList<Role> roles = FXCollections.observableArrayList(roleList);
             roleListView.setItems(roles);
