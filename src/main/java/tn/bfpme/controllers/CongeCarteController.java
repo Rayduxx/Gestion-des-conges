@@ -54,11 +54,12 @@ public class CongeCarteController {
         cardDescription.setText(String.valueOf(conge.getDescription()));
         cardStatus.setText(String.valueOf(conge.getStatut()));
         Connection cnx = MyDataBase.getInstance().getCnx();
+        btnViewMsg.setDisable(true);
         String qry = "SELECT `TypeConge`, `Statut` FROM `conge` WHERE `ID_User`= ? AND `ID_Conge`=? ";
         try {
             PreparedStatement stm = cnx.prepareStatement(qry);
             stm.setInt(1, SessionManager.getInstance().getUser().getIdUser());
-            stm.setInt(2, conge.getIdConge());
+            stm.setInt(2, this.conge.getIdConge());
             ResultSet rs = stm.executeQuery();
             while (rs.next()) {
                 if (rs.getString("Statut").equals(String.valueOf(Statut.En_Attente))){

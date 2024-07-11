@@ -1,5 +1,6 @@
 package tn.bfpme.services;
 
+import com.mysql.cj.ServerPreparedQueryTestcaseGenerator;
 import tn.bfpme.interfaces.IConge;
 import tn.bfpme.models.Conge;
 import tn.bfpme.models.Statut;
@@ -20,16 +21,21 @@ public class ServiceConge implements IConge<Conge> {
         this.cnx = cnx;
     }
 
-    public ServiceConge() {}
+    public ServiceConge() {
+    }
 
     @Override
     public List<Conge> afficher() {
         List<Conge> conges = new ArrayList<>();
-        String sql = "SELECT ID_Conge, DateDebut, DateFin, TypeConge, Statut, ID_User, file, description, Message FROM conge WHERE ID_User LIKE '%" + SessionManager.getInstance().getUser().getIdUser() + "%'";
+        String sql = "SELECT * FROM conge WHERE `ID_User` = ?";
+        cnx = MyDataBase.getInstance().getCnx();
         try {
-            cnx = MyDataBase.getInstance().getCnx();
-            Statement ste = cnx.createStatement();
-            ResultSet rs = ste.executeQuery(sql);
+            if (cnx == null || cnx.isClosed()) {
+                cnx = MyDataBase.getInstance().getCnx();
+            }
+            PreparedStatement ste = cnx.prepareStatement(sql);
+            ste.setInt(1, SessionManager.getInstance().getUser().getIdUser());
+            ResultSet rs = ste.executeQuery();
             while (rs.next()) {
                 Conge conge = new Conge();
                 conge.setIdConge(rs.getInt("ID_Conge"));
@@ -82,9 +88,12 @@ public class ServiceConge implements IConge<Conge> {
 
     @Override
     public void updateConge(Conge conge) {
+        cnx = MyDataBase.getInstance().getCnx();
         try {
+            if (cnx == null || cnx.isClosed()) {
+                cnx = MyDataBase.getInstance().getCnx();
+            }
             String qry = "UPDATE `conge` SET `DateDebut`=?, `DateFin`=?, `TypeConge`=?, `Statut`=?, `ID_User`=?, `file`=?, `description`=? WHERE `ID_Conge`=?";
-            cnx = MyDataBase.getInstance().getCnx();
             PreparedStatement stm = cnx.prepareStatement(qry);
             stm.setDate(1, java.sql.Date.valueOf(conge.getDateDebut()));
             stm.setDate(2, java.sql.Date.valueOf(conge.getDateFin()));
@@ -130,7 +139,6 @@ public class ServiceConge implements IConge<Conge> {
             e.printStackTrace();
         }
     }
-
 
 
     @Override
@@ -202,7 +210,9 @@ public class ServiceConge implements IConge<Conge> {
         List<Conge> conges = new ArrayList<>();
         String sql = "SELECT `ID_Conge`, `DateDebut`, `DateFin`, `TypeConge`, `Statut`, `ID_User`, `file`, `description` FROM `conge` WHERE `ID_User` LIKE '%" + SessionManager.getInstance().getUser().getIdUser() + "%' ORDER BY `Statut`";
         try {
-
+            if (cnx == null || cnx.isClosed()) {
+                cnx = MyDataBase.getInstance().getCnx();
+            }
             Statement ste = cnx.createStatement();
             ResultSet rs = ste.executeQuery(sql);
             while (rs.next()) {
@@ -228,6 +238,9 @@ public class ServiceConge implements IConge<Conge> {
         List<Conge> conges = new ArrayList<>();
         String sql = "SELECT `ID_Conge`, `DateDebut`, `DateFin`, `TypeConge`, `Statut`, `ID_User`, `file`, `description` FROM `conge` WHERE `ID_User` LIKE '%" + SessionManager.getInstance().getUser().getIdUser() + "%' ORDER BY `TypeConge`";
         try {
+            if (cnx == null || cnx.isClosed()) {
+                cnx = MyDataBase.getInstance().getCnx();
+            }
             Statement ste = cnx.createStatement();
             ResultSet rs = ste.executeQuery(sql);
             while (rs.next()) {
@@ -253,6 +266,9 @@ public class ServiceConge implements IConge<Conge> {
         List<Conge> conges = new ArrayList<>();
         String sql = "SELECT `ID_Conge`, `DateDebut`, `DateFin`, `TypeConge`, `Statut`, `ID_User`, `file`, `description` FROM `conge` WHERE `ID_User` LIKE '%" + SessionManager.getInstance().getUser().getIdUser() + "%'ORDER BY `DateDebut`";
         try {
+            if (cnx == null || cnx.isClosed()) {
+                cnx = MyDataBase.getInstance().getCnx();
+            }
             Statement ste = cnx.createStatement();
             ResultSet rs = ste.executeQuery(sql);
             while (rs.next()) {
@@ -278,6 +294,9 @@ public class ServiceConge implements IConge<Conge> {
         List<Conge> conges = new ArrayList<>();
         String sql = "SELECT `ID_Conge`, `DateDebut`, `DateFin`, `TypeConge`, `Statut`, `ID_User`, `file`, `description` FROM `conge` WHERE `ID_User` LIKE '%" + SessionManager.getInstance().getUser().getIdUser() + "%' ORDER BY `DateFin`";
         try {
+            if (cnx == null || cnx.isClosed()) {
+                cnx = MyDataBase.getInstance().getCnx();
+            }
             Statement ste = cnx.createStatement();
             ResultSet rs = ste.executeQuery(sql);
             while (rs.next()) {
@@ -303,6 +322,9 @@ public class ServiceConge implements IConge<Conge> {
         List<Conge> conges = new ArrayList<>();
         String sql = "SELECT `ID_Conge`, `DateDebut`, `DateFin`, `TypeConge`, `Statut`, `ID_User`, `file`, `description` FROM `conge` WHERE `ID_User` LIKE '%" + SessionManager.getInstance().getUser().getIdUser() + "%' ORDER BY `description`";
         try {
+            if (cnx == null || cnx.isClosed()) {
+                cnx = MyDataBase.getInstance().getCnx();
+            }
             Statement ste = cnx.createStatement();
             ResultSet rs = ste.executeQuery(sql);
             while (rs.next()) {
@@ -390,8 +412,8 @@ public class ServiceConge implements IConge<Conge> {
     }
 
     public String AfficherMessage(int id) {
-        String Message ="";
-        String sql ="SELECT `Message` FROM `conge` WHERE `ID_Conge`=? AND `Message` IS NOT NULL AND `Message` <> '' ";
+        String Message = "";
+        String sql = "SELECT `Message` FROM `conge` WHERE `ID_Conge`=? AND `Message` IS NOT NULL AND `Message` <> '' ";
         try {
             PreparedStatement stm = cnx.prepareStatement(sql);
             stm.setInt(1, id);
