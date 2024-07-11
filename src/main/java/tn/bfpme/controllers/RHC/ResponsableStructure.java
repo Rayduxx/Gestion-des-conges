@@ -7,7 +7,6 @@ import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
-import javafx.fxml.FXMLLoader;
 import javafx.fxml.Initializable;
 import javafx.scene.control.ComboBox;
 import javafx.scene.control.ListCell;
@@ -16,13 +15,10 @@ import javafx.scene.control.TextField;
 import javafx.scene.control.TreeItem;
 import javafx.scene.control.TreeTableColumn;
 import javafx.scene.control.TreeTableView;
-import javafx.scene.layout.AnchorPane;
-import javafx.scene.layout.Pane;
 import javafx.util.Callback;
 import tn.bfpme.models.User;
 import tn.bfpme.services.ServiceUtilisateur;
 
-import java.io.IOException;
 import java.net.URL;
 import java.util.HashMap;
 import java.util.List;
@@ -48,16 +44,11 @@ public class ResponsableStructure implements Initializable {
     @FXML
     private ComboBox<User> userComboBox;
     @FXML
-    private AnchorPane MainAnchorPane;
-
-    @FXML
     private TextField searchField;
-
     @FXML
     private TextField searchField1;
 
     private ServiceUtilisateur serviceUtilisateur;
-    private boolean isFirstSelection = true;
 
     private void loadUsers() {
         List<User> users = serviceUtilisateur.getAllUsers();
@@ -101,18 +92,15 @@ public class ResponsableStructure implements Initializable {
         Map<Integer, TreeItem<User>> userItems = new HashMap<>();
         TreeItem<User> root = new TreeItem<>(new User(0, "Root", "", "", "", "", 0, 0, 0, 0, 0, 0, 0));
 
-        // First pass to create TreeItems
         for (User user : users) {
             TreeItem<User> userItem = new TreeItem<>(user);
             userItems.put(user.getIdUser(), userItem);
         }
 
-        // Second pass to set up the hierarchy
         for (User user : users) {
             TreeItem<User> userItem = userItems.get(user.getIdUser());
             Integer managerId = user.getIdManager();
 
-            // Check for cyclic references
             if (managerId.equals(user.getIdUser())) {
                 System.err.println("User " + user.getNom() + " " + user.getPrenom() + " is their own manager. Skipping to avoid cycle.");
                 continue;
@@ -122,7 +110,6 @@ public class ResponsableStructure implements Initializable {
                 root.getChildren().add(userItem);
             } else {
                 TreeItem<User> managerItem = userItems.get(managerId);
-                // Check for potential cycle
                 if (isAncestor(managerItem, userItem)) {
                     System.err.println("Cycle detected: User " + user.getNom() + " " + user.getPrenom() + " cannot be added under manager " + managerItem.getValue().getNom() + " " + managerItem.getValue().getPrenom());
                     continue;
@@ -131,25 +118,9 @@ public class ResponsableStructure implements Initializable {
             }
         }
 
-        // Add logging to trace the tree structure
-        printTree(root, " ");
-
         userTable.setRoot(root);
         userTable.setShowRoot(false);
         userTable.getSelectionModel().setSelectionMode(SelectionMode.SINGLE);
-
-        userTable.getSelectionModel().selectedItemProperty().addListener((observable, oldValue, newValue) -> {
-            if (newValue != null) {
-                User selectedUser = newValue.getValue();
-                if (isFirstSelection) {
-                    userComboBox.getSelectionModel().select(selectedUser);
-                    isFirstSelection = false;
-                } else {
-                    managerComboBox.getSelectionModel().select(selectedUser);
-                    isFirstSelection = true; // Reset for the next pair of selections
-                }
-            }
-        });
     }
 
     private boolean isAncestor(TreeItem<User> ancestor, TreeItem<User> node) {
@@ -162,14 +133,6 @@ public class ResponsableStructure implements Initializable {
         }
         return false;
     }
-
-    private void printTree(TreeItem<User> root, String indent) {
-        System.out.println(indent + root.getValue().getNom() + " " + root.getValue().getPrenom());
-        for (TreeItem<User> child : root.getChildren()) {
-            printTree(child, indent + "  ");
-        }
-    }
-
 
     @Override
     public void initialize(URL url, ResourceBundle resourceBundle) {
@@ -214,21 +177,49 @@ public class ResponsableStructure implements Initializable {
 
         loadUsers();
     }
-    @FXML
-    void rechercheManager(ActionEvent event) {
-
-    }
 
     @FXML
     void rechercheUser(ActionEvent event) {
-
-    }
-    @FXML
-    void recherche_hierarchie(ActionEvent event) {
         String query = searchField.getText().trim();
         if (!query.isEmpty()) {
-            List<User> searchResults = serviceUtilisateur.searchUsers(query);
-            populateTable(searchResults);
+            List<User> searchResults = serviceUtilisateur.search(query);
+            if (!searchResults.isEmpty()) {
+                User user = searchResults.get(0);
+                userComboBox.getSelectionModel().select(user);
+                highlightUserInTreeTable(user);
+            }
+        }
+    }
+
+    @FXML
+    void rechercheManager(ActionEvent event) {
+        String query = searchField1.getText().trim();
+        if (!query.isEmpty()) {
+            List<User> searchResults = serviceUtilisateur.search(query);
+            if (!searchResults.isEmpty()) {
+                User manager = searchResults.get(0);
+                managerComboBox.getSelectionModel().select(manager);
+                highlightUserInTreeTable(manager);
+            }
+        }
+    }
+
+    private void highlightUserInTreeTable(User user) {
+        TreeItem<User> root = userTable.getRoot();
+        if (root != null) {
+            expandTreeItem(root, user);
+        }
+    }
+
+    private void expandTreeItem(TreeItem<User> treeItem, User user) {
+        if (treeItem.getValue().getIdUser() == user.getIdUser()) {
+            userTable.getSelectionModel().select(treeItem);
+            userTable.scrollTo(userTable.getSelectionModel().getSelectedIndex());
+        } else {
+            treeItem.setExpanded(true);
+            for (TreeItem<User> child : treeItem.getChildren()) {
+                expandTreeItem(child, user);
+            }
         }
     }
 

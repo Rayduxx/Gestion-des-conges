@@ -1314,13 +1314,13 @@ public class ServiceUtilisateur implements IUtilisateur {
         }
         return users;
     }
-    @Override
     public List<User> search(String query) {
         List<User> users = new ArrayList<>();
-        String sql = "SELECT u.*, d.nom AS DepartementNom, r.nom AS RoleNom FROM `user` u " +
-                "LEFT JOIN `departement` d ON u.ID_Departement = d.ID_Departement " +
-                "LEFT JOIN `user_role` ur ON u.ID_User = ur.ID_User " +
-                "LEFT JOIN `role` r ON ur.ID_Role = r.ID_Role " +
+        String sql = "SELECT u.*, d.nom AS DepartementNom, ur.ID_Role, r.nom AS RoleNom " +
+                "FROM user u " +
+                "LEFT JOIN departement d ON u.ID_Departement = d.ID_Departement " +
+                "LEFT JOIN user_role ur ON u.ID_User = ur.ID_User " +
+                "LEFT JOIN role r ON ur.ID_Role = r.ID_Role " +
                 "WHERE u.Nom LIKE ? OR u.Prenom LIKE ? OR u.Email LIKE ? OR d.nom LIKE ? OR r.nom LIKE ?";
         Connection cnx = null;
         PreparedStatement ps = null;
@@ -1352,7 +1352,7 @@ public class ServiceUtilisateur implements IUtilisateur {
                 user.setSoldeMaternite(rs.getInt("Solde_Maternité"));
                 user.setIdDepartement(rs.getInt("ID_Departement"));
                 user.setIdManager(rs.getInt("ID_Manager"));
-                user.setIdRole(rs.getInt("ID_Role"));
+                user.setIdRole(rs.getInt("ID_Role")); // Correctly reference ID_Role
                 user.setDepartementNom(rs.getString("DepartementNom"));
                 user.setRoleNom(rs.getString("RoleNom"));
                 users.add(user);
@@ -1368,8 +1368,10 @@ public class ServiceUtilisateur implements IUtilisateur {
                 System.out.println(ex.getMessage());
             }
         }
+        System.out.println("Search results: " + users); // Debug statement
         return users;
     }
+
     @Override
     public List<User> ShowUnder() {
         List<User> users = new ArrayList<>();
