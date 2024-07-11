@@ -8,16 +8,13 @@ import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.fxml.Initializable;
-import javafx.geometry.Insets;
 import javafx.scene.control.*;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.layout.GridPane;
 import javafx.scene.layout.Pane;
-import javafx.scene.layout.VBox;
 import javafx.stage.FileChooser;
 import javafx.stage.Stage;
-import tn.bfpme.controllers.UserCardController;
 import tn.bfpme.models.Departement;
 import tn.bfpme.models.Role;
 import tn.bfpme.models.User;
@@ -49,14 +46,10 @@ public class paneUserController implements Initializable {
     private ListView<User> userListView;
     @FXML
     private TextField User_field;
-    @FXML
-    public ComboBox<Departement> departmentComboBox;
-    @FXML
-    protected ComboBox<Role> roleComboBox;
 
-    private final ServiceDepartement depService = new ServiceDepartement();
-    private final ServiceUtilisateur userService = new ServiceUtilisateur();
-    private final ServiceRole roleService = new ServiceRole();
+    @FXML
+    private TextField Depart_field;
+
     @FXML
     private TextField ID_A;
 
@@ -68,6 +61,9 @@ public class paneUserController implements Initializable {
 
     @FXML
     private TextField Prenom_A;
+
+    @FXML
+    private TextField Role_field;
 
     @FXML
     private TextField S_Ann;
@@ -82,10 +78,13 @@ public class paneUserController implements Initializable {
     private TextField S_mat;
 
     @FXML
+    private GridPane UserContainers;
+
+    @FXML
     private Pane UtilisateursPane;
 
     @FXML
-    private ComboBox<?> departementComboBox;
+    private ListView<Departement> departListView;
 
     @FXML
     private TextField email_A;
@@ -100,38 +99,30 @@ public class paneUserController implements Initializable {
     private TextField nom_A;
 
     @FXML
-    private VBox userContainer;
-    @FXML
-    private GridPane UserContainers;
+    private ListView<Role> roleListView;
 
     private User selectedUser;
     private FilteredList<User> filteredData;
-    ServiceUtilisateur UserS =new ServiceUtilisateur();
+    private FilteredList<Departement> filteredDepartments;
+    private FilteredList<Role> filteredRoles;
+    ServiceUtilisateur UserS = new ServiceUtilisateur();
     Connection cnx = MyDataBase.getInstance().getCnx();
 
+    private final ServiceDepartement depService = new ServiceDepartement();
+    private final ServiceUtilisateur userService = new ServiceUtilisateur();
+    private final ServiceRole roleService = new ServiceRole();
 
     @Override
     public void initialize(URL url, ResourceBundle resourceBundle) {
-        load();
         loadUsers();
+        loadDepartments();
+        loadRoles();
+    }
+
+    private void loadUsers() {
         List<User> userList = userService.getAllUsers();
         ObservableList<User> users = FXCollections.observableArrayList(userList);
-        List<Departement> departmentList = depService.getAllDepartments();
-        Departement noParentDept = new Departement(0, "", "", 0);
-        departmentList.add(0, noParentDept);
-        List<Role> roleList = roleService.getAllRoles();
-        Role noParentRole = new Role(0, "", "");
-        roleList.add(0, noParentRole);
-        ObservableList<Role> roles = FXCollections.observableArrayList(roleList);
-        ObservableList<Departement> departments = FXCollections.observableArrayList(departmentList);
         filteredData = new FilteredList<>(users, p -> true);
-        userListView.getSelectionModel().selectedItemProperty().addListener((observable, oldValue, newValue) -> {
-            Platform.runLater(() -> {
-                if (newValue != null) {
-                    handleUserSelection(newValue);
-                }
-            });
-        });
         userListView.setItems(filteredData);
         userListView.setCellFactory(param -> new ListCell<User>() {
             @Override
@@ -142,91 +133,156 @@ public class paneUserController implements Initializable {
                 } else {
                     Departement departement = depService.getDepartmentById(user.getIdDepartement());
                     Role role = roleService.getRoleById(user.getIdRole());
-                    setText(user.getPrenom() + " " + user.getNom() + " _ " + user.getEmail() + " _ " + (role != null ? role.getNom() : "N/A") + " _ " + (departement != null ? departement.getNom() : "N/A"));
+                    setText(user.getPrenom() + " " + user.getNom());
                 }
             }
         });
 
-        User_field.textProperty().addListener((observable, oldValue, newValue) -> {
-            filteredData.setPredicate(user -> {
-                if (newValue == null || newValue.isEmpty()) {
-                    return true;
+        userListView.getSelectionModel().selectedItemProperty().addListener((observable, oldValue, newValue) -> {
+            Platform.runLater(() -> {
+                if (newValue != null) {
+                    handleUserSelection(newValue);
                 }
-                String lowerCaseFilter = newValue.toLowerCase();
-                return user.getNom().toLowerCase().contains(lowerCaseFilter) || user.getPrenom().toLowerCase().contains(lowerCaseFilter) || user.getEmail().toLowerCase().contains(lowerCaseFilter);
             });
         });
-        userListView.setCellFactory(param -> new ListCell<User>() {
-            @Override
-            protected void updateItem(User user, boolean empty) {
-                super.updateItem(user, empty);
-                if (empty || user == null) {
-                    setText(null);
-                } else {
-                    Departement departement = depService.getDepartmentById(user.getIdDepartement());
-                    Role role = roleService.getRoleById(user.getIdRole());
-                    setText(user.getPrenom() + " " + user.getNom() + " _ " + user.getEmail() + " _ " + (role != null ? role.getNom() : "N/A") + " _ " + (departement != null ? departement.getNom() : "N/A"));
-                }
-            }
-        });
-        departmentComboBox.setItems(departments);
-        departmentComboBox.setCellFactory(param -> new ListCell<Departement>() {
+    }
+
+    private void loadDepartments() {
+        List<Departement> departmentList = depService.getAllDepartments();
+        ObservableList<Departement> departments = FXCollections.observableArrayList(departmentList);
+        filteredDepartments = new FilteredList<>(departments, p -> true);
+        departListView.setItems(filteredDepartments);
+        departListView.setCellFactory(param -> new ListCell<Departement>() {
             @Override
             protected void updateItem(Departement item, boolean empty) {
                 super.updateItem(item, empty);
-                if (empty || item == null || item.getNom() == null) {
+                if (empty || item == null) {
                     setText(null);
                 } else {
                     setText(item.getNom());
                 }
             }
         });
-        departmentComboBox.setButtonCell(new ListCell<Departement>() {
-            @Override
-            protected void updateItem(Departement item, boolean empty) {
-                super.updateItem(item, empty);
-                if (empty || item == null || item.getNom() == null) {
-                    setText(null);
-                } else {
-                    setText(item.getNom());
+
+        departListView.getSelectionModel().selectedItemProperty().addListener((observable, oldValue, newValue) -> {
+            Platform.runLater(() -> {
+                if (newValue != null) {
+                    Depart_field.setText(newValue.getNom());
                 }
-            }
+            });
         });
-        roleComboBox.setItems(roles);
-        roleComboBox.setCellFactory(param -> new ListCell<Role>() {
-            @Override
-            protected void updateItem(Role item, boolean empty) {
-                super.updateItem(item, empty);
-                if (empty || item == null || item.getNom() == null) {
-                    setText(null);
-                } else {
-                    setText(item.getNom());
-                }
-            }
-        });
-        roleComboBox.setButtonCell(new ListCell<Role>() {
+    }
+
+    private void loadRoles() {
+        List<Role> roleList = roleService.getAllRoles();
+        ObservableList<Role> roles = FXCollections.observableArrayList(roleList);
+        filteredRoles = new FilteredList<>(roles, p -> true);
+        roleListView.setItems(filteredRoles);
+        roleListView.setCellFactory(param -> new ListCell<Role>() {
             @Override
             protected void updateItem(Role item, boolean empty) {
                 super.updateItem(item, empty);
-                if (empty || item == null || item.getNom() == null) {
+                if (empty || item == null) {
                     setText(null);
                 } else {
                     setText(item.getNom());
                 }
             }
+        });
+
+        roleListView.getSelectionModel().selectedItemProperty().addListener((observable, oldValue, newValue) -> {
+            Platform.runLater(() -> {
+                if (newValue != null) {
+                    Role_field.setText(newValue.getNom());
+                }
+            });
         });
     }
 
     @FXML
     public void User_Recherche(ActionEvent actionEvent) {
         String searchText = User_field.getText().trim();
-        for (User user : userService.getAllUsers()) {
-            if ((user.getNom() + " " + user.getPrenom()).equalsIgnoreCase(searchText) || user.getEmail().equalsIgnoreCase(searchText) || ((user.getPrenom() + " " + user.getNom()).equalsIgnoreCase(searchText))) {
-                User_field.setText(user.getEmail());
-                break;
+        filteredData.setPredicate(user -> {
+            if (searchText == null || searchText.isEmpty()) {
+                return true;
+            }
+            String lowerCaseFilter = searchText.toLowerCase();
+            return user.getNom().toLowerCase().contains(lowerCaseFilter) ||
+                    user.getPrenom().toLowerCase().contains(lowerCaseFilter) ||
+                    user.getEmail().toLowerCase().contains(lowerCaseFilter);
+        });
+    }
+
+    @FXML
+    void Depart_Recherche(ActionEvent event) {
+        String searchText = Depart_field.getText().trim();
+        filteredDepartments.setPredicate(departement -> {
+            if (searchText == null || searchText.isEmpty()) {
+                return true;
+            }
+            String lowerCaseFilter = searchText.toLowerCase();
+            return (departement.getNom() != null && departement.getNom().toLowerCase().contains(lowerCaseFilter)) ||
+                    (departement.getDescription() != null && departement.getDescription().toLowerCase().contains(lowerCaseFilter));
+        });
+    }
+
+    @FXML
+    void Role_Recherche(ActionEvent event) {
+        String searchText = Role_field.getText().trim();
+        filteredRoles.setPredicate(role -> {
+            if (searchText == null || searchText.isEmpty()) {
+                return true;
+            }
+            String lowerCaseFilter = searchText.toLowerCase();
+            return role.getNom().toLowerCase().contains(lowerCaseFilter) ||
+                    role.getDescription().toLowerCase().contains(lowerCaseFilter);
+        });
+    }
+
+    private void handleUserSelection(User newValue) {
+        selectedUser = newValue;
+        if (selectedUser != null) {
+            try {
+                ID_A.setText(String.valueOf(selectedUser.getIdUser()));
+                Prenom_A.setText(selectedUser.getPrenom());
+                nom_A.setText(selectedUser.getNom());
+                email_A.setText(selectedUser.getEmail());
+                MDP_A.setText(selectedUser.getMdp());
+                image_A.setText(selectedUser.getImage());
+                // Assuming you need to set the image as well
+                if (selectedUser.getImage() != null) {
+                    File file = new File(selectedUser.getImage());
+                    if (file.exists()) {
+                        Image image = new Image(new FileInputStream(file));
+                        PDPimageHolder.setImage(image);
+                    }
+                }
+
+                Departement departement = depService.getDepartmentById(selectedUser.getIdDepartement());
+                Role role = roleService.getRoleById(selectedUser.getIdRole());
+                User user = userService.getUserById(selectedUser.getIdUser());
+                User_field.setText(user.getPrenom() + " " + user.getNom());
+                if (departement != null) {
+                    Depart_field.setText(departement.getNom());
+                } else {
+                    Depart_field.clear();
+                }
+
+                if (role != null) {
+                    Role_field.setText(role.getNom());
+                } else {
+                    Role_field.clear();
+                }
+
+                // Debugging to check the selected user
+                System.out.println("Selected User in Listener: " + selectedUser);
+
+            } catch (Exception e) {
+                e.printStackTrace(); // Log the exception to the console
+                showError("An error occurred while selecting the user: " +
+                        e.getMessage());
             }
         }
-
     }
 
     @FXML
@@ -234,8 +290,8 @@ public class paneUserController implements Initializable {
         System.out.println("handleEditUser called");
 
         if (selectedUser != null) {
-            Role selectedRole = roleComboBox.getSelectionModel().getSelectedItem();
-            Departement selectedDepartement = departmentComboBox.getSelectionModel().getSelectedItem();
+            Departement selectedDepartement = departListView.getSelectionModel().getSelectedItem();
+            Role selectedRole = roleListView.getSelectionModel().getSelectedItem();
 
             boolean isUpdated = false;
 
@@ -271,7 +327,24 @@ public class paneUserController implements Initializable {
         }
     }
 
+    @FXML
+    private void handleAssignUser() {
+        Integer userId = getSelectedUserId();
+        Departement selectedDepartement = departListView.getSelectionModel().getSelectedItem();
+        Role selectedRole = roleListView.getSelectionModel().getSelectedItem();
 
+        if (userId != null && selectedRole != null && selectedDepartement != null) {
+            userService.updateUserRoleAndDepartment(userId, selectedRole.getIdRole(), selectedDepartement.getIdDepartement());
+            loadUsers();
+            highlightSelectedUser(userService.getUserById(userId));
+        } else {
+            showError("Please select a user, role, and department to assign.");
+        }
+    }
+
+    public Integer getSelectedUserId() {
+        return selectedUser != null ? selectedUser.getIdUser() : null;
+    }
 
     private void highlightSelectedUser(User user) {
         Platform.runLater(() -> {
@@ -285,80 +358,6 @@ public class paneUserController implements Initializable {
         });
     }
 
-    private void handleUserSelection(User newValue) {
-        selectedUser = newValue;
-        if (selectedUser != null) {
-            try {
-                User_field.setText(selectedUser.getPrenom() + " " + selectedUser.getNom());
-
-                Departement departement = depService.getDepartmentById(selectedUser.getIdDepartement());
-                Role role = roleService.getRoleById(selectedUser.getIdRole());
-
-                if (departement != null) {
-                    departmentComboBox.getSelectionModel().select(departement);
-                } else {
-                    departmentComboBox.getSelectionModel().clearSelection();
-                }
-
-                if (role != null) {
-                    roleComboBox.getSelectionModel().select(role);
-                } else {
-                    roleComboBox.getSelectionModel().clearSelection();
-                }
-
-                // Debugging to check the selected user
-                System.out.println("Selected User in Listener: " + selectedUser);
-
-            } catch (Exception e) {
-                e.printStackTrace(); // Log the exception to the console
-                showError("An error occurred while selecting the user: " + e.getMessage());
-            }
-        }
-    }
-
-    @FXML
-    private void handleAssignUser() {
-        Integer userId = getSelectedUserId();
-        Role selectedRole = roleComboBox.getSelectionModel().getSelectedItem();
-
-        if (userId != null && selectedRole != null) {
-            int roleId = selectedRole.getIdRole();
-            userService.assignRoleToUser(userId, roleId);
-            loadUsers();
-            highlightSelectedUser(userService.getUserById(userId));
-        } else {
-            showError("Please select a user and a role to assign.");
-        }
-    }
-
-    public Integer getSelectedUserId() {
-        return selectedUser != null ? selectedUser.getIdUser() : null;
-    }
-
-    private void loadUsers() {
-        try {
-            List<User> userList = userService.getAllUsers();
-            ObservableList<User> users = FXCollections.observableArrayList(userList);
-            filteredData = new FilteredList<>(users, p -> true);
-            userListView.setItems(filteredData);
-            userListView.setCellFactory(param -> new ListCell<User>() {
-                @Override
-                protected void updateItem(User user, boolean empty) {
-                    super.updateItem(user, empty);
-                    if (empty || user == null) {
-                        setText(null);
-                    } else {
-                        Departement departement = depService.getDepartmentById(user.getIdDepartement());
-                        Role role = roleService.getRoleById(user.getIdRole());
-                        setText(user.getPrenom() + " " + user.getNom() + " _ " + user.getEmail() + " _ " + (role != null ? role.getNom() : "N/A") + " _ " + (departement != null ? departement.getNom() : "N/A"));
-                    }
-                }
-            });
-        } catch (Exception e) {
-            showError("Failed to load users: " + e.getMessage());
-        }
-    }
-
     protected void showError(String message) {
         Alert alert = new Alert(Alert.AlertType.ERROR);
         alert.setTitle("Error");
@@ -366,6 +365,7 @@ public class paneUserController implements Initializable {
         alert.setContentText(message);
         alert.showAndWait();
     }
+
     @FXML
     void ajouter_user(ActionEvent actionEvent) {
         String nom = nom_A.getText();
@@ -407,16 +407,6 @@ public class paneUserController implements Initializable {
     }
 
     @FXML
-    void goto_conge(ActionEvent event) {
-
-    }
-
-    @FXML
-    void goto_user(ActionEvent event) {
-
-    }
-
-    @FXML
     void modifier_user(ActionEvent event) {
         String Nom = nom_A.getText();
         String Prenom = Prenom_A.getText();
@@ -450,8 +440,7 @@ public class paneUserController implements Initializable {
 
     private boolean isCurrentUser(int userId, String email) {
         User user = UserS.getUserById(userId);
-
-        return UserS != null  && user.getEmail().equals(email);
+        return UserS != null && user.getEmail().equals(email);
     }
 
     @FXML
@@ -506,11 +495,9 @@ public class paneUserController implements Initializable {
                 e.printStackTrace();
             }
         }
-
     }
 
     private boolean emailExists(String email) throws SQLException {
-        cnx = MyDataBase.getInstance().getCnx();
         String query = "SELECT * FROM `user` WHERE Email=?";
         PreparedStatement statement = cnx.prepareStatement(query);
         statement.setString(1, email);
@@ -532,88 +519,5 @@ public class paneUserController implements Initializable {
         }
         return false;
     }
-
-
-    public void load(List<User> users) {
-        UserContainers.getChildren().clear(); // Clear existing items
-        int column = 0;
-        int row = 0; // Start row from 0
-        try {
-
-            for (User user : users) {
-                FXMLLoader fxmlLoader = new FXMLLoader();
-                fxmlLoader.setLocation(getClass().getResource("/UserCard.fxml"));
-                Pane userBox = fxmlLoader.load();
-                UserCardController cardC = fxmlLoader.getController();
-                cardC.setData(user);
-                if (column == 3) {
-                    column = 0;
-                    ++row;
-                }
-                UserContainers.add(userBox, column++, row); // Ensure correct row and column
-                GridPane.setMargin(userBox, new Insets(10));
-            }
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-    }
-
-    public void load() {
-
-        List<User> users = UserS.Show();
-        load(users);
-    }
-
-
-    @FXML
-    void Tri_Departement(ActionEvent actionEvent) {
-        UserContainers.getChildren().clear();
-        int column = 0;
-        int row = 1;
-        try {
-            for (User user : UserS.SortDepart()) {
-                FXMLLoader fxmlLoader = new FXMLLoader();
-                fxmlLoader.setLocation(getClass().getResource("/UserCard.fxml"));
-                Pane userBox = fxmlLoader.load();
-                UserCardController cardC = fxmlLoader.getController();
-                cardC.setData(user);
-                if (column == 3) {
-                    column = 0;
-                    ++row;
-                }
-                UserContainers.add(userBox, column++, row);
-                GridPane.setMargin(userBox, new Insets(10));
-            }
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-    }
-
-    @FXML
-    void Tri_Role(ActionEvent actionEvent) {
-        UserContainers.getChildren().clear();
-        int column = 0;
-        int row = 1;
-        try {
-            for (User user : UserS.SortRole()) {
-                FXMLLoader fxmlLoader = new FXMLLoader();
-                fxmlLoader.setLocation(getClass().getResource("/UserCard.fxml"));
-                Pane userBox = fxmlLoader.load();
-                UserCardController cardC = fxmlLoader.getController();
-                cardC.setData(user);
-                if (column == 3) {
-                    column = 0;
-                    ++row;
-                }
-                UserContainers.add(userBox, column++, row);
-                GridPane.setMargin(userBox, new Insets(10));
-            }
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-    }
-
-
-
-
 }
+

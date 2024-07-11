@@ -789,7 +789,11 @@ public class ServiceUtilisateur implements IUtilisateur {
     public User getUserById(int userId) {
         User user = null;
         String query = "SELECT * FROM user WHERE ID_User = ?";
-        try (PreparedStatement stm = cnx.prepareStatement(query)) {
+        try{
+            if (cnx == null || cnx.isClosed()) {
+                cnx = MyDataBase.getInstance().getCnx();
+            }
+            PreparedStatement stm = cnx.prepareStatement(query);
             stm.setInt(1, userId);
             try (ResultSet rs = stm.executeQuery()) {
                 if (rs.next()) {

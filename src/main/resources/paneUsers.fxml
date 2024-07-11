@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
+<?import java.lang.String?>
 <?import javafx.scene.control.Button?>
-<?import javafx.scene.control.ComboBox?>
 <?import javafx.scene.control.Label?>
 <?import javafx.scene.control.ListView?>
 <?import javafx.scene.control.ScrollPane?>
@@ -19,9 +19,9 @@
 <?import javafx.scene.layout.RowConstraints?>
 <?import javafx.scene.text.Font?>
 
-<Pane fx:id="UtilisateursPane" prefHeight="650.0" prefWidth="1000.0" styleClass="pane1" stylesheets="@assets/css/style.css" xmlns="http://javafx.com/javafx/21" xmlns:fx="http://javafx.com/fxml/1" fx:controller="tn.bfpme.controllers.RHC.paneUserController">
+<Pane fx:id="UtilisateursPane" prefHeight="726.0" prefWidth="1119.0" styleClass="pane1" stylesheets="@assets/css/style.css" xmlns="http://javafx.com/javafx/21" xmlns:fx="http://javafx.com/fxml/1" fx:controller="tn.bfpme.controllers.RHC.paneUserController">
    <children>
-      <TabPane prefHeight="650.0" prefWidth="1000.0" tabClosingPolicy="UNAVAILABLE">
+      <TabPane prefHeight="726.0" prefWidth="1119.0" tabClosingPolicy="UNAVAILABLE">
          <tabs>
             <Tab text="Gestion">
                <content>
@@ -135,16 +135,58 @@
             </Tab>
             <Tab text="Affectation">
                <content>
-                  <AnchorPane prefHeight="200.0" prefWidth="200.0">
+                  <AnchorPane prefHeight="688.0" prefWidth="1120.0" styleClass="grad-bg" stylesheets="@assets/css/style.css">
                      <children>
-                        <ListView fx:id="userListView" layoutX="63.0" layoutY="69.0" prefHeight="484.0" prefWidth="298.0" />
-                        <TextField fx:id="User_field" layoutX="500.0" layoutY="155.0" onAction="#User_Recherche" prefHeight="29.0" prefWidth="244.0" />
-                        <ComboBox fx:id="departmentComboBox" layoutX="500.0" layoutY="212.0" prefHeight="31.0" prefWidth="245.0" promptText="Departement" />
-                        <ComboBox fx:id="roleComboBox" layoutX="500.0" layoutY="268.0" prefHeight="31.0" prefWidth="245.0" promptText="Role" />
-                        <Button layoutX="513.0" layoutY="333.0" mnemonicParsing="false" onAction="#handleAssignUser" prefHeight="25.0" prefWidth="94.0" styleClass="btn-primary" text="Affecter" />
-                        <Button layoutX="636.0" layoutY="333.0" mnemonicParsing="false" onAction="#handleEditUser" prefHeight="25.0" prefWidth="94.0" styleClass="btn-primary" text="Modifier" />
+                        <ListView fx:id="userListView" layoutX="50.0" layoutY="131.0" prefHeight="400.0" prefWidth="280.0" />
+                        <TextField fx:id="User_field" layoutX="50.0" layoutY="83.0" onAction="#User_Recherche" prefHeight="29.0" prefWidth="280.0" />
+                        <ListView fx:id="departListView" layoutX="420.0" layoutY="131.0" prefHeight="400.0" prefWidth="280.0" />
+                        <ListView fx:id="roleListView" layoutX="790.0" layoutY="131.0" prefHeight="400.0" prefWidth="280.0" />
+                        <TextField fx:id="Depart_field" layoutX="420.0" layoutY="83.0" onAction="#Depart_Recherche" prefHeight="29.0" prefWidth="280.0" />
+                        <TextField fx:id="Role_field" layoutX="790.0" layoutY="83.0" onAction="#Role_Recherche" prefHeight="29.0" prefWidth="280.0" />
+                        <Label layoutX="144.0" layoutY="35.0" text="Employés">
+                           <styleClass>
+                              <String fx:value="FontSize-21" />
+                              <String fx:value="RobotoBoldItalic" />
+                           </styleClass>
+                        </Label>
+                        <Label layoutX="499.0" layoutY="35.0" text="Departements">
+                           <styleClass>
+                              <String fx:value="FontSize-21" />
+                              <String fx:value="RobotoBoldItalic" />
+                           </styleClass>
+                        </Label>
+                        <Label layoutX="904.0" layoutY="35.0" text="Roles">
+                           <styleClass>
+                              <String fx:value="FontSize-21" />
+                              <String fx:value="RobotoBoldItalic" />
+                           </styleClass>
+                        </Label>
+                        <HBox layoutX="420.0" layoutY="587.0" prefHeight="57.0" prefWidth="280.0">
+                           <children>
+                              <Button mnemonicParsing="false" onAction="#handleAssignUser" prefHeight="73.0" prefWidth="130.0" text="Affecter">
+                                 <styleClass>
+                                    <String fx:value="btn-primary" />
+                                    <String fx:value="FontSize-16" />
+                                    <String fx:value="RobotoBoldItalic" />
+                                 </styleClass>
+                              </Button>
+                              <Separator orientation="VERTICAL" prefHeight="57.0" prefWidth="19.0" styleClass="seperator" />
+                              <Button mnemonicParsing="false" onAction="#handleEditUser" prefHeight="73.0" prefWidth="130.0" text="Modifier">
+                                 <styleClass>
+                                    <String fx:value="btn-primary" />
+                                    <String fx:value="FontSize-16" />
+                                    <String fx:value="RobotoBoldItalic" />
+                                 </styleClass>
+                              </Button>
+                           </children>
+                        </HBox>
                      </children></AnchorPane>
                </content>
+            </Tab>
+            <Tab text="Hierarchie">
+              <content>
+                <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="180.0" prefWidth="200.0" />
+              </content>
             </Tab>
          </tabs>
       </TabPane>
