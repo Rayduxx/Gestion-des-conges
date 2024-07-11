@@ -399,7 +399,12 @@ public class ServiceConge implements IConge<Conge> {
 
 
     public void NewMessage(String message, int idUser, int idConge) {
+        cnx = MyDataBase.getInstance().getCnx();
+
         try {
+            if (cnx == null || cnx.isClosed()) {
+                cnx = MyDataBase.getInstance().getCnx();
+            }
             String qry = "UPDATE `conge` SET `Message`=? WHERE `ID_User`=? AND `ID_Conge`=?";
             PreparedStatement stm = cnx.prepareStatement(qry);
             stm.setString(1, message);

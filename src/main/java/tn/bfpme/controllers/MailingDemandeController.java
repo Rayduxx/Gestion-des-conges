@@ -135,7 +135,7 @@ public class MailingDemandeController implements Initializable {
         String to = mail_dest.getText();
         String subject = mail_obj.getText();
         String messageText = mail_text.getText();
-        //serviceConge.NewMessage(subject,user.getIdUser(),conge.getIdConge());
+        serviceConge.NewMessage(subject,user.getIdUser(),conge.getIdConge());
         int stat=0;
         if(conge.getStatut().equals(Statut.Approuvé)){
             stat=1;
