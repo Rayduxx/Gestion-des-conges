@@ -183,29 +183,18 @@ public class DemandeDepController implements Initializable {
 
         if (result.isPresent() && result.get() == Oui) {
             try {
-                System.out.println("test envoie");
                 serviceConge.updateStatutConge(this.conge.getIdConge(), Statut.Rejeté);
-                System.out.println("test envoie0");
-
                 FXMLLoader loader = new FXMLLoader(getClass().getResource("/MailingDemande.fxml"));
-                System.out.println("test envoie1");
-
                 Parent root = loader.load();
                 MailingDemandeController controller = loader.getController();
                 controller.setData(conge, user);
-                System.out.println("test envoie2");
-
-                // Close current stage
                 Stage currentStage = (Stage) ((Node) event.getSource()).getScene().getWindow();
                 currentStage.close();
-
-                // Get or create new stage for the MailingDemande scene
                 Stage newStage = StageManager.getStage("DemandeDepListe");
                 if (newStage == null) {
                     newStage = new Stage();
                     StageManager.addStage("DemandeDepListe", newStage);
                 }
-
                 Scene scene = new Scene(root);
                 newStage.setScene(scene);
                 newStage.setTitle("Mailing de Demande");
@@ -219,7 +208,6 @@ public class DemandeDepController implements Initializable {
             }
         }
     }
-
 
     @FXML
     void retour(ActionEvent event) {
