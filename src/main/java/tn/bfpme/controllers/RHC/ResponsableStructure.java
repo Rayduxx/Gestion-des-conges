@@ -169,13 +169,6 @@ public class ResponsableStructure implements Initializable {
 
     @Override
     public void initialize(URL url, ResourceBundle resourceBundle) {
-        try {
-            FXMLLoader loader = new FXMLLoader(getClass().getResource("/NavigationHeader.fxml"));
-            Pane departementPane = loader.load();
-            MainAnchorPane.getChildren().add(departementPane);
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
         serviceUtilisateur = new ServiceUtilisateur();
 
         idUserColumn.setCellValueFactory(new Callback<TreeTableColumn.CellDataFeatures<User, Integer>, ObservableValue<Integer>>() {
