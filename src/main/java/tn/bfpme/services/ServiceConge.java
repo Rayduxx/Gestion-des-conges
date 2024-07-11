@@ -20,15 +20,14 @@ public class ServiceConge implements IConge<Conge> {
         this.cnx = cnx;
     }
 
-    public ServiceConge() {
-
-    }
+    public ServiceConge() {}
 
     @Override
     public List<Conge> afficher() {
         List<Conge> conges = new ArrayList<>();
         String sql = "SELECT ID_Conge, DateDebut, DateFin, TypeConge, Statut, ID_User, file, description, Message FROM conge WHERE ID_User LIKE '%" + SessionManager.getInstance().getUser().getIdUser() + "%'";
         try {
+            cnx = MyDataBase.getInstance().getCnx();
             Statement ste = cnx.createStatement();
             ResultSet rs = ste.executeQuery(sql);
             while (rs.next()) {
@@ -85,6 +84,7 @@ public class ServiceConge implements IConge<Conge> {
     public void updateConge(Conge conge) {
         try {
             String qry = "UPDATE `conge` SET `DateDebut`=?, `DateFin`=?, `TypeConge`=?, `Statut`=?, `ID_User`=?, `file`=?, `description`=? WHERE `ID_Conge`=?";
+            cnx = MyDataBase.getInstance().getCnx();
             PreparedStatement stm = cnx.prepareStatement(qry);
             stm.setDate(1, java.sql.Date.valueOf(conge.getDateDebut()));
             stm.setDate(2, java.sql.Date.valueOf(conge.getDateFin()));
@@ -104,6 +104,7 @@ public class ServiceConge implements IConge<Conge> {
     public void updateStatutConge(int id, Statut statut) {
         try {
             String qry = "UPDATE `conge` SET `Statut`=? WHERE `ID_Conge`=?";
+            cnx = MyDataBase.getInstance().getCnx();
             PreparedStatement stm = cnx.prepareStatement(qry);
             stm.setString(1, String.valueOf(statut));
             stm.setInt(2, id);

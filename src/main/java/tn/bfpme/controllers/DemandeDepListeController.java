@@ -9,6 +9,7 @@ import java.io.IOException;
 import java.net.URL;
 import java.util.List;
 import java.util.ResourceBundle;
+
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.geometry.Insets;
@@ -37,7 +38,8 @@ public class DemandeDepListeController implements Initializable {
     private AnchorPane MainAnchorPane;
     @FXML
     private ComboBox<String> comboTri;
-    @FXML public Button NotifBtn;
+    @FXML
+    public Button NotifBtn;
     private Conge conge;
     private final ServiceConge CongeS = new ServiceConge();
     private final ServiceUtilisateur UserS = new ServiceUtilisateur();
@@ -57,10 +59,13 @@ public class DemandeDepListeController implements Initializable {
             e.printStackTrace();
         }
     }
-    @FXML void Recherche(KeyEvent event) {
+
+    @FXML
+    void Recherche(KeyEvent event) {
     }
 
-    @FXML void TriPar(ActionEvent event) {
+    @FXML
+    void TriPar(ActionEvent event) {
         String TYPE = comboTri.getValue();
         if (TYPE != null) {
             switch (TYPE) {
@@ -105,7 +110,7 @@ public class DemandeDepListeController implements Initializable {
                             GridPane.setMargin(cardBox, new Insets(10));
                             cardBox.setMaxWidth(Double.MAX_VALUE);
                             column++;
-                            if (column == 3) {
+                            if (column == 1) {
                                 column = 0;
                                 row++;
                             }
@@ -120,6 +125,7 @@ public class DemandeDepListeController implements Initializable {
             e.printStackTrace();
         }
     }
+
     public void load() {
         DemandesContainer.getColumnConstraints().clear();
         for (int i = 0; i < 3; i++) { // Three columns
@@ -127,9 +133,9 @@ public class DemandeDepListeController implements Initializable {
             columnConstraints.setHgrow(Priority.ALWAYS);
             DemandesContainer.getColumnConstraints().add(columnConstraints);
         }
-        DemandesContainer.setVgap(10);
+        DemandesContainer.setVgap(8);
         DemandesContainer.setHgap(10);
-        DemandesContainer.setPadding(new Insets(10));
+        DemandesContainer.setPadding(new Insets(8));
         int row = 0;
         int column = 0;
         try {
@@ -149,7 +155,7 @@ public class DemandeDepListeController implements Initializable {
                             GridPane.setMargin(cardBox, new Insets(10));
                             cardBox.setMaxWidth(Double.MAX_VALUE);
                             column++;
-                            if (column == 3) {
+                            if (column == 1) {
                                 column = 0;
                                 row++;
                             }
@@ -165,6 +171,7 @@ public class DemandeDepListeController implements Initializable {
             e.printStackTrace();
         }
     }
+
     @FXML
     void LesApprouves(ActionEvent event) {
         int row = 0;
@@ -187,7 +194,7 @@ public class DemandeDepListeController implements Initializable {
                             GridPane.setMargin(cardBox, new Insets(10));
                             cardBox.setMaxWidth(Double.MAX_VALUE);
                             column++;
-                            if (column == 3) {
+                            if (column == 1) {
                                 column = 0;
                                 row++;
                             }
@@ -225,7 +232,7 @@ public class DemandeDepListeController implements Initializable {
                             GridPane.setMargin(cardBox, new Insets(10));
                             cardBox.setMaxWidth(Double.MAX_VALUE);
                             column++;
-                            if (column == 3) {
+                            if (column == 1) {
                                 column = 0;
                                 row++;
                             }
@@ -263,7 +270,7 @@ public class DemandeDepListeController implements Initializable {
                             GridPane.setMargin(cardBox, new Insets(10));
                             cardBox.setMaxWidth(Double.MAX_VALUE);
                             column++;
-                            if (column == 3) {
+                            if (column == 1) {
                                 column = 0;
                                 row++;
                             }
