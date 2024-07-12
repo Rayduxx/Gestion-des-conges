@@ -16,9 +16,17 @@ public interface IConge<C> {
     void updateSoldeAnnuel(int id, double solde);
 
     void updateSoldeMaladie(int id, int solde);
+
+    void updateSoldeMaladie(int id, double solde);
+
     void updateSoldeExceptionnel(int id, int solde);
+
+    void updateSoldeExceptionnel(int id, double solde);
+
     void updateSoldeMaternité(int id, int solde);
 
+
+    void updateSoldeMaternité(int id, double solde);
 
     void deleteConge(Conge conge);
     void deleteCongeByID(int id);

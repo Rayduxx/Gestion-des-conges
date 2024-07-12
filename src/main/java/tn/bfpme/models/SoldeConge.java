@@ -25,26 +25,16 @@ public class SoldeConge {
         SoldeExc = soldeExc;
     }
 
-
-    public SoldeConge getSoldeConge() {
-        SoldeConge soldeConge = null;
-        try (Connection connection = MyDataBase.getInstance().getCnx()) {
-            String query = "SELECT SoldeAnn, SoldeMal, SoldeMat, SoldeExc FROM solde_conge WHERE id = ?";
-            PreparedStatement preparedStatement = connection.prepareStatement(query);
-            preparedStatement.setInt(1, 1); // Assuming you are fetching data for id = 1, change as per your requirement
-            ResultSet resultSet = preparedStatement.executeQuery();
-            if (resultSet.next()) {
-                soldeConge = new SoldeConge();
-                soldeConge.setSoldeAnn(resultSet.getDouble("SoldeAnn"));
-                soldeConge.setSoldeMal(resultSet.getDouble("SoldeMal"));
-                soldeConge.setSoldeMat(resultSet.getDouble("SoldeMat"));
-                soldeConge.setSoldeExc(resultSet.getDouble("SoldeExc"));
-            }
-        } catch (SQLException e) {
-            e.printStackTrace();
-        }
-        return soldeConge;
+    public SoldeConge(int idSolde, double soldeAnn, double soldeMat, double soldeExc, double soldeMal) {
+        idSolde = idSolde;
+        SoldeAnn = soldeAnn;
+        SoldeMal = soldeMal;
+        SoldeMat = soldeMat;
+        SoldeExc = soldeExc;
     }
+
+
+
 
 //Getters & Setters
 

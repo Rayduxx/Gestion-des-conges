@@ -47,7 +47,6 @@ public class RHController {
         } catch (IOException e) {
             e.printStackTrace();
         }
-
     }
 
     @FXML
@@ -79,7 +78,7 @@ public class RHController {
     @FXML
     private void showUtilisateursPane() {
         try {
-            FXMLLoader loader = new FXMLLoader(getClass().getResource("/paneUsers.fxml"));
+            FXMLLoader loader = new FXMLLoader(getClass().getResource("/PaneUsers.fxml"));
             Pane userPane = loader.load();
             PaneCont.getChildren().clear();
             PaneCont.getChildren().add(userPane);

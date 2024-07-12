@@ -152,7 +152,7 @@ public class DemandeDepController implements Initializable {
             }
 
             if (conge.getTypeConge().equals(TypeConge.Exceptionnel)) {
-                serviceConge.updateSoldeExceptionnel(this.user.getIdUser(), this.user.getSoldeExceptionnel() - CongeDays);
+                serviceConge.updateSoldeExceptionnel(this.user.getIdUser(), this.user.getSoldeExceptionnel() - conge.getCongeDays());
             }
             if (conge.getTypeConge().equals(TypeConge.Maladie)) {
                 serviceConge.updateSoldeMaladie(this.user.getIdUser(), this.user.getSoldeMaladie() - CongeDays);

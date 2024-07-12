@@ -17,6 +17,7 @@ import javafx.stage.Stage;
 import tn.bfpme.models.Departement;
 import tn.bfpme.models.Role;
 import tn.bfpme.models.User;
+import tn.bfpme.models.SoldeConge;
 import tn.bfpme.services.ServiceDepartement;
 import tn.bfpme.services.ServiceRole;
 import tn.bfpme.services.ServiceUtilisateur;
@@ -35,6 +36,7 @@ import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.time.LocalDate;
 import java.util.List;
 import java.util.ResourceBundle;
 import java.util.UUID;
@@ -110,6 +112,7 @@ public class paneUserController implements Initializable {
     private final ServiceDepartement depService = new ServiceDepartement();
     private final ServiceUtilisateur userService = new ServiceUtilisateur();
     private final ServiceRole roleService = new ServiceRole();
+
 
     @Override
     public void initialize(URL url, ResourceBundle resourceBundle) {
@@ -248,6 +251,7 @@ public class paneUserController implements Initializable {
                 email_A.setText(selectedUser.getEmail());
                 MDP_A.setText(selectedUser.getMdp());
                 image_A.setText(selectedUser.getImage());
+
                 // Assuming you need to set the image as well
                 if (selectedUser.getImage() != null) {
                     File file = new File(selectedUser.getImage());
@@ -259,8 +263,7 @@ public class paneUserController implements Initializable {
 
                 Departement departement = depService.getDepartmentById(selectedUser.getIdDepartement());
                 Role role = roleService.getRoleById(selectedUser.getIdRole());
-                User user = userService.getUserById(selectedUser.getIdUser());
-                User_field.setText(user.getPrenom() + " " + user.getNom());
+
                 if (departement != null) {
                     Depart_field.setText(departement.getNom());
                 } else {
@@ -273,15 +276,50 @@ public class paneUserController implements Initializable {
                     Role_field.clear();
                 }
 
+                // Fetch solde values from soldeconge table
+                SoldeConge soldeConge = getSoldeCongeByUserId(selectedUser.getIdUser());
+
+                if (soldeConge != null) {
+                    S_Ann.setText(String.valueOf(soldeConge.getSoldeAnn()));
+                    S_exc.setText(String.valueOf(soldeConge.getSoldeExc()));
+                    S_mal.setText(String.valueOf(soldeConge.getSoldeMal()));
+                    S_mat.setText(String.valueOf(soldeConge.getSoldeMat()));
+                } else {
+                    S_Ann.clear();
+                    S_exc.clear();
+                    S_mal.clear();
+                    S_mat.clear();
+                }
+
                 // Debugging to check the selected user
                 System.out.println("Selected User in Listener: " + selectedUser);
 
             } catch (Exception e) {
                 e.printStackTrace(); // Log the exception to the console
-                showError("An error occurred while selecting the user: " +
-                        e.getMessage());
+                showError("An error occurred while selecting the user: " + e.getMessage());
             }
         }
+    }
+    private SoldeConge getSoldeCongeByUserId(int userId) {
+        SoldeConge soldeConge = null;
+        String query = "SELECT sc.* FROM soldeconge sc JOIN user u ON sc.idSolde = u.ID_Solde WHERE u.ID_User = ?";
+        try {
+            PreparedStatement stm = cnx.prepareStatement(query);
+            stm.setInt(1, userId);
+            ResultSet rs = stm.executeQuery();
+            if (rs.next()) {
+                soldeConge = new SoldeConge(
+                        rs.getInt("idSolde"),
+                        rs.getDouble("SoldeAnn"),
+                        rs.getDouble("SoldeMat"),
+                        rs.getDouble("SoldeExc"),
+                        rs.getDouble("SoldeMal")
+                );
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return soldeConge;
     }
 
     @FXML
@@ -373,15 +411,19 @@ public class paneUserController implements Initializable {
         String mdp = MDP_A.getText();
         String image = image_A.getText();
 
-        int soldeAnnuel = parseIntOrZero(S_Ann.getText());
-        int soldeMaladie = parseIntOrZero(S_mal.getText());
-        int soldeExceptionnel = parseIntOrZero(S_exc.getText());
-        int soldeMaternite = parseIntOrZero(S_mat.getText());
+        // Retrieve default solde values from the database
+        SoldeConge defaultSolde = getDefaultSolde();
+
+        double soldeAnnuel = defaultSolde.getSoldeAnn();
+        double soldeMaladie = defaultSolde.getSoldeMal();
+        double soldeExceptionnel = defaultSolde.getSoldeExc();
+        double soldeMaternite = defaultSolde.getSoldeMat();
 
         if (email.matches("^[_A-Za-z0-9-\\+]+(\\.[_A-Za-z0-9-]+)*@(bfpme\\.tn|gmail\\.com)$")) {
             try {
                 if (!emailExists(email)) {
-                    UserS.Add(new User(0, nom, prenom, email, mdp, image, soldeAnnuel, soldeMaladie, soldeExceptionnel, soldeMaternite, 0, 0));
+                    // Add user with default solde balances
+                    UserS.Add(new User(0, nom, prenom, email, mdp, image, soldeAnnuel, soldeMaladie, soldeExceptionnel, soldeMaternite, LocalDate.now(), 0, 0));
                     infolabel.setText("Ajout Effectué");
                 } else {
                     infolabel.setText("Email déjà existe");
@@ -393,6 +435,7 @@ public class paneUserController implements Initializable {
             infolabel.setText("Email est invalide");
         }
     }
+
 
     private int parseIntOrZero(String text) {
         if (text == null || text.trim().isEmpty()) {
@@ -498,25 +541,47 @@ public class paneUserController implements Initializable {
 
     private boolean emailExists(String email) throws SQLException {
         String query = "SELECT * FROM `user` WHERE Email=?";
-        PreparedStatement statement = cnx.prepareStatement(query);
-        statement.setString(1, email);
-        ResultSet resultSet = statement.executeQuery();
-        return resultSet.next();
-    }
-
-    private boolean emailExistss(String email, int excludeUserId) throws SQLException {
-        String query = "SELECT COUNT(*) FROM user WHERE Email = ? AND ID_User != ?";
         try (Connection cnx = MyDataBase.getInstance().getCnx();
-             PreparedStatement stm = cnx.prepareStatement(query)) {
-            stm.setString(1, email);
-            stm.setInt(2, excludeUserId);
-            try (ResultSet rs = stm.executeQuery()) {
-                if (rs.next()) {
-                    return rs.getInt(1) > 0;
-                }
+             PreparedStatement statement = cnx.prepareStatement(query)) {
+            statement.setString(1, email);
+            try (ResultSet resultSet = statement.executeQuery()) {
+                return resultSet.next();
             }
         }
-        return false;
     }
+
+
+    private boolean emailExistss(String email, int excludeUserId) throws SQLException {
+        String query = "SELECT * FROM `user` WHERE Email=?";
+        try (Connection cnx = MyDataBase.getInstance().getCnx();
+             PreparedStatement statement = cnx.prepareStatement(query)) {
+            statement.setString(1, email);
+            try (ResultSet resultSet = statement.executeQuery()) {
+                return resultSet.next();
+            }
+        }
+    }
+
+    private SoldeConge getDefaultSolde() {
+        String query = "SELECT SoldeAnn, SoldeMal, SoldeExc, SoldeMat FROM soldeconge LIMIT 1";
+        try (Connection cnx = MyDataBase.getInstance().getCnx();
+             PreparedStatement stm = cnx.prepareStatement(query);
+             ResultSet rs = stm.executeQuery()) {
+            if (rs.next()) {
+                return new SoldeConge(
+                        rs.getDouble("SoldeAnn"),
+                        rs.getDouble("SoldeMal"),
+                        rs.getDouble("SoldeExc"),
+                        rs.getDouble("SoldeMat")
+                );
+            } else {
+                throw new SQLException("No default solde values found in soldeconge table.");
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+            return new SoldeConge(0, 0, 0, 0);
+        }
+    }
+
 }
 
