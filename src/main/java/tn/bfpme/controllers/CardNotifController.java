@@ -5,6 +5,7 @@ import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 import javafx.scene.control.*;
 import javafx.scene.image.*;
+import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.Pane;
 import tn.bfpme.models.Conge;
 import tn.bfpme.models.Notification;
@@ -64,6 +65,14 @@ public class CardNotifController implements Initializable {
         if (paneNotifController != null) {
             paneNotifController.load();
         }
+    }
+    @FXML
+    void ViewMessage(MouseEvent event) {
+        Alert alert = new Alert(Alert.AlertType.INFORMATION);
+        alert.setTitle("Notification Message");
+        alert.setHeaderText(null);
+        alert.setContentText(notification.getNotifcontent());
+        alert.showAndWait();
     }
 
 }

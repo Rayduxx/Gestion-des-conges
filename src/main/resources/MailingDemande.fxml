@@ -28,7 +28,7 @@
                   <String fx:value="FontSize-14" />
                   <String fx:value="RobotoRegular" />
                </styleClass></ComboBox>
-            <TextArea fx:id="mail_text" layoutX="32.0" layoutY="174.0" prefHeight="391.0" prefWidth="1214.0" wrapText="true">
+            <TextArea fx:id="mail_text" layoutX="32.0" layoutY="186.0" prefHeight="391.0" prefWidth="1214.0" wrapText="true">
                <font>
                   <Font size="14.0" />
                </font>
@@ -37,18 +37,7 @@
                   <String fx:value="RobotoRegular" />
                </styleClass>
             </TextArea>
-            <TextField fx:id="mail_obj" layoutX="32.0" layoutY="134.0" prefHeight="28.0" prefWidth="1214.0">
-               <styleClass>
-                  <String fx:value="FontSize-14" />
-                  <String fx:value="RobotoRegular" />
-               </styleClass></TextField>
-            <Label fx:id="mail_dest" disable="true" layoutX="32.0" layoutY="96.0" prefHeight="28.0" prefWidth="241.0" text="Destinataire">
-               <styleClass>
-                  <String fx:value="text-area" />
-                  <String fx:value="FontSize-12" />
-                  <String fx:value="RobotoRegular" />
-               </styleClass></Label>
-            <HBox alignment="CENTER" layoutX="466.0" layoutY="579.0" prefHeight="75.0" prefWidth="346.0" spacing="104.0">
+            <HBox alignment="CENTER" layoutX="466.0" layoutY="590.0" prefHeight="75.0" prefWidth="346.0" spacing="104.0">
                <children>
                   <Button mnemonicParsing="false" onAction="#Envoyer_mail" prefHeight="44.0" prefWidth="99.0" text="Envoyer">
                      <styleClass>
@@ -64,6 +53,45 @@
                      </styleClass></Button>
                </children>
             </HBox>
+            <HBox alignment="CENTER_LEFT" layoutX="34.0" layoutY="85.0" prefHeight="30.0" prefWidth="531.0">
+               <children>
+                  <Label prefHeight="19.0" prefWidth="140.0" text="Destinataire :">
+                     <styleClass>
+                        <String fx:value="FontSize-15" />
+                        <String fx:value="RobotoRegular" />
+                     </styleClass>
+                  </Label>
+                  <Label fx:id="mail_dest" disable="true" prefHeight="28.0" prefWidth="241.0">
+                     <styleClass>
+                        <String fx:value="text-area" />
+                        <String fx:value="FontSize-12" />
+                        <String fx:value="RobotoRegular" />
+                     </styleClass>
+                  </Label>
+               </children>
+            </HBox>
+            <HBox alignment="CENTER_LEFT" layoutX="32.0" layoutY="120.0" prefHeight="34.0" prefWidth="1162.0">
+               <children>
+                  <Label prefHeight="19.0" prefWidth="153.0" text="Object :">
+                     <styleClass>
+                        <String fx:value="FontSize-15" />
+                        <String fx:value="RobotoRegular" />
+                     </styleClass>
+                  </Label>
+                  <TextField fx:id="mail_obj" prefHeight="30.0" prefWidth="1030.0">
+                     <styleClass>
+                        <String fx:value="FontSize-14" />
+                        <String fx:value="RobotoRegular" />
+                     </styleClass>
+                  </TextField>
+               </children>
+            </HBox>
+            <Label layoutX="32.0" layoutY="159.0" prefHeight="19.0" prefWidth="91.0" text="Message :">
+               <styleClass>
+                  <String fx:value="FontSize-15" />
+                  <String fx:value="RobotoRegular" />
+               </styleClass>
+            </Label>
          </children>
       </Pane>
    </children>

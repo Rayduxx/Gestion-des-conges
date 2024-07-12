@@ -68,6 +68,14 @@ public class Notification {
         this.statut = statut;
     }
 
+    public String getNotifcontent() {
+        return notifcontent;
+    }
+
+    public void setNotifcontent(String notifcontent) {
+        this.notifcontent = notifcontent;
+    }
+
     @Override
     public String toString() {
         return "Notification{" +
