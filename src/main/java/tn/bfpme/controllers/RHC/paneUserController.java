@@ -276,7 +276,6 @@ public class paneUserController implements Initializable {
                     Role_field.clear();
                 }
 
-                // Fetch solde values from soldeconge table
                 SoldeConge soldeConge = getSoldeCongeByUserId(selectedUser.getIdUser());
 
                 if (soldeConge != null) {
@@ -291,11 +290,10 @@ public class paneUserController implements Initializable {
                     S_mat.clear();
                 }
 
-                // Debugging to check the selected user
                 System.out.println("Selected User in Listener: " + selectedUser);
 
             } catch (Exception e) {
-                e.printStackTrace(); // Log the exception to the console
+                e.printStackTrace();
                 showError("An error occurred while selecting the user: " + e.getMessage());
             }
         }
@@ -411,7 +409,6 @@ public class paneUserController implements Initializable {
         String mdp = MDP_A.getText();
         String image = image_A.getText();
 
-        // Retrieve default solde values from the database
         SoldeConge defaultSolde = getDefaultSolde();
 
         double soldeAnnuel = defaultSolde.getSoldeAnn();
@@ -422,7 +419,6 @@ public class paneUserController implements Initializable {
         if (email.matches("^[_A-Za-z0-9-\\+]+(\\.[_A-Za-z0-9-]+)*@(bfpme\\.tn|gmail\\.com)$")) {
             try {
                 if (!emailExists(email)) {
-                    // Add user with default solde balances
                     UserS.Add(new User(0, nom, prenom, email, mdp, image, soldeAnnuel, soldeMaladie, soldeExceptionnel, soldeMaternite, LocalDate.now(), 0, 0));
                     infolabel.setText("Ajout Effectué");
                 } else {
