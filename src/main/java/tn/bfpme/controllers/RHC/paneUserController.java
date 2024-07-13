@@ -274,13 +274,11 @@ public class paneUserController implements Initializable {
                     Role_field.clear();
                 }
 
-                // Debugging to check the selected user
                 System.out.println("Selected User in Listener: " + selectedUser);
 
             } catch (Exception e) {
-                e.printStackTrace(); // Log the exception to the console
-                showError("An error occurred while selecting the user: " +
-                        e.getMessage());
+                e.printStackTrace();
+                showError("An error occurred while selecting the user: " + e.getMessage());
             }
         }
     }

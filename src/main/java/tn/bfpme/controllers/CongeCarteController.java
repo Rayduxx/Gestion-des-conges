@@ -14,6 +14,7 @@ import javafx.scene.layout.HBox;
 import javafx.scene.layout.Pane;
 import javafx.stage.Modality;
 import javafx.stage.Stage;
+import javafx.stage.StageStyle;
 import tn.bfpme.models.Conge;
 import tn.bfpme.models.Statut;
 import tn.bfpme.models.TypeConge;
@@ -147,10 +148,23 @@ public class CongeCarteController {
     }
     @FXML
     void ViewMessage(ActionEvent event) {
-        Alert alert = new Alert(Alert.AlertType.INFORMATION);
+        try {
+            FXMLLoader loader = new FXMLLoader(getClass().getResource("/Message.fxml"));
+            Parent root = loader.load();
+            MessageController msgController = loader.getController();
+            msgController.setDataConge(cmessage);
+            Stage newStage = new Stage();
+            Scene scene = new Scene(root);
+            newStage.setScene(scene);
+            newStage.initStyle(StageStyle.TRANSPARENT);
+            newStage.show();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        /*Alert alert = new Alert(Alert.AlertType.INFORMATION);
         alert.setTitle("Message de refus");
         alert.setHeaderText(null);
         alert.setContentText(cmessage);
-        alert.showAndWait();
+        alert.showAndWait();*/
     }
 }
