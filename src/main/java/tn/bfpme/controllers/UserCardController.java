@@ -46,7 +46,7 @@ public class UserCardController {
     int uid;
     String unom, uprenom, uemail, umdp, urole, udepart, updp;
     double SAnn, SExp, SMala, SMater;
-    public void setData(User user) {
+    public void setData(User user, String roleName, String departmentName) {
         String imagePath = user.getImage();
         if (imagePath != null) {
             try {
@@ -62,9 +62,6 @@ public class UserCardController {
         }
         cardnameprename.setText(user.getNom() + " " + user.getPrenom());
         cardemail.setText(user.getEmail());
-        String roleName = UserS.getRoleNameById(user.getIdRole());
-        String departmentName = UserS.getDepartmentNameById(user.getIdDepartement());
-
         cardrole.setText(roleName);
         carddepart.setText(departmentName);
         Card.setStyle("-fx-border-radius: 5px;-fx-border-color:#808080");
@@ -82,7 +79,6 @@ public class UserCardController {
         SMater = user.getSoldeMaternite();
         SExp = user.getSoldeExceptionnel();
     }
-
 
     @FXML
     void ModifierUser(ActionEvent event) {
@@ -125,5 +121,7 @@ public class UserCardController {
         UserS.DeleteByID(uid);
         ((GridPane) Card.getParent()).getChildren().remove(Card);
     }
+
+
 }
 

@@ -6,6 +6,7 @@ import javafx.collections.ObservableList;
 import javafx.collections.transformation.FilteredList;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
+import javafx.fxml.FXMLLoader;
 import javafx.fxml.Initializable;
 import javafx.scene.control.*;
 import javafx.scene.image.Image;
@@ -14,6 +15,7 @@ import javafx.scene.layout.GridPane;
 import javafx.scene.layout.Pane;
 import javafx.stage.FileChooser;
 import javafx.stage.Stage;
+import tn.bfpme.controllers.UserCardController;
 import tn.bfpme.models.Departement;
 import tn.bfpme.models.Role;
 import tn.bfpme.models.User;
@@ -117,28 +119,8 @@ public class paneUserController implements Initializable {
     @Override
     public void initialize(URL url, ResourceBundle resourceBundle) {
         loadUsers();
-        loadDepartments();
-        loadRoles();
-    }
-
-    private void loadUsers() {
         List<User> userList = userService.getAllUsers();
         ObservableList<User> users = FXCollections.observableArrayList(userList);
-        filteredData = new FilteredList<>(users, p -> true);
-        userListView.setItems(filteredData);
-        userListView.setCellFactory(param -> new ListCell<User>() {
-            @Override
-            protected void updateItem(User user, boolean empty) {
-                super.updateItem(user, empty);
-                if (empty || user == null) {
-                    setText(null);
-                } else {
-                    Departement departement = depService.getDepartmentById(user.getIdDepartement());
-                    Role role = roleService.getRoleById(user.getIdRole());
-                    setText(user.getPrenom() + " " + user.getNom());
-                }
-            }
-        });
 
         userListView.getSelectionModel().selectedItemProperty().addListener((observable, oldValue, newValue) -> {
             Platform.runLater(() -> {
@@ -147,8 +129,44 @@ public class paneUserController implements Initializable {
                 }
             });
         });
+
+        userListView.setItems(users);        loadDepartments();
+        loadRoles();
     }
 
+    private void loadUsers() {
+        UserContainers.getChildren().clear();
+        List<User> userList = userService.getAllUsers();
+        int column = 0;
+        int row = 0;
+
+        try {
+            for (User user : userList) {
+                FXMLLoader fxmlLoader = new FXMLLoader();
+                fxmlLoader.setLocation(getClass().getResource("/UserCard.fxml"));
+                Pane userBox = fxmlLoader.load();
+
+                UserCardController cardController = fxmlLoader.getController();
+                Departement department = depService.getDepartmentById(user.getIdDepartement());
+                Role role = roleService.getRoleById(user.getIdRole());
+
+                String departmentName = department != null ? department.getNom() : "N/A";
+                String roleName = role != null ? role.getNom() : "N/A";
+
+                cardController.setData(user, roleName, departmentName);
+
+                if (column == 3) {
+                    column = 0;
+                    row++;
+                }
+
+                UserContainers.add(userBox, column++, row);
+                GridPane.setMargin(userBox, new javafx.geometry.Insets(10));
+            }
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
     private void loadDepartments() {
         List<Departement> departmentList = depService.getAllDepartments();
         ObservableList<Departement> departments = FXCollections.observableArrayList(departmentList);

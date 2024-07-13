@@ -220,7 +220,7 @@
                                     <TreeTableColumn fx:id="emailUserColumn1" prefWidth="227.0" text="Département Parent" />
                                  </columns>
                               </TreeTableView>
-                              <TextField fx:id="searchFieldDept" layoutX="656.0" layoutY="31.0" onAction="#rechercheUser" prefHeight="29.0" prefWidth="279.0" promptText="Recherche" />
+                             <!--<TextField fx:id="searchFieldDept" layoutX="656.0" layoutY="31.0" onAction="#rechercheUser" prefHeight="29.0" prefWidth="279.0" promptText="Recherche" />-->
                               <Label layoutX="91.0" layoutY="33.0" prefHeight="25.0" prefWidth="248.0" text="Hierarchie des Départements">
                                  <styleClass>
                                     <String fx:value="FontSize-18" />
@@ -240,7 +240,7 @@
                                     <TreeTableColumn fx:id="managerUserColumn1" prefWidth="163.0" text="Role fils" />
                                  </columns>
                               </TreeTableView>
-                              <TextField fx:id="searchFieldRole" layoutX="656.0" layoutY="31.0" onAction="#rechercheUser" prefHeight="29.0" prefWidth="279.0" promptText="Recherche" />
+                             <!-- <TextField fx:id="searchFieldRole" layoutX="656.0" layoutY="31.0" onAction="#rechercheUser" prefHeight="29.0" prefWidth="279.0" promptText="Recherche" />-->
                               <Label layoutX="91.0" layoutY="33.0" prefHeight="25.0" prefWidth="248.0" text="Hierarchie des roles">
                                  <styleClass>
                                     <String fx:value="FontSize-18" />

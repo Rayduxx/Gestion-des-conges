@@ -268,7 +268,7 @@ public class AdminITController implements Initializable {
                 fxmlLoader.setLocation(getClass().getResource("/UserCard.fxml"));
                 Pane userBox = fxmlLoader.load();
                 UserCardController cardC = fxmlLoader.getController();
-                cardC.setData(user);
+               // cardC.setData(user);
                 if (column == 3) {
                     column = 0;
                     ++row;
@@ -298,7 +298,7 @@ public class AdminITController implements Initializable {
                 fxmlLoader.setLocation(getClass().getResource("/UserCard.fxml"));
                 Pane userBox = fxmlLoader.load();
                 UserCardController cardC = fxmlLoader.getController();
-                cardC.setData(user);
+               // cardC.setData(user);
                 if (column == 3) {
                     column = 0;
                     ++row;
@@ -322,7 +322,7 @@ public class AdminITController implements Initializable {
                 fxmlLoader.setLocation(getClass().getResource("/UserCard.fxml"));
                 Pane userBox = fxmlLoader.load();
                 UserCardController cardC = fxmlLoader.getController();
-                cardC.setData(user);
+               // cardC.setData(user);
                 if (column == 3) {
                     column = 0;
                     ++row;
