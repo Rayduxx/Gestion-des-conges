@@ -117,20 +117,9 @@ public class paneUserController implements Initializable {
 
 
     @Override
-    public void initialize(URL url, ResourceBundle resourceBundle) {
+    public void initialize(URL location, ResourceBundle resources) {
         loadUsers();
-        List<User> userList = userService.getAllUsers();
-        ObservableList<User> users = FXCollections.observableArrayList(userList);
-
-        userListView.getSelectionModel().selectedItemProperty().addListener((observable, oldValue, newValue) -> {
-            Platform.runLater(() -> {
-                if (newValue != null) {
-                    handleUserSelection(newValue);
-                }
-            });
-        });
-
-        userListView.setItems(users);        loadDepartments();
+        loadDepartments();
         loadRoles();
     }
 

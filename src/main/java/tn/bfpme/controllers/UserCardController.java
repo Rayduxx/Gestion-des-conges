@@ -16,6 +16,8 @@ import javafx.scene.layout.Pane;
 import javafx.scene.paint.Color;
 import javafx.stage.Stage;
 import tn.bfpme.controllers.RHC.paneUserController;
+import tn.bfpme.controllers.RHC.RHController;
+
 import tn.bfpme.models.User;
 import tn.bfpme.services.ServiceUtilisateur;
 
@@ -43,10 +45,10 @@ public class UserCardController {
     private Label cardrole;
 
     private final ServiceUtilisateur UserS = new ServiceUtilisateur();
-
     int uid;
     String unom, uprenom, uemail, umdp, urole, udepart, updp;
     double SAnn, SExp, SMala, SMater;
+
     public void setData(User user, String roleName, String departmentName) {
         String imagePath = user.getImage();
         if (imagePath != null) {
@@ -84,8 +86,9 @@ public class UserCardController {
     @FXML
     void ModifierUser(ActionEvent event) {
         try {
-            FXMLLoader loader = new FXMLLoader(getClass().getResource("/paneUsers.fxml")); // Ensure this path points to the correct FXML file
-            Parent root = loader.load();
+            // Load the paneUsers.fxml
+            FXMLLoader loader = new FXMLLoader(getClass().getResource("/paneUsers.fxml"));
+            Parent paneUsersRoot = loader.load();
             paneUserController pUC = loader.getController();
 
             // Set user data in the paneUserController
@@ -112,15 +115,24 @@ public class UserCardController {
                 }
             }
 
+            // Get the main layout controller
+            FXMLLoader mainLoader = new FXMLLoader(getClass().getResource("/RH_Interface.fxml"));
+            Parent mainRoot = mainLoader.load();
+            RHController mainController = mainLoader.getController();
+
+            // Set paneUsers.fxml into the PaneCont of RH_Interface.fxml
+            mainController.getPaneCont().getChildren().setAll(paneUsersRoot);
+
             // Switch to the new scene
             Stage stage = (Stage) ((Node) event.getSource()).getScene().getWindow();
-            Scene scene = new Scene(root);
+            Scene scene = new Scene(mainRoot);
             stage.setScene(scene);
             stage.show();
         } catch (IOException e) {
             e.printStackTrace();
         }
     }
+
 
 
     @FXML
