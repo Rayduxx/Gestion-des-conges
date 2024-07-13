@@ -1,6 +1,5 @@
 package tn.bfpme.services;
 
-import com.mysql.cj.ServerPreparedQueryTestcaseGenerator;
 import tn.bfpme.interfaces.IConge;
 import tn.bfpme.models.Conge;
 import tn.bfpme.models.Statut;
@@ -140,13 +139,17 @@ public class ServiceConge implements IConge<Conge> {
         }
     }
 
+    public void updateSoldeMaladie(int id, int solde) {
+
+    }
+
 
     @Override
-    public void updateSoldeMaladie(int id, int solde) {
+    public void updateSoldeMaladie(int id, double solde) {
         try {
             String qry = "UPDATE `utilisateur` SET `Solde_Maladie`=? WHERE `ID_User`=?";
             PreparedStatement stm = cnx.prepareStatement(qry);
-            stm.setInt(1, solde);
+            stm.setDouble(1, solde);
             stm.setInt(2, id);
             stm.executeUpdate();
         } catch (SQLException ex) {
@@ -154,12 +157,16 @@ public class ServiceConge implements IConge<Conge> {
         }
     }
 
-    @Override
     public void updateSoldeExceptionnel(int id, int solde) {
+
+    }
+
+    @Override
+    public void updateSoldeExceptionnel(int id, double solde) {
         try {
             String qry = "UPDATE `utilisateur` SET `Solde_Exceptionnel`=? WHERE `ID_User`=?";
             PreparedStatement stm = cnx.prepareStatement(qry);
-            stm.setInt(1, solde);
+            stm.setDouble(1, solde);
             stm.setInt(2, id);
             stm.executeUpdate();
         } catch (SQLException ex) {
@@ -167,12 +174,16 @@ public class ServiceConge implements IConge<Conge> {
         }
     }
 
-    @Override
     public void updateSoldeMaternité(int id, int solde) {
+
+    }
+
+    @Override
+    public void updateSoldeMaternité(int id, double solde) {
         try {
             String qry = "UPDATE `utilisateur` SET `Solde_Maternité`=? WHERE `ID_User`=?";
             PreparedStatement stm = cnx.prepareStatement(qry);
-            stm.setInt(1, solde);
+            stm.setDouble(1, solde);
             stm.setInt(2, id);
             stm.executeUpdate();
         } catch (SQLException ex) {

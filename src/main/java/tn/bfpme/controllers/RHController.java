@@ -67,7 +67,8 @@ public class RHController {
 
     private FilteredList<User> filteredData;
 
-
+    @FXML
+    private Pane PaneCont;
     private ServiceDepartement depService;
     private ServiceRole roleService;
     private ServiceUtilisateur userService;
@@ -708,4 +709,7 @@ public class RHController {
 
     }
 
+    public Pane getPaneCont() {
+        return PaneCont;
+    }
 }

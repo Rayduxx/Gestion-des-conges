@@ -675,9 +675,9 @@ public class ServiceUtilisateur implements IUtilisateur {
                 stm.setString(5, user.getImage());
                 stm.setDate(6, java.sql.Date.valueOf(user.getCreationDate()));
                 stm.setDouble(7, user.getSoldeAnnuel());
-                stm.setInt(8, user.getSoldeMaladie());
-                stm.setInt(9, user.getSoldeExceptionnel());
-                stm.setInt(10, user.getSoldeMaternite());
+                stm.setDouble(8, user.getSoldeMaladie());
+                stm.setDouble(9, user.getSoldeExceptionnel());
+                stm.setDouble(10, user.getSoldeMaternite());
                 stm.setInt(11, user.getIdDepartement());
                 stm.executeUpdate();
                 try (ResultSet generatedKeys = stm.getGeneratedKeys()) {
@@ -788,8 +788,11 @@ public class ServiceUtilisateur implements IUtilisateur {
 
     public User getUserById(int userId) {
         User user = null;
-        String query = "SELECT * FROM user WHERE ID_User = ?";
-        try{
+        String query = "SELECT u.*, s.SoldeAnn AS Solde_Annuel, s.SoldeMal AS Solde_Maladie, s.SoldeExc AS Solde_Exceptionnel, s.SoldeMat AS Solde_Maternité " +
+                "FROM user u " +
+                "LEFT JOIN soldeconge s ON u.idSolde = s.idSolde " +
+                "WHERE u.ID_User = ?";
+        try {
             if (cnx == null || cnx.isClosed()) {
                 cnx = MyDataBase.getInstance().getCnx();
             }
@@ -804,15 +807,15 @@ public class ServiceUtilisateur implements IUtilisateur {
                             rs.getString("Email"),
                             rs.getString("MDP"),
                             rs.getString("Image"),
-                            rs.getDouble("SoldeAnnuel"),
-                            rs.getDate("Creation_Date").toLocalDate(),
+                            rs.getDouble("Solde_Annuel"),
+                            rs.getDouble("Solde_Maladie"),
+                            rs.getDouble("Solde_Exceptionnel"),
+                            rs.getDouble("Solde_Maternité"),
                             rs.getInt("ID_Departement"),
-                            0 // Assigning a default value as ID_Role does not exist in user table
+                            rs.getInt("ID_Manager"),
+                            rs.getDate("Creation_Date") != null ? rs.getDate("Creation_Date").toLocalDate() : null,
+                            rs.getInt("idSolde")
                     );
-                    user.setSoldeAnnuel(rs.getDouble("Solde_Annuel"));
-                    user.setSoldeMaladie(rs.getInt("Solde_Maladie"));
-                    user.setSoldeExceptionnel(rs.getInt("Solde_Exceptionnel"));
-                    user.setSoldeMaternite(rs.getInt("Solde_Maternité"));
                 }
             }
         } catch (SQLException e) {
@@ -820,6 +823,7 @@ public class ServiceUtilisateur implements IUtilisateur {
         }
         return user;
     }
+
 
 
     public int getManagerIdByUserId2(int userId) {
@@ -904,9 +908,9 @@ public class ServiceUtilisateur implements IUtilisateur {
         String query = "UPDATE user SET Solde_Annuel = ?, Solde_Maladie = ?, Solde_Exceptionnel = ?, Solde_Maternité = ? WHERE ID_User = ?";
         try (PreparedStatement stm = cnx.prepareStatement(query)) {
             stm.setDouble(1, user.getSoldeAnnuel());
-            stm.setInt(2, user.getSoldeMaladie());
-            stm.setInt(3, user.getSoldeExceptionnel());
-            stm.setInt(4, user.getSoldeMaternite());
+            stm.setDouble(2, user.getSoldeMaladie());
+            stm.setDouble(3, user.getSoldeExceptionnel());
+            stm.setDouble(4, user.getSoldeMaternite());
             stm.setInt(5, user.getIdUser());
             stm.executeUpdate();
         } catch (SQLException e) {
@@ -1000,21 +1004,17 @@ public class ServiceUtilisateur implements IUtilisateur {
     public void Add(User user) {
         String qry = "INSERT INTO `user`(`Nom`, `Prenom`, `Email`, `MDP`, `Image`, `Solde_Annuel`, `Solde_Maladie`, `Solde_Exceptionnel`, `Solde_Maternité`, `Creation_Date`) VALUES (?,?,?,?,?,?,?,?,?,?)";
 
-        try {
-            if (cnx == null || cnx.isClosed()) {
-                cnx = MyDataBase.getInstance().getCnx();
-            }
-            PreparedStatement stm = cnx.prepareStatement(qry);
-
+        try (Connection cnx = MyDataBase.getInstance().getCnx();
+             PreparedStatement stm = cnx.prepareStatement(qry)) {
             stm.setString(1, user.getNom());
             stm.setString(2, user.getPrenom());
             stm.setString(3, user.getEmail());
             stm.setString(4, user.getMdp());
             stm.setString(5, user.getImage());
             stm.setDouble(6, user.getSoldeAnnuel());
-            stm.setInt(7, user.getSoldeMaladie());
-            stm.setInt(8, user.getSoldeExceptionnel());
-            stm.setInt(9, user.getSoldeMaternite());;
+            stm.setDouble(7, user.getSoldeMaladie());
+            stm.setDouble(8, user.getSoldeExceptionnel());
+            stm.setDouble(9, user.getSoldeMaternite());
             stm.setDate(10, java.sql.Date.valueOf(user.getCreationDate()));
 
             stm.executeUpdate();
@@ -1022,6 +1022,29 @@ public class ServiceUtilisateur implements IUtilisateur {
             System.out.println(e.getMessage());
         }
     }
+
+
+    private SoldeConge getDefaultSolde() {
+        String query = "SELECT SoldeAnn, SoldeMal, SoldeExc, SoldeMat FROM soldeconge LIMIT 1";
+        try (Connection cnx = MyDataBase.getInstance().getCnx();
+             PreparedStatement stm = cnx.prepareStatement(query);
+             ResultSet rs = stm.executeQuery()) {
+            if (rs.next()) {
+                return new SoldeConge(
+                        rs.getDouble("SoldeAnn"),
+                        rs.getDouble("SoldeMal"),
+                        rs.getDouble("SoldeExc"),
+                        rs.getDouble("SoldeMat")
+                );
+            } else {
+                throw new SQLException("No default solde values found in soldeconge table.");
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+            return new SoldeConge(0, 0, 0, 0); // Return default values in case of error
+        }
+    }
+
 
     @Override
     public void Update(User user) {
@@ -1034,9 +1057,9 @@ public class ServiceUtilisateur implements IUtilisateur {
             stm.setString(4, user.getMdp());
             stm.setString(5, user.getImage());
             stm.setDouble(6, user.getSoldeAnnuel());
-            stm.setInt(7, user.getSoldeMaladie());
-            stm.setInt(8, user.getSoldeExceptionnel());
-            stm.setInt(9, user.getSoldeMaternite());
+            stm.setDouble(7, user.getSoldeMaladie());
+            stm.setDouble(8, user.getSoldeExceptionnel());
+            stm.setDouble(9, user.getSoldeMaternite());
             stm.setInt(10, user.getIdUser());
             stm.executeUpdate();
         } catch (Exception ex) {
@@ -1232,9 +1255,9 @@ public class ServiceUtilisateur implements IUtilisateur {
         String query = "UPDATE user SET Solde_Annuel = ?, Solde_Maladie = ?, Solde_Exceptionnel = ?, Solde_Maternité = ? WHERE ID_User = ?";
         try (PreparedStatement stm = cnx.prepareStatement(query)) {
             stm.setDouble(1, user.getSoldeAnnuel());
-            stm.setInt(2, user.getSoldeMaladie());
-            stm.setInt(3, user.getSoldeExceptionnel());
-            stm.setInt(4, user.getSoldeMaternite());
+            stm.setDouble(2, user.getSoldeMaladie());
+            stm.setDouble(3, user.getSoldeExceptionnel());
+            stm.setDouble(4, user.getSoldeMaternite());
             stm.setInt(5, user.getIdUser());
             stm.executeUpdate();
         } catch (SQLException e) {
@@ -1480,5 +1503,7 @@ public class ServiceUtilisateur implements IUtilisateur {
         }
         return users;
     }
+
+
 
 }

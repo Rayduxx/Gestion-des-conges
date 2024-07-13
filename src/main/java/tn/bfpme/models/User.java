@@ -13,18 +13,39 @@ public class User {
     private String mdp;
     private String image;
     private LocalDate creationDate;
-    private int soldeMaternite;
+    private double soldeMaternite;
     private double soldeAnnuel;
     private double soldeAnnuelle;
-    private int soldeExceptionnel;
-    private int soldeMaladie;
+    private double soldeExceptionnel;
+    private double soldeMaladie;
     private int idManager;
     private int idDepartement;
     private int idRole;
+    private int idSolde; // Add this field
+
     private String departementNom; // New field for department name
     private String roleNom; // New field for role name
 
     public User() {}
+
+//Ekher Constructeur
+    public User(int idUser, String nom, String prenom, String email, String mdp, String image, double soldeAnnuel, double soldeMaladie, double soldeExceptionnel, double soldeMaternite, int idDepartement, int idManager) {
+        this.idUser = idUser;
+        this.nom = nom;
+        this.prenom = prenom;
+        this.email = email;
+        this.mdp = mdp;
+        this.image = image;
+        this.soldeAnnuel = soldeAnnuel;
+        this.soldeMaladie = soldeMaladie;
+        this.soldeExceptionnel = soldeExceptionnel;
+        this.soldeMaternite = soldeMaternite;
+        this.idManager = idManager;
+        this.creationDate = creationDate;
+        this.idSolde = idSolde;
+        this.idDepartement = idDepartement;
+        this.idRole = idRole;
+    }
 
     public User(int idUser, String nom, String prenom, String email, String mdp, String image, int soldeAnnuel, int soldeMaladie, int soldeExceptionnel, int soldeMaternite, int idDepartement, int idRole) {
         this.idUser = idUser;
@@ -93,6 +114,40 @@ public class User {
         this.idRole = idRole;
     }
 
+    public User(int idUser, String nom, String prenom, String email, String mdp, String image, double soldeAnnuel, double soldeMaladie, double soldeExceptionnel, double soldeMaternité, int idDepartement, int idManager, LocalDate creationDate, int idSolde) {
+        this.idUser = idUser;
+        this.nom = nom;
+        this.prenom = prenom;
+        this.email = email;
+        this.mdp = mdp;
+        this.image = image;
+        this.soldeAnnuel = soldeAnnuel;
+        this.soldeMaladie = soldeMaladie;
+        this.soldeExceptionnel = soldeExceptionnel;
+        this.soldeMaternite = soldeMaternite;
+        this.idManager = idManager;
+        this.creationDate = creationDate;
+        this.idSolde = idSolde;
+        this.idDepartement = idDepartement;
+        this.idRole = idRole;
+    }
+
+    public User(int idUser, String nom, String prenom, String email, String mdp, String image, double soldeAnnuel, double soldeMaladie, double soldeExceptionnel, double soldeMaternite, LocalDate creationDate , int idManager, int idRole) {
+    this.idUser = idUser;
+    this.nom = nom;
+    this.prenom = prenom;
+    this.email = email;
+    this.mdp = mdp;
+    this.image = image;
+    this.soldeAnnuel = soldeAnnuel;
+    this.soldeMaladie = soldeMaladie;
+    this.soldeExceptionnel = soldeExceptionnel;
+    this.soldeMaternite = soldeMaternite;
+    this.creationDate = (creationDate != null) ? creationDate : LocalDate.now();
+    this.idManager = idManager;
+    this.idRole = idRole;
+
+    }
 
 
     public int getIdUser() {
@@ -151,27 +206,27 @@ public class User {
         this.soldeAnnuel = soldeAnnuel;
     }
 
-    public int getSoldeMaladie() {
+    public double getSoldeMaladie() {
         return soldeMaladie;
     }
 
-    public void setSoldeMaladie(int soldeMaladie) {
+    public void setSoldeMaladie(double soldeMaladie) {
         this.soldeMaladie = soldeMaladie;
     }
 
-    public int getSoldeExceptionnel() {
+    public double getSoldeExceptionnel() {
         return soldeExceptionnel;
     }
 
-    public void setSoldeExceptionnel(int soldeExceptionnel) {
+    public void setSoldeExceptionnel(double soldeExceptionnel) {
         this.soldeExceptionnel = soldeExceptionnel;
     }
 
-    public int getSoldeMaternite() {
+    public double getSoldeMaternite() {
         return soldeMaternite;
     }
 
-    public void setSoldeMaternite(int soldeMaternite) {
+    public void setSoldeMaternite(double soldeMaternite) {
         this.soldeMaternite = soldeMaternite;
     }
 

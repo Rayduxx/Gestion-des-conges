@@ -31,12 +31,13 @@ import java.util.List;
 
 public class RHController {
     @FXML
-    private Pane PaneCont;
+    public Pane PaneCont;
     @FXML
     private AnchorPane MainAnchorPane;
     private ServiceRole roleService;
     private paneRoleController PRC;
     private paneDepController PDC;
+    private paneUserController PUC;
     public void initialize() {
         roleService = new ServiceRole();
         //loadRoleHierarchie();
@@ -47,7 +48,9 @@ public class RHController {
         } catch (IOException e) {
             e.printStackTrace();
         }
-
+    }
+    public Pane getPaneCont() {
+        return PaneCont;
     }
 
     @FXML
@@ -79,7 +82,7 @@ public class RHController {
     @FXML
     private void showUtilisateursPane() {
         try {
-            FXMLLoader loader = new FXMLLoader(getClass().getResource("/paneUsers.fxml"));
+            FXMLLoader loader = new FXMLLoader(getClass().getResource("/PaneUsers.fxml"));
             Pane userPane = loader.load();
             PaneCont.getChildren().clear();
             PaneCont.getChildren().add(userPane);
@@ -115,7 +118,7 @@ public class RHController {
         }
     }
 
-    public void showCongesPane(ActionEvent actionEvent) {
+    public void showCongePane(ActionEvent actionEvent) {
         try {
             FXMLLoader loader = new FXMLLoader(getClass().getResource("/paneConges.fxml"));
             Pane userPane = loader.load();
@@ -126,4 +129,6 @@ public class RHController {
             e.printStackTrace();
         }
     }
+
+
 }

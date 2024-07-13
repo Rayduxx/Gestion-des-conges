@@ -15,9 +15,11 @@ import javafx.scene.layout.GridPane;
 import javafx.scene.layout.Pane;
 import javafx.stage.FileChooser;
 import javafx.stage.Stage;
+import tn.bfpme.controllers.UserCardController;
 import tn.bfpme.models.Departement;
 import tn.bfpme.models.Role;
 import tn.bfpme.models.User;
+import tn.bfpme.models.SoldeConge;
 import tn.bfpme.services.ServiceDepartement;
 import tn.bfpme.services.ServiceRole;
 import tn.bfpme.services.ServiceUtilisateur;
@@ -36,6 +38,7 @@ import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.time.LocalDate;
 import java.util.List;
 import java.util.ResourceBundle;
 import java.util.UUID;
@@ -43,68 +46,68 @@ import java.util.UUID;
 public class paneUserController implements Initializable {
 
     @FXML
-    private ListView<User> userListView;
+    public ListView<User> userListView;
     @FXML
-    private TextField User_field;
+    public TextField User_field;
 
     @FXML
-    private TextField Depart_field;
+    public TextField Depart_field;
 
     @FXML
-    private TextField ID_A;
+    public TextField ID_A;
 
     @FXML
-    private TextField MDP_A;
+    public TextField MDP_A;
 
     @FXML
-    private ImageView PDPimageHolder;
+    public ImageView PDPimageHolder;
 
     @FXML
-    private TextField Prenom_A;
+    public TextField Prenom_A;
 
     @FXML
-    private TextField Role_field;
+    public TextField Role_field;
 
     @FXML
-    private TextField S_Ann;
+    public TextField S_Ann;
 
     @FXML
-    private TextField S_exc;
+    public TextField S_exc;
 
     @FXML
-    private TextField S_mal;
+    public TextField S_mal;
 
     @FXML
-    private TextField S_mat;
+    public TextField S_mat;
 
     @FXML
-    private GridPane UserContainers;
+    public GridPane UserContainers;
 
     @FXML
     private Pane UtilisateursPane;
 
     @FXML
-    private ListView<Departement> departListView;
+    public ListView<Departement> departListView;
 
     @FXML
-    private TextField email_A;
+    public TextField email_A;
 
     @FXML
-    private TextField image_A;
+    public TextField image_A;
 
     @FXML
-    private Label infolabel;
+    public Label infolabel;
 
     @FXML
-    private TextField nom_A;
+    public TextField nom_A;
 
     @FXML
-    private ListView<Role> roleListView;
+    public ListView<Role> roleListView;
 
-    private User selectedUser;
-    private FilteredList<User> filteredData;
-    private FilteredList<Departement> filteredDepartments;
-    private FilteredList<Role> filteredRoles;
+    public User selectedUser;
+    public FilteredList<User> filteredData;
+    public FilteredList<Departement> filteredDepartments;
+    public FilteredList<Role> filteredRoles;
     ServiceUtilisateur UserS = new ServiceUtilisateur();
     Connection cnx = MyDataBase.getInstance().getCnx();
 
@@ -112,41 +115,47 @@ public class paneUserController implements Initializable {
     private final ServiceUtilisateur userService = new ServiceUtilisateur();
     private final ServiceRole roleService = new ServiceRole();
 
+
     @Override
-    public void initialize(URL url, ResourceBundle resourceBundle) {
+    public void initialize(URL location, ResourceBundle resources) {
         loadUsers();
         loadDepartments();
         loadRoles();
     }
 
     private void loadUsers() {
+        UserContainers.getChildren().clear();
         List<User> userList = userService.getAllUsers();
-        ObservableList<User> users = FXCollections.observableArrayList(userList);
-        filteredData = new FilteredList<>(users, p -> true);
-        userListView.setItems(filteredData);
-        userListView.setCellFactory(param -> new ListCell<User>() {
-            @Override
-            protected void updateItem(User user, boolean empty) {
-                super.updateItem(user, empty);
-                if (empty || user == null) {
-                    setText(null);
-                } else {
-                    Departement departement = depService.getDepartmentById(user.getIdDepartement());
-                    Role role = roleService.getRoleById(user.getIdRole());
-                    setText(user.getPrenom() + " " + user.getNom());
+        int column = 0;
+        int row = 0;
+
+        try {
+            for (User user : userList) {
+                FXMLLoader fxmlLoader = new FXMLLoader();
+                fxmlLoader.setLocation(getClass().getResource("/UserCard.fxml"));
+                Pane userBox = fxmlLoader.load();
+
+                UserCardController cardController = fxmlLoader.getController();
+                Departement department = depService.getDepartmentById(user.getIdDepartement());
+                Role role = roleService.getRoleById(user.getIdRole());
+
+                String departmentName = department != null ? department.getNom() : "N/A";
+                String roleName = role != null ? role.getNom() : "N/A";
+
+                cardController.setData(user, roleName, departmentName);
+
+                if (column == 3) {
+                    column = 0;
+                    row++;
                 }
+
+                UserContainers.add(userBox, column++, row);
+                GridPane.setMargin(userBox, new javafx.geometry.Insets(10));
             }
-        });
-
-        userListView.getSelectionModel().selectedItemProperty().addListener((observable, oldValue, newValue) -> {
-            Platform.runLater(() -> {
-                if (newValue != null) {
-                    handleUserSelection(newValue);
-                }
-            });
-        });
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
     }
-
     private void loadDepartments() {
         List<Departement> departmentList = depService.getAllDepartments();
         ObservableList<Departement> departments = FXCollections.observableArrayList(departmentList);
@@ -249,6 +258,7 @@ public class paneUserController implements Initializable {
                 email_A.setText(selectedUser.getEmail());
                 MDP_A.setText(selectedUser.getMdp());
                 image_A.setText(selectedUser.getImage());
+
                 // Assuming you need to set the image as well
                 if (selectedUser.getImage() != null) {
                     File file = new File(selectedUser.getImage());
@@ -260,8 +270,7 @@ public class paneUserController implements Initializable {
 
                 Departement departement = depService.getDepartmentById(selectedUser.getIdDepartement());
                 Role role = roleService.getRoleById(selectedUser.getIdRole());
-                User user = userService.getUserById(selectedUser.getIdUser());
-                User_field.setText(user.getPrenom() + " " + user.getNom());
+
                 if (departement != null) {
                     Depart_field.setText(departement.getNom());
                 } else {
@@ -274,6 +283,20 @@ public class paneUserController implements Initializable {
                     Role_field.clear();
                 }
 
+                SoldeConge soldeConge = getSoldeCongeByUserId(selectedUser.getIdUser());
+
+                if (soldeConge != null) {
+                    S_Ann.setText(String.valueOf(soldeConge.getSoldeAnn()));
+                    S_exc.setText(String.valueOf(soldeConge.getSoldeExc()));
+                    S_mal.setText(String.valueOf(soldeConge.getSoldeMal()));
+                    S_mat.setText(String.valueOf(soldeConge.getSoldeMat()));
+                } else {
+                    S_Ann.clear();
+                    S_exc.clear();
+                    S_mal.clear();
+                    S_mat.clear();
+                }
+
                 System.out.println("Selected User in Listener: " + selectedUser);
 
             } catch (Exception e) {
@@ -281,6 +304,27 @@ public class paneUserController implements Initializable {
                 showError("An error occurred while selecting the user: " + e.getMessage());
             }
         }
+    }
+    private SoldeConge getSoldeCongeByUserId(int userId) {
+        SoldeConge soldeConge = null;
+        String query = "SELECT sc.* FROM soldeconge sc JOIN user u ON sc.idSolde = u.ID_Solde WHERE u.ID_User = ?";
+        try {
+            PreparedStatement stm = cnx.prepareStatement(query);
+            stm.setInt(1, userId);
+            ResultSet rs = stm.executeQuery();
+            if (rs.next()) {
+                soldeConge = new SoldeConge(
+                        rs.getInt("idSolde"),
+                        rs.getDouble("SoldeAnn"),
+                        rs.getDouble("SoldeMat"),
+                        rs.getDouble("SoldeExc"),
+                        rs.getDouble("SoldeMal")
+                );
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return soldeConge;
     }
 
     @FXML
@@ -372,15 +416,17 @@ public class paneUserController implements Initializable {
         String mdp = MDP_A.getText();
         String image = image_A.getText();
 
-        int soldeAnnuel = parseIntOrZero(S_Ann.getText());
-        int soldeMaladie = parseIntOrZero(S_mal.getText());
-        int soldeExceptionnel = parseIntOrZero(S_exc.getText());
-        int soldeMaternite = parseIntOrZero(S_mat.getText());
+        SoldeConge defaultSolde = getDefaultSolde();
+
+        double soldeAnnuel = defaultSolde.getSoldeAnn();
+        double soldeMaladie = defaultSolde.getSoldeMal();
+        double soldeExceptionnel = defaultSolde.getSoldeExc();
+        double soldeMaternite = defaultSolde.getSoldeMat();
 
         if (email.matches("^[_A-Za-z0-9-\\+]+(\\.[_A-Za-z0-9-]+)*@(bfpme\\.tn|gmail\\.com)$")) {
             try {
                 if (!emailExists(email)) {
-                    UserS.Add(new User(0, nom, prenom, email, mdp, image, soldeAnnuel, soldeMaladie, soldeExceptionnel, soldeMaternite, 0, 0));
+                    UserS.Add(new User(0, nom, prenom, email, mdp, image, soldeAnnuel, soldeMaladie, soldeExceptionnel, soldeMaternite, LocalDate.now(), 0, 0));
                     infolabel.setText("Ajout Effectué");
                 } else {
                     infolabel.setText("Email déjà existe");
@@ -392,6 +438,7 @@ public class paneUserController implements Initializable {
             infolabel.setText("Email est invalide");
         }
     }
+
 
     private int parseIntOrZero(String text) {
         if (text == null || text.trim().isEmpty()) {
@@ -497,25 +544,47 @@ public class paneUserController implements Initializable {
 
     private boolean emailExists(String email) throws SQLException {
         String query = "SELECT * FROM `user` WHERE Email=?";
-        PreparedStatement statement = cnx.prepareStatement(query);
-        statement.setString(1, email);
-        ResultSet resultSet = statement.executeQuery();
-        return resultSet.next();
-    }
-
-    private boolean emailExistss(String email, int excludeUserId) throws SQLException {
-        String query = "SELECT COUNT(*) FROM user WHERE Email = ? AND ID_User != ?";
         try (Connection cnx = MyDataBase.getInstance().getCnx();
-             PreparedStatement stm = cnx.prepareStatement(query)) {
-            stm.setString(1, email);
-            stm.setInt(2, excludeUserId);
-            try (ResultSet rs = stm.executeQuery()) {
-                if (rs.next()) {
-                    return rs.getInt(1) > 0;
-                }
+             PreparedStatement statement = cnx.prepareStatement(query)) {
+            statement.setString(1, email);
+            try (ResultSet resultSet = statement.executeQuery()) {
+                return resultSet.next();
             }
         }
-        return false;
     }
+
+
+    private boolean emailExistss(String email, int excludeUserId) throws SQLException {
+        String query = "SELECT * FROM `user` WHERE Email=?";
+        try (Connection cnx = MyDataBase.getInstance().getCnx();
+             PreparedStatement statement = cnx.prepareStatement(query)) {
+            statement.setString(1, email);
+            try (ResultSet resultSet = statement.executeQuery()) {
+                return resultSet.next();
+            }
+        }
+    }
+
+    private SoldeConge getDefaultSolde() {
+        String query = "SELECT SoldeAnn, SoldeMal, SoldeExc, SoldeMat FROM soldeconge LIMIT 1";
+        try (Connection cnx = MyDataBase.getInstance().getCnx();
+             PreparedStatement stm = cnx.prepareStatement(query);
+             ResultSet rs = stm.executeQuery()) {
+            if (rs.next()) {
+                return new SoldeConge(
+                        rs.getDouble("SoldeAnn"),
+                        rs.getDouble("SoldeMal"),
+                        rs.getDouble("SoldeExc"),
+                        rs.getDouble("SoldeMat")
+                );
+            } else {
+                throw new SQLException("No default solde values found in soldeconge table.");
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+            return new SoldeConge(0, 0, 0, 0);
+        }
+    }
+
 }
 

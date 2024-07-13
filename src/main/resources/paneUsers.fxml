@@ -2,6 +2,7 @@
 
 <?import java.lang.String?>
 <?import javafx.scene.control.Button?>
+<?import javafx.scene.control.ComboBox?>
 <?import javafx.scene.control.Label?>
 <?import javafx.scene.control.ListView?>
 <?import javafx.scene.control.ScrollPane?>
@@ -9,6 +10,8 @@
 <?import javafx.scene.control.Tab?>
 <?import javafx.scene.control.TabPane?>
 <?import javafx.scene.control.TextField?>
+<?import javafx.scene.control.TreeTableColumn?>
+<?import javafx.scene.control.TreeTableView?>
 <?import javafx.scene.image.Image?>
 <?import javafx.scene.image.ImageView?>
 <?import javafx.scene.layout.AnchorPane?>
@@ -185,7 +188,68 @@
             </Tab>
             <Tab text="Hierarchie">
               <content>
-                <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="180.0" prefWidth="200.0" />
+                <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="180.0" prefWidth="200.0" styleClass="grad-bg">
+                     <children>
+                        <ComboBox layoutX="452.0" layoutY="36.0" prefHeight="31.0" prefWidth="216.0" />
+                        <Pane layoutX="48.0" layoutY="85.0" prefHeight="567.0" prefWidth="1025.0" visible="false">
+                           <children>
+                              <TreeTableView fx:id="userTable" layoutX="91.0" layoutY="85.0" prefHeight="447.0" prefWidth="844.0">
+                                 <columns>
+                                    <TreeTableColumn fx:id="idUserColumn" prefWidth="75.0" text="ID" />
+                                    <TreeTableColumn fx:id="prenomUserColumn" prefWidth="140.0" text="Prenom" />
+                                    <TreeTableColumn fx:id="nomUserColumn" prefWidth="153.0" text="Nom" />
+                                    <TreeTableColumn fx:id="emailUserColumn" prefWidth="270.0" text="Email" />
+                                    <TreeTableColumn fx:id="managerUserColumn" prefWidth="205.0" text="Manager" />
+                                 </columns>
+                              </TreeTableView>
+                              <Label layoutX="91.0" layoutY="33.0" prefHeight="25.0" prefWidth="248.0" text="Hierarchie des employés">
+                                 <styleClass>
+                                    <String fx:value="FontSize-18" />
+                                    <String fx:value="RobotoBoldItalic" />
+                                 </styleClass>
+                              </Label>
+                           </children>
+                        </Pane>
+                        <Pane layoutX="48.0" layoutY="85.0" prefHeight="567.0" prefWidth="1025.0" visible="false">
+                           <children>
+                              <TreeTableView fx:id="deptTable" layoutX="91.0" layoutY="85.0" prefHeight="447.0" prefWidth="844.0">
+                                 <columns>
+                                    <TreeTableColumn fx:id="idUserColumn1" prefWidth="75.0" text="ID" />
+                                    <TreeTableColumn fx:id="prenomUserColumn1" prefWidth="177.0" text="Nom" />
+                                    <TreeTableColumn fx:id="nomUserColumn1" prefWidth="364.0" text="Description" />
+                                    <TreeTableColumn fx:id="emailUserColumn1" prefWidth="227.0" text="Département Parent" />
+                                 </columns>
+                              </TreeTableView>
+                             <!--<TextField fx:id="searchFieldDept" layoutX="656.0" layoutY="31.0" onAction="#rechercheUser" prefHeight="29.0" prefWidth="279.0" promptText="Recherche" />-->
+                              <Label layoutX="91.0" layoutY="33.0" prefHeight="25.0" prefWidth="248.0" text="Hierarchie des Départements">
+                                 <styleClass>
+                                    <String fx:value="FontSize-18" />
+                                    <String fx:value="RobotoBoldItalic" />
+                                 </styleClass>
+                              </Label>
+                           </children>
+                        </Pane>
+                        <Pane layoutX="48.0" layoutY="85.0" prefHeight="567.0" prefWidth="1025.0" visible="false">
+                           <children>
+                              <TreeTableView fx:id="roleTable" layoutX="91.0" layoutY="85.0" prefHeight="447.0" prefWidth="844.0">
+                                 <columns>
+                                    <TreeTableColumn fx:id="idUserColumn2" prefWidth="75.0" text="ID" />
+                                    <TreeTableColumn fx:id="prenomUserColumn2" prefWidth="140.0" text="Nom" />
+                                    <TreeTableColumn fx:id="nomUserColumn2" prefWidth="297.0" text="Description" />
+                                    <TreeTableColumn fx:id="emailUserColumn2" prefWidth="168.0" text="Role parent" />
+                                    <TreeTableColumn fx:id="managerUserColumn1" prefWidth="163.0" text="Role fils" />
+                                 </columns>
+                              </TreeTableView>
+                             <!-- <TextField fx:id="searchFieldRole" layoutX="656.0" layoutY="31.0" onAction="#rechercheUser" prefHeight="29.0" prefWidth="279.0" promptText="Recherche" />-->
+                              <Label layoutX="91.0" layoutY="33.0" prefHeight="25.0" prefWidth="248.0" text="Hierarchie des roles">
+                                 <styleClass>
+                                    <String fx:value="FontSize-18" />
+                                    <String fx:value="RobotoBoldItalic" />
+                                 </styleClass>
+                              </Label>
+                           </children>
+                        </Pane>
+                     </children></AnchorPane>
               </content>
             </Tab>
          </tabs>
