@@ -13,6 +13,9 @@ import javafx.scene.image.ImageView;
 import javafx.scene.layout.GridPane;
 import javafx.scene.layout.Pane;
 import javafx.stage.FileChooser;
+import javafx.scene.control.TreeItem;
+import javafx.scene.control.cell.TreeItemPropertyValueFactory;
+
 import javafx.stage.Stage;
 import tn.bfpme.models.Departement;
 import tn.bfpme.models.Role;
@@ -42,15 +45,30 @@ import java.util.ResourceBundle;
 import java.util.UUID;
 
 public class paneUserController implements Initializable {
+    @FXML
+    private TextField Depart_field;
+
+    @FXML
+    private TreeTableColumn<Departement,String > DeptparColumn;
+
+    @FXML
+    private TreeTableColumn<Role,String> DescRoleColumn;
+
+    @FXML
+    private TreeTableColumn<Departement,String> DescriptionDeptColumn;
+    @FXML
+    private TreeTableColumn<Role, String> RoleFilsColumn;
+
+    @FXML
+    private TreeTableColumn<Role, String> RoleParColumn;
+
+    @FXML
+    private TextField Role_field;
 
     @FXML
     private ListView<User> userListView;
     @FXML
     private TextField User_field;
-
-    @FXML
-    private TextField Depart_field;
-
     @FXML
     private TextField ID_A;
 
@@ -64,7 +82,51 @@ public class paneUserController implements Initializable {
     private TextField Prenom_A;
 
     @FXML
-    private TextField Role_field;
+    private TreeTableView<Departement> deptTable;
+
+    @FXML
+    private TreeTableColumn<User, String> emailUserColumn;
+    @FXML
+    private TreeTableColumn<Departement, Integer> idDapartementColumn;
+
+    @FXML
+    private TreeTableColumn<Role, Integer> idRoleColumn;
+
+    @FXML
+    private TreeTableColumn<User, Integer> idUserColumn;
+
+    @FXML
+    private TreeTableColumn<User, String> managerUserColumn;
+
+    @FXML
+    private TreeTableColumn<Departement, String> nomDeptColumn;
+
+    @FXML
+    private TreeTableColumn<Role, String> nomRoleColumn;
+
+    @FXML
+    private TreeTableColumn<User,String> nomUserColumn;
+    @FXML
+    private TreeTableColumn<User, String> prenomUserColumn;
+    @FXML
+    private TextField searchFieldDept;
+
+    @FXML
+    private TextField searchFieldRole;
+
+    @FXML
+    private TextField searchFieldUser;
+
+    @FXML
+    private ComboBox<String> hierarCombo;
+
+
+
+    @FXML
+    private ListView<Role> roleListView;
+
+    @FXML
+    private TreeTableView<Role> roleTable;
 
     @FXML
     private TextField S_Ann;
@@ -100,7 +162,14 @@ public class paneUserController implements Initializable {
     private TextField nom_A;
 
     @FXML
-    private ListView<Role> roleListView;
+    private Pane DepartPane1;
+    @FXML
+    private Pane RolePane1;
+    @FXML
+    private Pane UserPane1;
+    @FXML
+    private TreeTableView<User> userTable;
+
 
     private User selectedUser;
     private FilteredList<User> filteredData;
@@ -112,6 +181,7 @@ public class paneUserController implements Initializable {
     private final ServiceDepartement depService = new ServiceDepartement();
     private final ServiceUtilisateur userService = new ServiceUtilisateur();
     private final ServiceRole roleService = new ServiceRole();
+    ObservableList<String> HierarchieList = FXCollections.observableArrayList("Utilisateurs", "Départements", "Roles");
 
 
     @Override
@@ -119,6 +189,27 @@ public class paneUserController implements Initializable {
         loadUsers();
         loadDepartments();
         loadRoles();
+        hierarCombo.setValue("Selectioner type");
+        hierarCombo.setItems(HierarchieList);
+    }
+    @FXML
+    void SelecHierar(ActionEvent event) {
+        if (hierarCombo.getValue().equals("Utilisateurs")) {
+            UserPane1.setVisible(true);
+            RolePane1.setVisible(false);
+            DepartPane1.setVisible(false);
+        }
+        if (hierarCombo.getValue().equals("Départements")) {
+            UserPane1.setVisible(false);
+            DepartPane1.setVisible(true);
+            RolePane1.setVisible(false);
+        }
+        if (hierarCombo.getValue().equals("Roles")) {
+            UserPane1.setVisible(false);
+            DepartPane1.setVisible(false);
+            RolePane1.setVisible(true);
+        }
+
     }
 
     private void loadUsers() {
@@ -241,6 +332,46 @@ public class paneUserController implements Initializable {
         });
     }
 
+    @FXML
+    void rechercheUser1(ActionEvent event) {
+        String searchText = searchFieldUser.getText().trim();
+        filteredData.setPredicate(user -> {
+            if (searchText == null || searchText.isEmpty()) {
+                return true;
+            }
+            String lowerCaseFilter = searchText.toLowerCase();
+            return user.getNom().toLowerCase().contains(lowerCaseFilter) ||
+                    user.getPrenom().toLowerCase().contains(lowerCaseFilter) ||
+                    user.getEmail().toLowerCase().contains(lowerCaseFilter);
+        });
+    }
+
+    @FXML
+    void rechercheDept1(ActionEvent event) {
+        String searchText = searchFieldDept.getText().trim();
+        filteredDepartments.setPredicate(departement -> {
+            if (searchText == null || searchText.isEmpty()) {
+                return true;
+            }
+            String lowerCaseFilter = searchText.toLowerCase();
+            return (departement.getNom() != null && departement.getNom().toLowerCase().contains(lowerCaseFilter)) ||
+                    (departement.getDescription() != null && departement.getDescription().toLowerCase().contains(lowerCaseFilter));
+        });
+    }
+
+    @FXML
+    void rechercheRole1(ActionEvent event) {
+        String searchText = searchFieldRole.getText().trim();
+        filteredRoles.setPredicate(role -> {
+            if (searchText == null || searchText.isEmpty()) {
+                return true;
+            }
+            String lowerCaseFilter = searchText.toLowerCase();
+            return role.getNom().toLowerCase().contains(lowerCaseFilter) ||
+                    role.getDescription().toLowerCase().contains(lowerCaseFilter);
+        });
+    }
+
     private void handleUserSelection(User newValue) {
         selectedUser = newValue;
         if (selectedUser != null) {
@@ -302,6 +433,9 @@ public class paneUserController implements Initializable {
         SoldeConge soldeConge = null;
         String query = "SELECT sc.* FROM soldeconge sc JOIN user u ON sc.idSolde = u.ID_Solde WHERE u.ID_User = ?";
         try {
+            if (cnx == null || cnx.isClosed()) {
+                cnx = MyDataBase.getInstance().getCnx();
+            }
             PreparedStatement stm = cnx.prepareStatement(query);
             stm.setInt(1, userId);
             ResultSet rs = stm.executeQuery();
@@ -580,4 +714,3 @@ public class paneUserController implements Initializable {
     }
 
 }
-

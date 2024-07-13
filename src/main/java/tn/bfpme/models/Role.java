@@ -6,11 +6,15 @@ public class Role {
     private String nom;
     private String description;
 
+    private String parentRoleName; // New field for parent role name
+    private String childRoleName; // New field for child role name
+
     public Role(int idRole, String nom, String description) {
         this.idRole = idRole;
         this.nom = nom;
         this.description = description;
     }
+
     public Role(int idRole, String nom, String description, int RoleParent) {
         this.idRole = idRole;
         this.nom = nom;
@@ -43,12 +47,28 @@ public class Role {
         this.description = description;
     }
 
+    public int getRoleParent() {
+        return RoleParent;
+    }
+
     public void setRoleParent(int RoleParent) {
         this.RoleParent = RoleParent;
     }
 
-    public int getRoleParent() {
-        return RoleParent;
+    public String getParentRoleName() {
+        return parentRoleName;
+    }
+
+    public void setParentRoleName(String parentRoleName) {
+        this.parentRoleName = parentRoleName;
+    }
+
+    public String getChildRoleName() {
+        return childRoleName;
+    }
+
+    public void setChildRoleName(String childRoleName) {
+        this.childRoleName = childRoleName;
     }
 
     @Override

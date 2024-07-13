@@ -5,6 +5,7 @@ public class Departement {
     private String nom;
     private String description;
     private int parentDept;
+    private String parentDeptName; // New field for parent department name
 
     public Departement() {}
 
@@ -14,12 +15,23 @@ public class Departement {
         this.description = description;
         this.parentDept = parentDept;
     }
+
+    // Constructor with new field
+    public Departement(int idDepartement, String nom, String description, int parentDept, String parentDeptName) {
+        this.idDepartement = idDepartement;
+        this.nom = nom;
+        this.description = description;
+        this.parentDept = parentDept;
+        this.parentDeptName = parentDeptName;
+    }
+
     public Departement(int idDepartement, String nom, String description) {
         this.idDepartement = idDepartement;
         this.nom = nom;
         this.description = description;
     }
 
+    // Getters and setters
     public int getIdDepartement() {
         return idDepartement;
     }
@@ -52,9 +64,16 @@ public class Departement {
         this.parentDept = parentDept;
     }
 
+    public String getParentDeptName() {
+        return parentDeptName;
+    }
+
+    public void setParentDeptName(String parentDeptName) {
+        this.parentDeptName = parentDeptName;
+    }
+
     @Override
     public String toString() {
         return nom;
-
     }
 }

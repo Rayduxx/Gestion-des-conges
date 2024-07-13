@@ -32,6 +32,31 @@ public class ServiceRole {
         }
         return role;
     }
+    public List<Role> getAllRoles() {
+        List<Role> roles = new ArrayList<>();
+        String query = "SELECT r.*, rp.nom AS parentRoleName, rc.nom AS childRoleName " +
+                "FROM role r " +
+                "LEFT JOIN rolehierarchie rh ON r.ID_Role = rh.ID_RoleC " +
+                "LEFT JOIN role rp ON rh.ID_RoleP = rp.ID_Role " +
+                "LEFT JOIN role rc ON rh.ID_RoleC = rc.ID_Role";
+        try (Connection cnx = MyDataBase.getInstance().getCnx();
+             Statement stmt = cnx.createStatement();
+             ResultSet rs = stmt.executeQuery(query)) {
+            while (rs.next()) {
+                Role role = new Role(
+                        rs.getInt("ID_Role"),
+                        rs.getString("nom"),
+                        rs.getString("description")
+                );
+                role.setParentRoleName(rs.getString("parentRoleName"));
+                role.setChildRoleName(rs.getString("childRoleName"));
+                roles.add(role);
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return roles;
+    }
 
     public static Role getRoleByUserId(int idUser) {
         Role role = null;
@@ -129,25 +154,7 @@ public class ServiceRole {
         return role;
     }
 
-    public List<Role> getAllRoles() {
-        List<Role> roles = new ArrayList<>();
-        String query = "SELECT * FROM role";
-        try (Connection cnx = MyDataBase.getInstance().getCnx();
-             Statement stmt = cnx.createStatement();
-             ResultSet rs = stmt.executeQuery(query)) {
-            while (rs.next()) {
-                Role role = new Role(
-                        rs.getInt("ID_Role"),
-                        rs.getString("nom"),
-                        rs.getString("description")
-                );
-                roles.add(role);
-            }
-        } catch (SQLException e) {
-            e.printStackTrace();
-        }
-        return roles;
-    }
+
 
     public static Role getRoleParents(int idRole) {
         Role parentRole = null;
