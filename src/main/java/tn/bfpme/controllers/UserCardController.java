@@ -15,6 +15,7 @@ import javafx.scene.layout.HBox;
 import javafx.scene.layout.Pane;
 import javafx.scene.paint.Color;
 import javafx.stage.Stage;
+import tn.bfpme.controllers.RHC.paneUserController;
 import tn.bfpme.models.User;
 import tn.bfpme.services.ServiceUtilisateur;
 
@@ -83,38 +84,44 @@ public class UserCardController {
     @FXML
     void ModifierUser(ActionEvent event) {
         try {
-            FXMLLoader loader = new FXMLLoader(getClass().getResource("/AdminIT.fxml"));
+            FXMLLoader loader = new FXMLLoader(getClass().getResource("/paneUsers.fxml")); // Ensure this path points to the correct FXML file
             Parent root = loader.load();
-            Stage stage = (Stage) ((Node) event.getSource()).getScene().getWindow();
-            Scene scene = new Scene(root);
-            AdminITController AITC = loader.getController();
-            AITC.ID_A.setText(String.valueOf(uid));
-            AITC.nom_A.setText(unom);
-            AITC.Prenom_A.setText(uprenom);
-            AITC.email_A.setText(uemail);
-            AITC.MDP_A.setText(umdp);
-            AITC.image_A.setText(updp);
-            AITC.S_Ann.setText(String.valueOf(SAnn));
-            AITC.S_exc.setText(String.valueOf(SExp));
-            AITC.S_mal.setText(String.valueOf(SMala));
-            AITC.S_mat.setText(String.valueOf(SMater));
+            paneUserController pUC = loader.getController();
+
+            // Set user data in the paneUserController
+            pUC.ID_A.setText(String.valueOf(uid));
+            pUC.nom_A.setText(unom);
+            pUC.Prenom_A.setText(uprenom);
+            pUC.email_A.setText(uemail);
+            pUC.MDP_A.setText(umdp);
+            pUC.image_A.setText(updp);
+            pUC.S_Ann.setText(String.valueOf(SAnn));
+            pUC.S_exc.setText(String.valueOf(SExp));
+            pUC.S_mal.setText(String.valueOf(SMala));
+            pUC.S_mat.setText(String.valueOf(SMater));
+
             String imagePath = updp;
             if (imagePath != null) {
                 try {
                     File file = new File(imagePath);
                     FileInputStream inputStream = new FileInputStream(file);
                     Image image = new Image(inputStream);
-                    AITC.PDPimageHolder.setImage(image);
+                    pUC.PDPimageHolder.setImage(image);
                 } catch (FileNotFoundException e) {
                     System.err.println("Image file not found: " + imagePath);
                 }
             }
+
+            // Switch to the new scene
+            Stage stage = (Stage) ((Node) event.getSource()).getScene().getWindow();
+            Scene scene = new Scene(root);
             stage.setScene(scene);
             stage.show();
         } catch (IOException e) {
             e.printStackTrace();
         }
     }
+
 
     @FXML
     void SupprimerUser(ActionEvent event) {

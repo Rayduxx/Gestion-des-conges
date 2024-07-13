@@ -46,68 +46,68 @@ import java.util.UUID;
 public class paneUserController implements Initializable {
 
     @FXML
-    private ListView<User> userListView;
+    public ListView<User> userListView;
     @FXML
-    private TextField User_field;
+    public TextField User_field;
 
     @FXML
-    private TextField Depart_field;
+    public TextField Depart_field;
 
     @FXML
-    private TextField ID_A;
+    public TextField ID_A;
 
     @FXML
-    private TextField MDP_A;
+    public TextField MDP_A;
 
     @FXML
-    private ImageView PDPimageHolder;
+    public ImageView PDPimageHolder;
 
     @FXML
-    private TextField Prenom_A;
+    public TextField Prenom_A;
 
     @FXML
-    private TextField Role_field;
+    public TextField Role_field;
 
     @FXML
-    private TextField S_Ann;
+    public TextField S_Ann;
 
     @FXML
-    private TextField S_exc;
+    public TextField S_exc;
 
     @FXML
-    private TextField S_mal;
+    public TextField S_mal;
 
     @FXML
-    private TextField S_mat;
+    public TextField S_mat;
 
     @FXML
-    private GridPane UserContainers;
+    public GridPane UserContainers;
 
     @FXML
     private Pane UtilisateursPane;
 
     @FXML
-    private ListView<Departement> departListView;
+    public ListView<Departement> departListView;
 
     @FXML
-    private TextField email_A;
+    public TextField email_A;
 
     @FXML
-    private TextField image_A;
+    public TextField image_A;
 
     @FXML
-    private Label infolabel;
+    public Label infolabel;
 
     @FXML
-    private TextField nom_A;
+    public TextField nom_A;
 
     @FXML
-    private ListView<Role> roleListView;
+    public ListView<Role> roleListView;
 
-    private User selectedUser;
-    private FilteredList<User> filteredData;
-    private FilteredList<Departement> filteredDepartments;
-    private FilteredList<Role> filteredRoles;
+    public User selectedUser;
+    public FilteredList<User> filteredData;
+    public FilteredList<Departement> filteredDepartments;
+    public FilteredList<Role> filteredRoles;
     ServiceUtilisateur UserS = new ServiceUtilisateur();
     Connection cnx = MyDataBase.getInstance().getCnx();
 
