@@ -15,6 +15,9 @@ import javafx.scene.layout.HBox;
 import javafx.scene.layout.Pane;
 import javafx.scene.paint.Color;
 import javafx.stage.Stage;
+import tn.bfpme.controllers.RHC.paneUserController;
+import tn.bfpme.controllers.RHC.RHController;
+
 import tn.bfpme.models.User;
 import tn.bfpme.services.ServiceUtilisateur;
 
@@ -42,11 +45,11 @@ public class UserCardController {
     private Label cardrole;
 
     private final ServiceUtilisateur UserS = new ServiceUtilisateur();
-
     int uid;
     String unom, uprenom, uemail, umdp, urole, udepart, updp;
     double SAnn, SExp, SMala, SMater;
-    public void setData(User user) {
+
+    public void setData(User user, String roleName, String departmentName) {
         String imagePath = user.getImage();
         if (imagePath != null) {
             try {
@@ -62,9 +65,6 @@ public class UserCardController {
         }
         cardnameprename.setText(user.getNom() + " " + user.getPrenom());
         cardemail.setText(user.getEmail());
-        String roleName = UserS.getRoleNameById(user.getIdRole());
-        String departmentName = UserS.getDepartmentNameById(user.getIdDepartement());
-
         cardrole.setText(roleName);
         carddepart.setText(departmentName);
         Card.setStyle("-fx-border-radius: 5px;-fx-border-color:#808080");
@@ -83,36 +83,49 @@ public class UserCardController {
         SExp = user.getSoldeExceptionnel();
     }
 
-
     @FXML
     void ModifierUser(ActionEvent event) {
         try {
-            FXMLLoader loader = new FXMLLoader(getClass().getResource("/AdminIT.fxml"));
-            Parent root = loader.load();
-            Stage stage = (Stage) ((Node) event.getSource()).getScene().getWindow();
-            Scene scene = new Scene(root);
-            AdminITController AITC = loader.getController();
-            AITC.ID_A.setText(String.valueOf(uid));
-            AITC.nom_A.setText(unom);
-            AITC.Prenom_A.setText(uprenom);
-            AITC.email_A.setText(uemail);
-            AITC.MDP_A.setText(umdp);
-            AITC.image_A.setText(updp);
-            AITC.S_Ann.setText(String.valueOf(SAnn));
-            AITC.S_exc.setText(String.valueOf(SExp));
-            AITC.S_mal.setText(String.valueOf(SMala));
-            AITC.S_mat.setText(String.valueOf(SMater));
+            // Load the paneUsers.fxml
+            FXMLLoader loader = new FXMLLoader(getClass().getResource("/paneUsers.fxml"));
+            Parent paneUsersRoot = loader.load();
+            paneUserController pUC = loader.getController();
+
+            // Set user data in the paneUserController
+            pUC.ID_A.setText(String.valueOf(uid));
+            pUC.nom_A.setText(unom);
+            pUC.Prenom_A.setText(uprenom);
+            pUC.email_A.setText(uemail);
+            pUC.MDP_A.setText(umdp);
+            pUC.image_A.setText(updp);
+            pUC.S_Ann.setText(String.valueOf(SAnn));
+            pUC.S_exc.setText(String.valueOf(SExp));
+            pUC.S_mal.setText(String.valueOf(SMala));
+            pUC.S_mat.setText(String.valueOf(SMater));
+
             String imagePath = updp;
             if (imagePath != null) {
                 try {
                     File file = new File(imagePath);
                     FileInputStream inputStream = new FileInputStream(file);
                     Image image = new Image(inputStream);
-                    AITC.PDPimageHolder.setImage(image);
+                    pUC.PDPimageHolder.setImage(image);
                 } catch (FileNotFoundException e) {
                     System.err.println("Image file not found: " + imagePath);
                 }
             }
+
+            // Get the main layout controller
+            FXMLLoader mainLoader = new FXMLLoader(getClass().getResource("/RH_Interface.fxml"));
+            Parent mainRoot = mainLoader.load();
+            RHController mainController = mainLoader.getController();
+
+            // Set paneUsers.fxml into the PaneCont of RH_Interface.fxml
+            mainController.getPaneCont().getChildren().setAll(paneUsersRoot);
+
+            // Switch to the new scene
+            Stage stage = (Stage) ((Node) event.getSource()).getScene().getWindow();
+            Scene scene = new Scene(mainRoot);
             stage.setScene(scene);
             stage.show();
         } catch (IOException e) {
@@ -120,10 +133,14 @@ public class UserCardController {
         }
     }
 
+
+
     @FXML
     void SupprimerUser(ActionEvent event) {
         UserS.DeleteByID(uid);
         ((GridPane) Card.getParent()).getChildren().remove(Card);
     }
+
+
 }
 

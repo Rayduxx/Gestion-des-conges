@@ -6,6 +6,7 @@ import javafx.collections.ObservableList;
 import javafx.collections.transformation.FilteredList;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
+import javafx.fxml.FXMLLoader;
 import javafx.fxml.Initializable;
 import javafx.scene.control.*;
 import javafx.scene.image.Image;
@@ -17,6 +18,7 @@ import javafx.scene.control.TreeItem;
 import javafx.scene.control.cell.TreeItemPropertyValueFactory;
 
 import javafx.stage.Stage;
+import tn.bfpme.controllers.UserCardController;
 import tn.bfpme.models.Departement;
 import tn.bfpme.models.Role;
 import tn.bfpme.models.User;
@@ -66,22 +68,22 @@ public class paneUserController implements Initializable {
     private TextField Role_field;
 
     @FXML
-    private ListView<User> userListView;
+    public ListView<User> userListView;
     @FXML
-    private TextField User_field;
-    @FXML
-    private TextField ID_A;
+    public TextField User_field;
 
     @FXML
-    private TextField MDP_A;
+    public TextField ID_A;
 
     @FXML
-    private ImageView PDPimageHolder;
+    public TextField MDP_A;
 
     @FXML
-    private TextField Prenom_A;
+    public ImageView PDPimageHolder;
 
     @FXML
+    public TextField Prenom_A;
+
     private TreeTableView<Departement> deptTable;
 
     @FXML
@@ -129,37 +131,37 @@ public class paneUserController implements Initializable {
     private TreeTableView<Role> roleTable;
 
     @FXML
-    private TextField S_Ann;
+    public TextField S_Ann;
 
     @FXML
-    private TextField S_exc;
+    public TextField S_exc;
 
     @FXML
-    private TextField S_mal;
+    public TextField S_mal;
 
     @FXML
-    private TextField S_mat;
+    public TextField S_mat;
 
     @FXML
-    private GridPane UserContainers;
+    public GridPane UserContainers;
 
     @FXML
     private Pane UtilisateursPane;
 
     @FXML
-    private ListView<Departement> departListView;
+    public ListView<Departement> departListView;
 
     @FXML
-    private TextField email_A;
+    public TextField email_A;
 
     @FXML
-    private TextField image_A;
+    public TextField image_A;
 
     @FXML
-    private Label infolabel;
+    public Label infolabel;
 
     @FXML
-    private TextField nom_A;
+    public TextField nom_A;
 
     @FXML
     private Pane DepartPane1;
@@ -171,10 +173,10 @@ public class paneUserController implements Initializable {
     private TreeTableView<User> userTable;
 
 
-    private User selectedUser;
-    private FilteredList<User> filteredData;
-    private FilteredList<Departement> filteredDepartments;
-    private FilteredList<Role> filteredRoles;
+    public User selectedUser;
+    public FilteredList<User> filteredData;
+    public FilteredList<Departement> filteredDepartments;
+    public FilteredList<Role> filteredRoles;
     ServiceUtilisateur UserS = new ServiceUtilisateur();
     Connection cnx = MyDataBase.getInstance().getCnx();
 
@@ -185,7 +187,7 @@ public class paneUserController implements Initializable {
 
 
     @Override
-    public void initialize(URL url, ResourceBundle resourceBundle) {
+    public void initialize(URL location, ResourceBundle resources) {
         loadUsers();
         loadDepartments();
         loadRoles();
@@ -213,31 +215,37 @@ public class paneUserController implements Initializable {
     }
 
     private void loadUsers() {
+        UserContainers.getChildren().clear();
         List<User> userList = userService.getAllUsers();
-        ObservableList<User> users = FXCollections.observableArrayList(userList);
-        filteredData = new FilteredList<>(users, p -> true);
-        userListView.setItems(filteredData);
-        userListView.setCellFactory(param -> new ListCell<User>() {
-            @Override
-            protected void updateItem(User user, boolean empty) {
-                super.updateItem(user, empty);
-                if (empty || user == null) {
-                    setText(null);
-                } else {
-                    Departement departement = depService.getDepartmentById(user.getIdDepartement());
-                    Role role = roleService.getRoleById(user.getIdRole());
-                    setText(user.getPrenom() + " " + user.getNom());
-                }
-            }
-        });
+        int column = 0;
+        int row = 0;
 
-        userListView.getSelectionModel().selectedItemProperty().addListener((observable, oldValue, newValue) -> {
-            Platform.runLater(() -> {
-                if (newValue != null) {
-                    handleUserSelection(newValue);
+        try {
+            for (User user : userList) {
+                FXMLLoader fxmlLoader = new FXMLLoader();
+                fxmlLoader.setLocation(getClass().getResource("/UserCard.fxml"));
+                Pane userBox = fxmlLoader.load();
+
+                UserCardController cardController = fxmlLoader.getController();
+                Departement department = depService.getDepartmentById(user.getIdDepartement());
+                Role role = roleService.getRoleById(user.getIdRole());
+
+                String departmentName = department != null ? department.getNom() : "N/A";
+                String roleName = role != null ? role.getNom() : "N/A";
+
+                cardController.setData(user, roleName, departmentName);
+
+                if (column == 3) {
+                    column = 0;
+                    row++;
                 }
-            });
-        });
+
+                UserContainers.add(userBox, column++, row);
+                GridPane.setMargin(userBox, new javafx.geometry.Insets(10));
+            }
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
     }
 
     private void loadDepartments() {

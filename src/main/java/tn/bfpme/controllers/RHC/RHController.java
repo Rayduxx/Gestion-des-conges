@@ -31,12 +31,13 @@ import java.util.List;
 
 public class RHController {
     @FXML
-    private Pane PaneCont;
+    public Pane PaneCont;
     @FXML
     private AnchorPane MainAnchorPane;
     private ServiceRole roleService;
     private paneRoleController PRC;
     private paneDepController PDC;
+    private paneUserController PUC;
     public void initialize() {
         roleService = new ServiceRole();
         //loadRoleHierarchie();
@@ -47,6 +48,9 @@ public class RHController {
         } catch (IOException e) {
             e.printStackTrace();
         }
+    }
+    public Pane getPaneCont() {
+        return PaneCont;
     }
 
     @FXML

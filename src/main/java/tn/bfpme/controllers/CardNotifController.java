@@ -2,20 +2,22 @@ package tn.bfpme.controllers;
 
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
+import javafx.fxml.FXMLLoader;
 import javafx.fxml.Initializable;
+import javafx.scene.Parent;
+import javafx.scene.Scene;
 import javafx.scene.control.*;
 import javafx.scene.image.*;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.Pane;
-import tn.bfpme.models.Conge;
+import javafx.stage.*;
 import tn.bfpme.models.Notification;
-import tn.bfpme.models.Statut;
-import tn.bfpme.services.ServiceConge;
 import tn.bfpme.services.ServiceNotification;
 
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
+import java.io.IOException;
 import java.net.URL;
 import java.util.ResourceBundle;
 
@@ -68,11 +70,31 @@ public class CardNotifController implements Initializable {
     }
     @FXML
     void ViewMessage(MouseEvent event) {
-        Alert alert = new Alert(Alert.AlertType.INFORMATION);
-        alert.setTitle("Notification Message");
+        try {
+            FXMLLoader loader = new FXMLLoader(getClass().getResource("/Message.fxml"));
+            Parent root = loader.load();
+            MessageController msgController = loader.getController();
+            msgController.setDataNotif(this.notification);
+            Stage newStage = new Stage();
+            newStage.setTitle("Message Window");
+            Scene scene = new Scene(root);
+            newStage.setScene(scene);
+            newStage.initStyle(StageStyle.TRANSPARENT);
+            newStage.show();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
+
+
+
+    protected void showError(String message) {
+        Alert alert = new Alert(Alert.AlertType.ERROR);
+        alert.setTitle("Error");
         alert.setHeaderText(null);
-        alert.setContentText(notification.getNotifcontent());
+        alert.setContentText(message);
         alert.showAndWait();
     }
+
 
 }
