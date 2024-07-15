@@ -25,10 +25,10 @@ public class User {
 
     private String departementNom; // New field for department name
     private String roleNom; // New field for role name
+    private String managerName; // New field for manager name
 
     public User() {}
 
-//Ekher Constructeur
     public User(int idUser, String nom, String prenom, String email, String mdp, String image, double soldeAnnuel, double soldeMaladie, double soldeExceptionnel, double soldeMaternite, int idDepartement, int idManager) {
         this.idUser = idUser;
         this.nom = nom;
@@ -77,7 +77,8 @@ public class User {
         this.idManager = idManager;
         this.idRole = idRole;
     }
-    public User(int idUser, String nom, String prenom, String email, String mdp, String image, LocalDate creationDate, int idDepartement) {
+
+    public User(int idUser, String nom, String prenom, String email, String mdp, String image, LocalDate creationDate, int departement, int idDepartement) {
         this.idUser = idUser;
         this.nom = nom;
         this.prenom = prenom;
@@ -92,7 +93,7 @@ public class User {
         this.idDepartement = idDepartement;
     }
 
-    public User(String nom, String prenom, String email, int idManager, int idDepartement, int idRole) {
+    public User(String string, String s, String nom, String prenom, String email, LocalDate now, int idManager, int idDepartement) {
         this.nom = nom;
         this.prenom = prenom;
         this.email = email;
@@ -101,7 +102,7 @@ public class User {
         this.idRole = idRole;
     }
 
-    public User(int idUser, String nom, String prenom, String email, String mdp, String image,Double soldeAnnuel, LocalDate creationDate, int idDepartement, int idRole) {
+    public User(int idUser, String nom, String prenom, String email, String mdp, String image, Double soldeAnnuel, LocalDate creationDate, int idDepartement, int idRole) {
         this.idUser = idUser;
         this.nom = nom;
         this.prenom = prenom;
@@ -132,23 +133,21 @@ public class User {
         this.idRole = idRole;
     }
 
-    public User(int idUser, String nom, String prenom, String email, String mdp, String image, double soldeAnnuel, double soldeMaladie, double soldeExceptionnel, double soldeMaternite, LocalDate creationDate , int idManager, int idRole) {
-    this.idUser = idUser;
-    this.nom = nom;
-    this.prenom = prenom;
-    this.email = email;
-    this.mdp = mdp;
-    this.image = image;
-    this.soldeAnnuel = soldeAnnuel;
-    this.soldeMaladie = soldeMaladie;
-    this.soldeExceptionnel = soldeExceptionnel;
-    this.soldeMaternite = soldeMaternite;
-    this.creationDate = (creationDate != null) ? creationDate : LocalDate.now();
-    this.idManager = idManager;
-    this.idRole = idRole;
-
+    public User(int idUser, String nom, String prenom, String email, String mdp, String image, double soldeAnnuel, double soldeMaladie, double soldeExceptionnel, double soldeMaternite, LocalDate creationDate, int idManager, int idRole) {
+        this.idUser = idUser;
+        this.nom = nom;
+        this.prenom = prenom;
+        this.email = email;
+        this.mdp = mdp;
+        this.image = image;
+        this.soldeAnnuel = soldeAnnuel;
+        this.soldeMaladie = soldeMaladie;
+        this.soldeExceptionnel = soldeExceptionnel;
+        this.soldeMaternite = soldeMaternite;
+        this.creationDate = (creationDate != null) ? creationDate : LocalDate.now();
+        this.idManager = idManager;
+        this.idRole = idRole;
     }
-
 
     public int getIdUser() {
         return idUser;
@@ -269,6 +268,15 @@ public class User {
     public void setRoleNom(String roleNom) {
         this.roleNom = roleNom;
     }
+
+    public String getManagerName() {
+        return managerName == null || managerName.isEmpty() ? "Il n'y a pas de manager" : managerName;
+    }
+
+    public void setManagerName(String managerName) {
+        this.managerName = managerName;
+    }
+
     public LocalDate getCreationDate() {
         return creationDate;
     }
@@ -295,6 +303,7 @@ public class User {
                 ", idRole=" + idRole +
                 ", departementNom='" + departementNom + '\'' +
                 ", roleNom='" + roleNom + '\'' +
+                ", managerName='" + managerName + '\'' +
                 '}';
     }
 

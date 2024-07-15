@@ -6,6 +6,7 @@ import tn.bfpme.models.*;
 import tn.bfpme.utils.MyDataBase;
 import tn.bfpme.utils.SessionManager;
 
+
 import java.sql.*;
 import java.time.LocalDate;
 import java.util.ArrayList;
@@ -85,7 +86,6 @@ public class ServiceUtilisateur implements IUtilisateur {
         }
         return new UserConge(users, conges);
     }
-
 
     public UserConge AfficherApprove() {
         List<User> users = new ArrayList<>();
@@ -627,12 +627,18 @@ public class ServiceUtilisateur implements IUtilisateur {
              ResultSet rs = stmt.executeQuery(query)) {
             while (rs.next()) {
                 User user = new User(
+                        rs.getInt("ID_User"),
                         rs.getString("Nom"),
                         rs.getString("Prenom"),
                         rs.getString("Email"),
-                        rs.getInt("ID_Manager"),
+                        rs.getString("MDP"),
+                        rs.getString("Image"),
+                        rs.getInt("Solde_Annuel"),
+                        rs.getInt("Solde_Maladie"),
+                        rs.getInt("Solde_Exceptionnel"),
+                        rs.getInt("Solde_Maternité"),
                         rs.getInt("ID_Departement"),
-                        rs.getInt("ID_Role")
+                        rs.getInt("ID_Manager")
                 );
                 users.add(user);
             }
@@ -738,10 +744,6 @@ public class ServiceUtilisateur implements IUtilisateur {
         }
     }
 
-    public void updateUserRoleAndDepartment(int userId, int roleId, int departmentId) {
-        updateUserDepartment(userId, departmentId);
-        updateUserRole(userId, roleId);
-    }
 
     public void updateUserRole(int userId, int roleId) {
         String deleteSql = "DELETE FROM user_role WHERE ID_User = ?";
@@ -867,41 +869,6 @@ public class ServiceUtilisateur implements IUtilisateur {
         return managerId;
     }
 
-    public List<User> getAllUsers() {
-        List<User> users = new ArrayList<>();
-        String query = "SELECT u.*, ur.ID_Role FROM user u LEFT JOIN user_role ur ON u.ID_User = ur.ID_User";
-        try {
-            if (cnx == null || cnx.isClosed()) {
-                cnx = MyDataBase.getInstance().getCnx(); // Re-establish the connection if necessary
-            }
-            Statement stmt = cnx.createStatement();
-            ResultSet rs = stmt.executeQuery(query);
-            while (rs.next()) {
-                // Handle potential null values for ID_Role
-                int idRole = rs.getObject("ID_Role") != null ? rs.getInt("ID_Role") : -1; // -1 or any default value if ID_Role is null
-
-                User user = new User(
-                        rs.getInt("ID_User"),
-                        rs.getString("Nom"),
-                        rs.getString("Prenom"),
-                        rs.getString("Email"),
-                        rs.getString("MDP"),
-                        rs.getString("Image"),
-                        rs.getInt("Solde_Annuel"),
-                        rs.getInt("Solde_Maladie"),
-                        rs.getInt("Solde_Exceptionnel"),
-                        rs.getInt("Solde_Maternité"),
-                        rs.getInt("ID_Departement"),
-                        rs.getInt("ID_Manager"),
-                        idRole
-                );
-                users.add(user);
-            }
-        } catch (SQLException e) {
-            e.printStackTrace();
-        }
-        return users;
-    }
 
     @Override
     public void updateUser(User user) {
@@ -990,15 +957,15 @@ public class ServiceUtilisateur implements IUtilisateur {
         return users;
     }
 
-    public List<User> getAllUsersWithManagers() {
+    /*public List<User> getAllUsersWithManagers() {
         List<User> users = getAllUsers();
         for (User user : users) {
             Integer managerId = getManagerIdByUserId(user.getIdUser());
             String managerName = managerId != null ? getManagerNameByUserId(managerId) : null;
-            user.setNom(user.getNom() + (managerName != null ? " (Manager: " + managerName + ")" : " (No Manager)"));
+            user.setNom((managerName != null ? " (Manager: " + managerName + ")" : " (No Manager)"));
         }
         return users;
-    }
+    }*/
 
     @Override
     public void Add(User user) {
@@ -1353,9 +1320,8 @@ public class ServiceUtilisateur implements IUtilisateur {
         PreparedStatement ps = null;
         ResultSet rs = null;
         try {
-            cnx = MyDataBase.getInstance().getCnx();
             if (cnx == null || cnx.isClosed()) {
-                throw new SQLException("Failed to establish a database connection.");
+                cnx = MyDataBase.getInstance().getCnx();
             }
             ps = cnx.prepareStatement(sql);
             String searchQuery = "%" + query + "%";
@@ -1420,8 +1386,11 @@ public class ServiceUtilisateur implements IUtilisateur {
                 "LEFT JOIN role r ON s.ID_Role = r.ID_Role " +
                 "WHERE s.ID_User != ?";
 
-        try (Connection cnx = MyDataBase.getInstance().getCnx();
-             PreparedStatement ps = cnx.prepareStatement(sql)) {
+        try {
+            if (cnx == null || cnx.isClosed()) {
+                cnx = MyDataBase.getInstance().getCnx();
+            }
+             PreparedStatement ps = cnx.prepareStatement(sql);
             ps.setInt(1, currentUserId);
             ps.setInt(2, currentUserId); // Exclude current user
             ResultSet rs = ps.executeQuery();
@@ -1470,8 +1439,11 @@ public class ServiceUtilisateur implements IUtilisateur {
                 "WHERE s.ID_User != ? " +
                 "AND (s.Nom LIKE ? OR s.Prenom LIKE ? OR s.Email LIKE ?)";
 
-        try (Connection cnx = MyDataBase.getInstance().getCnx();
-             PreparedStatement ps = cnx.prepareStatement(sql)) {
+        try {
+            if (cnx == null || cnx.isClosed()) {
+                cnx = MyDataBase.getInstance().getCnx();
+            }
+             PreparedStatement ps = cnx.prepareStatement(sql);
             ps.setInt(1, currentUserId);
             ps.setInt(2, currentUserId); // Exclude current user
             String searchInput = "%" + input + "%";
@@ -1503,6 +1475,195 @@ public class ServiceUtilisateur implements IUtilisateur {
         }
         return users;
     }
+    public List<User> getAllUsers() {
+        List<User> users = new ArrayList<>();
+        String query = "SELECT u.*, d.nom AS departmentName, r.nom AS roleName, m.Nom AS managerName, m.Prenom AS managerPrenom " +
+                "FROM user u " +
+                "LEFT JOIN departement d ON u.ID_Departement = d.ID_Departement " +
+                "LEFT JOIN user_role ur ON u.ID_User = ur.ID_User " +
+                "LEFT JOIN role r ON ur.ID_Role = r.ID_Role " +
+                "LEFT JOIN user m ON u.ID_Manager = m.ID_User";
+        try {
+            if (cnx == null || cnx.isClosed()) {
+                cnx = MyDataBase.getInstance().getCnx();
+            }
+            Statement stmt = cnx.createStatement();
+            ResultSet rs = stmt.executeQuery(query);
+            while (rs.next()) {
+                User user = new User(
+                        rs.getInt("ID_User"),
+                        rs.getString("Nom"),
+                        rs.getString("Prenom"),
+                        rs.getString("Email"),
+                        rs.getString("MDP"),
+                        rs.getString("Image"),
+                        rs.getDouble("Solde_Annuel"),
+                        rs.getInt("Solde_Maladie"),
+                        rs.getInt("Solde_Exceptionnel"),
+                        rs.getInt("Solde_Maternité"),
+                        rs.getInt("ID_Departement"),
+                        rs.getInt("ID_Manager")
+                );
+                user.setDepartementNom(rs.getString("departmentName"));
+                user.setRoleNom(rs.getString("roleName"));
+                user.setManagerName(rs.getString("managerName") + " " + rs.getString("managerPrenom"));
+                users.add(user);
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return users;
+    }
+    private List<User> getAllUsersWithDetails() {
+        List<User> users = new ArrayList<>();
+        try {
+            // Set up the connection to the database
+            Connection connection = DriverManager.getConnection("jdbc:mysql://localhost:3306/bfpmeconge", "root", "password");
+
+            // Create a statement
+            Statement statement = connection.createStatement();
+
+            // Execute the query
+            ResultSet resultSet = statement.executeQuery(
+                    "SELECT u.*, d.nom as departementNom, m.nom as managerName " +
+                            "FROM user u " +
+                            "LEFT JOIN departement d ON u.idDepartement = d.idDepartement " +
+                            "LEFT JOIN user m ON u.idManager = m.idUser"
+            );
+
+            // Process the result set
+            while (resultSet.next()) {
+                User user = new User();
+                user.setIdUser(resultSet.getInt("idUser"));
+                user.setNom(resultSet.getString("nom"));
+                user.setPrenom(resultSet.getString("prenom"));
+                user.setEmail(resultSet.getString("email"));
+                user.setMdp(resultSet.getString("mdp"));
+                user.setImage(resultSet.getString("image"));
+                user.setCreationDate(resultSet.getDate("creationDate").toLocalDate());
+                user.setSoldeMaternite(resultSet.getDouble("soldeMaternite"));
+                user.setSoldeAnnuel(resultSet.getDouble("soldeAnnuel"));
+                user.setSoldeExceptionnel(resultSet.getDouble("soldeExceptionnel"));
+                user.setSoldeMaladie(resultSet.getDouble("soldeMaladie"));
+                user.setIdManager(resultSet.getInt("idManager"));
+                user.setIdDepartement(resultSet.getInt("idDepartement"));
+                user.setIdRole(resultSet.getInt("idRole"));
+                user.setDepartementNom(resultSet.getString("departementNom"));
+                user.setManagerName(resultSet.getString("managerName"));
+
+                users.add(user);
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+
+        return users;
+    }
+    public void updateUserRoleAndDepartment(int userId, int roleId, int departmentId) throws SQLException {
+        if (cnx == null || cnx.isClosed()) {
+            cnx = MyDataBase.getInstance().getCnx();
+        }
+        String updateDepartmentQuery = "UPDATE user SET ID_Departement = ? WHERE ID_User = ?";
+        try (PreparedStatement stmt = cnx.prepareStatement(updateDepartmentQuery)) {
+            stmt.setInt(1, departmentId);
+            stmt.setInt(2, userId);
+            stmt.executeUpdate();
+        }
+
+        // Check if the user already has a role
+        String checkRoleQuery = "SELECT COUNT(*) FROM user_role WHERE ID_User = ?";
+        try (PreparedStatement stmt = cnx.prepareStatement(checkRoleQuery)) {
+            stmt.setInt(1, userId);
+            ResultSet rs = stmt.executeQuery();
+            if (rs.next() && rs.getInt(1) > 0) {
+                // Update the existing role
+                String updateRoleQuery = "UPDATE user_role SET ID_Role = ? WHERE ID_User = ?";
+                try (PreparedStatement updateStmt = cnx.prepareStatement(updateRoleQuery)) {
+                    updateStmt.setInt(1, roleId);
+                    updateStmt.setInt(2, userId);
+                    updateStmt.executeUpdate();
+                }
+            } else {
+                // Insert the new role
+                String insertRoleQuery = "INSERT INTO user_role (ID_User, ID_Role) VALUES (?, ?)";
+                try (PreparedStatement insertStmt = cnx.prepareStatement(insertRoleQuery)) {
+                    insertStmt.setInt(1, userId);
+                    insertStmt.setInt(2, roleId);
+                    insertStmt.executeUpdate();
+                }
+            }
+        }
+    }
+
+    public void setUserManager(int userId) throws SQLException {
+        if (cnx == null || cnx.isClosed()) {
+            cnx = MyDataBase.getInstance().getCnx();
+        }
+        // Step 1: Fetch the user's current department and role
+        String userQuery = "SELECT u.ID_Departement, ur.ID_Role FROM user u JOIN user_role ur ON u.ID_User = ur.ID_User WHERE u.ID_User = ?";
+        PreparedStatement userStmt = cnx.prepareStatement(userQuery);
+        userStmt.setInt(1, userId);
+        ResultSet userRs = userStmt.executeQuery();
+
+        if (!userRs.next()) {
+            throw new SQLException("User not found");
+        }
+
+        int userDeptId = userRs.getInt("ID_Departement");
+        int userRoleId = userRs.getInt("ID_Role");
+        System.out.println("User Dept ID: " + userDeptId + ", User Role ID: " + userRoleId);
+
+        // Step 2: Determine the parent department and parent role
+        String parentDeptQuery = "SELECT Parent_Dept FROM departement WHERE ID_Departement = ?";
+        PreparedStatement parentDeptStmt = cnx.prepareStatement(parentDeptQuery);
+        parentDeptStmt.setInt(1, userDeptId);
+        ResultSet parentDeptRs = parentDeptStmt.executeQuery();
+
+        int parentDeptId = userDeptId; // default to the same department
+        if (parentDeptRs.next()) {
+            int parentId = parentDeptRs.getInt("Parent_Dept");
+            if (parentId != 0) {
+                parentDeptId = parentId;
+            }
+        }
+        System.out.println("Parent Dept ID: " + parentDeptId);
+
+        String parentRoleQuery = "SELECT ID_RoleP FROM rolehierarchie WHERE ID_RoleC = ?";
+        PreparedStatement parentRoleStmt = cnx.prepareStatement(parentRoleQuery);
+        parentRoleStmt.setInt(1, userRoleId);
+        ResultSet parentRoleRs = parentRoleStmt.executeQuery();
+
+        int parentRoleId = userRoleId; // default to the same role
+        if (parentRoleRs.next()) {
+            int parentId = parentRoleRs.getInt("ID_RoleP");
+            if (parentId != 0) {
+                parentRoleId = parentId;
+            }
+        }
+        System.out.println("Parent Role ID: " + parentRoleId);
+
+        // Step 3: Find the manager in the parent department with the parent role
+        String managerQuery = "SELECT u.ID_User FROM user u JOIN user_role ur ON u.ID_User = ur.ID_User WHERE u.ID_Departement = ? AND ur.ID_Role = ? LIMIT 1";
+        PreparedStatement managerStmt = cnx.prepareStatement(managerQuery);
+        managerStmt.setInt(1, parentDeptId);
+        managerStmt.setInt(2, parentRoleId);
+        ResultSet managerRs = managerStmt.executeQuery();
+
+        if (managerRs.next()) {
+            int managerId = managerRs.getInt("ID_User");
+            System.out.println("Manager ID: " + managerId);
+
+            // Step 4: Assign the manager to the user
+            String updateManagerQuery = "UPDATE user SET ID_Manager = ? WHERE ID_User = ?";
+            PreparedStatement updateManagerStmt = cnx.prepareStatement(updateManagerQuery);
+            updateManagerStmt.setInt(1, managerId);
+            updateManagerStmt.setInt(2, userId);
+            updateManagerStmt.executeUpdate();
+        } else {
+            throw new SQLException("Manager not found for user with ID: " + userId);
+        }
+    }
+
 
 
 
