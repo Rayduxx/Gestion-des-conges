@@ -65,9 +65,8 @@ public class Departement {
     }
 
     public String getParentDeptName() {
-        return parentDeptName;
+        return parentDeptName == null || parentDeptName.isEmpty() ? "Il n'y a pas de département parent" : parentDeptName;
     }
-
     public void setParentDeptName(String parentDeptName) {
         this.parentDeptName = parentDeptName;
     }

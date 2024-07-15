@@ -5,8 +5,6 @@ import tn.bfpme.interfaces.IUtilisateur;
 import tn.bfpme.models.*;
 import tn.bfpme.utils.MyDataBase;
 import tn.bfpme.utils.SessionManager;
-import javafx.scene.control.TreeItem;
-import javafx.scene.control.cell.TreeItemPropertyValueFactory;
 
 
 import java.sql.*;
@@ -88,7 +86,6 @@ public class ServiceUtilisateur implements IUtilisateur {
         }
         return new UserConge(users, conges);
     }
-
 
     public UserConge AfficherApprove() {
         List<User> users = new ArrayList<>();
@@ -630,12 +627,18 @@ public class ServiceUtilisateur implements IUtilisateur {
              ResultSet rs = stmt.executeQuery(query)) {
             while (rs.next()) {
                 User user = new User(
+                        rs.getInt("ID_User"),
                         rs.getString("Nom"),
                         rs.getString("Prenom"),
                         rs.getString("Email"),
-                        rs.getInt("ID_Manager"),
+                        rs.getString("MDP"),
+                        rs.getString("Image"),
+                        rs.getInt("Solde_Annuel"),
+                        rs.getInt("Solde_Maladie"),
+                        rs.getInt("Solde_Exceptionnel"),
+                        rs.getInt("Solde_Maternité"),
                         rs.getInt("ID_Departement"),
-                        rs.getInt("ID_Role")
+                        rs.getInt("ID_Manager")
                 );
                 users.add(user);
             }

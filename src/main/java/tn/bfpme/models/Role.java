@@ -56,15 +56,14 @@ public class Role {
     }
 
     public String getParentRoleName() {
-        return parentRoleName;
-    }
-
-    public void setParentRoleName(String parentRoleName) {
-        this.parentRoleName = parentRoleName;
+        return parentRoleName == null || parentRoleName.isEmpty() ? "Il n'y a pas de rôle parent" : parentRoleName;
     }
 
     public String getChildRoleName() {
-        return childRoleName;
+        return childRoleName == null || childRoleName.isEmpty() ? "Il n'y a pas de rôle fils" : childRoleName;
+    }
+    public void setParentRoleName(String parentRoleName) {
+        this.parentRoleName = parentRoleName;
     }
 
     public void setChildRoleName(String childRoleName) {

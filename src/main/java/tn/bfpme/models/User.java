@@ -78,7 +78,7 @@ public class User {
         this.idRole = idRole;
     }
 
-    public User(int idUser, String nom, String prenom, String email, String mdp, String image, LocalDate creationDate, int idDepartement) {
+    public User(int idUser, String nom, String prenom, String email, String mdp, String image, LocalDate creationDate, int departement, int idDepartement) {
         this.idUser = idUser;
         this.nom = nom;
         this.prenom = prenom;
@@ -93,7 +93,7 @@ public class User {
         this.idDepartement = idDepartement;
     }
 
-    public User(String nom, String prenom, String email, int idManager, int idDepartement, int idRole) {
+    public User(String string, String s, String nom, String prenom, String email, LocalDate now, int idManager, int idDepartement) {
         this.nom = nom;
         this.prenom = prenom;
         this.email = email;
@@ -270,7 +270,7 @@ public class User {
     }
 
     public String getManagerName() {
-        return managerName;
+        return managerName == null || managerName.isEmpty() ? "Il n'y a pas de manager" : managerName;
     }
 
     public void setManagerName(String managerName) {
