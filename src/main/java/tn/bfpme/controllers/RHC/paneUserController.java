@@ -775,6 +775,7 @@ public class paneUserController implements Initializable {
                 UserS.Delete(user);
                 infolabel.setText("Suppression Effectuée");
                 System.out.println("User deleted: " + user);
+                loadUsers(); // Refresh the user list after deletion
             } else {
                 infolabel.setText("Utilisateur non trouvé");
             }
@@ -782,6 +783,7 @@ public class paneUserController implements Initializable {
             infolabel.setText("L'ID de l'utilisateur doit être un nombre.");
         }
     }
+
 
     @FXML
     void upload_image(ActionEvent event) {
