@@ -179,27 +179,21 @@ public class paneUserController implements Initializable {
         ServiceRole roleService = new ServiceRole(); // Instantiate the role service
         int column = 0;
         int row = 0;
-
         try {
             for (User user : userList) {
                 FXMLLoader fxmlLoader = new FXMLLoader();
-                fxmlLoader.setLocation(getClass().getResource("/UserCard.fxml"));
+                fxmlLoader.setLocation(getClass().getResource("/RH_User_Card.fxml"));
                 Pane userBox = fxmlLoader.load();
-
-                UserCardController cardController = fxmlLoader.getController();
+                CardUserRHController cardController = fxmlLoader.getController();
                 Departement department = depService.getDepartmentById(user.getIdDepartement());
-                Role role = roleService.getRoleByUserId(user.getIdUser()); // Fetch the role for the current user
-
+                Role role = roleService.getRoleByUserId(user.getIdUser());
                 String departmentName = department != null ? department.getNom() : "N/A";
                 String roleName = role != null ? role.getNom() : "N/A";
-
                 cardController.setData(user, roleName, departmentName);
-
-                if (column == 3) {
+                if (column == 1) {
                     column = 0;
                     row++;
                 }
-
                 UserContainers.add(userBox, column++, row);
                 GridPane.setMargin(userBox, new javafx.geometry.Insets(10));
             }

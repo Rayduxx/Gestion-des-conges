@@ -127,7 +127,7 @@
                <content>
                   <AnchorPane prefHeight="200.0" prefWidth="200.0">
                      <children>
-                        <ScrollPane layoutY="35.0" prefHeight="586.0" prefWidth="1000.0">
+                        <ScrollPane layoutY="35.0" prefHeight="652.0" prefWidth="1119.0">
                            <content>
                               <GridPane fx:id="UserContainers">
                         </GridPane>
