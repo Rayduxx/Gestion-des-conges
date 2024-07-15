@@ -7,7 +7,7 @@ import javafx.fxml.Initializable;
 import javafx.scene.control.*;
 import tn.bfpme.models.Departement;
 import tn.bfpme.services.ServiceDepartement;
-
+import javafx.scene.layout.*;
 import java.net.URL;
 import java.util.List;
 import java.util.ResourceBundle;
@@ -19,6 +19,8 @@ public class paneDepController implements Initializable {
     private TextField deptNameField, deptDescriptionField;
     @FXML
     private ComboBox<Departement> parentDeptComboBox;
+    @FXML
+    private VBox comboBoxContainer;
 
     private final ServiceDepartement depService = new ServiceDepartement();
     private RHController RHC;
@@ -34,6 +36,12 @@ public class paneDepController implements Initializable {
                 parentDeptComboBox.getSelectionModel().select(newValue.getParentDept() != 0 ? depService.getDepartmentById(newValue.getParentDept()) : null);
             }
         });
+
+        parentDeptComboBox.getSelectionModel().selectedItemProperty().addListener((obs, oldSelection, newSelection) -> {
+            if (newSelection != null) {
+                addSubDepartmentComboBox(newSelection.getIdDepartement());
+            }
+        });
     }
 
     @FXML
@@ -42,7 +50,7 @@ public class paneDepController implements Initializable {
         String description = deptDescriptionField.getText();
         Departement parent = parentDeptComboBox.getSelectionModel().getSelectedItem();
 
-        if (parent.getNom().isEmpty()) {
+        if (parent == null) {
             depService.addDepartement2(name, description);
         } else {
             depService.addDepartement(name, description, parent.getIdDepartement() != 0 ? parent.getIdDepartement() : 0);
@@ -74,10 +82,12 @@ public class paneDepController implements Initializable {
     protected void loadDepartments() {
         try {
             List<Departement> departmentList = depService.getAllDepartments();
+            List<Departement> departmentParentList = depService.getAllDepartmentParents();
             Departement noParentDept = new Departement(0, "Pas de département", "", 0);
             departmentList.add(0, noParentDept);
 
             ObservableList<Departement> departments = FXCollections.observableArrayList(departmentList);
+            ObservableList<Departement> departmentParents = FXCollections.observableArrayList(departmentParentList);
             departementListView.setItems(departments);
             departementListView.setCellFactory(param -> new ListCell<Departement>() {
                 @Override
@@ -90,7 +100,7 @@ public class paneDepController implements Initializable {
                     }
                 }
             });
-            parentDeptComboBox.setItems(departments);
+            parentDeptComboBox.setItems(departmentParents);
             parentDeptComboBox.setCellFactory(param -> new ListCell<Departement>() {
                 @Override
                 protected void updateItem(Departement item, boolean empty) {
@@ -113,56 +123,51 @@ public class paneDepController implements Initializable {
                     }
                 }
             });
-            /*departmentComboBox.setItems(departments);
-            departmentComboBox.setCellFactory(param -> new ListCell<Departement>() {
-                @Override
-                protected void updateItem(Departement item, boolean empty) {
-                    super.updateItem(item, empty);
-                    if (empty || item == null || item.getNom() == null) {
-                        setText(null);
-                    } else {
-                        setText(item.getNom());
-                    }
-                }
-            });
-            departmentComboBox.setButtonCell(new ListCell<Departement>() {
-                @Override
-                protected void updateItem(Departement item, boolean empty) {
-                    super.updateItem(item, empty);
-                    if (empty || item == null || item.getNom() == null) {
-                        setText(null);
-                    } else {
-                        setText(item.getNom());
-                    }
-                }
-            });
-            DepHComboBox.setItems(departments);
-            DepHComboBox.setCellFactory(param -> new ListCell<Departement>() {
-                @Override
-                protected void updateItem(Departement item, boolean empty) {
-                    super.updateItem(item, empty);
-                    if (empty || item == null || item.getNom() == null) {
-                        setText(null);
-                    } else {
-                        setText(item.getNom());
-                    }
-                }
-            });
-            DepHComboBox.setButtonCell(new ListCell<Departement>() {
-                @Override
-                protected void updateItem(Departement item, boolean empty) {
-                    super.updateItem(item, empty);
-                    if (empty || item == null || item.getNom() == null) {
-                        setText(null);
-                    } else {
-                        setText(item.getNom());
-                    }
-                }
-            });*/
         } catch (Exception e) {
             showError("Failed to load departments: " + e.getMessage());
         }
     }
+
+    private void addSubDepartmentComboBox(int parentId) {
+        List<Departement> subDepartments = depService.getDepItsParent(parentId);
+        if (subDepartments.isEmpty()) {
+            return;
+        }
+        ComboBox<Departement> subDeptComboBox = new ComboBox<>();
+        subDeptComboBox.setPrefHeight(31);
+        subDeptComboBox.setPrefWidth(281);
+        subDeptComboBox.setCellFactory(param -> new ListCell<Departement>() {
+            @Override
+            protected void updateItem(Departement item, boolean empty) {
+                super.updateItem(item, empty);
+                if (empty || item == null || item.getNom() == null) {
+                    setText(null);
+                } else {
+                    setText(item.getNom());
+                }
+            }
+        });
+        subDeptComboBox.setButtonCell(new ListCell<Departement>() {
+            @Override
+            protected void updateItem(Departement item, boolean empty) {
+                super.updateItem(item, empty);
+                if (empty || item == null || item.getNom() == null) {
+                    setText(null);
+                } else {
+                    setText(item.getNom());
+                }
+            }
+        });
+        ObservableList<Departement> subDepartmentParents = FXCollections.observableArrayList(subDepartments);
+        subDeptComboBox.setItems(subDepartmentParents);
+        subDeptComboBox.getSelectionModel().selectedItemProperty().addListener((obs, oldSelection, newSelection) -> {
+            if (newSelection != null) {
+                addSubDepartmentComboBox(newSelection.getIdDepartement());
+            }
+        });
+        comboBoxContainer.getChildren().add(subDeptComboBox);
+    }
+
 
     protected void showError(String message) {
         Alert alert = new Alert(Alert.AlertType.ERROR);
@@ -171,5 +176,4 @@ public class paneDepController implements Initializable {
         alert.setContentText(message);
         alert.showAndWait();
     }
-
 }
