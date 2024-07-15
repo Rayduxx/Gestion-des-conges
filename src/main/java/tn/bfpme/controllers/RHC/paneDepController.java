@@ -25,6 +25,8 @@ public class paneDepController implements Initializable {
     private final ServiceDepartement depService = new ServiceDepartement();
     private RHController RHC;
     private paneUserController PUC;
+    private ComboBox<Departement> lastSelectedComboBox = null;
+    private Departement lastSelectedParent = null;
 
     @Override
     public void initialize(URL url, ResourceBundle resourceBundle) {
@@ -39,7 +41,11 @@ public class paneDepController implements Initializable {
 
         parentDeptComboBox.getSelectionModel().selectedItemProperty().addListener((obs, oldSelection, newSelection) -> {
             if (newSelection != null) {
+                comboBoxContainer.getChildren().clear();
+                lastSelectedParent = newSelection;
                 addSubDepartmentComboBox(newSelection.getIdDepartement());
+            } else {
+                lastSelectedParent = null;
             }
         });
     }
@@ -48,7 +54,8 @@ public class paneDepController implements Initializable {
     private void handleAddDepartment() {
         String name = deptNameField.getText();
         String description = deptDescriptionField.getText();
-        Departement parent = parentDeptComboBox.getSelectionModel().getSelectedItem();
+
+        Departement parent = lastSelectedParent != null ? lastSelectedParent : parentDeptComboBox.getSelectionModel().getSelectedItem();
 
         if (parent == null) {
             depService.addDepartement2(name, description);
@@ -64,7 +71,7 @@ public class paneDepController implements Initializable {
         if (selectedDept != null) {
             String name = deptNameField.getText();
             String description = deptDescriptionField.getText();
-            Departement parent = parentDeptComboBox.getSelectionModel().getSelectedItem();
+            Departement parent = lastSelectedParent != null ? lastSelectedParent : parentDeptComboBox.getSelectionModel().getSelectedItem();
             depService.updateDepartment(selectedDept.getIdDepartement(), name, description, parent != null ? parent.getIdDepartement() : null);
             loadDepartments();
         }
@@ -162,12 +169,13 @@ public class paneDepController implements Initializable {
         subDeptComboBox.setItems(subDepartmentParents);
         subDeptComboBox.getSelectionModel().selectedItemProperty().addListener((obs, oldSelection, newSelection) -> {
             if (newSelection != null) {
+                lastSelectedParent = newSelection;
                 addSubDepartmentComboBox(newSelection.getIdDepartement());
             }
         });
         comboBoxContainer.getChildren().add(subDeptComboBox);
+        lastSelectedComboBox = subDeptComboBox;
     }
-
 
     protected void showError(String message) {
         Alert alert = new Alert(Alert.AlertType.ERROR);
