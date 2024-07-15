@@ -744,10 +744,6 @@ public class ServiceUtilisateur implements IUtilisateur {
         }
     }
 
-    public void updateUserRoleAndDepartment(int userId, int roleId, int departmentId) {
-        updateUserDepartment(userId, departmentId);
-        updateUserRole(userId, roleId);
-    }
 
     public void updateUserRole(int userId, int roleId) {
         String deleteSql = "DELETE FROM user_role WHERE ID_User = ?";
@@ -1563,6 +1559,111 @@ public class ServiceUtilisateur implements IUtilisateur {
 
         return users;
     }
+    public void updateUserRoleAndDepartment(int userId, int roleId, int departmentId) throws SQLException {
+        if (cnx == null || cnx.isClosed()) {
+            cnx = MyDataBase.getInstance().getCnx();
+        }
+        String updateDepartmentQuery = "UPDATE user SET ID_Departement = ? WHERE ID_User = ?";
+        try (PreparedStatement stmt = cnx.prepareStatement(updateDepartmentQuery)) {
+            stmt.setInt(1, departmentId);
+            stmt.setInt(2, userId);
+            stmt.executeUpdate();
+        }
+
+        // Check if the user already has a role
+        String checkRoleQuery = "SELECT COUNT(*) FROM user_role WHERE ID_User = ?";
+        try (PreparedStatement stmt = cnx.prepareStatement(checkRoleQuery)) {
+            stmt.setInt(1, userId);
+            ResultSet rs = stmt.executeQuery();
+            if (rs.next() && rs.getInt(1) > 0) {
+                // Update the existing role
+                String updateRoleQuery = "UPDATE user_role SET ID_Role = ? WHERE ID_User = ?";
+                try (PreparedStatement updateStmt = cnx.prepareStatement(updateRoleQuery)) {
+                    updateStmt.setInt(1, roleId);
+                    updateStmt.setInt(2, userId);
+                    updateStmt.executeUpdate();
+                }
+            } else {
+                // Insert the new role
+                String insertRoleQuery = "INSERT INTO user_role (ID_User, ID_Role) VALUES (?, ?)";
+                try (PreparedStatement insertStmt = cnx.prepareStatement(insertRoleQuery)) {
+                    insertStmt.setInt(1, userId);
+                    insertStmt.setInt(2, roleId);
+                    insertStmt.executeUpdate();
+                }
+            }
+        }
+    }
+
+    public void setUserManager(int userId) throws SQLException {
+        if (cnx == null || cnx.isClosed()) {
+            cnx = MyDataBase.getInstance().getCnx();
+        }
+        // Step 1: Fetch the user's current department and role
+        String userQuery = "SELECT u.ID_Departement, ur.ID_Role FROM user u JOIN user_role ur ON u.ID_User = ur.ID_User WHERE u.ID_User = ?";
+        PreparedStatement userStmt = cnx.prepareStatement(userQuery);
+        userStmt.setInt(1, userId);
+        ResultSet userRs = userStmt.executeQuery();
+
+        if (!userRs.next()) {
+            throw new SQLException("User not found");
+        }
+
+        int userDeptId = userRs.getInt("ID_Departement");
+        int userRoleId = userRs.getInt("ID_Role");
+        System.out.println("User Dept ID: " + userDeptId + ", User Role ID: " + userRoleId);
+
+        // Step 2: Determine the parent department and parent role
+        String parentDeptQuery = "SELECT Parent_Dept FROM departement WHERE ID_Departement = ?";
+        PreparedStatement parentDeptStmt = cnx.prepareStatement(parentDeptQuery);
+        parentDeptStmt.setInt(1, userDeptId);
+        ResultSet parentDeptRs = parentDeptStmt.executeQuery();
+
+        int parentDeptId = userDeptId; // default to the same department
+        if (parentDeptRs.next()) {
+            int parentId = parentDeptRs.getInt("Parent_Dept");
+            if (parentId != 0) {
+                parentDeptId = parentId;
+            }
+        }
+        System.out.println("Parent Dept ID: " + parentDeptId);
+
+        String parentRoleQuery = "SELECT ID_RoleP FROM rolehierarchie WHERE ID_RoleC = ?";
+        PreparedStatement parentRoleStmt = cnx.prepareStatement(parentRoleQuery);
+        parentRoleStmt.setInt(1, userRoleId);
+        ResultSet parentRoleRs = parentRoleStmt.executeQuery();
+
+        int parentRoleId = userRoleId; // default to the same role
+        if (parentRoleRs.next()) {
+            int parentId = parentRoleRs.getInt("ID_RoleP");
+            if (parentId != 0) {
+                parentRoleId = parentId;
+            }
+        }
+        System.out.println("Parent Role ID: " + parentRoleId);
+
+        // Step 3: Find the manager in the parent department with the parent role
+        String managerQuery = "SELECT u.ID_User FROM user u JOIN user_role ur ON u.ID_User = ur.ID_User WHERE u.ID_Departement = ? AND ur.ID_Role = ? LIMIT 1";
+        PreparedStatement managerStmt = cnx.prepareStatement(managerQuery);
+        managerStmt.setInt(1, parentDeptId);
+        managerStmt.setInt(2, parentRoleId);
+        ResultSet managerRs = managerStmt.executeQuery();
+
+        if (managerRs.next()) {
+            int managerId = managerRs.getInt("ID_User");
+            System.out.println("Manager ID: " + managerId);
+
+            // Step 4: Assign the manager to the user
+            String updateManagerQuery = "UPDATE user SET ID_Manager = ? WHERE ID_User = ?";
+            PreparedStatement updateManagerStmt = cnx.prepareStatement(updateManagerQuery);
+            updateManagerStmt.setInt(1, managerId);
+            updateManagerStmt.setInt(2, userId);
+            updateManagerStmt.executeUpdate();
+        } else {
+            throw new SQLException("Manager not found for user with ID: " + userId);
+        }
+    }
+
 
 
 
