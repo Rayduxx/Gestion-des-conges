@@ -6,6 +6,7 @@ import tn.bfpme.models.*;
 import tn.bfpme.utils.MyDataBase;
 import tn.bfpme.utils.SessionManager;
 
+
 import java.sql.*;
 import java.time.LocalDate;
 import java.util.ArrayList;
@@ -85,7 +86,6 @@ public class ServiceUtilisateur implements IUtilisateur {
         }
         return new UserConge(users, conges);
     }
-
 
     public UserConge AfficherApprove() {
         List<User> users = new ArrayList<>();
@@ -627,12 +627,18 @@ public class ServiceUtilisateur implements IUtilisateur {
              ResultSet rs = stmt.executeQuery(query)) {
             while (rs.next()) {
                 User user = new User(
+                        rs.getInt("ID_User"),
                         rs.getString("Nom"),
                         rs.getString("Prenom"),
                         rs.getString("Email"),
-                        rs.getInt("ID_Manager"),
+                        rs.getString("MDP"),
+                        rs.getString("Image"),
+                        rs.getInt("Solde_Annuel"),
+                        rs.getInt("Solde_Maladie"),
+                        rs.getInt("Solde_Exceptionnel"),
+                        rs.getInt("Solde_Maternité"),
                         rs.getInt("ID_Departement"),
-                        rs.getInt("ID_Role")
+                        rs.getInt("ID_Manager")
                 );
                 users.add(user);
             }
@@ -867,41 +873,6 @@ public class ServiceUtilisateur implements IUtilisateur {
         return managerId;
     }
 
-    public List<User> getAllUsers() {
-        List<User> users = new ArrayList<>();
-        String query = "SELECT u.*, ur.ID_Role FROM user u LEFT JOIN user_role ur ON u.ID_User = ur.ID_User";
-        try {
-            if (cnx == null || cnx.isClosed()) {
-                cnx = MyDataBase.getInstance().getCnx(); // Re-establish the connection if necessary
-            }
-            Statement stmt = cnx.createStatement();
-            ResultSet rs = stmt.executeQuery(query);
-            while (rs.next()) {
-                // Handle potential null values for ID_Role
-                int idRole = rs.getObject("ID_Role") != null ? rs.getInt("ID_Role") : -1; // -1 or any default value if ID_Role is null
-
-                User user = new User(
-                        rs.getInt("ID_User"),
-                        rs.getString("Nom"),
-                        rs.getString("Prenom"),
-                        rs.getString("Email"),
-                        rs.getString("MDP"),
-                        rs.getString("Image"),
-                        rs.getInt("Solde_Annuel"),
-                        rs.getInt("Solde_Maladie"),
-                        rs.getInt("Solde_Exceptionnel"),
-                        rs.getInt("Solde_Maternité"),
-                        rs.getInt("ID_Departement"),
-                        rs.getInt("ID_Manager"),
-                        idRole
-                );
-                users.add(user);
-            }
-        } catch (SQLException e) {
-            e.printStackTrace();
-        }
-        return users;
-    }
 
     @Override
     public void updateUser(User user) {
@@ -990,15 +961,15 @@ public class ServiceUtilisateur implements IUtilisateur {
         return users;
     }
 
-    public List<User> getAllUsersWithManagers() {
+    /*public List<User> getAllUsersWithManagers() {
         List<User> users = getAllUsers();
         for (User user : users) {
             Integer managerId = getManagerIdByUserId(user.getIdUser());
             String managerName = managerId != null ? getManagerNameByUserId(managerId) : null;
-            user.setNom(user.getNom() + (managerName != null ? " (Manager: " + managerName + ")" : " (No Manager)"));
+            user.setNom((managerName != null ? " (Manager: " + managerName + ")" : " (No Manager)"));
         }
         return users;
-    }
+    }*/
 
     @Override
     public void Add(User user) {
@@ -1353,9 +1324,8 @@ public class ServiceUtilisateur implements IUtilisateur {
         PreparedStatement ps = null;
         ResultSet rs = null;
         try {
-            cnx = MyDataBase.getInstance().getCnx();
             if (cnx == null || cnx.isClosed()) {
-                throw new SQLException("Failed to establish a database connection.");
+                cnx = MyDataBase.getInstance().getCnx();
             }
             ps = cnx.prepareStatement(sql);
             String searchQuery = "%" + query + "%";
@@ -1420,8 +1390,11 @@ public class ServiceUtilisateur implements IUtilisateur {
                 "LEFT JOIN role r ON s.ID_Role = r.ID_Role " +
                 "WHERE s.ID_User != ?";
 
-        try (Connection cnx = MyDataBase.getInstance().getCnx();
-             PreparedStatement ps = cnx.prepareStatement(sql)) {
+        try {
+            if (cnx == null || cnx.isClosed()) {
+                cnx = MyDataBase.getInstance().getCnx();
+            }
+             PreparedStatement ps = cnx.prepareStatement(sql);
             ps.setInt(1, currentUserId);
             ps.setInt(2, currentUserId); // Exclude current user
             ResultSet rs = ps.executeQuery();
@@ -1470,8 +1443,11 @@ public class ServiceUtilisateur implements IUtilisateur {
                 "WHERE s.ID_User != ? " +
                 "AND (s.Nom LIKE ? OR s.Prenom LIKE ? OR s.Email LIKE ?)";
 
-        try (Connection cnx = MyDataBase.getInstance().getCnx();
-             PreparedStatement ps = cnx.prepareStatement(sql)) {
+        try {
+            if (cnx == null || cnx.isClosed()) {
+                cnx = MyDataBase.getInstance().getCnx();
+            }
+             PreparedStatement ps = cnx.prepareStatement(sql);
             ps.setInt(1, currentUserId);
             ps.setInt(2, currentUserId); // Exclude current user
             String searchInput = "%" + input + "%";
@@ -1501,6 +1477,90 @@ public class ServiceUtilisateur implements IUtilisateur {
         } catch (SQLException ex) {
             System.out.println(ex.getMessage());
         }
+        return users;
+    }
+    public List<User> getAllUsers() {
+        List<User> users = new ArrayList<>();
+        String query = "SELECT u.*, d.nom AS departmentName, r.nom AS roleName, m.Nom AS managerName, m.Prenom AS managerPrenom " +
+                "FROM user u " +
+                "LEFT JOIN departement d ON u.ID_Departement = d.ID_Departement " +
+                "LEFT JOIN user_role ur ON u.ID_User = ur.ID_User " +
+                "LEFT JOIN role r ON ur.ID_Role = r.ID_Role " +
+                "LEFT JOIN user m ON u.ID_Manager = m.ID_User";
+        try {
+            if (cnx == null || cnx.isClosed()) {
+                cnx = MyDataBase.getInstance().getCnx();
+            }
+            Statement stmt = cnx.createStatement();
+            ResultSet rs = stmt.executeQuery(query);
+            while (rs.next()) {
+                User user = new User(
+                        rs.getInt("ID_User"),
+                        rs.getString("Nom"),
+                        rs.getString("Prenom"),
+                        rs.getString("Email"),
+                        rs.getString("MDP"),
+                        rs.getString("Image"),
+                        rs.getDouble("Solde_Annuel"),
+                        rs.getInt("Solde_Maladie"),
+                        rs.getInt("Solde_Exceptionnel"),
+                        rs.getInt("Solde_Maternité"),
+                        rs.getInt("ID_Departement"),
+                        rs.getInt("ID_Manager")
+                );
+                user.setDepartementNom(rs.getString("departmentName"));
+                user.setRoleNom(rs.getString("roleName"));
+                user.setManagerName(rs.getString("managerName") + " " + rs.getString("managerPrenom"));
+                users.add(user);
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return users;
+    }
+    private List<User> getAllUsersWithDetails() {
+        List<User> users = new ArrayList<>();
+        try {
+            // Set up the connection to the database
+            Connection connection = DriverManager.getConnection("jdbc:mysql://localhost:3306/bfpmeconge", "root", "password");
+
+            // Create a statement
+            Statement statement = connection.createStatement();
+
+            // Execute the query
+            ResultSet resultSet = statement.executeQuery(
+                    "SELECT u.*, d.nom as departementNom, m.nom as managerName " +
+                            "FROM user u " +
+                            "LEFT JOIN departement d ON u.idDepartement = d.idDepartement " +
+                            "LEFT JOIN user m ON u.idManager = m.idUser"
+            );
+
+            // Process the result set
+            while (resultSet.next()) {
+                User user = new User();
+                user.setIdUser(resultSet.getInt("idUser"));
+                user.setNom(resultSet.getString("nom"));
+                user.setPrenom(resultSet.getString("prenom"));
+                user.setEmail(resultSet.getString("email"));
+                user.setMdp(resultSet.getString("mdp"));
+                user.setImage(resultSet.getString("image"));
+                user.setCreationDate(resultSet.getDate("creationDate").toLocalDate());
+                user.setSoldeMaternite(resultSet.getDouble("soldeMaternite"));
+                user.setSoldeAnnuel(resultSet.getDouble("soldeAnnuel"));
+                user.setSoldeExceptionnel(resultSet.getDouble("soldeExceptionnel"));
+                user.setSoldeMaladie(resultSet.getDouble("soldeMaladie"));
+                user.setIdManager(resultSet.getInt("idManager"));
+                user.setIdDepartement(resultSet.getInt("idDepartement"));
+                user.setIdRole(resultSet.getInt("idRole"));
+                user.setDepartementNom(resultSet.getString("departementNom"));
+                user.setManagerName(resultSet.getString("managerName"));
+
+                users.add(user);
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+
         return users;
     }
 

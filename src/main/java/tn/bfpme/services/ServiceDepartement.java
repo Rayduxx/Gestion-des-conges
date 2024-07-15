@@ -59,7 +59,8 @@ public class ServiceDepartement {
 
     public List<Departement> getAllDepartments() {
         List<Departement> departments = new ArrayList<>();
-        String query = "SELECT * FROM departement";
+        String query = "SELECT d.*, dp.nom AS parentDeptName FROM departement d " +
+                "LEFT JOIN departement dp ON d.Parent_Dept = dp.ID_Departement";
         try (Connection cnx = MyDataBase.getInstance().getCnx();
              Statement stmt = cnx.createStatement();
              ResultSet rs = stmt.executeQuery(query)) {
@@ -70,6 +71,7 @@ public class ServiceDepartement {
                         rs.getString("description"),
                         rs.getInt("Parent_Dept")
                 );
+                dept.setParentDeptName(rs.getString("parentDeptName"));
                 departments.add(dept);
             }
         } catch (SQLException e) {
@@ -77,6 +79,7 @@ public class ServiceDepartement {
         }
         return departments;
     }
+
 
     public void addDepartement(String name, String description, Integer parentDeptId) {
         String query = "INSERT INTO departement (nom, description, Parent_Dept) VALUES (?, ?, ?)";

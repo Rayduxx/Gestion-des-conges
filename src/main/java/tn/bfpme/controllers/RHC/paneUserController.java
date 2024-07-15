@@ -9,6 +9,7 @@ import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.fxml.Initializable;
 import javafx.scene.control.*;
+import javafx.scene.control.cell.TreeItemPropertyValueFactory;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.layout.GridPane;
@@ -18,8 +19,8 @@ import javafx.stage.Stage;
 import tn.bfpme.controllers.UserCardController;
 import tn.bfpme.models.Departement;
 import tn.bfpme.models.Role;
-import tn.bfpme.models.User;
 import tn.bfpme.models.SoldeConge;
+import tn.bfpme.models.User;
 import tn.bfpme.services.ServiceDepartement;
 import tn.bfpme.services.ServiceRole;
 import tn.bfpme.services.ServiceUtilisateur;
@@ -39,70 +40,97 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.time.LocalDate;
-import java.util.List;
-import java.util.ResourceBundle;
-import java.util.UUID;
+import java.util.*;
 
 public class paneUserController implements Initializable {
-
+    @FXML
+    private TextField Depart_field;
+    @FXML
+    private TreeTableColumn<Departement, String> DeptparColumn;
+    @FXML
+    private TreeTableColumn<Role, String> DescRoleColumn;
+    @FXML
+    private TreeTableColumn<Departement, String> DescriptionDeptColumn;
+    @FXML
+    private TreeTableColumn<Role, String> RoleFilsColumn;
+    @FXML
+    private TreeTableColumn<Role, String> RoleParColumn;
+    @FXML
+    private TextField Role_field;
     @FXML
     public ListView<User> userListView;
     @FXML
     public TextField User_field;
-
-    @FXML
-    public TextField Depart_field;
-
     @FXML
     public TextField ID_A;
-
     @FXML
     public TextField MDP_A;
-
     @FXML
     public ImageView PDPimageHolder;
-
     @FXML
     public TextField Prenom_A;
-
     @FXML
-    public TextField Role_field;
-
+    private TreeTableView<Departement> deptTable;
+    @FXML
+    private TreeTableColumn<User, String> emailUserColumn;
+    @FXML
+    private TreeTableColumn<Departement, Integer> idDapartementColumn;
+    @FXML
+    private TreeTableColumn<Role, Integer> idRoleColumn;
+    @FXML
+    private TreeTableColumn<User, Integer> idUserColumn;
+    @FXML
+    private TreeTableColumn<User, String> managerUserColumn;
+    @FXML
+    private TreeTableColumn<Departement, String> nomDeptColumn;
+    @FXML
+    private TreeTableColumn<Role, String> nomRoleColumn;
+    @FXML
+    private TreeTableColumn<User, String> nomUserColumn;
+    @FXML
+    private TreeTableColumn<User, String> prenomUserColumn;
+    @FXML
+    private TextField searchFieldDept;
+    @FXML
+    private TextField searchFieldRole;
+    @FXML
+    private TextField searchFieldUser;
+    @FXML
+    private ComboBox<String> hierarCombo;
+    @FXML
+    private ListView<Role> roleListView;
+    @FXML
+    private TreeTableView<Role> roleTable;
     @FXML
     public TextField S_Ann;
-
     @FXML
     public TextField S_exc;
-
     @FXML
     public TextField S_mal;
-
     @FXML
     public TextField S_mat;
-
     @FXML
     public GridPane UserContainers;
-
     @FXML
     private Pane UtilisateursPane;
-
     @FXML
     public ListView<Departement> departListView;
-
     @FXML
     public TextField email_A;
-
     @FXML
     public TextField image_A;
-
     @FXML
     public Label infolabel;
-
     @FXML
     public TextField nom_A;
-
     @FXML
-    public ListView<Role> roleListView;
+    private Pane DepartPane1;
+    @FXML
+    private Pane RolePane1;
+    @FXML
+    private Pane UserPane1;
+    @FXML
+    private TreeTableView<User> userTable;
 
     public User selectedUser;
     public FilteredList<User> filteredData;
@@ -114,18 +142,41 @@ public class paneUserController implements Initializable {
     private final ServiceDepartement depService = new ServiceDepartement();
     private final ServiceUtilisateur userService = new ServiceUtilisateur();
     private final ServiceRole roleService = new ServiceRole();
-
+    ObservableList<String> HierarchieList = FXCollections.observableArrayList("Utilisateurs", "Départements", "Roles");
 
     @Override
     public void initialize(URL location, ResourceBundle resources) {
         loadUsers();
+        loadUsers1();
         loadDepartments();
         loadRoles();
+        hierarCombo.setValue("Selectioner type");
+        hierarCombo.setItems(HierarchieList);
+    }
+
+    @FXML
+    void SelecHierar(ActionEvent event) {
+        if (hierarCombo.getValue().equals("Utilisateurs")) {
+            UserPane1.setVisible(true);
+            RolePane1.setVisible(false);
+            DepartPane1.setVisible(false);
+        }
+        if (hierarCombo.getValue().equals("Départements")) {
+            UserPane1.setVisible(false);
+            DepartPane1.setVisible(true);
+            RolePane1.setVisible(false);
+        }
+        if (hierarCombo.getValue().equals("Roles")) {
+            UserPane1.setVisible(false);
+            DepartPane1.setVisible(false);
+            RolePane1.setVisible(true);
+        }
     }
 
     private void loadUsers() {
         UserContainers.getChildren().clear();
         List<User> userList = userService.getAllUsers();
+        ServiceRole roleService = new ServiceRole(); // Instantiate the role service
         int column = 0;
         int row = 0;
 
@@ -137,7 +188,7 @@ public class paneUserController implements Initializable {
 
                 UserCardController cardController = fxmlLoader.getController();
                 Departement department = depService.getDepartmentById(user.getIdDepartement());
-                Role role = roleService.getRoleById(user.getIdRole());
+                Role role = roleService.getRoleByUserId(user.getIdUser()); // Fetch the role for the current user
 
                 String departmentName = department != null ? department.getNom() : "N/A";
                 String roleName = role != null ? role.getNom() : "N/A";
@@ -156,6 +207,34 @@ public class paneUserController implements Initializable {
             e.printStackTrace();
         }
     }
+
+    private void loadUsers1() {
+        List<User> userList = userService.getAllUsers();
+        ObservableList<User> users = FXCollections.observableArrayList(userList);
+        filteredData = new FilteredList<>(users, p -> true);
+        userListView.setItems(filteredData);
+        userListView.setCellFactory(param -> new ListCell<User>() {
+            @Override
+            protected void updateItem(User user, boolean empty) {
+                super.updateItem(user, empty);
+                if (empty || user == null) {
+                    setText(null);
+                } else {
+                    Departement departement = depService.getDepartmentById(user.getIdDepartement());
+                    Role role = roleService.getRoleById(user.getIdRole());
+                    setText(user.getPrenom() + " " + user.getNom());
+                }
+            }
+        });
+        userListView.getSelectionModel().selectedItemProperty().addListener((observable, oldValue, newValue) -> {
+            Platform.runLater(() -> {
+                if (newValue != null) {
+                    handleUserSelection(newValue);
+                }
+            });
+        });
+    }
+
     private void loadDepartments() {
         List<Departement> departmentList = depService.getAllDepartments();
         ObservableList<Departement> departments = FXCollections.observableArrayList(departmentList);
@@ -208,6 +287,104 @@ public class paneUserController implements Initializable {
         });
     }
 
+    private void loadUsers3() {
+        List<User> userList = userService.getAllUsers();
+        ObservableList<User> users = FXCollections.observableArrayList(userList);
+
+        // Create the root node
+        TreeItem<User> root = new TreeItem<>(new User(0, "Root", "", "", "", "", 0, 0, 0, 0, 0, 0, LocalDate.now(), 0));
+        root.setExpanded(true);
+
+        // Create a map of users by their ID for easy lookup
+        Map<Integer, TreeItem<User>> userMap = new HashMap<>();
+        userMap.put(0, root);
+
+        // Add all users as children of their respective managers
+        for (User user : users) {
+            TreeItem<User> item = new TreeItem<>(user);
+            userMap.put(user.getIdUser(), item);
+
+            TreeItem<User> parentItem = userMap.getOrDefault(user.getIdManager(), root);
+            parentItem.getChildren().add(item);
+        }
+
+        // Set the root to the TreeTableView
+        userTable.setRoot(root);
+        userTable.setShowRoot(false);
+
+        // Bind the columns to the User properties
+        idUserColumn.setCellValueFactory(new TreeItemPropertyValueFactory<>("idUser"));
+        prenomUserColumn.setCellValueFactory(new TreeItemPropertyValueFactory<>("prenom"));
+        nomUserColumn.setCellValueFactory(new TreeItemPropertyValueFactory<>("nom"));
+        emailUserColumn.setCellValueFactory(new TreeItemPropertyValueFactory<>("email"));
+        managerUserColumn.setCellValueFactory(new TreeItemPropertyValueFactory<>("managerName")); // Update this line
+    }
+
+    private void loadRoles3() {
+        System.out.println("test7");
+        List<Role> roleList = roleService.getAllRoles();
+        ObservableList<Role> roles = FXCollections.observableArrayList(roleList);
+
+        TreeItem<Role> root = new TreeItem<>(new Role(0, "Root", "", 0)); // Adjust constructor as necessary
+        root.setExpanded(true);
+        System.out.println("test8");
+
+        Map<Integer, TreeItem<Role>> roleMap = new HashMap<>();
+        roleMap.put(0, root);
+
+        for (Role role : roles) {
+            System.out.println("test9");
+            TreeItem<Role> item = new TreeItem<>(role);
+            roleMap.put(role.getIdRole(), item);
+
+            TreeItem<Role> parentItem = roleMap.getOrDefault(role.getRoleParent(), root);
+            parentItem.getChildren().add(item);
+            System.out.println("test10");
+        }
+
+        roleTable.setRoot(root);
+        roleTable.setShowRoot(false);
+        System.out.println("test11");
+
+        idRoleColumn.setCellValueFactory(new TreeItemPropertyValueFactory<>("idRole"));
+        nomRoleColumn.setCellValueFactory(new TreeItemPropertyValueFactory<>("nom"));
+        DescRoleColumn.setCellValueFactory(new TreeItemPropertyValueFactory<>("description"));
+        RoleParColumn.setCellValueFactory(new TreeItemPropertyValueFactory<>("roleParent"));
+        System.out.println("test12");
+    }
+    private void loadDeparts3() {
+        System.out.println("test");
+        List<Departement> departmentList = depService.getAllDepartments();
+        ObservableList<Departement> departments = FXCollections.observableArrayList(departmentList);
+
+        TreeItem<Departement> root = new TreeItem<>(new Departement(0, "Root", "", 0)); // Adjust constructor as necessary
+        root.setExpanded(true);
+        System.out.println("test1");
+
+        Map<Integer, TreeItem<Departement>> departMap = new HashMap<>();
+        departMap.put(0, root);
+
+        for (Departement departement : departments) {
+            System.out.println("test2");
+            TreeItem<Departement> item = new TreeItem<>(departement);
+            departMap.put(departement.getIdDepartement(), item);
+
+            TreeItem<Departement> parentItem = departMap.getOrDefault(departement.getParentDept(), root);
+            parentItem.getChildren().add(item);
+            System.out.println("test4");
+        }
+
+        deptTable.setRoot(root);
+        deptTable.setShowRoot(false);
+        System.out.println("test5");
+
+        idDapartementColumn.setCellValueFactory(new TreeItemPropertyValueFactory<>("idDepartement"));
+        nomDeptColumn.setCellValueFactory(new TreeItemPropertyValueFactory<>("nom"));
+        DescriptionDeptColumn.setCellValueFactory(new TreeItemPropertyValueFactory<>("description"));
+        DeptparColumn.setCellValueFactory(new TreeItemPropertyValueFactory<>("parentDept"));
+        System.out.println("test6");
+    }
+
     @FXML
     public void User_Recherche(ActionEvent actionEvent) {
         String searchText = User_field.getText().trim();
@@ -238,6 +415,46 @@ public class paneUserController implements Initializable {
     @FXML
     void Role_Recherche(ActionEvent event) {
         String searchText = Role_field.getText().trim();
+        filteredRoles.setPredicate(role -> {
+            if (searchText == null || searchText.isEmpty()) {
+                return true;
+            }
+            String lowerCaseFilter = searchText.toLowerCase();
+            return role.getNom().toLowerCase().contains(lowerCaseFilter) ||
+                    role.getDescription().toLowerCase().contains(lowerCaseFilter);
+        });
+    }
+
+    @FXML
+    void rechercheUser1(ActionEvent event) {
+        String searchText = searchFieldUser.getText().trim();
+        filteredData.setPredicate(user -> {
+            if (searchText == null || searchText.isEmpty()) {
+                return true;
+            }
+            String lowerCaseFilter = searchText.toLowerCase();
+            return user.getNom().toLowerCase().contains(lowerCaseFilter) ||
+                    user.getPrenom().toLowerCase().contains(lowerCaseFilter) ||
+                    user.getEmail().toLowerCase().contains(lowerCaseFilter);
+        });
+    }
+
+    @FXML
+    void rechercheDept1(ActionEvent event) {
+        String searchText = searchFieldDept.getText().trim();
+        filteredDepartments.setPredicate(departement -> {
+            if (searchText == null || searchText.isEmpty()) {
+                return true;
+            }
+            String lowerCaseFilter = searchText.toLowerCase();
+            return (departement.getNom() != null && departement.getNom().toLowerCase().contains(lowerCaseFilter)) ||
+                    (departement.getDescription() != null && departement.getDescription().toLowerCase().contains(lowerCaseFilter));
+        });
+    }
+
+    @FXML
+    void rechercheRole1(ActionEvent event) {
+        String searchText = searchFieldRole.getText().trim();
         filteredRoles.setPredicate(role -> {
             if (searchText == null || searchText.isEmpty()) {
                 return true;
@@ -305,10 +522,14 @@ public class paneUserController implements Initializable {
             }
         }
     }
+
     private SoldeConge getSoldeCongeByUserId(int userId) {
         SoldeConge soldeConge = null;
-        String query = "SELECT sc.* FROM soldeconge sc JOIN user u ON sc.idSolde = u.ID_Solde WHERE u.ID_User = ?";
+        String query = "SELECT sc.* FROM soldeconge sc JOIN user u ON sc.idSolde = u.idSolde WHERE u.ID_User = ?";
         try {
+            if (cnx == null || cnx.isClosed()) {
+                cnx = MyDataBase.getInstance().getCnx();
+            }
             PreparedStatement stm = cnx.prepareStatement(query);
             stm.setInt(1, userId);
             ResultSet rs = stm.executeQuery();
@@ -439,7 +660,6 @@ public class paneUserController implements Initializable {
         }
     }
 
-
     private int parseIntOrZero(String text) {
         if (text == null || text.trim().isEmpty()) {
             return 0;
@@ -553,7 +773,6 @@ public class paneUserController implements Initializable {
         }
     }
 
-
     private boolean emailExistss(String email, int excludeUserId) throws SQLException {
         String query = "SELECT * FROM `user` WHERE Email=?";
         try (Connection cnx = MyDataBase.getInstance().getCnx();
@@ -585,6 +804,4 @@ public class paneUserController implements Initializable {
             return new SoldeConge(0, 0, 0, 0);
         }
     }
-
 }
-
