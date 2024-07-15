@@ -21,6 +21,7 @@ public class paneDepController implements Initializable {
     private ComboBox<Departement> parentDeptComboBox;
     @FXML
     private VBox comboBoxContainer;
+    private ComboBox<Departement> lastSelectedComboBox = null;
 
     private final ServiceDepartement depService = new ServiceDepartement();
     private RHController RHC;
@@ -39,10 +40,15 @@ public class paneDepController implements Initializable {
 
         parentDeptComboBox.getSelectionModel().selectedItemProperty().addListener((obs, oldSelection, newSelection) -> {
             if (newSelection != null) {
+                comboBoxContainer.getChildren().clear();
                 addSubDepartmentComboBox(newSelection.getIdDepartement());
+            } else {
+                // Reset lastSelectedComboBox when no parent is selected
+                lastSelectedComboBox = null;
             }
         });
     }
+
 
     @FXML
     private void handleAddDepartment() {
@@ -129,10 +135,16 @@ public class paneDepController implements Initializable {
     }
 
     private void addSubDepartmentComboBox(int parentId) {
+        // Clear all child ComboBoxes if a different parent is selected
+        if (lastSelectedComboBox != null) {
+            comboBoxContainer.getChildren().removeIf(node -> node instanceof ComboBox && node != lastSelectedComboBox);
+        }
+
         List<Departement> subDepartments = depService.getDepItsParent(parentId);
         if (subDepartments.isEmpty()) {
             return;
         }
+
         ComboBox<Departement> subDeptComboBox = new ComboBox<>();
         subDeptComboBox.setPrefHeight(31);
         subDeptComboBox.setPrefWidth(281);
@@ -165,9 +177,10 @@ public class paneDepController implements Initializable {
                 addSubDepartmentComboBox(newSelection.getIdDepartement());
             }
         });
-        comboBoxContainer.getChildren().add(subDeptComboBox);
-    }
 
+        comboBoxContainer.getChildren().add(subDeptComboBox);
+        lastSelectedComboBox = subDeptComboBox;
+    }
 
     protected void showError(String message) {
         Alert alert = new Alert(Alert.AlertType.ERROR);
