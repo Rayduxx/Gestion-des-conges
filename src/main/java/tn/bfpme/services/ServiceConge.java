@@ -7,11 +7,9 @@ import tn.bfpme.models.TypeConge;
 import tn.bfpme.utils.MyDataBase;
 import tn.bfpme.utils.SessionManager;
 
-import java.sql.Date;
 import java.sql.*;
 import java.util.ArrayList;
-import java.util.*;
-
+import java.util.List;
 
 public class ServiceConge implements IConge<Conge> {
     private Connection cnx;
@@ -21,6 +19,7 @@ public class ServiceConge implements IConge<Conge> {
     }
 
     public ServiceConge() {
+        this.cnx = MyDataBase.getInstance().getCnx();
     }
 
     @Override
@@ -143,11 +142,10 @@ public class ServiceConge implements IConge<Conge> {
 
     }
 
-
     @Override
     public void updateSoldeMaladie(int id, double solde) {
         try {
-            String qry = "UPDATE `utilisateur` SET `Solde_Maladie`=? WHERE `ID_User`=?";
+            String qry = "UPDATE `user` SET `Solde_Maladie`=? WHERE `ID_User`=?";
             PreparedStatement stm = cnx.prepareStatement(qry);
             stm.setDouble(1, solde);
             stm.setInt(2, id);
@@ -164,7 +162,7 @@ public class ServiceConge implements IConge<Conge> {
     @Override
     public void updateSoldeExceptionnel(int id, double solde) {
         try {
-            String qry = "UPDATE `utilisateur` SET `Solde_Exceptionnel`=? WHERE `ID_User`=?";
+            String qry = "UPDATE `user` SET `Solde_Exceptionnel`=? WHERE `ID_User`=?";
             PreparedStatement stm = cnx.prepareStatement(qry);
             stm.setDouble(1, solde);
             stm.setInt(2, id);
@@ -181,7 +179,7 @@ public class ServiceConge implements IConge<Conge> {
     @Override
     public void updateSoldeMaternité(int id, double solde) {
         try {
-            String qry = "UPDATE `utilisateur` SET `Solde_Maternité`=? WHERE `ID_User`=?";
+            String qry = "UPDATE `user` SET `Solde_Maternité`=? WHERE `ID_User`=?";
             PreparedStatement stm = cnx.prepareStatement(qry);
             stm.setDouble(1, solde);
             stm.setInt(2, id);
@@ -396,19 +394,6 @@ public class ServiceConge implements IConge<Conge> {
         return conges;
     }
 
-    /*public void updateNotificationText(int id, String text) {
-        try {
-            String qry = "UPDATE `conge` SET `Notification`=? WHERE `ID_Conge`=?";
-            PreparedStatement stm = cnx.prepareStatement(qry);
-            stm.setString(1, text);
-            stm.setInt(2, id);
-            stm.executeUpdate();
-        } catch (SQLException ex) {
-            System.out.println(ex.getMessage());
-        }
-    }*/
-
-
     public void NewMessage(String message, int idUser, int idConge) {
         cnx = MyDataBase.getInstance().getCnx();
 
@@ -443,5 +428,24 @@ public class ServiceConge implements IConge<Conge> {
         return Message;
     }
 
+    // New methods for leave request handling
+    public int getSupervisor(int userId) throws SQLException {
+        String sql = "SELECT ID_Manager FROM user WHERE ID_User = ?";
+        try (PreparedStatement stmt = cnx.prepareStatement(sql)) {
+            stmt.setInt(1, userId);
+            ResultSet rs = stmt.executeQuery();
+            if (rs.next()) {
+                return rs.getInt("ID_Manager");
+            } else {
+                throw new SQLException("Manager not found for user ID: " + userId);
+            }
+        }
+    }
 
+    public void handleLeaveRequest(Conge conge) throws SQLException {
+        Add(conge);
+        int supervisorId = getSupervisor(conge.getIdUser());
+        ServiceNotification notificationService = new ServiceNotification();
+        notificationService.NewNotification(supervisorId, "New leave request", 0, "You have a new leave request to review.");
+    }
 }
