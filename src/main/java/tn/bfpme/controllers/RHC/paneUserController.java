@@ -79,7 +79,9 @@ public class paneUserController implements Initializable {
     @FXML
     private TreeTableColumn<User, String> nomUserColumn;
     @FXML
-    private TreeTableColumn<User, String> emailUserColumn;
+    private TreeTableColumn<User, String>departUserColumn ;
+    @FXML
+    private TreeTableColumn<User, String>  roleUserColumn;
     @FXML
     private TreeTableColumn<User, String> managerUserColumn;
     @FXML
@@ -332,12 +334,14 @@ public class paneUserController implements Initializable {
             idUserColumn.setCellValueFactory(new TreeItemPropertyValueFactory<>("idUser"));
             prenomUserColumn.setCellValueFactory(new TreeItemPropertyValueFactory<>("prenom"));
             nomUserColumn.setCellValueFactory(new TreeItemPropertyValueFactory<>("nom"));
-            emailUserColumn.setCellValueFactory(new TreeItemPropertyValueFactory<>("email"));
+            roleUserColumn.setCellValueFactory(new TreeItemPropertyValueFactory<>("roleNom"));
+            departUserColumn.setCellValueFactory(new TreeItemPropertyValueFactory<>("departementNom"));
             managerUserColumn.setCellValueFactory(new TreeItemPropertyValueFactory<>("managerName"));
         } catch (Exception e) {
             e.printStackTrace();
         }
     }
+
 
 
 
