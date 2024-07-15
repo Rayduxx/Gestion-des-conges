@@ -41,7 +41,6 @@ public class paneDepController implements Initializable {
 
         parentDeptComboBox.getSelectionModel().selectedItemProperty().addListener((obs, oldSelection, newSelection) -> {
             if (newSelection != null) {
-                // Clear all child ComboBoxes when a new parent is selected
                 comboBoxContainer.getChildren().clear();
                 lastSelectedParent = newSelection;
                 addSubDepartmentComboBox(newSelection.getIdDepartement());
