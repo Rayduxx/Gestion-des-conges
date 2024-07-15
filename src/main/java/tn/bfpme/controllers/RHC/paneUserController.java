@@ -16,6 +16,7 @@ import javafx.scene.layout.GridPane;
 import javafx.scene.layout.Pane;
 import javafx.stage.FileChooser;
 import javafx.stage.Stage;
+import org.jetbrains.annotations.NotNull;
 import tn.bfpme.controllers.UserCardController;
 import tn.bfpme.models.Departement;
 import tn.bfpme.models.Role;
@@ -46,15 +47,41 @@ public class paneUserController implements Initializable {
     @FXML
     private TextField Depart_field;
     @FXML
-    private TreeTableColumn<Departement, String> DeptparColumn;
+    private TreeTableView<Role> roleTable;
+    @FXML
+    private TreeTableColumn<Role, Integer> idRoleColumn;
+    @FXML
+    private TreeTableColumn<Role, String> nomRoleColumn;
     @FXML
     private TreeTableColumn<Role, String> DescRoleColumn;
     @FXML
-    private TreeTableColumn<Departement, String> DescriptionDeptColumn;
+    private TreeTableColumn<Role, Integer> RoleParColumn;
     @FXML
     private TreeTableColumn<Role, String> RoleFilsColumn;
+
     @FXML
-    private TreeTableColumn<Role, String> RoleParColumn;
+    private TreeTableView<Departement> deptTable;
+    @FXML
+    private TreeTableColumn<Departement, Integer> idDapartementColumn;
+    @FXML
+    private TreeTableColumn<Departement, String> nomDeptColumn;
+    @FXML
+    private TreeTableColumn<Departement, String> DescriptionDeptColumn;
+    @FXML
+    private TreeTableColumn<Departement, Integer> DeptparColumn;
+
+    @FXML
+    private TreeTableView<User> userTable;
+    @FXML
+    private TreeTableColumn<User, Integer> idUserColumn;
+    @FXML
+    private TreeTableColumn<User, String> prenomUserColumn;
+    @FXML
+    private TreeTableColumn<User, String> nomUserColumn;
+    @FXML
+    private TreeTableColumn<User, String> emailUserColumn;
+    @FXML
+    private TreeTableColumn<User, String> managerUserColumn;
     @FXML
     private TextField Role_field;
     @FXML
@@ -69,26 +96,7 @@ public class paneUserController implements Initializable {
     public ImageView PDPimageHolder;
     @FXML
     public TextField Prenom_A;
-    @FXML
-    private TreeTableView<Departement> deptTable;
-    @FXML
-    private TreeTableColumn<User, String> emailUserColumn;
-    @FXML
-    private TreeTableColumn<Departement, Integer> idDapartementColumn;
-    @FXML
-    private TreeTableColumn<Role, Integer> idRoleColumn;
-    @FXML
-    private TreeTableColumn<User, Integer> idUserColumn;
-    @FXML
-    private TreeTableColumn<User, String> managerUserColumn;
-    @FXML
-    private TreeTableColumn<Departement, String> nomDeptColumn;
-    @FXML
-    private TreeTableColumn<Role, String> nomRoleColumn;
-    @FXML
-    private TreeTableColumn<User, String> nomUserColumn;
-    @FXML
-    private TreeTableColumn<User, String> prenomUserColumn;
+
     @FXML
     private TextField searchFieldDept;
     @FXML
@@ -99,8 +107,7 @@ public class paneUserController implements Initializable {
     private ComboBox<String> hierarCombo;
     @FXML
     private ListView<Role> roleListView;
-    @FXML
-    private TreeTableView<Role> roleTable;
+
     @FXML
     public TextField S_Ann;
     @FXML
@@ -129,8 +136,7 @@ public class paneUserController implements Initializable {
     private Pane RolePane1;
     @FXML
     private Pane UserPane1;
-    @FXML
-    private TreeTableView<User> userTable;
+
 
     public User selectedUser;
     public FilteredList<User> filteredData;
@@ -148,12 +154,14 @@ public class paneUserController implements Initializable {
     public void initialize(URL location, ResourceBundle resources) {
         loadUsers();
         loadUsers1();
+        loadUsers3();
         loadDepartments();
+        loadDeparts3();
         loadRoles();
+        loadRoles3();
         hierarCombo.setValue("Selectioner type");
         hierarCombo.setItems(HierarchieList);
     }
-
     @FXML
     void SelecHierar(ActionEvent event) {
         if (hierarCombo.getValue().equals("Utilisateurs")) {
@@ -282,102 +290,150 @@ public class paneUserController implements Initializable {
     }
 
     private void loadUsers3() {
-        List<User> userList = userService.getAllUsers();
-        ObservableList<User> users = FXCollections.observableArrayList(userList);
+        try {
+            List<User> userList = userService.getAllUsers();
+            ObservableList<User> users = FXCollections.observableArrayList(userList);
 
-        // Create the root node
-        TreeItem<User> root = new TreeItem<>(new User(0, "Root", "", "", "", "", 0, 0, 0, 0, 0, 0, LocalDate.now(), 0));
-        root.setExpanded(true);
+            TreeItem<User> root = new TreeItem<>(new User(0, "sans manager", "", "", "", "", 0, 0, 0, 0, 0, 0)); // Adjust constructor as necessary
+            root.setExpanded(true);
 
-        // Create a map of users by their ID for easy lookup
-        Map<Integer, TreeItem<User>> userMap = new HashMap<>();
-        userMap.put(0, root);
+            Map<Integer, TreeItem<User>> userMap = new HashMap<>();
+            userMap.put(0, root);
 
-        // Add all users as children of their respective managers
-        for (User user : users) {
-            TreeItem<User> item = new TreeItem<>(user);
-            userMap.put(user.getIdUser(), item);
+            for (User user : users) {
+                TreeItem<User> item = new TreeItem<>(user);
+                userMap.put(user.getIdUser(), item);
 
-            TreeItem<User> parentItem = userMap.getOrDefault(user.getIdManager(), root);
-            parentItem.getChildren().add(item);
+                TreeItem<User> parentItem = userMap.getOrDefault(user.getIdManager(), root);
+                if (parentItem == null) {
+                    parentItem = root;
+                }
+                parentItem.getChildren().add(item);
+            }
+            for (User user : users) {
+                TreeItem<User> item = userMap.get(user.getIdUser());
+                TreeItem<User> managerItem = userMap.get(user.getIdManager());
+                if (managerItem != null && managerItem.getValue() != null) {
+                    user.setManagerName(managerItem.getValue().getNom());
+                }
+                Departement department = ServiceDepartement.getDepartmentById(user.getIdDepartement());
+                if (department != null) {
+                    user.setDepartementNom(department.getNom());
+                }
+                Role role = roleService.getRoleById(user.getIdRole());
+                if (role != null) {
+                    user.setRoleNom(role.getNom());
+                }
+            }
+
+            userTable.setRoot(root);
+            userTable.setShowRoot(false);
+
+            idUserColumn.setCellValueFactory(new TreeItemPropertyValueFactory<>("idUser"));
+            prenomUserColumn.setCellValueFactory(new TreeItemPropertyValueFactory<>("prenom"));
+            nomUserColumn.setCellValueFactory(new TreeItemPropertyValueFactory<>("nom"));
+            emailUserColumn.setCellValueFactory(new TreeItemPropertyValueFactory<>("email"));
+            managerUserColumn.setCellValueFactory(new TreeItemPropertyValueFactory<>("managerName"));
+        } catch (Exception e) {
+            e.printStackTrace();
         }
-
-        // Set the root to the TreeTableView
-        userTable.setRoot(root);
-        userTable.setShowRoot(false);
-
-        // Bind the columns to the User properties
-        idUserColumn.setCellValueFactory(new TreeItemPropertyValueFactory<>("idUser"));
-        prenomUserColumn.setCellValueFactory(new TreeItemPropertyValueFactory<>("prenom"));
-        nomUserColumn.setCellValueFactory(new TreeItemPropertyValueFactory<>("nom"));
-        emailUserColumn.setCellValueFactory(new TreeItemPropertyValueFactory<>("email"));
-        managerUserColumn.setCellValueFactory(new TreeItemPropertyValueFactory<>("managerName")); // Update this line
     }
 
+
+
     private void loadRoles3() {
-        System.out.println("test7");
         List<Role> roleList = roleService.getAllRoles();
         ObservableList<Role> roles = FXCollections.observableArrayList(roleList);
 
         TreeItem<Role> root = new TreeItem<>(new Role(0, "Root", "", 0)); // Adjust constructor as necessary
         root.setExpanded(true);
-        System.out.println("test8");
+        System.out.println("Root created.");
 
         Map<Integer, TreeItem<Role>> roleMap = new HashMap<>();
         roleMap.put(0, root);
 
         for (Role role : roles) {
-            System.out.println("test9");
+            System.out.println("Processing role: " + role);
             TreeItem<Role> item = new TreeItem<>(role);
             roleMap.put(role.getIdRole(), item);
 
             TreeItem<Role> parentItem = roleMap.getOrDefault(role.getRoleParent(), root);
             parentItem.getChildren().add(item);
-            System.out.println("test10");
+            System.out.println("Added role to parent: " + role.getRoleParent());
+        }
+
+        // Update roles with their parent and child names
+        for (Role role : roles) {
+            TreeItem<Role> item = roleMap.get(role.getIdRole());
+            TreeItem<Role> parentItem = roleMap.get(role.getRoleParent());
+            if (parentItem != null && parentItem.getValue() != null) {
+                role.setParentRoleName(parentItem.getValue().getNom());
+            }
+            for (TreeItem<Role> childItem : item.getChildren()) {
+                role.setChildRoleName(childItem.getValue().getNom());
+            }
         }
 
         roleTable.setRoot(root);
         roleTable.setShowRoot(false);
-        System.out.println("test11");
+        System.out.println("Roles loaded into table.");
 
         idRoleColumn.setCellValueFactory(new TreeItemPropertyValueFactory<>("idRole"));
         nomRoleColumn.setCellValueFactory(new TreeItemPropertyValueFactory<>("nom"));
         DescRoleColumn.setCellValueFactory(new TreeItemPropertyValueFactory<>("description"));
-        RoleParColumn.setCellValueFactory(new TreeItemPropertyValueFactory<>("roleParent"));
-        System.out.println("test12");
+        RoleParColumn.setCellValueFactory(new TreeItemPropertyValueFactory<>("parentRoleName"));
+        RoleFilsColumn.setCellValueFactory(new TreeItemPropertyValueFactory<>("childRoleName"));
     }
+
     private void loadDeparts3() {
-        System.out.println("test");
+        System.out.println("Loading departments...");
         List<Departement> departmentList = depService.getAllDepartments();
+        System.out.println("Departments: " + departmentList);
         ObservableList<Departement> departments = FXCollections.observableArrayList(departmentList);
 
         TreeItem<Departement> root = new TreeItem<>(new Departement(0, "Root", "", 0)); // Adjust constructor as necessary
         root.setExpanded(true);
-        System.out.println("test1");
+        System.out.println("Root created.");
 
         Map<Integer, TreeItem<Departement>> departMap = new HashMap<>();
         departMap.put(0, root);
 
         for (Departement departement : departments) {
-            System.out.println("test2");
+            System.out.println("Processing department: " + departement);
             TreeItem<Departement> item = new TreeItem<>(departement);
             departMap.put(departement.getIdDepartement(), item);
 
             TreeItem<Departement> parentItem = departMap.getOrDefault(departement.getParentDept(), root);
             parentItem.getChildren().add(item);
-            System.out.println("test4");
+            System.out.println("Added department to parent: " + departement.getParentDept());
+        }
+
+        // Update departments with their parent names
+        for (Departement departement : departments) {
+            TreeItem<Departement> item = departMap.get(departement.getIdDepartement());
+            TreeItem<Departement> parentItem = departMap.get(departement.getParentDept());
+            if (parentItem != null && parentItem.getValue() != null) {
+                departement.setParentDeptName(parentItem.getValue().getNom());
+            }
         }
 
         deptTable.setRoot(root);
         deptTable.setShowRoot(false);
-        System.out.println("test5");
+        System.out.println("Departments loaded into table.");
 
         idDapartementColumn.setCellValueFactory(new TreeItemPropertyValueFactory<>("idDepartement"));
         nomDeptColumn.setCellValueFactory(new TreeItemPropertyValueFactory<>("nom"));
         DescriptionDeptColumn.setCellValueFactory(new TreeItemPropertyValueFactory<>("description"));
-        DeptparColumn.setCellValueFactory(new TreeItemPropertyValueFactory<>("parentDept"));
-        System.out.println("test6");
+        DeptparColumn.setCellValueFactory(new TreeItemPropertyValueFactory<>("parentDeptName"));
     }
+
+
+    private boolean isCurrentUser(int userId, String email) {
+        User user = UserS.getUserById(userId);
+        return user != null && user.getEmail().equals(email);
+    }
+
+
 
     @FXML
     public void User_Recherche(ActionEvent actionEvent) {
@@ -591,13 +647,25 @@ public class paneUserController implements Initializable {
         Role selectedRole = roleListView.getSelectionModel().getSelectedItem();
 
         if (userId != null && selectedRole != null && selectedDepartement != null) {
-            userService.updateUserRoleAndDepartment(userId, selectedRole.getIdRole(), selectedDepartement.getIdDepartement());
-            loadUsers();
-            highlightSelectedUser(userService.getUserById(userId));
+            try {
+                // Update the user's role and department
+                userService.updateUserRoleAndDepartment(userId, selectedRole.getIdRole(), selectedDepartement.getIdDepartement());
+
+                // Set the user's manager based on the new role and department
+                userService.setUserManager(userId);
+
+                // Reload users and highlight the selected user
+                loadUsers();
+                highlightSelectedUser(userService.getUserById(userId));
+            } catch (SQLException e) {
+                showError("An error occurred while assigning the user: " + e.getMessage());
+                e.printStackTrace();
+            }
         } else {
             showError("Please select a user, role, and department to assign.");
         }
     }
+
 
     public Integer getSelectedUserId() {
         return selectedUser != null ? selectedUser.getIdUser() : null;
@@ -695,11 +763,6 @@ public class paneUserController implements Initializable {
         } else {
             infolabel.setText("Email est invalide");
         }
-    }
-
-    private boolean isCurrentUser(int userId, String email) {
-        User user = UserS.getUserById(userId);
-        return UserS != null && user.getEmail().equals(email);
     }
 
     @FXML

@@ -241,6 +241,7 @@
                                     <TreeTableColumn fx:id="RoleFilsColumn" prefWidth="163.0" text="Role fils" />
                                  </columns>
                               </TreeTableView>
+
                               <TextField fx:id="searchFieldRole" layoutX="656.0" layoutY="31.0" onAction="#rechercheRole1" prefHeight="29.0" prefWidth="279.0" promptText="Recherche" />
                               <Label layoutX="91.0" layoutY="33.0" prefHeight="25.0" prefWidth="248.0" text="Hierarchie des roles">
                                  <styleClass>
