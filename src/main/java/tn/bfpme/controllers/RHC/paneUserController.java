@@ -660,6 +660,7 @@ public class paneUserController implements Initializable {
 
                 // Reload users and highlight the selected user
                 loadUsers();
+                loadUsers3();
                 highlightSelectedUser(userService.getUserById(userId));
             } catch (SQLException e) {
                 showError("An error occurred while assigning the user: " + e.getMessage());

@@ -1596,9 +1596,11 @@ public class ServiceUtilisateur implements IUtilisateur {
     }
 
     public void setUserManager(int userId) throws SQLException {
+        // Ensure connection is established
         if (cnx == null || cnx.isClosed()) {
             cnx = MyDataBase.getInstance().getCnx();
         }
+
         // Step 1: Fetch the user's current department and role
         String userQuery = "SELECT u.ID_Departement, ur.ID_Role FROM user u JOIN user_role ur ON u.ID_User = ur.ID_User WHERE u.ID_User = ?";
         PreparedStatement userStmt = cnx.prepareStatement(userQuery);
@@ -1613,21 +1615,7 @@ public class ServiceUtilisateur implements IUtilisateur {
         int userRoleId = userRs.getInt("ID_Role");
         System.out.println("User Dept ID: " + userDeptId + ", User Role ID: " + userRoleId);
 
-        // Step 2: Determine the parent department and parent role
-        String parentDeptQuery = "SELECT Parent_Dept FROM departement WHERE ID_Departement = ?";
-        PreparedStatement parentDeptStmt = cnx.prepareStatement(parentDeptQuery);
-        parentDeptStmt.setInt(1, userDeptId);
-        ResultSet parentDeptRs = parentDeptStmt.executeQuery();
-
-        int parentDeptId = userDeptId; // default to the same department
-        if (parentDeptRs.next()) {
-            int parentId = parentDeptRs.getInt("Parent_Dept");
-            if (parentId != 0) {
-                parentDeptId = parentId;
-            }
-        }
-        System.out.println("Parent Dept ID: " + parentDeptId);
-
+        // Step 2: Determine the parent role according to the hierarchy
         String parentRoleQuery = "SELECT ID_RoleP FROM rolehierarchie WHERE ID_RoleC = ?";
         PreparedStatement parentRoleStmt = cnx.prepareStatement(parentRoleQuery);
         parentRoleStmt.setInt(1, userRoleId);
@@ -1642,12 +1630,23 @@ public class ServiceUtilisateur implements IUtilisateur {
         }
         System.out.println("Parent Role ID: " + parentRoleId);
 
-        // Step 3: Find the manager in the parent department with the parent role
-        String managerQuery = "SELECT u.ID_User FROM user u JOIN user_role ur ON u.ID_User = ur.ID_User WHERE u.ID_Departement = ? AND ur.ID_Role = ? LIMIT 1";
+        // Step 3: Find the manager in the same department with the parent role
+        String managerQuery = "SELECT u.ID_User FROM user u JOIN user_role ur ON u.ID_User = ur.ID_User WHERE u.ID_Departement = ? AND ur.ID_Role = ? AND u.ID_User != ? LIMIT 1";
         PreparedStatement managerStmt = cnx.prepareStatement(managerQuery);
-        managerStmt.setInt(1, parentDeptId);
+        managerStmt.setInt(1, userDeptId); // Use user's department as the parent department
         managerStmt.setInt(2, parentRoleId);
+        managerStmt.setInt(3, userId);
         ResultSet managerRs = managerStmt.executeQuery();
+
+        // If no manager found in the same department, find manager only by role
+        if (!managerRs.next()) {
+            System.out.println("No manager found in the same department, searching by role only...");
+            managerQuery = "SELECT u.ID_User FROM user u JOIN user_role ur ON u.ID_User = ur.ID_User WHERE ur.ID_Role = ? AND u.ID_User != ? LIMIT 1";
+            managerStmt = cnx.prepareStatement(managerQuery);
+            managerStmt.setInt(1, parentRoleId);
+            managerStmt.setInt(2, userId);
+            managerRs = managerStmt.executeQuery();
+        }
 
         if (managerRs.next()) {
             int managerId = managerRs.getInt("ID_User");
@@ -1663,7 +1662,6 @@ public class ServiceUtilisateur implements IUtilisateur {
             throw new SQLException("Manager not found for user with ID: " + userId);
         }
     }
-
 
 
 
