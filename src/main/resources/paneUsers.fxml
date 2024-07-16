@@ -133,6 +133,11 @@
                         </GridPane>
                            </content>
                         </ScrollPane>
+                        <TextField fx:id="RechercheBarUser" layoutX="895.0" layoutY="6.0" onAction="#RechercheBarUser" />
+                        <Label layoutX="822.0" layoutY="12.0" text="Recherche:" />
+                        <Button layoutX="705.0" layoutY="8.0" mnemonicParsing="false" onAction="#TriZA" text="Z-A" />
+                        <Button layoutX="657.0" layoutY="8.0" mnemonicParsing="false" onAction="#TriAZ" text="A-Z" />
+                        <Label layoutX="596.0" layoutY="12.0" prefHeight="17.0" prefWidth="51.0" text="Trier par:" />
                      </children></AnchorPane>
                </content>
             </Tab>
