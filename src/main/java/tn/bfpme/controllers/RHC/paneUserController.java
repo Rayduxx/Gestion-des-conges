@@ -58,6 +58,8 @@ public class paneUserController implements Initializable {
     private TreeTableColumn<Role, Integer> RoleParColumn;
     @FXML
     private TreeTableColumn<Role, String> RoleFilsColumn;
+    @FXML
+    private TextField RolePar_field;
 
     @FXML
     private TreeTableView<Departement> deptTable;
@@ -88,6 +90,10 @@ public class paneUserController implements Initializable {
     private TextField Role_field;
     @FXML
     public ListView<User> userListView;
+
+    @FXML
+    private ListView<Role> roleParListView;
+
     @FXML
     public TextField User_field;
     @FXML
@@ -157,9 +163,9 @@ public class paneUserController implements Initializable {
         loadUsers();
         loadUsers1();
         loadUsers3();
-        loadDepartments();
+        loadDepartments1();
         loadDeparts3();
-        loadRoles();
+        loadRole1s();
         loadRoles3();
         hierarCombo.setValue("Selectioner type");
         hierarCombo.setItems(HierarchieList);
@@ -239,7 +245,7 @@ public class paneUserController implements Initializable {
         });
     }
 
-    private void loadDepartments() {
+    private void loadDepartments1() {
         List<Departement> departmentList = depService.getAllDepartments();
         ObservableList<Departement> departments = FXCollections.observableArrayList(departmentList);
         filteredDepartments = new FilteredList<>(departments, p -> true);
@@ -265,7 +271,7 @@ public class paneUserController implements Initializable {
         });
     }
 
-    private void loadRoles() {
+    private void loadRole1s() {
         List<Role> roleList = roleService.getAllRoles();
         ObservableList<Role> roles = FXCollections.observableArrayList(roleList);
         filteredRoles = new FilteredList<>(roles, p -> true);
@@ -296,41 +302,57 @@ public class paneUserController implements Initializable {
             List<User> userList = userService.getAllUsers();
             ObservableList<User> users = FXCollections.observableArrayList(userList);
 
+            // Create the root item
             TreeItem<User> root = new TreeItem<>(new User(0, "sans manager", "", "", "", "", 0, 0, 0, 0, 0, 0)); // Adjust constructor as necessary
             root.setExpanded(true);
 
+            // Map to hold TreeItem references for each user
             Map<Integer, TreeItem<User>> userMap = new HashMap<>();
-            userMap.put(0, root);
+            userMap.put(0, root); // Root represents "sans manager"
 
+            // Populate the map with TreeItem instances for each user
             for (User user : users) {
                 TreeItem<User> item = new TreeItem<>(user);
                 userMap.put(user.getIdUser(), item);
-
-                TreeItem<User> parentItem = userMap.getOrDefault(user.getIdManager(), root);
-                if (parentItem == null) {
-                    parentItem = root;
-                }
-                parentItem.getChildren().add(item);
             }
+
+            // Build the tree structure by establishing parent-child relationships
+            for (User user : users) {
+                TreeItem<User> item = userMap.get(user.getIdUser());
+                TreeItem<User> parentItem = userMap.getOrDefault(user.getIdManager(), root);
+
+                if (parentItem != null) {
+                    parentItem.getChildren().add(item);
+                }
+            }
+
+            // Update user details for display
             for (User user : users) {
                 TreeItem<User> item = userMap.get(user.getIdUser());
                 TreeItem<User> managerItem = userMap.get(user.getIdManager());
+
                 if (managerItem != null && managerItem.getValue() != null) {
                     user.setManagerName(managerItem.getValue().getNom());
+                } else {
+                    user.setManagerName("sans manager");
                 }
+
                 Departement department = ServiceDepartement.getDepartmentById(user.getIdDepartement());
                 if (department != null) {
                     user.setDepartementNom(department.getNom());
                 }
+
                 Role role = roleService.getRoleById(user.getIdRole());
                 if (role != null) {
                     user.setRoleNom(role.getNom());
                 }
             }
 
+            // Set the root item to the TreeTableView
             userTable.setRoot(root);
             userTable.setShowRoot(false);
 
+            // Set cell value factories for the TreeTableView columns
             idUserColumn.setCellValueFactory(new TreeItemPropertyValueFactory<>("idUser"));
             prenomUserColumn.setCellValueFactory(new TreeItemPropertyValueFactory<>("prenom"));
             nomUserColumn.setCellValueFactory(new TreeItemPropertyValueFactory<>("nom"));
@@ -341,6 +363,8 @@ public class paneUserController implements Initializable {
             e.printStackTrace();
         }
     }
+
+
 
 
 
@@ -519,6 +543,11 @@ public class paneUserController implements Initializable {
         });
     }
 
+    @FXML
+    void RolePar_Recherche(ActionEvent event) {
+
+    }
+
     private void handleUserSelection(User newValue) {
         selectedUser = newValue;
         if (selectedUser != null) {
@@ -616,14 +645,17 @@ public class paneUserController implements Initializable {
                 if (selectedRole != null && selectedDepartement != null) {
                     System.out.println("Updating role and department for user: " + selectedUser);
                     userService.updateUserRoleAndDepartment(selectedUser.getIdUser(), selectedRole.getIdRole(), selectedDepartement.getIdDepartement());
+                    userService.setUserManager(selectedUser.getIdUser());
                     isUpdated = true;
                 } else if (selectedRole != null) {
                     System.out.println("Updating role for user: " + selectedUser);
-                    userService.updateUserRole(selectedUser.getIdUser(), selectedRole.getIdRole());
+                    userService.updateUserRoleAndDepartment(selectedUser.getIdUser(), selectedRole.getIdRole(), selectedUser.getIdDepartement());
+                    userService.setUserManager(selectedUser.getIdUser());
                     isUpdated = true;
                 } else if (selectedDepartement != null) {
                     System.out.println("Updating department for user: " + selectedUser);
-                    userService.updateUserDepartment(selectedUser.getIdUser(), selectedDepartement.getIdDepartement());
+                    userService.updateUserRoleAndDepartment(selectedUser.getIdUser(), selectedUser.getIdRole(), selectedDepartement.getIdDepartement());
+                    userService.setUserManager(selectedUser.getIdUser());
                     isUpdated = true;
                 }
 
@@ -642,6 +674,7 @@ public class paneUserController implements Initializable {
             System.out.println("No user selected for editing.");
             showError("Please select a user to edit.");
         }
+        loadUsers3();
     }
 
     @FXML
@@ -654,13 +687,10 @@ public class paneUserController implements Initializable {
             try {
                 // Update the user's role and department
                 userService.updateUserRoleAndDepartment(userId, selectedRole.getIdRole(), selectedDepartement.getIdDepartement());
-
-                // Set the user's manager based on the new role and department
                 userService.setUserManager(userId);
 
                 // Reload users and highlight the selected user
                 loadUsers();
-                loadUsers3();
                 highlightSelectedUser(userService.getUserById(userId));
             } catch (SQLException e) {
                 showError("An error occurred while assigning the user: " + e.getMessage());
@@ -669,7 +699,10 @@ public class paneUserController implements Initializable {
         } else {
             showError("Please select a user, role, and department to assign.");
         }
+        loadUsers3();
     }
+
+
 
 
     public Integer getSelectedUserId() {

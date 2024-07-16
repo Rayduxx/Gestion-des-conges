@@ -143,7 +143,7 @@
                         <ListView fx:id="userListView" layoutX="50.0" layoutY="131.0" prefHeight="400.0" prefWidth="280.0" />
                         <TextField fx:id="User_field" layoutX="50.0" layoutY="83.0" onAction="#User_Recherche" prefHeight="29.0" prefWidth="280.0" />
                         <ListView fx:id="departListView" layoutX="420.0" layoutY="131.0" prefHeight="400.0" prefWidth="280.0" />
-                        <ListView fx:id="roleListView" layoutX="790.0" layoutY="131.0" prefHeight="400.0" prefWidth="280.0" />
+                        <ListView fx:id="roleListView" layoutX="790.0" layoutY="131.0" prefHeight="203.0" prefWidth="280.0" />
                         <TextField fx:id="Depart_field" layoutX="420.0" layoutY="83.0" onAction="#Depart_Recherche" prefHeight="29.0" prefWidth="280.0" />
                         <TextField fx:id="Role_field" layoutX="790.0" layoutY="83.0" onAction="#Role_Recherche" prefHeight="29.0" prefWidth="280.0" />
                         <Label layoutX="144.0" layoutY="35.0" text="Employés">
@@ -158,13 +158,13 @@
                               <String fx:value="RobotoBoldItalic" />
                            </styleClass>
                         </Label>
-                        <Label layoutX="904.0" layoutY="35.0" text="Roles">
+                        <Label layoutX="905.0" layoutY="35.0" text="Roles">
                            <styleClass>
                               <String fx:value="FontSize-21" />
                               <String fx:value="RobotoBoldItalic" />
                            </styleClass>
                         </Label>
-                        <HBox layoutX="420.0" layoutY="587.0" prefHeight="57.0" prefWidth="280.0">
+                        <HBox layoutX="236.0" layoutY="593.0" prefHeight="57.0" prefWidth="280.0">
                            <children>
                               <Button mnemonicParsing="false" onAction="#handleAssignUser" prefHeight="73.0" prefWidth="130.0" text="Affecter">
                                  <styleClass>
@@ -183,6 +183,14 @@
                               </Button>
                            </children>
                         </HBox>
+                        <ListView fx:id="roleParListView" layoutX="791.0" layoutY="447.0" prefHeight="203.0" prefWidth="280.0" />
+                        <TextField fx:id="RolePar_field" layoutX="790.0" layoutY="400.0" onAction="#RolePar_Recherche" prefHeight="29.0" prefWidth="280.0" />
+                        <Label layoutX="866.0" layoutY="354.0" text="Roles Parents">
+                           <styleClass>
+                              <String fx:value="FontSize-21" />
+                              <String fx:value="RobotoBoldItalic" />
+                           </styleClass>
+                        </Label>
                      </children></AnchorPane>
                </content>
             </Tab>
