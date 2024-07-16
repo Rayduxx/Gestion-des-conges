@@ -83,6 +83,42 @@ public class UserCardController {
         SExp = user.getSoldeExceptionnel();
     }
 
+    public void setDataUser(User user) {
+        String imagePath = user.getImage();
+        String DepName = UserS.getDepNameByUserID(user.getIdUser());
+        String roleName = UserS.getRoleNameByUserID(user.getIdUser());
+        if (imagePath != null) {
+            try {
+                File file = new File(imagePath);
+                FileInputStream inputStream = new FileInputStream(file);
+                Image image = new Image(inputStream);
+                cardimage.setImage(image);
+            } catch (FileNotFoundException e) {
+                System.err.println("Image file not found: " + imagePath);
+            }
+        } else {
+            System.err.println("Image path is null for user: " + user);
+        }
+        cardnameprename.setText(user.getNom() + " " + user.getPrenom());
+        cardemail.setText(user.getEmail());
+        cardrole.setText(roleName);
+        carddepart.setText(DepName);
+        Card.setStyle("-fx-border-radius: 5px;-fx-border-color:#808080");
+
+        uprenom = user.getPrenom();
+        uid = user.getIdUser();
+        unom = user.getNom();
+        uemail = user.getEmail();
+        umdp = user.getMdp();
+        urole = roleName;
+        udepart = DepName;
+        updp = user.getImage();
+        SAnn = user.getSoldeAnnuel();
+        SMala = user.getSoldeMaladie();
+        SMater = user.getSoldeMaternite();
+        SExp = user.getSoldeExceptionnel();
+    }
+
     @FXML
     void ModifierUser(ActionEvent event) {
         try {
@@ -132,7 +168,6 @@ public class UserCardController {
             e.printStackTrace();
         }
     }
-
 
 
     @FXML

@@ -1,5 +1,5 @@
 package tn.bfpme.controllers;
-/*
+
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.fxml.Initializable;
@@ -22,7 +22,7 @@ import java.util.ResourceBundle;
 
 public class ListeEmployésController implements Initializable {
 
-   @FXML
+    @FXML
     private AnchorPane MainAnchorPane;
 
     @FXML
@@ -31,8 +31,9 @@ public class ListeEmployésController implements Initializable {
     @FXML
     private GridPane UserContainer;
 
-    ServiceUtilisateur UserS =new ServiceUtilisateur();
+    ServiceUtilisateur UserS = new ServiceUtilisateur();
     Connection cnx = MyDataBase.getInstance().getCnx();
+
     @Override
     public void initialize(URL location, ResourceBundle resources) {
         load();
@@ -44,6 +45,7 @@ public class ListeEmployésController implements Initializable {
             e.printStackTrace();
         }
     }
+
     public void load(List<User> users) {
         UserContainer.getChildren().clear();
         int column = 0;
@@ -55,7 +57,7 @@ public class ListeEmployésController implements Initializable {
                 Pane userBox = fxmlLoader.load();
                 UserCardController cardC = fxmlLoader.getController();
                 cardC.HBoxBtns.setVisible(false);
-                cardC.setData(user);
+                cardC.setDataUser(user);
                 if (column == 3) {
                     column = 0;
                     ++row;
@@ -74,7 +76,7 @@ public class ListeEmployésController implements Initializable {
         load(users);
     }
 
-    /*@FXML
+    @FXML
     void Recherche(KeyEvent event) {
         UserContainer.getChildren().clear();
         String recherche = Recherche_conge.getText();
@@ -87,7 +89,7 @@ public class ListeEmployésController implements Initializable {
                 Pane userBox = fxmlLoader.load();
                 UserCardController cardC = fxmlLoader.getController();
                 cardC.HBoxBtns.setVisible(false);
-                cardC.setData(user);
+                cardC.setDataUser(user);
                 if (column == 3) {
                     column = 0;
                     ++row;
@@ -98,7 +100,8 @@ public class ListeEmployésController implements Initializable {
         } catch (IOException e) {
             e.printStackTrace();
         }
-    }*/
+    }
+}
 
 
 

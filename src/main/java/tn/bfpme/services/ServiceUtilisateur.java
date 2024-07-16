@@ -21,6 +21,7 @@ public class ServiceUtilisateur implements IUtilisateur {
     public ServiceUtilisateur(Connection cnx) {
         this.cnx = cnx;
     }
+
     private Map<Integer, Integer> userManagerMap = new HashMap<>();
 
     public ServiceUtilisateur() {
@@ -669,33 +670,30 @@ public class ServiceUtilisateur implements IUtilisateur {
         }
     }
 
-
-
-        public void addUser2(User user) {
-            String query = "INSERT INTO user (Nom, Prenom, Email, MDP, Image, Creation_Date, Solde_Annuel, Solde_Maladie, Solde_Exceptionnel, Solde_Maternité, ID_Departement) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
-            try (PreparedStatement stm = cnx.prepareStatement(query, PreparedStatement.RETURN_GENERATED_KEYS)) {
-                stm.setString(1, user.getNom());
-                stm.setString(2, user.getPrenom());
-                stm.setString(3, user.getEmail());
-                stm.setString(4, user.getMdp());
-                stm.setString(5, user.getImage());
-                stm.setDate(6, java.sql.Date.valueOf(user.getCreationDate()));
-                stm.setDouble(7, user.getSoldeAnnuel());
-                stm.setDouble(8, user.getSoldeMaladie());
-                stm.setDouble(9, user.getSoldeExceptionnel());
-                stm.setDouble(10, user.getSoldeMaternite());
-                stm.setInt(11, user.getIdDepartement());
-                stm.executeUpdate();
-                try (ResultSet generatedKeys = stm.getGeneratedKeys()) {
-                    if (generatedKeys.next()) {
-                        user.setIdUser(generatedKeys.getInt(1));
-                    }
+    public void addUser2(User user) {
+        String query = "INSERT INTO user (Nom, Prenom, Email, MDP, Image, Creation_Date, Solde_Annuel, Solde_Maladie, Solde_Exceptionnel, Solde_Maternité, ID_Departement) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
+        try (PreparedStatement stm = cnx.prepareStatement(query, PreparedStatement.RETURN_GENERATED_KEYS)) {
+            stm.setString(1, user.getNom());
+            stm.setString(2, user.getPrenom());
+            stm.setString(3, user.getEmail());
+            stm.setString(4, user.getMdp());
+            stm.setString(5, user.getImage());
+            stm.setDate(6, Date.valueOf(user.getCreationDate()));
+            stm.setDouble(7, user.getSoldeAnnuel());
+            stm.setDouble(8, user.getSoldeMaladie());
+            stm.setDouble(9, user.getSoldeExceptionnel());
+            stm.setDouble(10, user.getSoldeMaternite());
+            stm.setInt(11, user.getIdDepartement());
+            stm.executeUpdate();
+            try (ResultSet generatedKeys = stm.getGeneratedKeys()) {
+                if (generatedKeys.next()) {
+                    user.setIdUser(generatedKeys.getInt(1));
                 }
-            } catch (SQLException e) {
-                e.printStackTrace();
             }
+        } catch (SQLException e) {
+            e.printStackTrace();
         }
-
+    }
 
     public void updateSoldeAnnuel(int id, double solde) {
         String query = "UPDATE user SET Solde_Annuel = ? WHERE ID_User = ?";
@@ -744,7 +742,6 @@ public class ServiceUtilisateur implements IUtilisateur {
         }
     }
 
-
     public void updateUserRole(int userId, int roleId) {
         String deleteSql = "DELETE FROM user_role WHERE ID_User = ?";
         String insertSql = "INSERT INTO user_role (ID_User, ID_Role) VALUES (?, ?)";
@@ -780,8 +777,8 @@ public class ServiceUtilisateur implements IUtilisateur {
         try (Connection cnx = MyDataBase.getInstance().getCnx();
              PreparedStatement stm = cnx.prepareStatement(sql)) {
 
-            stm.setInt(1,departmentId);
-            stm.setInt(2,userId);
+            stm.setInt(1, departmentId);
+            stm.setInt(2, userId);
             stm.executeUpdate();
         } catch (SQLException e) {
             e.printStackTrace();
@@ -826,8 +823,6 @@ public class ServiceUtilisateur implements IUtilisateur {
         return user;
     }
 
-
-
     public int getManagerIdByUserId2(int userId) {
         String query = "SELECT ID_Manager FROM user WHERE ID_User = ?";
         int managerId = 0;
@@ -847,6 +842,54 @@ public class ServiceUtilisateur implements IUtilisateur {
         }
         return managerId;
     }
+
+    public String getDepNameByUserID(int userId) {
+        String query = "SELECT d.nom AS DepartmentName " +
+                "FROM user u " +
+                "JOIN departement d ON u.ID_Departement = d.ID_Departement " +
+                "WHERE u.ID_User = ?";
+        String DepName = "";
+        try {
+            if (cnx == null || cnx.isClosed()) {
+                cnx = MyDataBase.getInstance().getCnx();
+            }
+            PreparedStatement ps = cnx.prepareStatement(query);
+            ps.setInt(1, userId);
+            ResultSet rs = ps.executeQuery();
+
+            if (rs.next()) {
+                DepName = rs.getString("DepartmentName");
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return DepName;
+    }
+
+    public String getRoleNameByUserID(int userId) {
+        String query = "SELECT r.nom AS RoleName " +
+                "FROM user u " +
+                "JOIN user_role ur ON u.ID_User = ur.ID_User " +
+                "JOIN role r ON ur.ID_Role = r.ID_Role " +
+                "WHERE u.ID_User = ?";
+        String RoleName = "";
+        try {
+            if (cnx == null || cnx.isClosed()) {
+                cnx = MyDataBase.getInstance().getCnx();
+            }
+            PreparedStatement ps = cnx.prepareStatement(query);
+            ps.setInt(1, userId);
+            ResultSet rs = ps.executeQuery();
+
+            if (rs.next()) {
+                RoleName = rs.getString("RoleName");
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return RoleName;
+    }
+
     public Integer getManagerIdByUserId(int userId) {
         Integer managerId = null;
         String query = "SELECT ID_Manager FROM user WHERE ID_User = ?";
@@ -868,7 +911,6 @@ public class ServiceUtilisateur implements IUtilisateur {
 
         return managerId;
     }
-
 
     @Override
     public void updateUser(User user) {
@@ -982,14 +1024,13 @@ public class ServiceUtilisateur implements IUtilisateur {
             stm.setDouble(7, user.getSoldeMaladie());
             stm.setDouble(8, user.getSoldeExceptionnel());
             stm.setDouble(9, user.getSoldeMaternite());
-            stm.setDate(10, java.sql.Date.valueOf(user.getCreationDate()));
+            stm.setDate(10, Date.valueOf(user.getCreationDate()));
 
             stm.executeUpdate();
         } catch (SQLException e) {
             System.out.println(e.getMessage());
         }
     }
-
 
     private SoldeConge getDefaultSolde() {
         String query = "SELECT SoldeAnn, SoldeMal, SoldeExc, SoldeMat FROM soldeconge LIMIT 1";
@@ -1011,7 +1052,6 @@ public class ServiceUtilisateur implements IUtilisateur {
             return new SoldeConge(0, 0, 0, 0); // Return default values in case of error
         }
     }
-
 
     @Override
     public void Update(User user) {
@@ -1135,10 +1175,6 @@ public class ServiceUtilisateur implements IUtilisateur {
     }
 
 
-
-
-
-
     @Override
     public void DeleteByID(int id) {
         User user = getUserById3(id); // Fetch the user by ID
@@ -1148,6 +1184,7 @@ public class ServiceUtilisateur implements IUtilisateur {
             System.out.println("User not found for ID: " + id);
         }
     }
+
     public User getUserById3(int userId) {
         User user = null;
         String query = "SELECT * FROM user WHERE ID_User = ?";
@@ -1215,6 +1252,7 @@ public class ServiceUtilisateur implements IUtilisateur {
         String emailRegex = "^[a-zA-Z0-9_+&*-]+(?:\\.[a-zA-Z0-9_+&*-]+)*\\.?[a-zA-Z0-9_+&*-]+@(?:[a-zA-Z0-9-]+\\.)+[a-zA-Z]{2,7}$";
         return email.matches(emailRegex);
     }
+
     public List<User> searchUsers(String query) {
         List<User> users = new ArrayList<>();
         String sql = "SELECT * FROM user WHERE ID_User LIKE ? OR Nom LIKE ? OR Prenom LIKE ? OR Email LIKE ?";
@@ -1284,6 +1322,7 @@ public class ServiceUtilisateur implements IUtilisateur {
     public int getUserIdCard() {
         return 0;
     }
+
     public void recalculateSolde(User user) {
         user.setSoldeAnnuel(SoldeLogicController.calculateSoldeAnnuelle(user.getCreationDate()));
         user.setSoldeMaladie(SoldeLogicController.calculateSoldeMaladie(user.getCreationDate()));
@@ -1302,6 +1341,7 @@ public class ServiceUtilisateur implements IUtilisateur {
             e.printStackTrace();
         }
     }
+
     @Override
     public List<User> SortDepart() {
         List<User> users = new ArrayList<>();
@@ -1379,6 +1419,7 @@ public class ServiceUtilisateur implements IUtilisateur {
         }
         return users;
     }
+
     public List<User> search(String query) {
         List<User> users = new ArrayList<>();
         String sql = "SELECT u.*, d.nom AS DepartementNom, ur.ID_Role, r.nom AS RoleNom " +
@@ -1461,7 +1502,7 @@ public class ServiceUtilisateur implements IUtilisateur {
             if (cnx == null || cnx.isClosed()) {
                 cnx = MyDataBase.getInstance().getCnx();
             }
-             PreparedStatement ps = cnx.prepareStatement(sql);
+            PreparedStatement ps = cnx.prepareStatement(sql);
             ps.setInt(1, currentUserId);
             ps.setInt(2, currentUserId); // Exclude current user
             ResultSet rs = ps.executeQuery();
@@ -1489,6 +1530,7 @@ public class ServiceUtilisateur implements IUtilisateur {
         }
         return users;
     }
+
     public List<User> RechercheUnder(String input) {
         List<User> users = new ArrayList<>();
         int currentUserId = SessionManager.getInstance().getUser().getIdUser(); // Assuming SessionManager manages the current user's session
@@ -1514,7 +1556,7 @@ public class ServiceUtilisateur implements IUtilisateur {
             if (cnx == null || cnx.isClosed()) {
                 cnx = MyDataBase.getInstance().getCnx();
             }
-             PreparedStatement ps = cnx.prepareStatement(sql);
+            PreparedStatement ps = cnx.prepareStatement(sql);
             ps.setInt(1, currentUserId);
             ps.setInt(2, currentUserId); // Exclude current user
             String searchInput = "%" + input + "%";
@@ -1546,6 +1588,7 @@ public class ServiceUtilisateur implements IUtilisateur {
         }
         return users;
     }
+
     public List<User> getAllUsers() {
         List<User> users = new ArrayList<>();
         String query = "SELECT u.*, d.nom AS departmentName, r.nom AS roleName, m.Nom AS managerName, m.Prenom AS managerPrenom " +
@@ -1585,6 +1628,7 @@ public class ServiceUtilisateur implements IUtilisateur {
         }
         return users;
     }
+
     private List<User> getAllUsersWithDetails() {
         List<User> users = new ArrayList<>();
         try {
@@ -1630,6 +1674,7 @@ public class ServiceUtilisateur implements IUtilisateur {
 
         return users;
     }
+
     public void updateUserRoleAndDepartment(int userId, int roleId, int departmentId) throws SQLException {
         if (cnx == null || cnx.isClosed()) {
             cnx = MyDataBase.getInstance().getCnx();
@@ -1733,7 +1778,6 @@ public class ServiceUtilisateur implements IUtilisateur {
             throw new SQLException("Manager not found for user with ID: " + userId);
         }
     }
-
 
 
 }
