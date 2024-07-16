@@ -9,36 +9,56 @@ import java.sql.SQLException;
 
 public class SoldeConge {
     private int idSolde;
-    private double SoldeAnn;
-    private double SoldeMal;
-    private double SoldeMat;
-    private double SoldeExc;
+
+    private String Designation;
+    private String Type;
+    private int Pas;
+    private int Periode;
 
 
 
     public SoldeConge(){}
 
-    public SoldeConge(double soldeAnn, double soldeMal, double soldeMat, double soldeExc) {
-        SoldeAnn = soldeAnn;
-        SoldeMal = soldeMal;
-        SoldeMat = soldeMat;
-        SoldeExc = soldeExc;
+    public SoldeConge(int idSolde, String designation, String type, int pas, int periode) {
+        this.idSolde = idSolde;
+        this.Designation = designation;
+        this.Type = type;
+        this.Pas = pas;
+        this.Periode = periode;
     }
 
-    public SoldeConge(int idSolde, double soldeAnn, double soldeMat, double soldeExc, double soldeMal) {
-        idSolde = idSolde;
-        SoldeAnn = soldeAnn;
-        SoldeMal = soldeMal;
-        SoldeMat = soldeMat;
-        SoldeExc = soldeExc;
+    //Getters & Setters
+    public String getDesignation() {
+        return Designation;
     }
 
+    public void setDesignation(String designation) {
+        Designation = designation;
+    }
 
+    public String getType() {
+        return Type;
+    }
 
+    public void setType(String type) {
+        Type = type;
+    }
 
-//Getters & Setters
+    public int getPas() {
+        return Pas;
+    }
 
+    public void setPas(int pas) {
+        Pas = pas;
+    }
 
+    public int getPeriode() {
+        return Periode;
+    }
+
+    public void setPeriode(int periode) {
+        Periode = periode;
+    }
     public int getIdSolde() {
         return idSolde;
     }
@@ -47,35 +67,5 @@ public class SoldeConge {
         this.idSolde = idSolde;
     }
 
-    public double getSoldeAnn() {
-        return SoldeAnn;
-    }
 
-    public void setSoldeAnn(double soldeAnn) {
-        SoldeAnn = soldeAnn;
-    }
-
-    public double getSoldeMal() {
-        return SoldeMal;
-    }
-
-    public void setSoldeMal(double soldeMal) {
-        SoldeMal = soldeMal;
-    }
-
-    public double getSoldeMat() {
-        return SoldeMat;
-    }
-
-    public void setSoldeMat(double soldeMat) {
-        SoldeMat = soldeMat;
-    }
-
-    public double getSoldeExc() {
-        return SoldeExc;
-    }
-
-    public void setSoldeExc(double soldeExc) {
-        SoldeExc = soldeExc;
-    }
 }
