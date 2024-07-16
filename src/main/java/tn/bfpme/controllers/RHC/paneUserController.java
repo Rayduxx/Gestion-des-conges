@@ -60,8 +60,6 @@ public class paneUserController implements Initializable {
     private TreeTableColumn<Role, Integer> RoleParColumn;
     @FXML
     private TreeTableColumn<Role, String> RoleFilsColumn;
-    @FXML
-    private TextField RolePar_field;
 
     @FXML
     private TreeTableView<Departement> deptTable;
@@ -96,10 +94,6 @@ public class paneUserController implements Initializable {
     private TextField Role_field;
     @FXML
     public ListView<User> userListView;
-
-    @FXML
-    private ComboBox<?> RoleParComboFilter;
-
     @FXML
     public TextField User_field;
     @FXML
@@ -664,16 +658,22 @@ public class paneUserController implements Initializable {
             try {
                 if (selectedRole != null && selectedDepartement != null) {
                     System.out.println("Updating role and department for user: " + selectedUser);
+                    // First, check for role department uniqueness and potential manager assignment issues
+                    userService.checkRoleDepartmentUniqueness(selectedUser.getIdUser(), selectedRole.getIdRole(), selectedDepartement.getIdDepartement());
                     userService.updateUserRoleAndDepartment(selectedUser.getIdUser(), selectedRole.getIdRole(), selectedDepartement.getIdDepartement());
                     userService.setUserManager(selectedUser.getIdUser());
                     isUpdated = true;
                 } else if (selectedRole != null) {
                     System.out.println("Updating role for user: " + selectedUser);
+                    // Check for role department uniqueness
+                    userService.checkRoleDepartmentUniqueness(selectedUser.getIdUser(), selectedRole.getIdRole(), selectedUser.getIdDepartement());
                     userService.updateUserRoleAndDepartment(selectedUser.getIdUser(), selectedRole.getIdRole(), selectedUser.getIdDepartement());
                     userService.setUserManager(selectedUser.getIdUser());
                     isUpdated = true;
                 } else if (selectedDepartement != null) {
                     System.out.println("Updating department for user: " + selectedUser);
+                    // Check for role department uniqueness
+                    userService.checkRoleDepartmentUniqueness(selectedUser.getIdUser(), selectedUser.getIdRole(), selectedDepartement.getIdDepartement());
                     userService.updateUserRoleAndDepartment(selectedUser.getIdUser(), selectedUser.getIdRole(), selectedDepartement.getIdDepartement());
                     userService.setUserManager(selectedUser.getIdUser());
                     isUpdated = true;
@@ -697,6 +697,7 @@ public class paneUserController implements Initializable {
         loadUsers3();
     }
 
+
     @FXML
     private void handleAssignUser() {
         Integer userId = getSelectedUserId();
@@ -705,6 +706,9 @@ public class paneUserController implements Initializable {
 
         if (userId != null && selectedRole != null && selectedDepartement != null) {
             try {
+                // Check for role department uniqueness and potential manager assignment issues
+                userService.checkRoleDepartmentUniqueness(userId, selectedRole.getIdRole(), selectedDepartement.getIdDepartement());
+
                 // Update the user's role and department
                 userService.updateUserRoleAndDepartment(userId, selectedRole.getIdRole(), selectedDepartement.getIdDepartement());
                 userService.setUserManager(userId);
@@ -721,6 +725,7 @@ public class paneUserController implements Initializable {
         }
         loadUsers3();
     }
+
 
 
     public Integer getSelectedUserId() {
@@ -1102,9 +1107,5 @@ public class paneUserController implements Initializable {
             roleNames.add(role.getNom());
         }
         RoleComboFilter.setItems(roleNames);
-    }
-    @FXML
-    void filterByRolePar(ActionEvent event) {
-
     }
 }
