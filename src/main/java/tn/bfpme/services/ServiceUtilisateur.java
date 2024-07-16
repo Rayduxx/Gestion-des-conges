@@ -1074,38 +1074,109 @@ public class ServiceUtilisateur implements IUtilisateur {
 
     @Override
     public void Delete(User user) {
+        Connection cnx = null;
+        String updateManagerQuery = "UPDATE user SET ID_Manager = NULL WHERE ID_Manager = ?";
+        String deleteUserRoleQuery = "DELETE FROM user_role WHERE ID_User = ?";
+        String deleteCongeQuery = "DELETE FROM conge WHERE ID_User = ?";
+        String deleteUserQuery = "DELETE FROM user WHERE ID_User = ?";
 
-        String updateManagerQuery = "UPDATE `user` SET `ID_Manager` = NULL WHERE `ID_Manager` = ?";
-        String deleteUserQuery = "DELETE FROM `user` WHERE `ID_User` = ?";
+        try {
+            cnx = MyDataBase.getInstance().getCnx();
+            // Start transaction
+            cnx.setAutoCommit(false);
 
-        try (Connection cnx = MyDataBase.getInstance().getCnx();
-             PreparedStatement updateStmt = cnx.prepareStatement(updateManagerQuery);
-             PreparedStatement deleteStmt = cnx.prepareStatement(deleteUserQuery)) {
+            try (PreparedStatement updateStmt = cnx.prepareStatement(updateManagerQuery);
+                 PreparedStatement deleteUserRoleStmt = cnx.prepareStatement(deleteUserRoleQuery);
+                 PreparedStatement deleteCongeStmt = cnx.prepareStatement(deleteCongeQuery);
+                 PreparedStatement deleteStmt = cnx.prepareStatement(deleteUserQuery)) {
 
-            updateStmt.setInt(1, user.getIdUser());
-            updateStmt.executeUpdate();
+                // First, set ID_Manager to NULL for users managed by the user to be deleted
+                updateStmt.setInt(1, user.getIdUser());
+                updateStmt.executeUpdate();
 
-            deleteStmt.setInt(1, user.getIdUser());
-            deleteStmt.executeUpdate();
+                // Second, delete related roles for the user
+                deleteUserRoleStmt.setInt(1, user.getIdUser());
+                deleteUserRoleStmt.executeUpdate();
+
+                // Third, delete related conge entries for the user
+                deleteCongeStmt.setInt(1, user.getIdUser());
+                deleteCongeStmt.executeUpdate();
+
+                // Then, delete the user
+                deleteStmt.setInt(1, user.getIdUser());
+                deleteStmt.executeUpdate();
+
+                // Commit transaction
+                cnx.commit();
+
+                System.out.println("User and dependencies deleted successfully.");
+            } catch (SQLException e) {
+                // Rollback transaction in case of error
+                if (cnx != null) {
+                    try {
+                        cnx.rollback();
+                    } catch (SQLException rollbackEx) {
+                        rollbackEx.printStackTrace();
+                    }
+                }
+                throw e;
+            } finally {
+                if (cnx != null) {
+                    try {
+                        cnx.setAutoCommit(true);
+                    } catch (SQLException ex) {
+                        ex.printStackTrace();
+                    }
+                }
+            }
         } catch (SQLException ex) {
-            System.out.println(ex.getMessage());
+            ex.printStackTrace();
         }
     }
+
+
+
+
 
 
     @Override
     public void DeleteByID(int id) {
-        String qry = "DELETE FROM `user` WHERE ID_User=?";
-
-        try (Connection cnx = MyDataBase.getInstance().getCnx();
-             PreparedStatement smt = cnx.prepareStatement(qry)) {
-            smt.setInt(1, id);
-            smt.executeUpdate();
-            System.out.println("Suppression Effectué");
-        } catch (SQLException ex) {
-            System.out.println(ex.getMessage());
+        User user = getUserById3(id); // Fetch the user by ID
+        if (user != null) {
+            Delete(user); // Reuse the existing method to handle dependencies
+        } else {
+            System.out.println("User not found for ID: " + id);
         }
     }
+    public User getUserById3(int userId) {
+        User user = null;
+        String query = "SELECT * FROM user WHERE ID_User = ?";
+        try (Connection cnx = MyDataBase.getInstance().getCnx();
+             PreparedStatement stmt = cnx.prepareStatement(query)) {
+            stmt.setInt(1, userId);
+            ResultSet rs = stmt.executeQuery();
+            if (rs.next()) {
+                user = new User(
+                        rs.getInt("ID_User"),
+                        rs.getString("Nom"),
+                        rs.getString("Prenom"),
+                        rs.getString("Email"),
+                        rs.getString("MDP"),
+                        rs.getString("Image"),
+                        rs.getDouble("Solde_Annuel"),
+                        rs.getDouble("Solde_Maladie"),
+                        rs.getDouble("Solde_Exceptionnel"),
+                        rs.getDouble("Solde_Maternité"),
+                        rs.getInt("ID_Departement"),
+                        rs.getInt("ID_Manager")
+                );
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return user;
+    }
+
 
     public boolean checkUserExists(String email) {
         String req = "SELECT count(1) FROM `usertable` WHERE `Email`=?";
