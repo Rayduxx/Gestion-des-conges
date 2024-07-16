@@ -1729,53 +1729,100 @@ public class ServiceUtilisateur implements IUtilisateur {
         int userRoleId = userRs.getInt("ID_Role");
         System.out.println("User Dept ID: " + userDeptId + ", User Role ID: " + userRoleId);
 
-        // Step 2: Determine the parent role according to the hierarchy
+        // Step 2: Determine the parent roles according to the hierarchy
         String parentRoleQuery = "SELECT ID_RoleP FROM rolehierarchie WHERE ID_RoleC = ?";
         PreparedStatement parentRoleStmt = cnx.prepareStatement(parentRoleQuery);
         parentRoleStmt.setInt(1, userRoleId);
         ResultSet parentRoleRs = parentRoleStmt.executeQuery();
 
-        int parentRoleId = userRoleId; // default to the same role
-        if (parentRoleRs.next()) {
-            int parentId = parentRoleRs.getInt("ID_RoleP");
-            if (parentId != 0) {
-                parentRoleId = parentId;
+        List<Integer> parentRoleIds = new ArrayList<>();
+        while (parentRoleRs.next()) {
+            parentRoleIds.add(parentRoleRs.getInt("ID_RoleP"));
+        }
+        System.out.println("Parent Role IDs: " + parentRoleIds);
+
+        // Step 3: Attempt to find a manager in the user's department
+        Integer managerId = null;
+        for (int parentRoleId : parentRoleIds) {
+            String managerQuery = "SELECT u.ID_User FROM user u JOIN user_role ur ON u.ID_User = ur.ID_User WHERE u.ID_Departement = ? AND ur.ID_Role = ? AND u.ID_User != ? LIMIT 1";
+            PreparedStatement managerStmt = cnx.prepareStatement(managerQuery);
+            managerStmt.setInt(1, userDeptId);
+            managerStmt.setInt(2, parentRoleId);
+            managerStmt.setInt(3, userId);
+            ResultSet managerRs = managerStmt.executeQuery();
+
+            if (managerRs.next()) {
+                managerId = managerRs.getInt("ID_User");
+                break;
             }
         }
-        System.out.println("Parent Role ID: " + parentRoleId);
 
-        // Step 3: Find the manager in the same department with the parent role
-        String managerQuery = "SELECT u.ID_User FROM user u JOIN user_role ur ON u.ID_User = ur.ID_User WHERE u.ID_Departement = ? AND ur.ID_Role = ? AND u.ID_User != ? LIMIT 1";
-        PreparedStatement managerStmt = cnx.prepareStatement(managerQuery);
-        managerStmt.setInt(1, userDeptId); // Use user's department as the parent department
-        managerStmt.setInt(2, parentRoleId);
-        managerStmt.setInt(3, userId);
-        ResultSet managerRs = managerStmt.executeQuery();
+        // Step 4: If no manager found in the same department, attempt to find a manager in parent departments
+        if (managerId == null) {
+            String parentDeptQuery = "SELECT Parent_Dept FROM departement WHERE ID_Departement = ?";
+            PreparedStatement parentDeptStmt = cnx.prepareStatement(parentDeptQuery);
+            parentDeptStmt.setInt(1, userDeptId);
+            ResultSet parentDeptRs = parentDeptStmt.executeQuery();
 
-        // If no manager found in the same department, find manager only by role
-        if (!managerRs.next()) {
-            System.out.println("No manager found in the same department, searching by role only...");
-            managerQuery = "SELECT u.ID_User FROM user u JOIN user_role ur ON u.ID_User = ur.ID_User WHERE ur.ID_Role = ? AND u.ID_User != ? LIMIT 1";
-            managerStmt = cnx.prepareStatement(managerQuery);
-            managerStmt.setInt(1, parentRoleId);
-            managerStmt.setInt(2, userId);
-            managerRs = managerStmt.executeQuery();
+            List<Integer> parentDeptIds = new ArrayList<>();
+            while (parentDeptRs.next()) {
+                parentDeptIds.add(parentDeptRs.getInt("Parent_Dept"));
+            }
+
+            for (int parentDeptId : parentDeptIds) {
+                for (int parentRoleId : parentRoleIds) {
+                    String managerQuery = "SELECT u.ID_User FROM user u JOIN user_role ur ON u.ID_User = ur.ID_User WHERE u.ID_Departement = ? AND ur.ID_Role = ? AND u.ID_User != ? LIMIT 1";
+                    PreparedStatement managerStmt = cnx.prepareStatement(managerQuery);
+                    managerStmt.setInt(1, parentDeptId);
+                    managerStmt.setInt(2, parentRoleId);
+                    managerStmt.setInt(3, userId);
+                    ResultSet managerRs = managerStmt.executeQuery();
+
+                    if (managerRs.next()) {
+                        managerId = managerRs.getInt("ID_User");
+                        break;
+                    }
+                }
+                if (managerId != null) {
+                    break;
+                }
+            }
         }
 
-        if (managerRs.next()) {
-            int managerId = managerRs.getInt("ID_User");
-            System.out.println("Manager ID: " + managerId);
+        // Step 5: If no manager found in parent departments, attempt to find a manager by role only
+        if (managerId == null) {
+            for (int parentRoleId : parentRoleIds) {
+                String managerQuery = "SELECT u.ID_User FROM user u JOIN user_role ur ON u.ID_User = ur.ID_User WHERE ur.ID_Role = ? AND u.ID_User != ? LIMIT 1";
+                PreparedStatement managerStmt = cnx.prepareStatement(managerQuery);
+                managerStmt.setInt(1, parentRoleId);
+                managerStmt.setInt(2, userId);
+                ResultSet managerRs = managerStmt.executeQuery();
 
-            // Step 4: Assign the manager to the user
-            String updateManagerQuery = "UPDATE user SET ID_Manager = ? WHERE ID_User = ?";
-            PreparedStatement updateManagerStmt = cnx.prepareStatement(updateManagerQuery);
-            updateManagerStmt.setInt(1, managerId);
-            updateManagerStmt.setInt(2, userId);
-            updateManagerStmt.executeUpdate();
-        } else {
-            throw new SQLException("Manager not found for user with ID: " + userId);
+                if (managerRs.next()) {
+                    managerId = managerRs.getInt("ID_User");
+                    break;
+                }
+            }
         }
+
+        // Step 6: If no manager found at all, assign the user to the PDG
+        if (managerId == null) {
+            String pdgQuery = "SELECT u.ID_User FROM user u JOIN user_role ur ON u.ID_User = ur.ID_User WHERE ur.ID_Role = (SELECT ID_Role FROM role WHERE nom = 'PDG') LIMIT 1";
+            PreparedStatement pdgStmt = cnx.prepareStatement(pdgQuery);
+            ResultSet pdgRs = pdgStmt.executeQuery();
+
+            if (pdgRs.next()) {
+                managerId = pdgRs.getInt("ID_User");
+            } else {
+                throw new SQLException("PDG not found");
+            }
+        }
+
+        // Step 7: Assign the manager to the user
+        String updateManagerQuery = "UPDATE user SET ID_Manager = ? WHERE ID_User = ?";
+        PreparedStatement updateManagerStmt = cnx.prepareStatement(updateManagerQuery);
+        updateManagerStmt.setInt(1, managerId);
+        updateManagerStmt.setInt(2, userId);
+        updateManagerStmt.executeUpdate();
     }
-
-
 }
