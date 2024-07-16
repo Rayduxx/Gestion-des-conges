@@ -387,7 +387,7 @@ public class paneUserController implements Initializable {
         List<Role> roleList = roleService.getAllRoles();
         ObservableList<Role> roles = FXCollections.observableArrayList(roleList);
 
-        TreeItem<Role> root = new TreeItem<>(new Role(0, "Root", "", 0)); // Adjust constructor as necessary
+        TreeItem<Role> root = new TreeItem<>(new Role(0, "Sans role parent", "", 0)); // Adjust constructor as necessary
         root.setExpanded(true);
         System.out.println("Root created.");
 
@@ -433,7 +433,7 @@ public class paneUserController implements Initializable {
         System.out.println("Departments: " + departmentList);
         ObservableList<Departement> departments = FXCollections.observableArrayList(departmentList);
 
-        TreeItem<Departement> root = new TreeItem<>(new Departement(0, "Root", "", 0)); // Adjust constructor as necessary
+        TreeItem<Departement> root = new TreeItem<>(new Departement(0, "Sans dep.Parent", "", 0));
         root.setExpanded(true);
         System.out.println("Root created.");
 
@@ -441,13 +441,11 @@ public class paneUserController implements Initializable {
         departMap.put(0, root);
 
         for (Departement departement : departments) {
-            System.out.println("Processing department: " + departement);
             TreeItem<Departement> item = new TreeItem<>(departement);
             departMap.put(departement.getIdDepartement(), item);
 
             TreeItem<Departement> parentItem = departMap.getOrDefault(departement.getParentDept(), root);
             parentItem.getChildren().add(item);
-            System.out.println("Added department to parent: " + departement.getParentDept());
         }
 
         // Update departments with their parent names
