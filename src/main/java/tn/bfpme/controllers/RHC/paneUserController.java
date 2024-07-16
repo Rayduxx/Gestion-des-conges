@@ -26,6 +26,8 @@ import tn.bfpme.services.ServiceDepartement;
 import tn.bfpme.services.ServiceRole;
 import tn.bfpme.services.ServiceUtilisateur;
 import tn.bfpme.utils.MyDataBase;
+import javafx.util.StringConverter;
+
 
 import java.io.File;
 import java.io.FileInputStream;
@@ -113,6 +115,8 @@ public class paneUserController implements Initializable {
     private ComboBox<String> hierarCombo;
     @FXML
     private ListView<Role> roleListView;
+    @FXML
+    private TextField RoleSearchBar;
 
     @FXML
     public TextField S_Ann;
@@ -172,6 +176,8 @@ public class paneUserController implements Initializable {
 
         loadRolesIntoComboBox();
         setupRemoveFilterButton();
+        setupRoleSearchBar();
+
 
         setupRoleComboBoxListener();
 
@@ -182,6 +188,9 @@ public class paneUserController implements Initializable {
         hierarCombo.setValue("Selectioner type");
         hierarCombo.setItems(HierarchieList);
     }
+
+
+
     @FXML
     void SelecHierar(ActionEvent event) {
         if (hierarCombo.getValue().equals("Utilisateurs")) {
@@ -204,7 +213,7 @@ public class paneUserController implements Initializable {
     private void loadUsers() {
         UserContainers.getChildren().clear();
         List<User> userList = userService.getAllUsers();
-        ObservableList<User> users = FXCollections.observableArrayList(userList);
+        users = FXCollections.observableArrayList(userList);
         filteredData = new FilteredList<>(users, p -> true);
 
         int column = 0;
@@ -974,6 +983,8 @@ public class paneUserController implements Initializable {
             roleNames.add(role.getNom());
         }
         RoleComboFilter.setItems(roleNames);
+        resetRoleComboBoxItems();
+
     }
     @FXML
     public void filterByRoleCB(ActionEvent actionEvent) {
@@ -1036,4 +1047,36 @@ public class paneUserController implements Initializable {
             loadFilteredUsers();
         });
     }
+    private void setupRoleSearchBar() {
+        RoleSearchBar.textProperty().addListener((observable, oldValue, newValue) -> {
+            if (newValue == null || newValue.isEmpty()) {
+                RoleComboFilter.hide();
+                resetRoleComboBoxItems();
+                return;
+            }
+
+            RoleComboFilter.show();
+
+            ObservableList<String> filteredRoles = FXCollections.observableArrayList();
+            for (String role : RoleComboFilter.getItems()) {
+                if (role.toLowerCase().contains(newValue.toLowerCase())) {
+                    filteredRoles.add(role);
+                }
+            }
+
+            RoleComboFilter.setItems(filteredRoles);
+            if (!filteredRoles.isEmpty()) {
+                RoleComboFilter.show();
+            }
+        });
 }
+
+    private void resetRoleComboBoxItems() {
+        List<Role> roles = roleService.getAllRoles();
+        ObservableList<String> roleNames = FXCollections.observableArrayList();
+        for (Role role : roles) {
+            roleNames.add(role.getNom());
+        }
+        RoleComboFilter.setItems(roleNames);
+    }
+    }

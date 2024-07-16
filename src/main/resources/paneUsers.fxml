@@ -137,8 +137,9 @@
                         <Label layoutX="822.0" layoutY="12.0" text="Recherche:" />
                         <Label layoutX="596.0" layoutY="12.0" prefHeight="17.0" prefWidth="51.0" text="Trier par:" />
                         <ComboBox fx:id="RoleComboFilter" layoutX="653.0" layoutY="5.0" onAction="#filterByRoleCB" prefWidth="150.0" promptText="Roles" />
-                        <Button fx:id="removeFilterButton" layoutX="517.0" layoutY="8.0" mnemonicParsing="false" onAction="#removeFilters" text="X" />
-                        <Label layoutX="439.0" layoutY="13.0" text="Effacer filtre:" />
+                        <Button fx:id="removeFilterButton" layoutX="418.0" layoutY="8.0" mnemonicParsing="false" onAction="#removeFilters" text="X" />
+                        <Label layoutX="340.0" layoutY="13.0" text="Effacer filtre:" />
+                        <TextField fx:id="RoleSearchBar" layoutX="491.0" layoutY="7.0" prefHeight="29.0" prefWidth="77.0" />
                      </children></AnchorPane>
                </content>
             </Tab>
