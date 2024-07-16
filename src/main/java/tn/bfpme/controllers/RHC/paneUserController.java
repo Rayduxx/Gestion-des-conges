@@ -86,6 +86,10 @@ public class paneUserController implements Initializable {
     private TreeTableColumn<User, String>  roleUserColumn;
     @FXML
     private TreeTableColumn<User, String> managerUserColumn;
+
+    @FXML
+    private ComboBox<String> RoleComboFilter;
+
     @FXML
     private TextField Role_field;
     @FXML
@@ -111,6 +115,8 @@ public class paneUserController implements Initializable {
     private TextField searchFieldRole;
     @FXML
     private TextField searchFieldUser;
+    @FXML
+    private TextField RechercheBarUser;
     @FXML
     private ComboBox<String> hierarCombo;
     @FXML
@@ -145,6 +151,9 @@ public class paneUserController implements Initializable {
     @FXML
     private Pane UserPane1;
 
+    @FXML
+    private Button removeFilterButton;
+
 
     public User selectedUser;
     public FilteredList<User> filteredData;
@@ -156,6 +165,9 @@ public class paneUserController implements Initializable {
     private final ServiceDepartement depService = new ServiceDepartement();
     private final ServiceUtilisateur userService = new ServiceUtilisateur();
     private final ServiceRole roleService = new ServiceRole();
+    private ObservableList<User> users;
+
+
     ObservableList<String> HierarchieList = FXCollections.observableArrayList("Utilisateurs", "Départements", "Roles");
 
     @Override
@@ -164,6 +176,11 @@ public class paneUserController implements Initializable {
         loadUsers1();
         loadUsers3();
         loadDepartments1();
+        setupSearch();
+        setupSearch1();
+        loadRolesIntoComboBox();
+        setupRemoveFilterButton();
+        setupRoleComboBoxListener();
         loadDeparts3();
         loadRole1s();
         loadRoles3();
@@ -192,11 +209,13 @@ public class paneUserController implements Initializable {
     private void loadUsers() {
         UserContainers.getChildren().clear();
         List<User> userList = userService.getAllUsers();
-        ServiceRole roleService = new ServiceRole(); // Instantiate the role service
+        ObservableList<User> users = FXCollections.observableArrayList(userList);
+        filteredData = new FilteredList<>(users, p -> true);
+
         int column = 0;
         int row = 0;
         try {
-            for (User user : userList) {
+            for (User user : filteredData) {
                 FXMLLoader fxmlLoader = new FXMLLoader();
                 fxmlLoader.setLocation(getClass().getResource("/RH_User_Card.fxml"));
                 Pane userBox = fxmlLoader.load();
@@ -363,11 +382,6 @@ public class paneUserController implements Initializable {
             e.printStackTrace();
         }
     }
-
-
-
-
-
 
     private void loadRoles3() {
         List<Role> roleList = roleService.getAllRoles();
@@ -702,9 +716,6 @@ public class paneUserController implements Initializable {
         loadUsers3();
     }
 
-
-
-
     public Integer getSelectedUserId() {
         return selectedUser != null ? selectedUser.getIdUser() : null;
     }
@@ -900,5 +911,155 @@ public class paneUserController implements Initializable {
             e.printStackTrace();
             return new SoldeConge(0, 0, 0, 0);
         }
+    }
+
+    @FXML
+    public void RechercheBarUser(ActionEvent actionEvent) {
+        String searchText = RechercheBarUser.getText().trim();
+        filteredData.setPredicate(user -> {
+            if (searchText == null || searchText.isEmpty()) {
+                return true;
+            }
+            String lowerCaseFilter = searchText.toLowerCase();
+            return user.getNom().toLowerCase().contains(lowerCaseFilter) ||
+                    user.getPrenom().toLowerCase().contains(lowerCaseFilter) ||
+                    user.getEmail().toLowerCase().contains(lowerCaseFilter);
+        });
+    }
+
+
+
+    @FXML
+    public void TriZA(ActionEvent actionEvent) {
+    }
+
+    @FXML
+    public void TriAZ(ActionEvent actionEvent) {
+    }
+
+    private void setupSearch() {
+        RechercheBarUser.textProperty().addListener((observable, oldValue, newValue) -> {
+            filteredData.setPredicate(user -> {
+                if (newValue == null || newValue.isEmpty()) {
+                    return true;
+                }
+                String lowerCaseFilter = newValue.toLowerCase();
+                return user.getNom().toLowerCase().contains(lowerCaseFilter) ||
+                        user.getPrenom().toLowerCase().contains(lowerCaseFilter) ||
+                        user.getEmail().toLowerCase().contains(lowerCaseFilter);
+            });
+            refreshUserContainers();
+        });
+    }
+    private void setupSearch1() {
+        User_field.textProperty().addListener((observable, oldValue, newValue) -> {
+            filteredData.setPredicate(user -> {
+                if (newValue == null || newValue.isEmpty()) {
+                    return true;
+                }
+                String lowerCaseFilter = newValue.toLowerCase();
+                return user.getNom().toLowerCase().contains(lowerCaseFilter) ||
+                        user.getPrenom().toLowerCase().contains(lowerCaseFilter) ||
+                        user.getEmail().toLowerCase().contains(lowerCaseFilter);
+            });
+            refreshUserContainers();
+        });
+    }
+
+
+    private void refreshUserContainers() {
+        UserContainers.getChildren().clear();
+        int column = 0;
+        int row = 0;
+        try {
+            for (User user : filteredData) {
+                FXMLLoader fxmlLoader = new FXMLLoader();
+                fxmlLoader.setLocation(getClass().getResource("/RH_User_Card.fxml"));
+                Pane userBox = fxmlLoader.load();
+                CardUserRHController cardController = fxmlLoader.getController();
+                Departement department = depService.getDepartmentById(user.getIdDepartement());
+                Role role = new ServiceRole().getRoleByUserId(user.getIdUser());
+                String departmentName = department != null ? department.getNom() : "N/A";
+                String roleName = role != null ? role.getNom() : "N/A";
+                cardController.setData(user, roleName, departmentName);
+                if (column == 1) {
+                    column = 0;
+                    row++;
+                }
+                UserContainers.add(userBox, column++, row);
+                GridPane.setMargin(userBox, new javafx.geometry.Insets(10));
+            }
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
+    private void loadRolesIntoComboBox() {
+        List<Role> roles = roleService.getAllRoles();
+        ObservableList<String> roleNames = FXCollections.observableArrayList();
+        for (Role role : roles) {
+            roleNames.add(role.getNom());
+        }
+        RoleComboFilter.setItems(roleNames);
+    }
+    @FXML
+    public void filterByRoleCB(ActionEvent actionEvent) {
+        String selectedRole = RoleComboFilter.getValue();
+        if (selectedRole != null) {
+            filteredData.setPredicate(user -> {
+                Role userRole = roleService.getRoleById(user.getIdRole());
+                return userRole != null && userRole.getNom().equals(selectedRole);
+            });
+            refreshUserContainers();
+        }
+    }
+    private void setupRoleComboBoxListener() {
+        RoleComboFilter.getSelectionModel().selectedItemProperty().addListener((observable, oldValue, newValue) -> {
+            filteredData.setPredicate(user -> {
+                if (newValue == null || newValue.isEmpty()) {
+                    return true;
+                }
+                Role userRole = roleService.getRoleByUserId(user.getIdUser());
+                return userRole != null && userRole.getNom().equals(newValue);
+            });
+            loadFilteredUsers(); // Call method to refresh the displayed users
+        });
+    }
+    private void loadFilteredUsers() {
+        UserContainers.getChildren().clear();
+        int column = 0;
+        int row = 0;
+        try {
+            for (User user : filteredData) {
+                FXMLLoader fxmlLoader = new FXMLLoader();
+                fxmlLoader.setLocation(getClass().getResource("/RH_User_Card.fxml"));
+                Pane userBox = fxmlLoader.load();
+                CardUserRHController cardController = fxmlLoader.getController();
+                Departement department = depService.getDepartmentById(user.getIdDepartement());
+                Role role = roleService.getRoleByUserId(user.getIdUser());
+                String departmentName = department != null ? department.getNom() : "N/A";
+                String roleName = role != null ? role.getNom() : "N/A";
+                cardController.setData(user, roleName, departmentName);
+                if (column == 1) {
+                    column = 0;
+                    row++;
+                }
+                UserContainers.add(userBox, column++, row);
+                GridPane.setMargin(userBox, new javafx.geometry.Insets(10));
+            }
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
+
+    @FXML
+    void removeFilters(ActionEvent event) {
+
+    }
+    private void setupRemoveFilterButton() {
+        removeFilterButton.setOnAction(event -> {
+            RoleComboFilter.getSelectionModel().clearSelection();
+            filteredData.setPredicate(user -> true);
+            loadFilteredUsers();
+        });
     }
 }
