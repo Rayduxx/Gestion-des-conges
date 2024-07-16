@@ -79,9 +79,8 @@ public class HistoriqueCongeController implements Initializable {
     void Recherche(KeyEvent event) {
         String recherche = Recherche_conge.getText();
         int row = 0;
-        System.out.println(recherche);
         try {
-            congeContainer.getChildren().clear(); // Clear existing items
+            congeContainer.getChildren().clear();
             for (Conge conge : CongeS.Rechreche(recherche)) {
                 FXMLLoader fxmlLoader = new FXMLLoader();
                 fxmlLoader.setLocation(getClass().getResource("/CongeCarte.fxml"));

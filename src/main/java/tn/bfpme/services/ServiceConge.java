@@ -367,7 +367,11 @@ public class ServiceConge implements IConge<Conge> {
                 "OR `description` LIKE ?)";
 
 
-        try (PreparedStatement ste = cnx.prepareStatement(sql)) {
+        try {
+            if (cnx == null || cnx.isClosed()) {
+                cnx = MyDataBase.getInstance().getCnx();
+            }
+            PreparedStatement ste = cnx.prepareStatement(sql);
             String searchPattern = "%" + recherche + "%";
             ste.setString(1, "%" + SessionManager.getInstance().getUser().getIdUser() + "%");
             ste.setString(2, searchPattern);

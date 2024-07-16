@@ -1174,7 +1174,6 @@ public class ServiceUtilisateur implements IUtilisateur {
         }
     }
 
-
     @Override
     public void DeleteByID(int id) {
         User user = getUserById3(id); // Fetch the user by ID
@@ -1213,7 +1212,6 @@ public class ServiceUtilisateur implements IUtilisateur {
         }
         return user;
     }
-
 
     public boolean checkUserExists(String email) {
         String req = "SELECT count(1) FROM `usertable` WHERE `Email`=?";
