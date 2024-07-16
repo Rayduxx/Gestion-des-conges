@@ -135,9 +135,8 @@
                         </ScrollPane>
                         <TextField fx:id="RechercheBarUser" layoutX="895.0" layoutY="6.0" onAction="#RechercheBarUser" />
                         <Label layoutX="822.0" layoutY="12.0" text="Recherche:" />
-                        <Button layoutX="705.0" layoutY="8.0" mnemonicParsing="false" onAction="#TriZA" text="Z-A" />
-                        <Button layoutX="657.0" layoutY="8.0" mnemonicParsing="false" onAction="#TriAZ" text="A-Z" />
                         <Label layoutX="596.0" layoutY="12.0" prefHeight="17.0" prefWidth="51.0" text="Trier par:" />
+                        <ComboBox fx:id="RoleComboFilter" layoutX="653.0" layoutY="5.0" onAction="#filterByRoleCB" prefWidth="150.0" promptText="Roles" />
                      </children></AnchorPane>
                </content>
             </Tab>

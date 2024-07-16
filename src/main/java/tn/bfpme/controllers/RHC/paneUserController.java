@@ -82,6 +82,10 @@ public class paneUserController implements Initializable {
     private TreeTableColumn<User, String> emailUserColumn;
     @FXML
     private TreeTableColumn<User, String> managerUserColumn;
+
+    @FXML
+    private ComboBox<String> RoleComboFilter;
+
     @FXML
     private TextField Role_field;
     @FXML
@@ -161,6 +165,9 @@ public class paneUserController implements Initializable {
         loadUsers1();
         loadUsers3();
         setupSearch();
+        loadRolesIntoComboBox();
+        setupRoleComboBoxListener();
+
         loadDepartments();
         loadDeparts3();
         loadRoles();
@@ -190,10 +197,9 @@ public class paneUserController implements Initializable {
     private void loadUsers() {
         UserContainers.getChildren().clear();
         List<User> userList = userService.getAllUsers();
-        users = FXCollections.observableArrayList(userList);
+        ObservableList<User> users = FXCollections.observableArrayList(userList);
         filteredData = new FilteredList<>(users, p -> true);
 
-        ServiceRole roleService = new ServiceRole(); // Instantiate the role service
         int column = 0;
         int row = 0;
         try {
@@ -218,7 +224,6 @@ public class paneUserController implements Initializable {
             e.printStackTrace();
         }
     }
-
 
     private void loadUsers1() {
         List<User> userList = userService.getAllUsers();
@@ -925,6 +930,63 @@ public class paneUserController implements Initializable {
                 CardUserRHController cardController = fxmlLoader.getController();
                 Departement department = depService.getDepartmentById(user.getIdDepartement());
                 Role role = new ServiceRole().getRoleByUserId(user.getIdUser());
+                String departmentName = department != null ? department.getNom() : "N/A";
+                String roleName = role != null ? role.getNom() : "N/A";
+                cardController.setData(user, roleName, departmentName);
+                if (column == 1) {
+                    column = 0;
+                    row++;
+                }
+                UserContainers.add(userBox, column++, row);
+                GridPane.setMargin(userBox, new javafx.geometry.Insets(10));
+            }
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
+    private void loadRolesIntoComboBox() {
+        List<Role> roles = roleService.getAllRoles();
+        ObservableList<String> roleNames = FXCollections.observableArrayList();
+        for (Role role : roles) {
+            roleNames.add(role.getNom());
+        }
+        RoleComboFilter.setItems(roleNames);
+    }
+    @FXML
+    public void filterByRoleCB(ActionEvent actionEvent) {
+        String selectedRole = RoleComboFilter.getValue();
+        if (selectedRole != null) {
+            filteredData.setPredicate(user -> {
+                Role userRole = roleService.getRoleById(user.getIdRole());
+                return userRole != null && userRole.getNom().equals(selectedRole);
+            });
+            refreshUserContainers();
+        }
+    }
+    private void setupRoleComboBoxListener() {
+        RoleComboFilter.getSelectionModel().selectedItemProperty().addListener((observable, oldValue, newValue) -> {
+            filteredData.setPredicate(user -> {
+                if (newValue == null || newValue.isEmpty()) {
+                    return true;
+                }
+                Role userRole = roleService.getRoleByUserId(user.getIdUser());
+                return userRole != null && userRole.getNom().equals(newValue);
+            });
+            loadFilteredUsers(); // Call method to refresh the displayed users
+        });
+    }
+    private void loadFilteredUsers() {
+        UserContainers.getChildren().clear();
+        int column = 0;
+        int row = 0;
+        try {
+            for (User user : filteredData) {
+                FXMLLoader fxmlLoader = new FXMLLoader();
+                fxmlLoader.setLocation(getClass().getResource("/RH_User_Card.fxml"));
+                Pane userBox = fxmlLoader.load();
+                CardUserRHController cardController = fxmlLoader.getController();
+                Departement department = depService.getDepartmentById(user.getIdDepartement());
+                Role role = roleService.getRoleByUserId(user.getIdUser());
                 String departmentName = department != null ? department.getNom() : "N/A";
                 String roleName = role != null ? role.getNom() : "N/A";
                 cardController.setData(user, roleName, departmentName);
