@@ -1032,7 +1032,7 @@ public class ServiceUtilisateur implements IUtilisateur {
         }
     }
 
-    private SoldeConge getDefaultSolde() {
+   /* private SoldeConge getDefaultSolde() {
         String query = "SELECT SoldeAnn, SoldeMal, SoldeExc, SoldeMat FROM soldeconge LIMIT 1";
         try (Connection cnx = MyDataBase.getInstance().getCnx();
              PreparedStatement stm = cnx.prepareStatement(query);
@@ -1051,7 +1051,7 @@ public class ServiceUtilisateur implements IUtilisateur {
             e.printStackTrace();
             return new SoldeConge(0, 0, 0, 0); // Return default values in case of error
         }
-    }
+    }*/
 
     @Override
     public void Update(User user) {

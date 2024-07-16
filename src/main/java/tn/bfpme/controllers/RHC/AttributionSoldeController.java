@@ -1,89 +1,126 @@
 package tn.bfpme.controllers.RHC;
 
-import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.scene.control.Button;
-import javafx.scene.control.Label;
 import javafx.scene.control.ListView;
 import javafx.scene.control.TextField;
-import javafx.scene.layout.Pane;
+import javafx.scene.control.Label;
 import tn.bfpme.models.SoldeConge;
-import tn.bfpme.services.ServiceSoldeConge;
+import tn.bfpme.services.ServiceConge;
+import tn.bfpme.services.ServiceUtilisateur;
+import tn.bfpme.utils.MyDataBase;
+
+import java.sql.Connection;
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
+import java.sql.SQLException;
+import java.util.List;
 
 public class AttributionSoldeController {
 
     @FXML
-    private Button Ajout_Solde;
-
-    @FXML
-    private Pane CongePane;
-
-    @FXML
-    private TextField Designation_Solde;
-
-    @FXML
-    private TextField ID_Solde;
-
-    @FXML
-    private ListView<?> Liste_Solde;
-
-    @FXML
-    private Button Modifier_Solde;
-
-    @FXML
-    private TextField Pas_Solde;
-
-    @FXML
-    private TextField Periode_Solde;
-
+    private ListView<SoldeConge> Liste_Solde;
     @FXML
     private TextField RechercheSol;
-
     @FXML
-    private Button Supprimer_Solde;
-
+    private TextField ID_Solde;
+    @FXML
+    private TextField Designation_Solde;
     @FXML
     private TextField Type_Solde;
-
+    @FXML
+    private TextField Pas_Solde;
+    @FXML
+    private TextField Periode_Solde;
+    @FXML
+    private Button Ajout_Solde;
+    @FXML
+    private Button Modifier_Solde;
+    @FXML
+    private Button Supprimer_Solde;
     @FXML
     private Label labelSolde;
 
+    private ServiceSoldeConge serviceSoldeConge;
+    private ServiceUtilisateur serviceUtilisateur;
 
-    private final ServiceSoldeConge soldeCongeService = new ServiceSoldeConge();
-    private final int soldeId = 1; // Use the correct id based on your application logic
-
+    public AttributionSoldeController() {
+        this.serviceSoldeConge = new ServiceSoldeConge();
+        this.serviceUtilisateur = new ServiceUtilisateur();
+    }
 
     @FXML
     public void initialize() {
-        /*SoldeConge soldeConge = soldeCongeService.getSoldeConge(soldeId);
-        if (soldeConge != null) {
-            soldeAnnuelTF.setText(String.valueOf(soldeConge.getSoldeAnn()));
-            soldeExceptionnelTF.setText(String.valueOf(soldeConge.getSoldeExc()));
-            soldeMaladieTF.setText(String.valueOf(soldeConge.getSoldeMal()));
-            soldeMaterniteTF.setText(String.valueOf(soldeConge.getSoldeMat()));
-        }*/
+        loadSoldeConge();
     }
 
     @FXML
-    void Recherche_Solde(ActionEvent event) {
-
+    private void loadSoldeConge() {
+        List<SoldeConge> soldeCongeList = serviceSoldeConge.getAllSoldeConges();
+        Liste_Solde.getItems().setAll(soldeCongeList);
     }
 
-    /*@FXML
-    void ConfirmerSolde(ActionEvent event) {
-        try {
-            double soldeAnnuel = Double.parseDouble(soldeAnnuelTF.getText());
-            double soldeExceptionnel = Double.parseDouble(soldeExceptionnelTF.getText());
-            double soldeMaladie = Double.parseDouble(soldeMaladieTF.getText());
-            double soldeMaternite = Double.parseDouble(soldeMaterniteTF.getText());
+    @FXML
+    public void Recherche_Solde() {
+        String searchText = RechercheSol.getText().trim().toLowerCase();
+        List<SoldeConge> filteredList = serviceSoldeConge.searchSoldeConges(searchText);
+        Liste_Solde.getItems().setAll(filteredList);
+    }
 
-            SoldeConge soldeConge = new SoldeConge(soldeAnnuel, soldeMaladie, soldeMaternite, soldeExceptionnel);
-            soldeCongeService.updateSoldeConge(soldeConge, soldeId);
+    @FXML
+    public void ajouterSolde() {
+        String designation = Designation_Solde.getText().trim();
+        String type = Type_Solde.getText().trim();
+        double pas = Double.parseDouble(Pas_Solde.getText().trim());
+        int periode = Integer.parseInt(Periode_Solde.getText().trim());
 
-        } catch (NumberFormatException e) {
+        serviceSoldeConge.addSoldeConge(designation, type, pas, periode);
+        loadSoldeConge();
+        distributeNewLeaveTypeToUsers(designation);
+        labelSolde.setText("Solde ajouté et distribué aux utilisateurs.");
+    }
+
+    @FXML
+    public void modifierSolde() {
+        int idSolde = Integer.parseInt(ID_Solde.getText().trim());
+        String designation = Designation_Solde.getText().trim();
+        String type = Type_Solde.getText().trim();
+        double pas = Double.parseDouble(Pas_Solde.getText().trim());
+        int periode = Integer.parseInt(Periode_Solde.getText().trim());
+
+        serviceSoldeConge.updateSoldeConge(idSolde, designation, type, pas, periode);
+        loadSoldeConge();
+        labelSolde.setText("Solde modifié.");
+    }
+
+    @FXML
+    public void supprimerSolde() {
+        int idSolde = Integer.parseInt(ID_Solde.getText().trim());
+
+        serviceSoldeConge.deleteSoldeConge(idSolde);
+        loadSoldeConge();
+        labelSolde.setText("Solde supprimé.");
+    }
+
+    private void distributeNewLeaveTypeToUsers(String designation) {
+        int idSolde = serviceSoldeConge.getSoldeCongeIdByDesignation(designation);
+        double pas = serviceSoldeConge.getPasBySoldeId(idSolde);
+
+        try (Connection conn = MyDataBase.getInstance().getCnx()) {
+            String distributeQuery = "INSERT INTO user_Solde (ID_User, idSolde) SELECT ID_User, ? FROM user";
+            try (PreparedStatement distributeStmt = conn.prepareStatement(distributeQuery)) {
+                distributeStmt.setInt(1, idSolde);
+                distributeStmt.executeUpdate();
+            }
+
+            String updateUserSoldeQuery = "UPDATE user_Solde SET Solde = Solde + ? WHERE idSolde = ?";
+            try (PreparedStatement updateUserSoldeStmt = conn.prepareStatement(updateUserSoldeQuery)) {
+                updateUserSoldeStmt.setDouble(1, pas);
+                updateUserSoldeStmt.setInt(2, idSolde);
+                updateUserSoldeStmt.executeUpdate();
+            }
+        } catch (SQLException e) {
             e.printStackTrace();
-            // Show an error message to the user
         }
-    }*/
+    }
 }
-
