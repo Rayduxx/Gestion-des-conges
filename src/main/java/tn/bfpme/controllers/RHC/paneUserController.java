@@ -143,6 +143,9 @@ public class paneUserController implements Initializable {
     @FXML
     private Pane UserPane1;
 
+    @FXML
+    private Button removeFilterButton;
+
 
     public User selectedUser;
     public FilteredList<User> filteredData;
@@ -166,6 +169,8 @@ public class paneUserController implements Initializable {
         loadUsers3();
         setupSearch();
         loadRolesIntoComboBox();
+        setupRemoveFilterButton();
+
         setupRoleComboBoxListener();
 
         loadDepartments();
@@ -1000,5 +1005,17 @@ public class paneUserController implements Initializable {
         } catch (IOException e) {
             e.printStackTrace();
         }
+    }
+
+    @FXML
+    void removeFilters(ActionEvent event) {
+
+    }
+    private void setupRemoveFilterButton() {
+        removeFilterButton.setOnAction(event -> {
+            RoleComboFilter.getSelectionModel().clearSelection();
+            filteredData.setPredicate(user -> true);
+            loadFilteredUsers();
+        });
     }
 }
