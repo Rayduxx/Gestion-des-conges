@@ -168,6 +168,8 @@ public class paneUserController implements Initializable {
         loadUsers1();
         loadUsers3();
         setupSearch();
+        setupSearch1();
+
         loadRolesIntoComboBox();
         setupRemoveFilterButton();
 
@@ -467,6 +469,7 @@ public class paneUserController implements Initializable {
                     user.getPrenom().toLowerCase().contains(lowerCaseFilter) ||
                     user.getEmail().toLowerCase().contains(lowerCaseFilter);
         });
+
     }
 
     @FXML
@@ -922,6 +925,21 @@ public class paneUserController implements Initializable {
             refreshUserContainers();
         });
     }
+    private void setupSearch1() {
+        User_field.textProperty().addListener((observable, oldValue, newValue) -> {
+            filteredData.setPredicate(user -> {
+                if (newValue == null || newValue.isEmpty()) {
+                    return true;
+                }
+                String lowerCaseFilter = newValue.toLowerCase();
+                return user.getNom().toLowerCase().contains(lowerCaseFilter) ||
+                        user.getPrenom().toLowerCase().contains(lowerCaseFilter) ||
+                        user.getEmail().toLowerCase().contains(lowerCaseFilter);
+            });
+            refreshUserContainers();
+        });
+    }
+
 
     private void refreshUserContainers() {
         UserContainers.getChildren().clear();
