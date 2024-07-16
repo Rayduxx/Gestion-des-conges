@@ -5,6 +5,7 @@ import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.collections.transformation.FilteredList;
 import javafx.event.ActionEvent;
+import javafx.event.Event;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.fxml.Initializable;
@@ -152,6 +153,9 @@ public class paneUserController implements Initializable {
     @FXML
     private Button removeFilterButton;
 
+    @FXML
+    private Tab TabGestionid;
+
 
     public User selectedUser;
     public FilteredList<User> filteredData;
@@ -188,9 +192,8 @@ public class paneUserController implements Initializable {
         loadRoles3();
         hierarCombo.setValue("Selectioner type");
         hierarCombo.setItems(HierarchieList);
+        TabGestionid.setOnSelectionChanged(this::TabGestion);
     }
-
-
 
     @FXML
     void SelecHierar(ActionEvent event) {
@@ -1107,5 +1110,23 @@ public class paneUserController implements Initializable {
             roleNames.add(role.getNom());
         }
         RoleComboFilter.setItems(roleNames);
+    }
+
+    @FXML
+    void TabGestion(Event event) {
+        if (TabGestionid.isSelected()) {
+            clearInputFields();
+        }
+
+    }
+    private void clearInputFields() {
+        ID_A.clear();
+        Prenom_A.clear();
+        nom_A.clear();
+        email_A.clear();
+        MDP_A.clear();
+        image_A.clear();
+        infolabel.setText("");
+        PDPimageHolder.setImage(null); // Clear image view if applicable
     }
 }

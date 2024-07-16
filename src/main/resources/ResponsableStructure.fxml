@@ -32,7 +32,7 @@
             </HBox>
             <TreeTableView fx:id="userTable" layoutX="78.0" layoutY="117.0" prefHeight="447.0" prefWidth="844.0">
                <columns>
-                  <TreeTableColumn fx:id="idUserColumn" prefWidth="75.0" text="ID" />
+                  <TreeTableColumn fx:id="idUserColumn" prefWidth="75.0" text="Matricule" />
                   <TreeTableColumn fx:id="prenomUserColumn" prefWidth="140.0" text="Prenom" />
                   <TreeTableColumn fx:id="nomUserColumn" prefWidth="153.0" text="Nom" />
                   <TreeTableColumn fx:id="emailUserColumn" prefWidth="270.0" text="Email" />

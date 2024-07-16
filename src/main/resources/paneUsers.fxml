@@ -26,7 +26,7 @@
    <children>
       <TabPane prefHeight="726.0" prefWidth="1119.0" tabClosingPolicy="UNAVAILABLE">
          <tabs>
-            <Tab text="Gestion">
+            <Tab fx:id="TabGestionid" onSelectionChanged="#TabGestion" text="Gestion des utilisateurs">
                <content>
                   <AnchorPane prefHeight="200.0" prefWidth="200.0" stylesheets="@assets/css/style.css">
                      <children>
@@ -56,7 +56,7 @@
                                     <TextField fx:id="Prenom_A" GridPane.columnIndex="1" GridPane.rowIndex="1" />
                                     <TextField fx:id="nom_A" GridPane.columnIndex="1" GridPane.rowIndex="2" />
                                     <TextField fx:id="email_A" GridPane.columnIndex="1" GridPane.rowIndex="3" />
-                                    <TextField fx:id="image_A" GridPane.columnIndex="1" GridPane.rowIndex="5" />
+                                    <TextField fx:id="image_A" disable="true" editable="false" GridPane.columnIndex="1" GridPane.rowIndex="5" />
                                     <TextField fx:id="MDP_A" GridPane.columnIndex="1" GridPane.rowIndex="4" />
                                  </children>
                               </GridPane>
@@ -93,11 +93,11 @@
                            </children>
                         </HBox>
                         <Label fx:id="infolabel" layoutX="596.0" layoutY="103.0" prefHeight="29.0" prefWidth="342.0" text="zeineb" />
-                        <ImageView fx:id="PDPimageHolder" fitHeight="200.0" fitWidth="200.0" layoutX="667.0" layoutY="195.0" pickOnBounds="true" preserveRatio="true" />
+                        <ImageView fx:id="PDPimageHolder" fitHeight="224.0" fitWidth="254.0" layoutX="640.0" layoutY="179.0" pickOnBounds="true" preserveRatio="true" />
                      </children></AnchorPane>
                </content>
             </Tab>
-            <Tab text="Affichage">
+            <Tab text="Liste des utilisateurs">
                <content>
                   <AnchorPane prefHeight="200.0" prefWidth="200.0">
                      <children>
@@ -177,7 +177,7 @@
                            <children>
                               <TreeTableView fx:id="userTable" layoutX="91.0" layoutY="85.0" prefHeight="447.0" prefWidth="844.0">
                                  <columns>
-                                    <TreeTableColumn fx:id="idUserColumn" prefWidth="75.0" text="ID" />
+                                    <TreeTableColumn fx:id="idUserColumn" prefWidth="75.0" text="Matricule" />
                                     <TreeTableColumn fx:id="prenomUserColumn" prefWidth="140.0" text="Prenom" />
                                     <TreeTableColumn fx:id="nomUserColumn" prefWidth="153.0" text="Nom" />
                                     <TreeTableColumn fx:id="roleUserColumn" prefWidth="161.0" text="Role" />
