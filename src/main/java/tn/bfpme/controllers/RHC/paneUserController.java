@@ -26,6 +26,8 @@ import tn.bfpme.services.ServiceDepartement;
 import tn.bfpme.services.ServiceRole;
 import tn.bfpme.services.ServiceUtilisateur;
 import tn.bfpme.utils.MyDataBase;
+import javafx.util.StringConverter;
+
 
 import java.io.File;
 import java.io.FileInputStream;
@@ -121,6 +123,8 @@ public class paneUserController implements Initializable {
     private ComboBox<String> hierarCombo;
     @FXML
     private ListView<Role> roleListView;
+    @FXML
+    private TextField RoleSearchBar;
 
     @FXML
     public TextField S_Ann;
@@ -178,8 +182,12 @@ public class paneUserController implements Initializable {
         loadDepartments1();
         setupSearch();
         setupSearch1();
+
         loadRolesIntoComboBox();
         setupRemoveFilterButton();
+        setupRoleSearchBar();
+
+
         setupRoleComboBoxListener();
         loadDeparts3();
         loadRole1s();
@@ -187,6 +195,9 @@ public class paneUserController implements Initializable {
         hierarCombo.setValue("Selectioner type");
         hierarCombo.setItems(HierarchieList);
     }
+
+
+
     @FXML
     void SelecHierar(ActionEvent event) {
         if (hierarCombo.getValue().equals("Utilisateurs")) {
@@ -209,7 +220,7 @@ public class paneUserController implements Initializable {
     private void loadUsers() {
         UserContainers.getChildren().clear();
         List<User> userList = userService.getAllUsers();
-        ObservableList<User> users = FXCollections.observableArrayList(userList);
+        users = FXCollections.observableArrayList(userList);
         filteredData = new FilteredList<>(users, p -> true);
 
         int column = 0;
@@ -321,15 +332,12 @@ public class paneUserController implements Initializable {
             List<User> userList = userService.getAllUsers();
             ObservableList<User> users = FXCollections.observableArrayList(userList);
 
-            // Create the root item
             TreeItem<User> root = new TreeItem<>(new User(0, "sans manager", "", "", "", "", 0, 0, 0, 0, 0, 0)); // Adjust constructor as necessary
             root.setExpanded(true);
 
-            // Map to hold TreeItem references for each user
             Map<Integer, TreeItem<User>> userMap = new HashMap<>();
             userMap.put(0, root); // Root represents "sans manager"
 
-            // Populate the map with TreeItem instances for each user
             for (User user : users) {
                 TreeItem<User> item = new TreeItem<>(user);
                 userMap.put(user.getIdUser(), item);
@@ -344,12 +352,9 @@ public class paneUserController implements Initializable {
                     parentItem.getChildren().add(item);
                 }
             }
-
-            // Update user details for display
             for (User user : users) {
                 TreeItem<User> item = userMap.get(user.getIdUser());
                 TreeItem<User> managerItem = userMap.get(user.getIdManager());
-
                 if (managerItem != null && managerItem.getValue() != null) {
                     user.setManagerName(managerItem.getValue().getNom());
                 } else {
@@ -367,11 +372,9 @@ public class paneUserController implements Initializable {
                 }
             }
 
-            // Set the root item to the TreeTableView
             userTable.setRoot(root);
             userTable.setShowRoot(false);
 
-            // Set cell value factories for the TreeTableView columns
             idUserColumn.setCellValueFactory(new TreeItemPropertyValueFactory<>("idUser"));
             prenomUserColumn.setCellValueFactory(new TreeItemPropertyValueFactory<>("prenom"));
             nomUserColumn.setCellValueFactory(new TreeItemPropertyValueFactory<>("nom"));
@@ -382,6 +385,8 @@ public class paneUserController implements Initializable {
             e.printStackTrace();
         }
     }
+
+
 
     private void loadRoles3() {
         List<Role> roleList = roleService.getAllRoles();
@@ -441,11 +446,13 @@ public class paneUserController implements Initializable {
         departMap.put(0, root);
 
         for (Departement departement : departments) {
+            System.out.println("Processing department: " + departement);
             TreeItem<Departement> item = new TreeItem<>(departement);
             departMap.put(departement.getIdDepartement(), item);
 
             TreeItem<Departement> parentItem = departMap.getOrDefault(departement.getParentDept(), root);
             parentItem.getChildren().add(item);
+            System.out.println("Added department to parent: " + departement.getParentDept());
         }
 
         // Update departments with their parent names
@@ -487,6 +494,7 @@ public class paneUserController implements Initializable {
                     user.getPrenom().toLowerCase().contains(lowerCaseFilter) ||
                     user.getEmail().toLowerCase().contains(lowerCaseFilter);
         });
+
     }
 
     @FXML
@@ -713,6 +721,7 @@ public class paneUserController implements Initializable {
         }
         loadUsers3();
     }
+
 
     public Integer getSelectedUserId() {
         return selectedUser != null ? selectedUser.getIdUser() : null;
@@ -998,6 +1007,8 @@ public class paneUserController implements Initializable {
             roleNames.add(role.getNom());
         }
         RoleComboFilter.setItems(roleNames);
+        resetRoleComboBoxItems();
+
     }
     @FXML
     public void filterByRoleCB(ActionEvent actionEvent) {
@@ -1060,4 +1071,36 @@ public class paneUserController implements Initializable {
             loadFilteredUsers();
         });
     }
+    private void setupRoleSearchBar() {
+        RoleSearchBar.textProperty().addListener((observable, oldValue, newValue) -> {
+            if (newValue == null || newValue.isEmpty()) {
+                RoleComboFilter.hide();
+                resetRoleComboBoxItems();
+                return;
+            }
+
+            RoleComboFilter.show();
+
+            ObservableList<String> filteredRoles = FXCollections.observableArrayList();
+            for (String role : RoleComboFilter.getItems()) {
+                if (role.toLowerCase().contains(newValue.toLowerCase())) {
+                    filteredRoles.add(role);
+                }
+            }
+
+            RoleComboFilter.setItems(filteredRoles);
+            if (!filteredRoles.isEmpty()) {
+                RoleComboFilter.show();
+            }
+        });
 }
+
+    private void resetRoleComboBoxItems() {
+        List<Role> roles = roleService.getAllRoles();
+        ObservableList<String> roleNames = FXCollections.observableArrayList();
+        for (Role role : roles) {
+            roleNames.add(role.getNom());
+        }
+        RoleComboFilter.setItems(roleNames);
+    }
+    }
