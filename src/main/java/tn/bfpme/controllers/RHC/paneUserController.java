@@ -98,7 +98,7 @@ public class paneUserController implements Initializable {
     public ListView<User> userListView;
 
     @FXML
-    private ListView<Role> roleParListView;
+    private ComboBox<?> RoleParComboFilter;
 
     @FXML
     public TextField User_field;
@@ -1103,4 +1103,8 @@ public class paneUserController implements Initializable {
         }
         RoleComboFilter.setItems(roleNames);
     }
+    @FXML
+    void filterByRolePar(ActionEvent event) {
+
     }
+}

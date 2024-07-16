@@ -171,7 +171,7 @@
                               <String fx:value="RobotoBoldItalic" />
                            </styleClass>
                         </Label>
-                        <HBox layoutX="236.0" layoutY="593.0" prefHeight="57.0" prefWidth="280.0">
+                        <HBox layoutX="420.0" layoutY="591.0" prefHeight="57.0" prefWidth="280.0">
                            <children>
                               <Button mnemonicParsing="false" onAction="#handleAssignUser" prefHeight="73.0" prefWidth="130.0" text="Affecter">
                                  <styleClass>
@@ -190,14 +190,14 @@
                               </Button>
                            </children>
                         </HBox>
-                        <ListView fx:id="roleParListView" layoutX="791.0" layoutY="447.0" prefHeight="203.0" prefWidth="280.0" />
-                        <TextField fx:id="RolePar_field" layoutX="790.0" layoutY="400.0" onAction="#RolePar_Recherche" prefHeight="29.0" prefWidth="280.0" />
-                        <Label layoutX="866.0" layoutY="354.0" text="Roles Parents">
+                        <TextField fx:id="RolePar_field" layoutX="790.0" layoutY="430.0" onAction="#RolePar_Recherche" prefHeight="29.0" prefWidth="280.0" />
+                        <Label layoutX="866.0" layoutY="381.0" text="Roles Parents">
                            <styleClass>
                               <String fx:value="FontSize-21" />
                               <String fx:value="RobotoBoldItalic" />
                            </styleClass>
                         </Label>
+                        <ComboBox fx:id="RoleParComboFilter" layoutX="824.0" layoutY="477.0" onAction="#filterByRolePar" prefHeight="31.0" prefWidth="213.0" />
                      </children></AnchorPane>
                </content>
             </Tab>
