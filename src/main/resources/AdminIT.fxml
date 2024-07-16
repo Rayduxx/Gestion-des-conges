@@ -48,7 +48,7 @@
                                           <Label text="Image" GridPane.rowIndex="5" />
                                           <Label text="Mot de Passe" GridPane.rowIndex="4" />
                                           <Label text="Email" GridPane.rowIndex="3" />
-                                          <Label text="ID_User" />
+                                          <Label text="Matricule" />
                                           <TextField fx:id="ID_A" GridPane.columnIndex="1" />
                                           <TextField fx:id="Prenom_A" GridPane.columnIndex="1" GridPane.rowIndex="1" />
                                           <TextField fx:id="nom_A" GridPane.columnIndex="1" GridPane.rowIndex="2" />
