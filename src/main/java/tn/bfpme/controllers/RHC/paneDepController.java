@@ -36,6 +36,7 @@ public class paneDepController implements Initializable {
                 deptNameField.setText(newValue.getNom());
                 deptDescriptionField.setText(newValue.getDescription());
                 parentDeptComboBox.getSelectionModel().select(newValue.getParentDept() != 0 ? depService.getDepartmentById(newValue.getParentDept()) : null);
+
             }
         });
 
@@ -119,6 +120,7 @@ public class paneDepController implements Initializable {
                     }
                 }
             });
+
             parentDeptComboBox.setButtonCell(new ListCell<Departement>() {
                 @Override
                 protected void updateItem(Departement item, boolean empty) {

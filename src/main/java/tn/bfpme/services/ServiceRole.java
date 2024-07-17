@@ -105,10 +105,6 @@ public class ServiceRole {
         return roles;
     }
 
-
-
-
-
     public static Role getRoleByUserId(int idUser) {
         Role role = null;
         String query = "SELECT r.* FROM role r JOIN user_role ur ON r.ID_Role = ur.ID_Role WHERE ur.ID_User = ?";
@@ -129,8 +125,6 @@ public class ServiceRole {
         return role;
     }
 
-
-
     public static List<Role> getParentRoles(int idRole) {
         List<Role> parentRoles = new ArrayList<>();
         String query = "SELECT r.* FROM rolehierarchie rh JOIN role r ON rh.ID_RoleP = r.ID_Role WHERE rh.ID_RoleC = ?";
@@ -150,7 +144,6 @@ public class ServiceRole {
         }
         return parentRoles;
     }
-
 
     public static List<Integer> getParentRoleIds(int idRole) {
         List<Integer> parentRoleIds = new ArrayList<>();
@@ -273,7 +266,6 @@ public class ServiceRole {
         return roleHierarchies;
     }
 
-
     public void addRoleHierarchy(Role idP, Role idC) {
         String query = "INSERT INTO rolehierarchie (ID_RoleP, ID_RoleC) VALUES (?, ?)";
         try (Connection cnx = MyDataBase.getInstance().getCnx();
@@ -308,5 +300,57 @@ public class ServiceRole {
         } catch (SQLException e) {
             e.printStackTrace();
         }
+    }
+
+    public List<Role> getParentRoles2(int roleId) {
+        Connection cnx = MyDataBase.getInstance().getCnx();
+        List<Role> roles = new ArrayList<>();
+        String query = "SELECT r.ID_Role, r.nom, r.description " +
+                "FROM role r " +
+                "JOIN rolehierarchie rh ON r.ID_Role = rh.ID_RoleP " +
+                "WHERE rh.ID_RoleC = ?";
+        try {
+            PreparedStatement statement = cnx.prepareStatement(query);
+            statement.setInt(1, roleId);
+            ResultSet resultSet = statement.executeQuery();
+
+            while (resultSet.next()) {
+                Role role = new Role();
+                role.setIdRole(resultSet.getInt("ID_Role"));
+                role.setNom(resultSet.getString("nom"));
+                role.setDescription(resultSet.getString("description"));
+                roles.add(role);
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return roles;
+    }
+
+    public void addRoleHierarchy(int parentRoleId, int childRoleId) {
+        String query = "INSERT INTO rolehierarchie (ID_RoleP, ID_RoleC) VALUES (?, ?)";
+        try (Connection cnx = MyDataBase.getInstance().getCnx();
+             PreparedStatement statement = cnx.prepareStatement(query)) {
+
+            statement.setInt(1, parentRoleId);
+            statement.setInt(2, childRoleId);
+            statement.executeUpdate();
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+    }
+
+    public void removeRoleHierarchy(int parentRoleId, int childRoleId) {
+        String query = "DELETE FROM rolehierarchie WHERE ID_RoleP = ? AND ID_RoleC = ?";
+        try (Connection cnx = MyDataBase.getInstance().getCnx();
+             PreparedStatement statement = cnx.prepareStatement(query)) {
+            statement.setInt(1, parentRoleId);
+            statement.setInt(2, childRoleId);
+            statement.executeUpdate();
+        } catch (SQLException e) {
+            e.printStackTrace();
+
+        }
+
     }
 }

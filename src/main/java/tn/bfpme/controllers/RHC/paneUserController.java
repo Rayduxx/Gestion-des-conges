@@ -27,6 +27,7 @@ import tn.bfpme.services.ServiceRole;
 import tn.bfpme.services.ServiceUtilisateur;
 import tn.bfpme.utils.MyDataBase;
 import javafx.util.StringConverter;
+import tn.bfpme.utils.SessionManager;
 
 
 import java.io.File;
@@ -81,9 +82,9 @@ public class paneUserController implements Initializable {
     @FXML
     private TreeTableColumn<User, String> nomUserColumn;
     @FXML
-    private TreeTableColumn<User, String>departUserColumn ;
+    private TreeTableColumn<User, String> departUserColumn;
     @FXML
-    private TreeTableColumn<User, String>  roleUserColumn;
+    private TreeTableColumn<User, String> roleUserColumn;
     @FXML
     private TreeTableColumn<User, String> managerUserColumn;
 
@@ -150,7 +151,7 @@ public class paneUserController implements Initializable {
     private Pane UserPane1;
 
     @FXML
-    private Button removeFilterButton;
+    private Button removeFilterButton,adduserbtn;
 
 
     public User selectedUser;
@@ -180,7 +181,9 @@ public class paneUserController implements Initializable {
         loadRolesIntoComboBox();
         setupRemoveFilterButton();
         setupRoleSearchBar();
-
+        if (SessionManager.getInstance().getUserRoleName() == "AdminIT") {
+            adduserbtn.setDisable(true);
+        }
 
         setupRoleComboBoxListener();
         loadDeparts3();
@@ -189,7 +192,6 @@ public class paneUserController implements Initializable {
         hierarCombo.setValue("Selectioner type");
         hierarCombo.setItems(HierarchieList);
     }
-
 
 
     @FXML
@@ -381,7 +383,6 @@ public class paneUserController implements Initializable {
     }
 
 
-
     private void loadRoles3() {
         List<Role> roleList = roleService.getAllRoles();
         ObservableList<Role> roles = FXCollections.observableArrayList(roleList);
@@ -473,7 +474,6 @@ public class paneUserController implements Initializable {
         User user = UserS.getUserById(userId);
         return user != null && user.getEmail().equals(email);
     }
-
 
 
     @FXML
@@ -727,7 +727,6 @@ public class paneUserController implements Initializable {
     }
 
 
-
     public Integer getSelectedUserId() {
         return selectedUser != null ? selectedUser.getIdUser() : null;
     }
@@ -940,7 +939,6 @@ public class paneUserController implements Initializable {
     }
 
 
-
     @FXML
     public void TriZA(ActionEvent actionEvent) {
     }
@@ -963,6 +961,7 @@ public class paneUserController implements Initializable {
             refreshUserContainers();
         });
     }
+
     private void setupSearch1() {
         User_field.textProperty().addListener((observable, oldValue, newValue) -> {
             filteredData.setPredicate(user -> {
@@ -1005,6 +1004,7 @@ public class paneUserController implements Initializable {
             e.printStackTrace();
         }
     }
+
     private void loadRolesIntoComboBox() {
         List<Role> roles = roleService.getAllRoles();
         ObservableList<String> roleNames = FXCollections.observableArrayList();
@@ -1015,6 +1015,7 @@ public class paneUserController implements Initializable {
         resetRoleComboBoxItems();
 
     }
+
     @FXML
     public void filterByRoleCB(ActionEvent actionEvent) {
         String selectedRole = RoleComboFilter.getValue();
@@ -1026,6 +1027,7 @@ public class paneUserController implements Initializable {
             refreshUserContainers();
         }
     }
+
     private void setupRoleComboBoxListener() {
         RoleComboFilter.getSelectionModel().selectedItemProperty().addListener((observable, oldValue, newValue) -> {
             filteredData.setPredicate(user -> {
@@ -1038,6 +1040,7 @@ public class paneUserController implements Initializable {
             loadFilteredUsers(); // Call method to refresh the displayed users
         });
     }
+
     private void loadFilteredUsers() {
         UserContainers.getChildren().clear();
         int column = 0;
@@ -1069,6 +1072,7 @@ public class paneUserController implements Initializable {
     void removeFilters(ActionEvent event) {
 
     }
+
     private void setupRemoveFilterButton() {
         removeFilterButton.setOnAction(event -> {
             RoleComboFilter.getSelectionModel().clearSelection();
@@ -1076,6 +1080,7 @@ public class paneUserController implements Initializable {
             loadFilteredUsers();
         });
     }
+
     private void setupRoleSearchBar() {
         RoleSearchBar.textProperty().addListener((observable, oldValue, newValue) -> {
             if (newValue == null || newValue.isEmpty()) {
@@ -1098,7 +1103,7 @@ public class paneUserController implements Initializable {
                 RoleComboFilter.show();
             }
         });
-}
+    }
 
     private void resetRoleComboBoxItems() {
         List<Role> roles = roleService.getAllRoles();

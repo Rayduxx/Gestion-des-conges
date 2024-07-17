@@ -73,7 +73,7 @@
                         </Button>
                         <HBox layoutX="587.0" layoutY="464.0" prefHeight="54.0" prefWidth="361.0">
                            <children>
-                              <Button mnemonicParsing="false" onAction="#ajouter_user" prefHeight="56.0" prefWidth="116.0" styleClass="btn-primary" text="Ajouter">
+                              <Button fx:id="adduserbtn" mnemonicParsing="false" onAction="#ajouter_user" prefHeight="56.0" prefWidth="116.0" styleClass="btn-primary" text="Ajouter">
                                  <font>
                                     <Font size="15.0" />
                                  </font>
@@ -97,7 +97,7 @@
                      </children></AnchorPane>
                </content>
             </Tab>
-            <Tab text="Affichage">
+            <Tab text="Liste">
                <content>
                   <AnchorPane prefHeight="200.0" prefWidth="200.0">
                      <children>
