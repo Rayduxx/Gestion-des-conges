@@ -136,18 +136,14 @@ public class MailingDemandeController implements Initializable {
         String subject = mail_obj.getText();
         String messageText = mail_text.getText();
         serviceConge.NewMessage(messageText,user.getIdUser(),conge.getIdConge());
-        int stat=0;
-        String NotifSubject="";
-        if(conge.getStatut().equals(Statut.Approuvé)){
-            stat=1;
-            NotifSubject = "Votre Demande de conge "+ conge.getTypeConge() +" a été apprové ";
-
+        if(conge.getStatut()==Statut.Approuvé){
+            String NotifSubject = "Votre Demande de conge "+ conge.getTypeConge() +" a été apprové.";
+            notifService.NewNotification(user.getIdUser(),NotifSubject,1,messageText);
         }
-        if(conge.getStatut().equals(Statut.Rejeté)){
-            stat=0;
-            NotifSubject = "Votre Demande de conge "+ conge.getTypeConge() +" a été rejeté à cause de "+subject ;
+        if(conge.getStatut()==Statut.Rejeté){
+            String NotifSubject = "Votre Demande de conge "+ conge.getTypeConge() +" a été rejeté à cause de "+subject;
+            notifService.NewNotification(user.getIdUser(),NotifSubject,0,messageText);
         }
-        notifService.NewNotification(user.getIdUser(),NotifSubject,stat,messageText);
         //Mails.sendEmail(to,subject,messageText);
         try {
             FXMLLoader loader = new FXMLLoader(getClass().getResource("/DemandeDepListe.fxml"));

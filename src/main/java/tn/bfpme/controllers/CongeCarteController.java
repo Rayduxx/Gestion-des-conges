@@ -35,12 +35,16 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 
 public class CongeCarteController {
-    @FXML private Pane Card;
-    @FXML private Label cardStatus,cardType,cardDescription,cardDatefin,cardDatedeb;
-    @FXML private Tooltip tooltip_desc,TTViewFile;
-    @FXML private Button btnViewFile,btnViewMsg,btnEdit,btnDelete;
+    @FXML
+    private Pane Card;
+    @FXML
+    private Label cardStatus, cardType, cardDescription, cardDatefin, cardDatedeb;
+    @FXML
+    private Tooltip tooltip_desc, TTViewFile;
+    @FXML
+    private Button btnViewFile, btnViewMsg, btnEdit, btnDelete;
     private int cUser, cid;
-    private String cdesc, cfile,cmessage;
+    private String cdesc, cfile, cmessage;
     private LocalDate cdebut, cfin;
     private Statut cstatut;
     private TypeConge ctype;
@@ -63,14 +67,14 @@ public class CongeCarteController {
             stm.setInt(2, this.conge.getIdConge());
             ResultSet rs = stm.executeQuery();
             while (rs.next()) {
-                if (rs.getString("Statut").equals(String.valueOf(Statut.En_Attente))){
+                if (rs.getString("Statut").equals(String.valueOf(Statut.En_Attente))) {
                     btnDelete.setDisable(false);
                     btnEdit.setDisable(false);
                 }
-                if (rs.getString("Statut").equals(String.valueOf(Statut.Rejeté))){
+                if (rs.getString("Statut").equals(String.valueOf(Statut.Rejeté))) {
                     btnViewMsg.setDisable(false);
                 }
-                if (rs.getString("TypeConge").equals(String.valueOf(TypeConge.Annuel)) || rs.getString("TypeConge").equals(String.valueOf(TypeConge.Sous_solde))){
+                if (rs.getString("TypeConge").equals(String.valueOf(TypeConge.Annuel)) || rs.getString("TypeConge").equals(String.valueOf(TypeConge.Sous_solde))) {
                     btnViewFile.setDisable(true);
                     TTViewFile = new Tooltip();
                     TTViewFile.setText("Fichier non disponible");
@@ -91,7 +95,7 @@ public class CongeCarteController {
         tooltip_desc.getScene().getStylesheets().add(css);
 
         Tooltip.install(cardDescription, tooltip_desc);
-        cUser =conge.getIdUser();
+        cUser = conge.getIdUser();
         cid = conge.getIdConge();
         ctype = conge.getTypeConge();
         cdesc = conge.getDescription();
@@ -133,7 +137,7 @@ public class CongeCarteController {
 
     @FXML
     void ViewFile(ActionEvent event) {
-        String filePath = "src/main/resources/assets/files/"+conge.getFile();
+        String filePath = "src/main/resources/assets/files/" + conge.getFile();
         File file = new File(filePath);
         if (file.exists()) {
             Desktop desktop = Desktop.getDesktop();
@@ -146,6 +150,7 @@ public class CongeCarteController {
             System.out.println("File not found: " + filePath);
         }
     }
+
     @FXML
     void ViewMessage(ActionEvent event) {
         try {
