@@ -9,32 +9,27 @@ import java.sql.SQLException;
 
 public class SoldeConge {
     private int idSolde;
-    private double SoldeAnn;
-    private double SoldeMal;
-    private double SoldeMat;
-    private double SoldeExc;
+   private String Type;
+   private double Pas;
+   private int PeriodeJ;
+   private int PeriodeM;
+   private int PeriodeA;
+   private boolean File;
+
 
 
 
     public SoldeConge(){}
 
-    public SoldeConge(double soldeAnn, double soldeMal, double soldeMat, double soldeExc) {
-        SoldeAnn = soldeAnn;
-        SoldeMal = soldeMal;
-        SoldeMat = soldeMat;
-        SoldeExc = soldeExc;
+    public SoldeConge(int idSolde, String type, double pas, int periodeJ, int periodeM, int periodeA, boolean file) {
+        this.idSolde = idSolde;
+        Type = type;
+        Pas = pas;
+        PeriodeJ = periodeJ;
+        PeriodeM = periodeM;
+        PeriodeA = periodeA;
+        this.File = file;
     }
-
-    public SoldeConge(int idSolde, double soldeAnn, double soldeMat, double soldeExc, double soldeMal) {
-        idSolde = idSolde;
-        SoldeAnn = soldeAnn;
-        SoldeMal = soldeMal;
-        SoldeMat = soldeMat;
-        SoldeExc = soldeExc;
-    }
-
-
-
 
 //Getters & Setters
 
@@ -47,35 +42,51 @@ public class SoldeConge {
         this.idSolde = idSolde;
     }
 
-    public double getSoldeAnn() {
-        return SoldeAnn;
+    public String getType() {
+        return Type;
     }
 
-    public void setSoldeAnn(double soldeAnn) {
-        SoldeAnn = soldeAnn;
+    public void setType(String type) {
+        Type = type;
     }
 
-    public double getSoldeMal() {
-        return SoldeMal;
+    public double getPas() {
+        return Pas;
     }
 
-    public void setSoldeMal(double soldeMal) {
-        SoldeMal = soldeMal;
+    public void setPas(double pas) {
+        Pas = pas;
     }
 
-    public double getSoldeMat() {
-        return SoldeMat;
+    public int getPeriodeJ() {
+        return PeriodeJ;
     }
 
-    public void setSoldeMat(double soldeMat) {
-        SoldeMat = soldeMat;
+    public void setPeriodeJ(int periodeJ) {
+        PeriodeJ = periodeJ;
     }
 
-    public double getSoldeExc() {
-        return SoldeExc;
+    public int getPeriodeM() {
+        return PeriodeM;
     }
 
-    public void setSoldeExc(double soldeExc) {
-        SoldeExc = soldeExc;
+    public void setPeriodeM(int periodeM) {
+        PeriodeM = periodeM;
+    }
+
+    public int getPeriodeA() {
+        return PeriodeA;
+    }
+
+    public void setPeriodeA(int periodeA) {
+        PeriodeA = periodeA;
+    }
+
+    public boolean isFile() {
+        return File;
+    }
+
+    public void setFile(boolean file) {
+        File = file;
     }
 }
