@@ -56,6 +56,7 @@
                                     <TextField fx:id="Prenom_A" GridPane.columnIndex="1" GridPane.rowIndex="1" />
                                     <TextField fx:id="nom_A" GridPane.columnIndex="1" GridPane.rowIndex="2" />
                                     <TextField fx:id="email_A" GridPane.columnIndex="1" GridPane.rowIndex="3" />
+                                    <TextField fx:id="image_A" disable="true" GridPane.columnIndex="1" GridPane.rowIndex="5" />
                                     <TextField fx:id="image_A" disable="true" editable="false" GridPane.columnIndex="1" GridPane.rowIndex="5" />
                                     <TextField fx:id="MDP_A" GridPane.columnIndex="1" GridPane.rowIndex="4" />
                                  </children>
@@ -73,7 +74,7 @@
                         </Button>
                         <HBox layoutX="587.0" layoutY="464.0" prefHeight="54.0" prefWidth="361.0">
                            <children>
-                              <Button mnemonicParsing="false" onAction="#ajouter_user" prefHeight="56.0" prefWidth="116.0" styleClass="btn-primary" text="Ajouter">
+                              <Button fx:id="adduserbtn" mnemonicParsing="false" onAction="#ajouter_user" prefHeight="56.0" prefWidth="116.0" styleClass="btn-primary" text="Ajouter">
                                  <font>
                                     <Font size="15.0" />
                                  </font>
@@ -97,6 +98,7 @@
                      </children></AnchorPane>
                </content>
             </Tab>
+            <Tab text="Liste">
             <Tab text="Liste des utilisateurs">
                <content>
                   <AnchorPane prefHeight="200.0" prefWidth="200.0">

@@ -11,7 +11,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class ServiceNotification implements INotification {
-    private final Connection cnx;
+    private Connection cnx;
 
     public ServiceNotification() {
         cnx = MyDataBase.getInstance().getCnx();
@@ -21,6 +21,9 @@ public class ServiceNotification implements INotification {
         List<Notification> notifs = new ArrayList<>();
         String query = "SELECT * FROM `notification` WHERE `ID_User` = ?";
         try {
+            if (cnx == null || cnx.isClosed()) {
+                cnx = MyDataBase.getInstance().getCnx();
+            }
             PreparedStatement ps = cnx.prepareStatement(query);
             ps.setInt(1, SessionManager.getInstance().getUser().getIdUser());
             ResultSet rs = ps.executeQuery();
@@ -41,8 +44,11 @@ public class ServiceNotification implements INotification {
     }
     public void NewNotification(int idUser, String NotifMsg, int Statut, String NotifContent) {
         String query = "INSERT INTO `notification`(`ID_User`, `NotfiMessage`, `Statut`, `NotifContent`) VALUES (?,?,?,?)";
-        try (Connection cnx = MyDataBase.getInstance().getCnx();
-             PreparedStatement pstmt = cnx.prepareStatement(query)) {
+        try {
+            if (cnx == null || cnx.isClosed()) {
+                cnx = MyDataBase.getInstance().getCnx();
+            }
+            PreparedStatement pstmt = cnx.prepareStatement(query);
             pstmt.setInt(1, idUser);
             pstmt.setString(2, NotifMsg);
             pstmt.setInt(3, Statut);
@@ -55,6 +61,9 @@ public class ServiceNotification implements INotification {
 
     public void DeleteAllUserNotif() {
         try {
+            if (cnx == null || cnx.isClosed()) {
+                cnx = MyDataBase.getInstance().getCnx();
+            }
             String qry = "DELETE FROM `notification` WHERE `ID_User`= ?";
             PreparedStatement stm = cnx.prepareStatement(qry);
             stm.setInt(1, SessionManager.getInstance().getUser().getIdUser());
@@ -65,6 +74,9 @@ public class ServiceNotification implements INotification {
     }
     public void DeleteNotif(int id) {
         try {
+            if (cnx == null || cnx.isClosed()) {
+                cnx = MyDataBase.getInstance().getCnx();
+            }
             String qry = "DELETE FROM `notification` WHERE `ID_Notif`= ?";
             PreparedStatement stm = cnx.prepareStatement(qry);
             stm.setInt(1, id);

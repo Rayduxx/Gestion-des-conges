@@ -192,8 +192,8 @@ public class DemandeCongeController implements Initializable {
                 //long daysBetween = ChronoUnit.DAYS.between(DD, DF);
                 if (rs.getInt("Solde_Annuel") > 0) {
                     CongeS.Add(new Conge(0, DD, DF, TypeConge.Annuel, Statut.En_Attente, SessionManager.getInstance().getUser().getIdUser(), "", DESC));
-                    NotifSubject = "vous avez reçu une nouvelle demande de congé"+ TypeConge.Annuel;
-                    messageText = "vous avez reçu une nouvelle demande de congé "+ TypeConge.Annuel + " de la part de "+ SessionManager.getInstance().getUser().getIdUser() +" du "+ DD +" au "+ DF;
+                    NotifSubject = "vous avez reçu une nouvelle demande de congé "+ TypeConge.Annuel;
+                    messageText = "vous avez reçu une nouvelle demande de congé "+ TypeConge.Annuel + " de la part de "+ SessionManager.getInstance().getUser().getNom()+" "+ SessionManager.getInstance().getUser().getPrenom() +" du "+ DD +" au "+ DF;
                     notifService.NewNotification(userService.getManagerIdByUserId(SessionManager.getInstance().getUser().getIdUser()),NotifSubject,2,messageText);
                     Alert successAlert = new Alert(Alert.AlertType.CONFIRMATION);
                     successAlert.setTitle("Succès");
@@ -281,8 +281,8 @@ public class DemandeCongeController implements Initializable {
             return;
         }
         CongeS.Add(new Conge(0, DD, DF, TypeConge.Exceptionnel, Statut.En_Attente, SessionManager.getInstance().getUser().getIdUser(), DOCLINK, DESC));
-        NotifSubject = "vous avez reçu une nouvelle demande de congé"+ TypeConge.Exceptionnel;
-        messageText = "vous avez reçu une nouvelle demande de congé "+ TypeConge.Exceptionnel + " de la part de "+ SessionManager.getInstance().getUser().getIdUser() +" du "+ DD +" au "+ DF;
+        NotifSubject = "vous avez reçu une nouvelle demande de congé "+ TypeConge.Exceptionnel;
+        messageText = "vous avez reçu une nouvelle demande de congé "+ TypeConge.Exceptionnel + " de la part de "+ SessionManager.getInstance().getUser().getNom()+" "+ SessionManager.getInstance().getUser().getPrenom() +" du "+ DD +" au "+ DF;
         notifService.NewNotification(userService.getManagerIdByUserId(SessionManager.getInstance().getUser().getIdUser()),NotifSubject,2,messageText);
         Alert successAlert = new Alert(Alert.AlertType.CONFIRMATION);
         successAlert.setTitle("Succès");
@@ -381,8 +381,8 @@ public class DemandeCongeController implements Initializable {
             return;
         }
         CongeS.Add(new Conge(0, DD, DF, TypeConge.Maladie, Statut.En_Attente, SessionManager.getInstance().getUser().getIdUser(), DOCLINK, DESC));
-        NotifSubject = "vous avez reçu une nouvelle demande de congé"+ TypeConge.Maladie;
-        messageText = "vous avez reçu une nouvelle demande de congé "+ TypeConge.Maladie + " de la part de "+ SessionManager.getInstance().getUser().getIdUser() +" du "+ DD +" au "+ DF;
+        NotifSubject = "vous avez reçu une nouvelle demande de congé "+ TypeConge.Maladie;
+        messageText = "vous avez reçu une nouvelle demande de congé "+ TypeConge.Maladie + " de la part de "+ SessionManager.getInstance().getUser().getNom()+" "+ SessionManager.getInstance().getUser().getPrenom() +" du "+ DD +" au "+ DF;
         notifService.NewNotification(userService.getManagerIdByUserId(SessionManager.getInstance().getUser().getIdUser()),NotifSubject,2,messageText);
         Alert successAlert = new Alert(Alert.AlertType.CONFIRMATION);
         successAlert.setTitle("Succès");
@@ -470,8 +470,8 @@ public class DemandeCongeController implements Initializable {
             return;
         }
         CongeS.Add(new Conge(0, DD, DF, TypeConge.Sous_solde, Statut.En_Attente, SessionManager.getInstance().getUser().getIdUser(), "", DESC));
-        NotifSubject = "vous avez reçu une nouvelle demande de congé"+ TypeConge.Sous_solde;
-        messageText = "vous avez reçu une nouvelle demande de congé "+ TypeConge.Sous_solde + " de la part de "+ SessionManager.getInstance().getUser().getIdUser() +" du "+ DD +" au "+ DF;
+        NotifSubject = "vous avez reçu une nouvelle demande de congé "+ TypeConge.Sous_solde;
+        messageText = "vous avez reçu une nouvelle demande de congé "+ TypeConge.Sous_solde + " de la part de "+ SessionManager.getInstance().getUser().getNom()+" "+ SessionManager.getInstance().getUser().getPrenom() +" du "+ DD +" au "+ DF;
         notifService.NewNotification(userService.getManagerIdByUserId(SessionManager.getInstance().getUser().getIdUser()),NotifSubject,2,messageText);
         Alert successAlert = new Alert(Alert.AlertType.CONFIRMATION);
         successAlert.setTitle("Succès");
@@ -546,8 +546,8 @@ public class DemandeCongeController implements Initializable {
             return;
         }
         CongeS.Add(new Conge(0, DD, DF, TypeConge.Maternité, Statut.En_Attente, SessionManager.getInstance().getUser().getIdUser(), DOCLINK, DESC));
-        NotifSubject = "vous avez reçu une nouvelle demande de congé"+ TypeConge.Maternité;
-        messageText = "vous avez reçu une nouvelle demande de congé "+ TypeConge.Maternité + " (Grossesse) de la part de "+ SessionManager.getInstance().getUser().getIdUser() +" du "+ DD +" au "+ DF;
+        NotifSubject = "vous avez reçu une nouvelle demande de congé "+ TypeConge.Maternité;
+        messageText = "vous avez reçu une nouvelle demande de congé "+ TypeConge.Maternité + " (Grossesse) de la part de "+ SessionManager.getInstance().getUser().getNom()+" "+ SessionManager.getInstance().getUser().getPrenom() +" du "+ DD +" au "+ DF;
         notifService.NewNotification(userService.getManagerIdByUserId(SessionManager.getInstance().getUser().getIdUser()),NotifSubject,2,messageText);
         Alert successAlert = new Alert(Alert.AlertType.CONFIRMATION);
         successAlert.setTitle("Succès");
@@ -649,8 +649,8 @@ public class DemandeCongeController implements Initializable {
             return;
         }
         CongeS.Add(new Conge(0, DD, DF, TypeConge.Maternité, Statut.En_Attente, SessionManager.getInstance().getUser().getIdUser(), DOCLINK, DESC));
-        NotifSubject = "vous avez reçu une nouvelle demande de congé"+ TypeConge.Maternité;
-        messageText = "vous avez reçu une nouvelle demande de congé "+ TypeConge.Maternité +" (Naissance) de la part de "+ SessionManager.getInstance().getUser().getIdUser() +" du "+ DD +" au "+ DF;
+        NotifSubject = "vous avez reçu une nouvelle demande de congé "+ TypeConge.Maternité;
+        messageText = "vous avez reçu une nouvelle demande de congé "+ TypeConge.Maternité +" (Naissance) de la part de "+ SessionManager.getInstance().getUser().getNom()+" "+ SessionManager.getInstance().getUser().getPrenom() +" du "+ DD +" au "+ DF;
         notifService.NewNotification(userService.getManagerIdByUserId(SessionManager.getInstance().getUser().getIdUser()),NotifSubject,2,messageText);
         Alert successAlert = new Alert(Alert.AlertType.CONFIRMATION);
         successAlert.setTitle("Succès");

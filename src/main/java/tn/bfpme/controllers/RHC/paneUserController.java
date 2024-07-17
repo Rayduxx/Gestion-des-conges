@@ -5,7 +5,6 @@ import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.collections.transformation.FilteredList;
 import javafx.event.ActionEvent;
-import javafx.event.Event;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.fxml.Initializable;
@@ -28,6 +27,7 @@ import tn.bfpme.services.ServiceRole;
 import tn.bfpme.services.ServiceUtilisateur;
 import tn.bfpme.utils.MyDataBase;
 import javafx.util.StringConverter;
+import tn.bfpme.utils.SessionManager;
 
 
 import java.io.File;
@@ -82,9 +82,9 @@ public class paneUserController implements Initializable {
     @FXML
     private TreeTableColumn<User, String> nomUserColumn;
     @FXML
-    private TreeTableColumn<User, String>departUserColumn ;
+    private TreeTableColumn<User, String> departUserColumn;
     @FXML
-    private TreeTableColumn<User, String>  roleUserColumn;
+    private TreeTableColumn<User, String> roleUserColumn;
     @FXML
     private TreeTableColumn<User, String> managerUserColumn;
 
@@ -151,10 +151,7 @@ public class paneUserController implements Initializable {
     private Pane UserPane1;
 
     @FXML
-    private Button removeFilterButton;
-
-    @FXML
-    private Tab TabGestionid;
+    private Button removeFilterButton,adduserbtn;
 
 
     public User selectedUser;
@@ -184,7 +181,9 @@ public class paneUserController implements Initializable {
         loadRolesIntoComboBox();
         setupRemoveFilterButton();
         setupRoleSearchBar();
-
+        if (SessionManager.getInstance().getUserRoleName() == "AdminIT") {
+            adduserbtn.setDisable(true);
+        }
 
         setupRoleComboBoxListener();
         loadDeparts3();
@@ -192,8 +191,8 @@ public class paneUserController implements Initializable {
         loadRoles3();
         hierarCombo.setValue("Selectioner type");
         hierarCombo.setItems(HierarchieList);
-        TabGestionid.setOnSelectionChanged(this::TabGestion);
     }
+
 
     @FXML
     void SelecHierar(ActionEvent event) {
@@ -384,7 +383,6 @@ public class paneUserController implements Initializable {
     }
 
 
-
     private void loadRoles3() {
         List<Role> roleList = roleService.getAllRoles();
         ObservableList<Role> roles = FXCollections.observableArrayList(roleList);
@@ -476,7 +474,6 @@ public class paneUserController implements Initializable {
         User user = UserS.getUserById(userId);
         return user != null && user.getEmail().equals(email);
     }
-
 
 
     @FXML
@@ -576,6 +573,7 @@ public class paneUserController implements Initializable {
                 MDP_A.setText(selectedUser.getMdp());
                 image_A.setText(selectedUser.getImage());
 
+                // Assuming you need to set the image as well
                 if (selectedUser.getImage() != null) {
                     File file = new File(selectedUser.getImage());
                     if (file.exists()) {
@@ -599,7 +597,19 @@ public class paneUserController implements Initializable {
                     Role_field.clear();
                 }
 
-                // Removed the logic for setting solde fields
+                SoldeConge soldeConge = getSoldeCongeByUserId(selectedUser.getIdUser());
+
+                if (soldeConge != null) {
+                    S_Ann.setText(String.valueOf(soldeConge.getSoldeAnn()));
+                    S_exc.setText(String.valueOf(soldeConge.getSoldeExc()));
+                    S_mal.setText(String.valueOf(soldeConge.getSoldeMal()));
+                    S_mat.setText(String.valueOf(soldeConge.getSoldeMat()));
+                } else {
+                    S_Ann.clear();
+                    S_exc.clear();
+                    S_mal.clear();
+                    S_mat.clear();
+                }
 
                 System.out.println("Selected User in Listener: " + selectedUser);
 
@@ -609,7 +619,6 @@ public class paneUserController implements Initializable {
             }
         }
     }
-
 
     private SoldeConge getSoldeCongeByUserId(int userId) {
         SoldeConge soldeConge = null;
@@ -621,6 +630,15 @@ public class paneUserController implements Initializable {
             PreparedStatement stm = cnx.prepareStatement(query);
             stm.setInt(1, userId);
             ResultSet rs = stm.executeQuery();
+            if (rs.next()) {
+                soldeConge = new SoldeConge(
+                        rs.getInt("idSolde"),
+                        rs.getDouble("SoldeAnn"),
+                        rs.getDouble("SoldeMat"),
+                        rs.getDouble("SoldeExc"),
+                        rs.getDouble("SoldeMal")
+                );
+            }
         } catch (SQLException e) {
             e.printStackTrace();
         }
@@ -680,7 +698,6 @@ public class paneUserController implements Initializable {
     }
 
 
-
     @FXML
     private void handleAssignUser() {
         Integer userId = getSelectedUserId();
@@ -708,7 +725,6 @@ public class paneUserController implements Initializable {
         }
         loadUsers3();
     }
-
 
 
     public Integer getSelectedUserId() {
@@ -743,11 +759,17 @@ public class paneUserController implements Initializable {
         String mdp = MDP_A.getText();
         String image = image_A.getText();
 
+        SoldeConge defaultSolde = getDefaultSolde();
+
+        double soldeAnnuel = defaultSolde.getSoldeAnn();
+        double soldeMaladie = defaultSolde.getSoldeMal();
+        double soldeExceptionnel = defaultSolde.getSoldeExc();
+        double soldeMaternite = defaultSolde.getSoldeMat();
+
         if (email.matches("^[_A-Za-z0-9-\\+]+(\\.[_A-Za-z0-9-]+)*@(bfpme\\.tn|gmail\\.com)$")) {
             try {
                 if (!emailExists(email)) {
-                    User newUser = new User(0, nom, prenom, email, mdp, image, LocalDate.now(), 0, 0);
-                    UserS.Add(newUser);
+                    UserS.Add(new User(0, nom, prenom, email, mdp, image, soldeAnnuel, soldeMaladie, soldeExceptionnel, soldeMaternite, LocalDate.now(), 0, 0));
                     infolabel.setText("Ajout Effectué");
                 } else {
                     infolabel.setText("Email déjà existe");
@@ -759,7 +781,6 @@ public class paneUserController implements Initializable {
             infolabel.setText("Email est invalide");
         }
     }
-
 
     private int parseIntOrZero(String text) {
         if (text == null || text.trim().isEmpty()) {
@@ -779,12 +800,16 @@ public class paneUserController implements Initializable {
         String Email = email_A.getText();
         String Mdp = MDP_A.getText();
         String Image = image_A.getText();
+        int solde_annuel = parseIntOrZero(S_Ann.getText());
+        int solde_maladie = parseIntOrZero(S_mal.getText());
+        int solde_exceptionnel = parseIntOrZero(S_exc.getText());
+        int solde_maternite = parseIntOrZero(S_mat.getText());
 
         if (Email.matches("^[_A-Za-z0-9-\\+]+(\\.[_A-Za-z0-9-]+)*@(bfpme\\.tn|gmail\\.com)$")) {
             int IdUser = Integer.parseInt(ID_A.getText());
             try {
                 if (!emailExistss(Email, IdUser) || isCurrentUser(IdUser, Email)) {
-                    User user = new User(IdUser, Nom, Prenom, Email, Mdp, Image, LocalDate.now(), 0, 0);
+                    User user = new User(IdUser, Nom, Prenom, Email, Mdp, Image, solde_annuel, solde_maladie, solde_exceptionnel, solde_maternite, 0, 0);
                     UserS.Update(user);
                     infolabel.setText("Modification Effectuée");
                     System.out.println("User updated: " + user);
@@ -799,7 +824,6 @@ public class paneUserController implements Initializable {
             infolabel.setText("Email est invalide");
         }
     }
-
 
     @FXML
     void supprimer_user(ActionEvent event) {
@@ -915,7 +939,6 @@ public class paneUserController implements Initializable {
     }
 
 
-
     @FXML
     public void TriZA(ActionEvent actionEvent) {
     }
@@ -938,6 +961,7 @@ public class paneUserController implements Initializable {
             refreshUserContainers();
         });
     }
+
     private void setupSearch1() {
         User_field.textProperty().addListener((observable, oldValue, newValue) -> {
             filteredData.setPredicate(user -> {
@@ -980,6 +1004,7 @@ public class paneUserController implements Initializable {
             e.printStackTrace();
         }
     }
+
     private void loadRolesIntoComboBox() {
         List<Role> roles = roleService.getAllRoles();
         ObservableList<String> roleNames = FXCollections.observableArrayList();
@@ -990,6 +1015,7 @@ public class paneUserController implements Initializable {
         resetRoleComboBoxItems();
 
     }
+
     @FXML
     public void filterByRoleCB(ActionEvent actionEvent) {
         String selectedRole = RoleComboFilter.getValue();
@@ -1001,6 +1027,7 @@ public class paneUserController implements Initializable {
             refreshUserContainers();
         }
     }
+
     private void setupRoleComboBoxListener() {
         RoleComboFilter.getSelectionModel().selectedItemProperty().addListener((observable, oldValue, newValue) -> {
             filteredData.setPredicate(user -> {
@@ -1013,6 +1040,7 @@ public class paneUserController implements Initializable {
             loadFilteredUsers(); // Call method to refresh the displayed users
         });
     }
+
     private void loadFilteredUsers() {
         UserContainers.getChildren().clear();
         int column = 0;
@@ -1044,6 +1072,7 @@ public class paneUserController implements Initializable {
     void removeFilters(ActionEvent event) {
 
     }
+
     private void setupRemoveFilterButton() {
         removeFilterButton.setOnAction(event -> {
             RoleComboFilter.getSelectionModel().clearSelection();
@@ -1051,6 +1080,7 @@ public class paneUserController implements Initializable {
             loadFilteredUsers();
         });
     }
+
     private void setupRoleSearchBar() {
         RoleSearchBar.textProperty().addListener((observable, oldValue, newValue) -> {
             if (newValue == null || newValue.isEmpty()) {
@@ -1073,7 +1103,7 @@ public class paneUserController implements Initializable {
                 RoleComboFilter.show();
             }
         });
-}
+    }
 
     private void resetRoleComboBoxItems() {
         List<Role> roles = roleService.getAllRoles();
@@ -1082,23 +1112,5 @@ public class paneUserController implements Initializable {
             roleNames.add(role.getNom());
         }
         RoleComboFilter.setItems(roleNames);
-    }
-
-    @FXML
-    void TabGestion(Event event) {
-        if (TabGestionid.isSelected()) {
-            clearInputFields();
-        }
-
-    }
-    private void clearInputFields() {
-        ID_A.clear();
-        Prenom_A.clear();
-        nom_A.clear();
-        email_A.clear();
-        MDP_A.clear();
-        image_A.clear();
-        infolabel.setText("");
-        PDPimageHolder.setImage(null); // Clear image view if applicable
     }
 }

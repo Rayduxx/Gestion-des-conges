@@ -22,6 +22,10 @@ public class Role {
         this.RoleParent = RoleParent;
     }
 
+    public Role() {
+
+    }
+
     // Getters and Setters
     public int getIdRole() {
         return idRole;

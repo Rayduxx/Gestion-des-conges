@@ -1,130 +1,458 @@
 package tn.bfpme.services;
 
-import tn.bfpme.models.SoldeConge;
+import tn.bfpme.interfaces.IConge;
+import tn.bfpme.models.Conge;
+import tn.bfpme.models.Statut;
+import tn.bfpme.models.TypeConge;
 import tn.bfpme.utils.MyDataBase;
+import tn.bfpme.utils.SessionManager;
 
-import java.sql.Connection;
-import java.sql.PreparedStatement;
-import java.sql.ResultSet;
-import java.sql.SQLException;
+import java.sql.*;
 import java.util.ArrayList;
 import java.util.List;
 
-public class ServiceConge {
-    private Connection conn;
+public class ServiceConge implements IConge<Conge> {
+    private Connection cnx;
+
+    public ServiceConge(Connection cnx) {
+        this.cnx = cnx;
+    }
 
     public ServiceConge() {
-        this.conn = MyDataBase.getInstance().getCnx();
+        this.cnx = MyDataBase.getInstance().getCnx();
     }
 
-    public List<SoldeConge> getAllSoldeConges() {
-        List<SoldeConge> soldeConges = new ArrayList<>();
-        String query = "SELECT * FROM soldeconge";
-        try (PreparedStatement stmt = conn.prepareStatement(query);
-             ResultSet rs = stmt.executeQuery()) {
+    @Override
+    public List<Conge> afficher() {
+        List<Conge> conges = new ArrayList<>();
+        String sql = "SELECT * FROM conge WHERE `ID_User` = ?";
+        cnx = MyDataBase.getInstance().getCnx();
+        try {
+            if (cnx == null || cnx.isClosed()) {
+                cnx = MyDataBase.getInstance().getCnx();
+            }
+            PreparedStatement ste = cnx.prepareStatement(sql);
+            ste.setInt(1, SessionManager.getInstance().getUser().getIdUser());
+            ResultSet rs = ste.executeQuery();
             while (rs.next()) {
-                SoldeConge soldeConge = new SoldeConge(
-                        rs.getInt("idSolde"),
-                        rs.getString("Designation"),
-                        rs.getString("Type"),
-                        rs.getDouble("Pas"),
-                        rs.getInt("Periode")
-                );
-                soldeConges.add(soldeConge);
-            }
-        } catch (SQLException e) {
-            e.printStackTrace();
-        }
-        return soldeConges;
-    }
-
-    public List<SoldeConge> searchSoldeConges(String searchText) {
-        List<SoldeConge> soldeConges = new ArrayList<>();
-        String query = "SELECT * FROM soldeconge WHERE Designation LIKE ?";
-        try (PreparedStatement stmt = conn.prepareStatement(query)) {
-            stmt.setString(1, "%" + searchText + "%");
-            try (ResultSet rs = stmt.executeQuery()) {
-                while (rs.next()) {
-                    SoldeConge soldeConge = new SoldeConge(
-                            rs.getInt("idSolde"),
-                            rs.getString("Designation"),
-                            rs.getString("Type"),
-                            rs.getDouble("Pas"),
-                            rs.getInt("Periode")
-                    );
-                    soldeConges.add(soldeConge);
+                Conge conge = new Conge();
+                conge.setIdConge(rs.getInt("ID_Conge"));
+                conge.setDateDebut(rs.getDate("DateDebut").toLocalDate());
+                conge.setDateFin(rs.getDate("DateFin").toLocalDate());
+                try {
+                    conge.setTypeConge(TypeConge.valueOf(rs.getString("TypeConge")));
+                } catch (IllegalArgumentException e) {
+                    System.out.println("Unknown TypeConge value: " + rs.getString("TypeConge"));
+                    continue;
                 }
-            }
-        } catch (SQLException e) {
-            e.printStackTrace();
-        }
-        return soldeConges;
-    }
-
-    public void addSoldeConge(String designation, String type, double pas, int periode) {
-        String query = "INSERT INTO soldeconge (Designation, Type, Pas, Periode) VALUES (?, ?, ?, ?)";
-        try (PreparedStatement stmt = conn.prepareStatement(query)) {
-            stmt.setString(1, designation);
-            stmt.setString(2, type);
-            stmt.setDouble(3, pas);
-            stmt.setInt(4, periode);
-            stmt.executeUpdate();
-        } catch (SQLException e) {
-            e.printStackTrace();
-        }
-    }
-
-    public void updateSoldeConge(int idSolde, String designation, String type, double pas, int periode) {
-        String query = "UPDATE soldeconge SET Designation = ?, Type = ?, Pas = ?, Periode = ? WHERE idSolde = ?";
-        try (PreparedStatement stmt = conn.prepareStatement(query)) {
-            stmt.setString(1, designation);
-            stmt.setString(2, type);
-            stmt.setDouble(3, pas);
-            stmt.setInt(4, periode);
-            stmt.setInt(5, idSolde);
-            stmt.executeUpdate();
-        } catch (SQLException e) {
-            e.printStackTrace();
-        }
-    }
-
-    public void deleteSoldeConge(int idSolde) {
-        String query = "DELETE FROM soldeconge WHERE idSolde = ?";
-        try (PreparedStatement stmt = conn.prepareStatement(query)) {
-            stmt.setInt(1, idSolde);
-            stmt.executeUpdate();
-        } catch (SQLException e) {
-            e.printStackTrace();
-        }
-    }
-
-    public int getSoldeCongeIdByDesignation(String designation) {
-        String query = "SELECT idSolde FROM soldeconge WHERE Designation = ?";
-        try (PreparedStatement stmt = conn.prepareStatement(query)) {
-            stmt.setString(1, designation);
-            try (ResultSet rs = stmt.executeQuery()) {
-                if (rs.next()) {
-                    return rs.getInt("idSolde");
+                try {
+                    conge.setStatut(Statut.valueOf(rs.getString("Statut")));
+                } catch (IllegalArgumentException e) {
+                    System.out.println("Unknown Statut value: " + rs.getString("Statut"));
+                    continue;
                 }
+                conge.setIdUser(rs.getInt("ID_User"));
+                conge.setFile(rs.getString("file"));
+                conge.setDescription(rs.getString("description"));
+                conge.setMessage(rs.getString("Message"));
+                conges.add(conge);
             }
-        } catch (SQLException e) {
-            e.printStackTrace();
+        } catch (SQLException ex) {
+            System.out.println(ex.getMessage());
         }
-        return -1;
+        return conges;
     }
 
-    public double getPasBySoldeId(int idSolde) {
-        String query = "SELECT Pas FROM soldeconge WHERE idSolde = ?";
-        try (PreparedStatement stmt = conn.prepareStatement(query)) {
-            stmt.setInt(1, idSolde);
-            try (ResultSet rs = stmt.executeQuery()) {
-                if (rs.next()) {
-                    return rs.getDouble("Pas");
-                }
+    @Override
+    public void Add(Conge conge) {
+        String qry = "INSERT INTO `conge`(`DateDebut`, `DateFin`, `TypeConge`, `Statut`, `ID_User`, `file`, `description`) VALUES (?,?,?,?,?,?,?)";
+        try {
+            if (cnx == null || cnx.isClosed()) {
+                cnx = MyDataBase.getInstance().getCnx();
             }
+            PreparedStatement stm = cnx.prepareStatement(qry);
+            stm.setDate(1, Date.valueOf(conge.getDateDebut()));
+            stm.setDate(2, Date.valueOf(conge.getDateFin()));
+            stm.setString(3, String.valueOf(conge.getTypeConge()));
+            stm.setString(4, String.valueOf(conge.getStatut()));
+            stm.setInt(5, conge.getIdUser());
+            stm.setString(6, conge.getFile());
+            stm.setString(7, conge.getDescription());
+            stm.executeUpdate();
+        } catch (SQLException e) {
+            System.out.println(e.getMessage());
+        }
+    }
+
+    @Override
+    public void updateConge(Conge conge) {
+        cnx = MyDataBase.getInstance().getCnx();
+        try {
+            if (cnx == null || cnx.isClosed()) {
+                cnx = MyDataBase.getInstance().getCnx();
+            }
+            String qry = "UPDATE `conge` SET `DateDebut`=?, `DateFin`=?, `TypeConge`=?, `Statut`=?, `ID_User`=?, `file`=?, `description`=? WHERE `ID_Conge`=?";
+            PreparedStatement stm = cnx.prepareStatement(qry);
+            stm.setDate(1, java.sql.Date.valueOf(conge.getDateDebut()));
+            stm.setDate(2, java.sql.Date.valueOf(conge.getDateFin()));
+            stm.setString(3, conge.getTypeConge().toString());
+            stm.setString(4, conge.getStatut().toString());
+            stm.setInt(5, conge.getIdUser());
+            stm.setString(6, conge.getFile());
+            stm.setString(7, conge.getDescription());
+            stm.setInt(8, conge.getIdConge());
+            stm.executeUpdate();
+        } catch (SQLException ex) {
+            System.out.println(ex.getMessage());
+        }
+    }
+
+    @Override
+    public void updateStatutConge(int id, Statut statut) {
+        try {
+            String qry = "UPDATE `conge` SET `Statut`=? WHERE `ID_Conge`=?";
+            cnx = MyDataBase.getInstance().getCnx();
+            PreparedStatement stm = cnx.prepareStatement(qry);
+            stm.setString(1, String.valueOf(statut));
+            stm.setInt(2, id);
+            stm.executeUpdate();
+        } catch (SQLException ex) {
+            System.out.println(ex.getMessage());
+        }
+    }
+
+    @Override
+    public void updateSoldeAnnuel(int id, int solde) {
+        return;
+    }
+
+    @Override
+    public void updateSoldeAnnuel(int id, double solde) {
+        String query = "UPDATE user SET Solde_Annuel = ? WHERE ID_User = ?";
+        try (PreparedStatement stm = cnx.prepareStatement(query)) {
+            stm.setDouble(1, solde);
+            stm.setInt(2, id);
+            stm.executeUpdate();
         } catch (SQLException e) {
             e.printStackTrace();
         }
-        return 0;
+    }
+
+    public void updateSoldeMaladie(int id, int solde) {
+
+    }
+
+    @Override
+    public void updateSoldeMaladie(int id, double solde) {
+        try {
+            String qry = "UPDATE `user` SET `Solde_Maladie`=? WHERE `ID_User`=?";
+            PreparedStatement stm = cnx.prepareStatement(qry);
+            stm.setDouble(1, solde);
+            stm.setInt(2, id);
+            stm.executeUpdate();
+        } catch (SQLException ex) {
+            System.out.println(ex.getMessage());
+        }
+    }
+
+    public void updateSoldeExceptionnel(int id, int solde) {
+
+    }
+
+    @Override
+    public void updateSoldeExceptionnel(int id, double solde) {
+        try {
+            String qry = "UPDATE `user` SET `Solde_Exceptionnel`=? WHERE `ID_User`=?";
+            PreparedStatement stm = cnx.prepareStatement(qry);
+            stm.setDouble(1, solde);
+            stm.setInt(2, id);
+            stm.executeUpdate();
+        } catch (SQLException ex) {
+            System.out.println(ex.getMessage());
+        }
+    }
+
+    public void updateSoldeMaternité(int id, int solde) {
+
+    }
+
+    @Override
+    public void updateSoldeMaternité(int id, double solde) {
+        try {
+            String qry = "UPDATE `user` SET `Solde_Maternité`=? WHERE `ID_User`=?";
+            PreparedStatement stm = cnx.prepareStatement(qry);
+            stm.setDouble(1, solde);
+            stm.setInt(2, id);
+            stm.executeUpdate();
+        } catch (SQLException ex) {
+            System.out.println(ex.getMessage());
+        }
+    }
+
+    @Override
+    public void deleteConge(Conge conge) {
+        try {
+            String qry = "DELETE FROM `conge` WHERE `ID_Conge`=?";
+            PreparedStatement stm = cnx.prepareStatement(qry);
+            stm.setInt(1, conge.getIdConge());
+            stm.executeUpdate();
+        } catch (SQLException ex) {
+            System.out.println(ex.getMessage());
+        }
+    }
+
+    @Override
+    public void deleteCongeByID(int id) {
+        try {
+            if (cnx == null || cnx.isClosed()) {
+                cnx = MyDataBase.getInstance().getCnx();
+            }
+            String qry = "DELETE FROM `conge` WHERE `ID_Conge`=?";
+            PreparedStatement stm = cnx.prepareStatement(qry);
+            stm.setInt(1, id);
+            stm.executeUpdate();
+            System.out.println("Suppression Effectuée");
+        } catch (SQLException ex) {
+            System.out.println(ex.getMessage());
+        }
+    }
+
+    @Override
+    public List<Conge> TriparStatut() {
+        List<Conge> conges = new ArrayList<>();
+        String sql = "SELECT `ID_Conge`, `DateDebut`, `DateFin`, `TypeConge`, `Statut`, `ID_User`, `file`, `description` FROM `conge` WHERE `ID_User` LIKE '%" + SessionManager.getInstance().getUser().getIdUser() + "%' ORDER BY `Statut`";
+        try {
+            if (cnx == null || cnx.isClosed()) {
+                cnx = MyDataBase.getInstance().getCnx();
+            }
+            Statement ste = cnx.createStatement();
+            ResultSet rs = ste.executeQuery(sql);
+            while (rs.next()) {
+                Conge conge = new Conge();
+                conge.setIdConge(rs.getInt("ID_Conge"));
+                conge.setDateDebut(rs.getDate("DateDebut").toLocalDate());
+                conge.setDateFin(rs.getDate("DateFin").toLocalDate());
+                conge.setTypeConge(TypeConge.valueOf(rs.getString("TypeConge")));
+                conge.setStatut(Statut.valueOf(rs.getString("Statut")));
+                conge.setIdUser(rs.getInt("ID_User"));
+                conge.setFile(rs.getString("file"));
+                conge.setDescription(rs.getString("description"));
+                conges.add(conge);
+            }
+        } catch (SQLException ex) {
+            System.out.println(ex.getMessage());
+        }
+        return conges;
+    }
+
+    @Override
+    public List<Conge> TriparType() {
+        List<Conge> conges = new ArrayList<>();
+        String sql = "SELECT `ID_Conge`, `DateDebut`, `DateFin`, `TypeConge`, `Statut`, `ID_User`, `file`, `description` FROM `conge` WHERE `ID_User` LIKE '%" + SessionManager.getInstance().getUser().getIdUser() + "%' ORDER BY `TypeConge`";
+        try {
+            if (cnx == null || cnx.isClosed()) {
+                cnx = MyDataBase.getInstance().getCnx();
+            }
+            Statement ste = cnx.createStatement();
+            ResultSet rs = ste.executeQuery(sql);
+            while (rs.next()) {
+                Conge conge = new Conge();
+                conge.setIdConge(rs.getInt("ID_Conge"));
+                conge.setDateDebut(rs.getDate("DateDebut").toLocalDate());
+                conge.setDateFin(rs.getDate("DateFin").toLocalDate());
+                conge.setTypeConge(TypeConge.valueOf(rs.getString("TypeConge")));
+                conge.setStatut(Statut.valueOf(rs.getString("Statut")));
+                conge.setIdUser(rs.getInt("ID_User"));
+                conge.setFile(rs.getString("file"));
+                conge.setDescription(rs.getString("description"));
+                conges.add(conge);
+            }
+        } catch (SQLException ex) {
+            System.out.println(ex.getMessage());
+        }
+        return conges;
+    }
+
+    @Override
+    public List<Conge> TriparDateD() {
+        List<Conge> conges = new ArrayList<>();
+        String sql = "SELECT `ID_Conge`, `DateDebut`, `DateFin`, `TypeConge`, `Statut`, `ID_User`, `file`, `description` FROM `conge` WHERE `ID_User` LIKE '%" + SessionManager.getInstance().getUser().getIdUser() + "%'ORDER BY `DateDebut`";
+        try {
+            if (cnx == null || cnx.isClosed()) {
+                cnx = MyDataBase.getInstance().getCnx();
+            }
+            Statement ste = cnx.createStatement();
+            ResultSet rs = ste.executeQuery(sql);
+            while (rs.next()) {
+                Conge conge = new Conge();
+                conge.setIdConge(rs.getInt("ID_Conge"));
+                conge.setDateDebut(rs.getDate("DateDebut").toLocalDate());
+                conge.setDateFin(rs.getDate("DateFin").toLocalDate());
+                conge.setTypeConge(TypeConge.valueOf(rs.getString("TypeConge")));
+                conge.setStatut(Statut.valueOf(rs.getString("Statut")));
+                conge.setIdUser(rs.getInt("ID_User"));
+                conge.setFile(rs.getString("file"));
+                conge.setDescription(rs.getString("description"));
+                conges.add(conge);
+            }
+        } catch (SQLException ex) {
+            System.out.println(ex.getMessage());
+        }
+        return conges;
+    }
+
+    @Override
+    public List<Conge> TriparDateF() {
+        List<Conge> conges = new ArrayList<>();
+        String sql = "SELECT `ID_Conge`, `DateDebut`, `DateFin`, `TypeConge`, `Statut`, `ID_User`, `file`, `description` FROM `conge` WHERE `ID_User` LIKE '%" + SessionManager.getInstance().getUser().getIdUser() + "%' ORDER BY `DateFin`";
+        try {
+            if (cnx == null || cnx.isClosed()) {
+                cnx = MyDataBase.getInstance().getCnx();
+            }
+            Statement ste = cnx.createStatement();
+            ResultSet rs = ste.executeQuery(sql);
+            while (rs.next()) {
+                Conge conge = new Conge();
+                conge.setIdConge(rs.getInt("ID_Conge"));
+                conge.setDateDebut(rs.getDate("DateDebut").toLocalDate());
+                conge.setDateFin(rs.getDate("DateFin").toLocalDate());
+                conge.setTypeConge(TypeConge.valueOf(rs.getString("TypeConge")));
+                conge.setStatut(Statut.valueOf(rs.getString("Statut")));
+                conge.setIdUser(rs.getInt("ID_User"));
+                conge.setFile(rs.getString("file"));
+                conge.setDescription(rs.getString("description"));
+                conges.add(conge);
+            }
+        } catch (SQLException ex) {
+            System.out.println(ex.getMessage());
+        }
+        return conges;
+    }
+
+    @Override
+    public List<Conge> TriparDesc() {
+        List<Conge> conges = new ArrayList<>();
+        String sql = "SELECT `ID_Conge`, `DateDebut`, `DateFin`, `TypeConge`, `Statut`, `ID_User`, `file`, `description` FROM `conge` WHERE `ID_User` LIKE '%" + SessionManager.getInstance().getUser().getIdUser() + "%' ORDER BY `description`";
+        try {
+            if (cnx == null || cnx.isClosed()) {
+                cnx = MyDataBase.getInstance().getCnx();
+            }
+            Statement ste = cnx.createStatement();
+            ResultSet rs = ste.executeQuery(sql);
+            while (rs.next()) {
+                Conge conge = new Conge();
+                conge.setIdConge(rs.getInt("ID_Conge"));
+                conge.setDateDebut(rs.getDate("DateDebut").toLocalDate());
+                conge.setDateFin(rs.getDate("DateFin").toLocalDate());
+                conge.setTypeConge(TypeConge.valueOf(rs.getString("TypeConge")));
+                conge.setStatut(Statut.valueOf(rs.getString("Statut")));
+                conge.setIdUser(rs.getInt("ID_User"));
+                conge.setFile(rs.getString("file"));
+                conge.setDescription(rs.getString("description"));
+                conges.add(conge);
+            }
+        } catch (SQLException ex) {
+            System.out.println(ex.getMessage());
+        }
+        return conges;
+    }
+
+    @Override
+    public List<Conge> Rechreche(String recherche) {
+        List<Conge> conges = new ArrayList<>();
+        String sql = "SELECT `ID_Conge`, `DateDebut`, `DateFin`, `TypeConge`, `Statut`, `ID_User`, `file`, `description` " +
+                "FROM `conge` " +
+                "WHERE `ID_User` LIKE ? " +
+                "AND (`TypeConge` LIKE ? " +
+                "OR `Statut` LIKE ? " +
+                "OR `DateDebut` LIKE ? " +
+                "OR `DateFin` LIKE ? " +
+                "OR `description` LIKE ?)";
+
+
+        try {
+            if (cnx == null || cnx.isClosed()) {
+                cnx = MyDataBase.getInstance().getCnx();
+            }
+            PreparedStatement ste = cnx.prepareStatement(sql);
+            String searchPattern = "%" + recherche + "%";
+            ste.setString(1, "%" + SessionManager.getInstance().getUser().getIdUser() + "%");
+            ste.setString(2, searchPattern);
+            ste.setString(3, searchPattern);
+            ste.setString(4, searchPattern);
+            ste.setString(5, searchPattern);
+            ste.setString(6, searchPattern);
+            ResultSet rs = ste.executeQuery();
+            while (rs.next()) {
+                Conge conge = new Conge();
+                conge.setIdConge(rs.getInt("ID_Conge"));
+                conge.setDateDebut(rs.getDate("DateDebut").toLocalDate());
+                conge.setDateFin(rs.getDate("DateFin").toLocalDate());
+                conge.setTypeConge(TypeConge.valueOf(rs.getString("TypeConge")));
+                conge.setStatut(Statut.valueOf(rs.getString("Statut")));
+                conge.setIdUser(rs.getInt("ID_User"));
+                conge.setFile(rs.getString("file"));
+                conge.setDescription(rs.getString("description"));
+                conges.add(conge);
+            }
+        } catch (SQLException ex) {
+            System.out.println(ex.getMessage());
+        }
+        return conges;
+    }
+
+    public void NewMessage(String message, int idUser, int idConge) {
+        cnx = MyDataBase.getInstance().getCnx();
+
+        try {
+            if (cnx == null || cnx.isClosed()) {
+                cnx = MyDataBase.getInstance().getCnx();
+            }
+            String qry = "UPDATE `conge` SET `Message`=? WHERE `ID_User`=? AND `ID_Conge`=?";
+            PreparedStatement stm = cnx.prepareStatement(qry);
+            stm.setString(1, message);
+            stm.setInt(2, idUser);
+            stm.setInt(3, idConge);
+            stm.executeUpdate();
+        } catch (SQLException ex) {
+            System.out.println(ex.getMessage());
+        }
+    }
+
+    public String AfficherMessage(int id) {
+        String Message = "";
+        String sql = "SELECT `Message` FROM `conge` WHERE `ID_Conge`=? AND `Message` IS NOT NULL AND `Message` <> '' ";
+        try {
+            PreparedStatement stm = cnx.prepareStatement(sql);
+            stm.setInt(1, id);
+            ResultSet rs = stm.executeQuery(sql);
+            while (rs.next()) {
+                Message = rs.getString("Message");
+            }
+        } catch (SQLException ex) {
+            System.out.println(ex.getMessage());
+        }
+        return Message;
+    }
+
+    // New methods for leave request handling
+    public int getSupervisor(int userId) throws SQLException {
+        String sql = "SELECT ID_Manager FROM user WHERE ID_User = ?";
+        try (PreparedStatement stmt = cnx.prepareStatement(sql)) {
+            stmt.setInt(1, userId);
+            ResultSet rs = stmt.executeQuery();
+            if (rs.next()) {
+                return rs.getInt("ID_Manager");
+            } else {
+                throw new SQLException("Manager not found for user ID: " + userId);
+            }
+        }
+    }
+
+    public void handleLeaveRequest(Conge conge) throws SQLException {
+        Add(conge);
+        int supervisorId = getSupervisor(conge.getIdUser());
+        ServiceNotification notificationService = new ServiceNotification();
+        notificationService.NewNotification(supervisorId, "New leave request", 0, "You have a new leave request to review.");
     }
 }

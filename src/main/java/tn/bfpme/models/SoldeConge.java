@@ -9,31 +9,37 @@ import java.sql.SQLException;
 
 public class SoldeConge {
     private int idSolde;
+   private String Type;
+   private double Pas;
+   private int PeriodeJ;
+   private int PeriodeM;
+   private int PeriodeA;
+   private boolean File;
 
-    private String Designation;
-    private String Type;
-    private int Pas;
-    private int Periode;
 
 
 
     public SoldeConge(){}
 
-    public SoldeConge(int idSolde, String designation, String type, int pas, int periode) {
+    public SoldeConge(int idSolde, String type, double pas, int periodeJ, int periodeM, int periodeA, boolean file) {
         this.idSolde = idSolde;
-        this.Designation = designation;
-        this.Type = type;
-        this.Pas = pas;
-        this.Periode = periode;
+        Type = type;
+        Pas = pas;
+        PeriodeJ = periodeJ;
+        PeriodeM = periodeM;
+        PeriodeA = periodeA;
+        this.File = file;
     }
 
-    //Getters & Setters
-    public String getDesignation() {
-        return Designation;
+//Getters & Setters
+
+
+    public int getIdSolde() {
+        return idSolde;
     }
 
-    public void setDesignation(String designation) {
-        Designation = designation;
+    public void setIdSolde(int idSolde) {
+        this.idSolde = idSolde;
     }
 
     public String getType() {
@@ -44,28 +50,43 @@ public class SoldeConge {
         Type = type;
     }
 
-    public int getPas() {
+    public double getPas() {
         return Pas;
     }
 
-    public void setPas(int pas) {
+    public void setPas(double pas) {
         Pas = pas;
     }
 
-    public int getPeriode() {
-        return Periode;
+    public int getPeriodeJ() {
+        return PeriodeJ;
     }
 
-    public void setPeriode(int periode) {
-        Periode = periode;
-    }
-    public int getIdSolde() {
-        return idSolde;
+    public void setPeriodeJ(int periodeJ) {
+        PeriodeJ = periodeJ;
     }
 
-    public void setIdSolde(int idSolde) {
-        this.idSolde = idSolde;
+    public int getPeriodeM() {
+        return PeriodeM;
     }
 
+    public void setPeriodeM(int periodeM) {
+        PeriodeM = periodeM;
+    }
 
+    public int getPeriodeA() {
+        return PeriodeA;
+    }
+
+    public void setPeriodeA(int periodeA) {
+        PeriodeA = periodeA;
+    }
+
+    public boolean isFile() {
+        return File;
+    }
+
+    public void setFile(boolean file) {
+        File = file;
+    }
 }
