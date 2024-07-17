@@ -127,8 +127,6 @@ public class DemandeDepController implements Initializable {
         alert.getButtonTypes().setAll(Oui, Non);
         Optional<ButtonType> result = alert.showAndWait();
         if (result.isPresent() && result.get() == Oui) {
-            serviceConge.updateStatutConge(this.conge.getIdConge(), Statut.Approuvé);
-
             Subject = "Approbation de Demande de Congé";
             String NotifContent = "";
             MessageText = Mails.generateApprobationDemande(employeeName, startDate, endDate, managerName, managerRole);
@@ -144,14 +142,12 @@ public class DemandeDepController implements Initializable {
                 demandeDepListeStage.setTitle("Mailing de Demande");
                 demandeDepListeStage.show();
                 StageManager.addStage("DemandeDepListe", demandeDepListeStage);
-
             } catch (IOException e) {
                 e.printStackTrace();
             }
             if (conge.getTypeConge().equals(TypeConge.Annuel)) {
                 serviceConge.updateSoldeAnnuel(this.user.getIdUser(), this.user.getSoldeAnnuel() - conge.getCongeDays());
             }
-
             if (conge.getTypeConge().equals(TypeConge.Exceptionnel)) {
                 serviceConge.updateSoldeExceptionnel(this.user.getIdUser(), this.user.getSoldeExceptionnel() - conge.getCongeDays());
             }
@@ -168,7 +164,8 @@ public class DemandeDepController implements Initializable {
             cbon.setTitle("Demande approuvée");
             cbon.setHeaderText("La demande de congé " + this.conge.getTypeConge() + " de " + this.user.getNom() + " " + this.user.getPrenom() + " à été apprové");
             cbon.showAndWait();
-
+            this.conge.setStatut(Statut.Approuvé);
+            serviceConge.updateStatutConge(this.conge.getIdConge(), Statut.Approuvé);
         }
     }
 
@@ -184,7 +181,6 @@ public class DemandeDepController implements Initializable {
 
         if (result.isPresent() && result.get() == Oui) {
             try {
-                serviceConge.updateStatutConge(this.conge.getIdConge(), Statut.Rejeté);
                 FXMLLoader loader = new FXMLLoader(getClass().getResource("/MailingDemande.fxml"));
                 Parent root = loader.load();
                 MailingDemandeController controller = loader.getController();
@@ -208,6 +204,8 @@ public class DemandeDepController implements Initializable {
                 System.err.println("An unexpected error occurred");
             }
         }
+        this.conge.setStatut(Statut.Rejeté);
+        serviceConge.updateStatutConge(this.conge.getIdConge(), Statut.Rejeté);
     }
 
     @FXML

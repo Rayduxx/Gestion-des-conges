@@ -56,7 +56,7 @@
                                     <TextField fx:id="Prenom_A" GridPane.columnIndex="1" GridPane.rowIndex="1" />
                                     <TextField fx:id="nom_A" GridPane.columnIndex="1" GridPane.rowIndex="2" />
                                     <TextField fx:id="email_A" GridPane.columnIndex="1" GridPane.rowIndex="3" />
-                                    <TextField fx:id="image_A" GridPane.columnIndex="1" GridPane.rowIndex="5" />
+                                    <TextField fx:id="image_A" disable="true" GridPane.columnIndex="1" GridPane.rowIndex="5" />
                                     <TextField fx:id="MDP_A" GridPane.columnIndex="1" GridPane.rowIndex="4" />
                                  </children>
                               </GridPane>
