@@ -27,6 +27,7 @@ import tn.bfpme.services.ServiceRole;
 import tn.bfpme.services.ServiceUtilisateur;
 import tn.bfpme.utils.MyDataBase;
 import javafx.util.StringConverter;
+import tn.bfpme.utils.SessionManager;
 
 
 import java.io.File;
@@ -60,8 +61,6 @@ public class paneUserController implements Initializable {
     private TreeTableColumn<Role, Integer> RoleParColumn;
     @FXML
     private TreeTableColumn<Role, String> RoleFilsColumn;
-    @FXML
-    private TextField RolePar_field;
 
     @FXML
     private TreeTableView<Departement> deptTable;
@@ -83,9 +82,9 @@ public class paneUserController implements Initializable {
     @FXML
     private TreeTableColumn<User, String> nomUserColumn;
     @FXML
-    private TreeTableColumn<User, String>departUserColumn ;
+    private TreeTableColumn<User, String> departUserColumn;
     @FXML
-    private TreeTableColumn<User, String>  roleUserColumn;
+    private TreeTableColumn<User, String> roleUserColumn;
     @FXML
     private TreeTableColumn<User, String> managerUserColumn;
 
@@ -96,10 +95,6 @@ public class paneUserController implements Initializable {
     private TextField Role_field;
     @FXML
     public ListView<User> userListView;
-
-    @FXML
-    private ComboBox<?> RoleParComboFilter;
-
     @FXML
     public TextField User_field;
     @FXML
@@ -156,7 +151,7 @@ public class paneUserController implements Initializable {
     private Pane UserPane1;
 
     @FXML
-    private Button removeFilterButton;
+    private Button removeFilterButton,adduserbtn;
 
 
     public User selectedUser;
@@ -186,7 +181,9 @@ public class paneUserController implements Initializable {
         loadRolesIntoComboBox();
         setupRemoveFilterButton();
         setupRoleSearchBar();
-
+        if (SessionManager.getInstance().getUserRoleName() == "AdminIT") {
+            adduserbtn.setDisable(true);
+        }
 
         setupRoleComboBoxListener();
         loadDeparts3();
@@ -195,7 +192,6 @@ public class paneUserController implements Initializable {
         hierarCombo.setValue("Selectioner type");
         hierarCombo.setItems(HierarchieList);
     }
-
 
 
     @FXML
@@ -387,7 +383,6 @@ public class paneUserController implements Initializable {
     }
 
 
-
     private void loadRoles3() {
         List<Role> roleList = roleService.getAllRoles();
         ObservableList<Role> roles = FXCollections.observableArrayList(roleList);
@@ -479,7 +474,6 @@ public class paneUserController implements Initializable {
         User user = UserS.getUserById(userId);
         return user != null && user.getEmail().equals(email);
     }
-
 
 
     @FXML
@@ -664,16 +658,22 @@ public class paneUserController implements Initializable {
             try {
                 if (selectedRole != null && selectedDepartement != null) {
                     System.out.println("Updating role and department for user: " + selectedUser);
+                    // First, check for role department uniqueness and potential manager assignment issues
+                    userService.checkRoleDepartmentUniqueness(selectedUser.getIdUser(), selectedRole.getIdRole(), selectedDepartement.getIdDepartement());
                     userService.updateUserRoleAndDepartment(selectedUser.getIdUser(), selectedRole.getIdRole(), selectedDepartement.getIdDepartement());
                     userService.setUserManager(selectedUser.getIdUser());
                     isUpdated = true;
                 } else if (selectedRole != null) {
                     System.out.println("Updating role for user: " + selectedUser);
+                    // Check for role department uniqueness
+                    userService.checkRoleDepartmentUniqueness(selectedUser.getIdUser(), selectedRole.getIdRole(), selectedUser.getIdDepartement());
                     userService.updateUserRoleAndDepartment(selectedUser.getIdUser(), selectedRole.getIdRole(), selectedUser.getIdDepartement());
                     userService.setUserManager(selectedUser.getIdUser());
                     isUpdated = true;
                 } else if (selectedDepartement != null) {
                     System.out.println("Updating department for user: " + selectedUser);
+                    // Check for role department uniqueness
+                    userService.checkRoleDepartmentUniqueness(selectedUser.getIdUser(), selectedUser.getIdRole(), selectedDepartement.getIdDepartement());
                     userService.updateUserRoleAndDepartment(selectedUser.getIdUser(), selectedUser.getIdRole(), selectedDepartement.getIdDepartement());
                     userService.setUserManager(selectedUser.getIdUser());
                     isUpdated = true;
@@ -697,6 +697,7 @@ public class paneUserController implements Initializable {
         loadUsers3();
     }
 
+
     @FXML
     private void handleAssignUser() {
         Integer userId = getSelectedUserId();
@@ -705,6 +706,9 @@ public class paneUserController implements Initializable {
 
         if (userId != null && selectedRole != null && selectedDepartement != null) {
             try {
+                // Check for role department uniqueness and potential manager assignment issues
+                userService.checkRoleDepartmentUniqueness(userId, selectedRole.getIdRole(), selectedDepartement.getIdDepartement());
+
                 // Update the user's role and department
                 userService.updateUserRoleAndDepartment(userId, selectedRole.getIdRole(), selectedDepartement.getIdDepartement());
                 userService.setUserManager(userId);
@@ -935,7 +939,6 @@ public class paneUserController implements Initializable {
     }
 
 
-
     @FXML
     public void TriZA(ActionEvent actionEvent) {
     }
@@ -958,6 +961,7 @@ public class paneUserController implements Initializable {
             refreshUserContainers();
         });
     }
+
     private void setupSearch1() {
         User_field.textProperty().addListener((observable, oldValue, newValue) -> {
             filteredData.setPredicate(user -> {
@@ -1000,6 +1004,7 @@ public class paneUserController implements Initializable {
             e.printStackTrace();
         }
     }
+
     private void loadRolesIntoComboBox() {
         List<Role> roles = roleService.getAllRoles();
         ObservableList<String> roleNames = FXCollections.observableArrayList();
@@ -1010,6 +1015,7 @@ public class paneUserController implements Initializable {
         resetRoleComboBoxItems();
 
     }
+
     @FXML
     public void filterByRoleCB(ActionEvent actionEvent) {
         String selectedRole = RoleComboFilter.getValue();
@@ -1021,6 +1027,7 @@ public class paneUserController implements Initializable {
             refreshUserContainers();
         }
     }
+
     private void setupRoleComboBoxListener() {
         RoleComboFilter.getSelectionModel().selectedItemProperty().addListener((observable, oldValue, newValue) -> {
             filteredData.setPredicate(user -> {
@@ -1033,6 +1040,7 @@ public class paneUserController implements Initializable {
             loadFilteredUsers(); // Call method to refresh the displayed users
         });
     }
+
     private void loadFilteredUsers() {
         UserContainers.getChildren().clear();
         int column = 0;
@@ -1064,6 +1072,7 @@ public class paneUserController implements Initializable {
     void removeFilters(ActionEvent event) {
 
     }
+
     private void setupRemoveFilterButton() {
         removeFilterButton.setOnAction(event -> {
             RoleComboFilter.getSelectionModel().clearSelection();
@@ -1071,6 +1080,7 @@ public class paneUserController implements Initializable {
             loadFilteredUsers();
         });
     }
+
     private void setupRoleSearchBar() {
         RoleSearchBar.textProperty().addListener((observable, oldValue, newValue) -> {
             if (newValue == null || newValue.isEmpty()) {
@@ -1093,7 +1103,7 @@ public class paneUserController implements Initializable {
                 RoleComboFilter.show();
             }
         });
-}
+    }
 
     private void resetRoleComboBoxItems() {
         List<Role> roles = roleService.getAllRoles();
@@ -1102,9 +1112,5 @@ public class paneUserController implements Initializable {
             roleNames.add(role.getNom());
         }
         RoleComboFilter.setItems(roleNames);
-    }
-    @FXML
-    void filterByRolePar(ActionEvent event) {
-
     }
 }

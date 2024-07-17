@@ -37,6 +37,9 @@ public class CardNotifController implements Initializable {
     public void setData(Notification notification) {
         this.notification = notification;
         String iconN = "";
+        if (notification.getStatut() == 2) {
+            iconN = "src/main/resources/assets/imgs/newmessage.png";
+        }
         if (notification.getStatut() == 1) {
             iconN = "src/main/resources/assets/imgs/approved.png";
         }

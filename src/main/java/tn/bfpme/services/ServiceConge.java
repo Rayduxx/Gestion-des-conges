@@ -204,6 +204,9 @@ public class ServiceConge implements IConge<Conge> {
     @Override
     public void deleteCongeByID(int id) {
         try {
+            if (cnx == null || cnx.isClosed()) {
+                cnx = MyDataBase.getInstance().getCnx();
+            }
             String qry = "DELETE FROM `conge` WHERE `ID_Conge`=?";
             PreparedStatement stm = cnx.prepareStatement(qry);
             stm.setInt(1, id);

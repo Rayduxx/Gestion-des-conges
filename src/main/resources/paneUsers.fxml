@@ -32,7 +32,7 @@
                      <children>
                         <Pane layoutX="28.0" layoutY="66.0" prefHeight="538.0" prefWidth="412.0" styleClass="paneRoundedCornders" stylesheets="@assets/css/style.css">
                            <children>
-                              <GridPane layoutX="19.0" layoutY="140.0" prefHeight="385.0" prefWidth="372.0">
+                              <GridPane layoutX="20.0" layoutY="9.0" prefHeight="525.0" prefWidth="372.0">
                                  <columnConstraints>
                                     <ColumnConstraints halignment="CENTER" hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0" />
                                     <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0" />
@@ -51,45 +51,18 @@
                                     <Label text="Image" GridPane.rowIndex="5" />
                                     <Label text="Mot de Passe" GridPane.rowIndex="4" />
                                     <Label text="Email" GridPane.rowIndex="3" />
-                                    <Label text="ID_User" />
+                                    <Label prefHeight="17.0" prefWidth="47.0" text="Maricule" />
                                     <TextField fx:id="ID_A" GridPane.columnIndex="1" />
                                     <TextField fx:id="Prenom_A" GridPane.columnIndex="1" GridPane.rowIndex="1" />
                                     <TextField fx:id="nom_A" GridPane.columnIndex="1" GridPane.rowIndex="2" />
                                     <TextField fx:id="email_A" GridPane.columnIndex="1" GridPane.rowIndex="3" />
-                                    <TextField fx:id="image_A" GridPane.columnIndex="1" GridPane.rowIndex="5" />
+                                    <TextField fx:id="image_A" disable="true" GridPane.columnIndex="1" GridPane.rowIndex="5" />
                                     <TextField fx:id="MDP_A" GridPane.columnIndex="1" GridPane.rowIndex="4" />
                                  </children>
                               </GridPane>
-                              <ImageView fx:id="PDPimageHolder" fitHeight="107.0" fitWidth="126.0" layoutX="142.0" layoutY="23.0" pickOnBounds="true" preserveRatio="true" />
                            </children>
                         </Pane>
-                        <Pane layoutX="488.0" layoutY="38.0" prefHeight="285.0" prefWidth="412.0" styleClass="paneRoundedCornders">
-                           <children>
-                              <GridPane layoutX="20.0" layoutY="31.0" prefHeight="223.0" prefWidth="372.0">
-                                 <columnConstraints>
-                                    <ColumnConstraints halignment="CENTER" hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0" />
-                                    <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0" />
-                                 </columnConstraints>
-                                 <rowConstraints>
-                                    <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
-                                    <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
-                                    <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
-                                    <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
-                                 </rowConstraints>
-                                 <children>
-                                    <Label text="Solde Exceptionnel" GridPane.rowIndex="1" />
-                                    <Label text="Solde Maladie" GridPane.rowIndex="2" />
-                                    <Label text="Solde Maternité" GridPane.rowIndex="3" />
-                                    <Label text="Solde Annuel" />
-                                    <TextField fx:id="S_Ann" GridPane.columnIndex="1" />
-                                    <TextField fx:id="S_exc" GridPane.columnIndex="1" GridPane.rowIndex="1" />
-                                    <TextField fx:id="S_mal" GridPane.columnIndex="1" GridPane.rowIndex="2" />
-                                    <TextField fx:id="S_mat" GridPane.columnIndex="1" GridPane.rowIndex="3" />
-                                 </children>
-                              </GridPane>
-                           </children>
-                        </Pane>
-                        <Button layoutX="469.0" layoutY="545.0" maxHeight="29.0" minHeight="29.0" mnemonicParsing="false" onAction="#upload_image" prefHeight="29.0" styleClass="btn-primary">
+                        <Button layoutX="468.0" layoutY="542.0" maxHeight="29.0" minHeight="29.0" mnemonicParsing="false" onAction="#upload_image" prefHeight="29.0" styleClass="btn-primary">
                            <graphic>
                               <ImageView fitHeight="29.0" fitWidth="20.0" pickOnBounds="true" preserveRatio="true">
                                  <image>
@@ -98,9 +71,9 @@
                               </ImageView>
                            </graphic>
                         </Button>
-                        <HBox layoutX="539.0" layoutY="354.0" prefHeight="54.0" prefWidth="361.0">
+                        <HBox layoutX="587.0" layoutY="464.0" prefHeight="54.0" prefWidth="361.0">
                            <children>
-                              <Button mnemonicParsing="false" onAction="#ajouter_user" prefHeight="56.0" prefWidth="116.0" styleClass="btn-primary" text="Ajouter">
+                              <Button fx:id="adduserbtn" mnemonicParsing="false" onAction="#ajouter_user" prefHeight="56.0" prefWidth="116.0" styleClass="btn-primary" text="Ajouter">
                                  <font>
                                     <Font size="15.0" />
                                  </font>
@@ -119,11 +92,12 @@
                               </Button>
                            </children>
                         </HBox>
-                        <Label fx:id="infolabel" layoutX="63.0" layoutY="12.0" prefHeight="26.0" prefWidth="342.0" />
+                        <Label fx:id="infolabel" layoutX="596.0" layoutY="103.0" prefHeight="29.0" prefWidth="342.0" text="zeineb" />
+                        <ImageView fx:id="PDPimageHolder" fitHeight="200.0" fitWidth="200.0" layoutX="667.0" layoutY="195.0" pickOnBounds="true" preserveRatio="true" />
                      </children></AnchorPane>
                </content>
             </Tab>
-            <Tab text="Affichage">
+            <Tab text="Liste">
                <content>
                   <AnchorPane prefHeight="200.0" prefWidth="200.0">
                      <children>
@@ -151,7 +125,7 @@
                         <ListView fx:id="userListView" layoutX="50.0" layoutY="131.0" prefHeight="400.0" prefWidth="280.0" />
                         <TextField fx:id="User_field" layoutX="50.0" layoutY="83.0" onAction="#User_Recherche" prefHeight="29.0" prefWidth="280.0" />
                         <ListView fx:id="departListView" layoutX="420.0" layoutY="131.0" prefHeight="400.0" prefWidth="280.0" />
-                        <ListView fx:id="roleListView" layoutX="790.0" layoutY="131.0" prefHeight="203.0" prefWidth="280.0" />
+                        <ListView fx:id="roleListView" layoutX="790.0" layoutY="131.0" prefHeight="400.0" prefWidth="280.0" />
                         <TextField fx:id="Depart_field" layoutX="420.0" layoutY="83.0" onAction="#Depart_Recherche" prefHeight="29.0" prefWidth="280.0" />
                         <TextField fx:id="Role_field" layoutX="790.0" layoutY="83.0" onAction="#Role_Recherche" prefHeight="29.0" prefWidth="280.0" />
                         <Label layoutX="144.0" layoutY="35.0" text="Employés">
@@ -191,14 +165,6 @@
                               </Button>
                            </children>
                         </HBox>
-                        <TextField fx:id="RolePar_field" layoutX="790.0" layoutY="430.0" onAction="#RolePar_Recherche" prefHeight="29.0" prefWidth="280.0" />
-                        <Label layoutX="866.0" layoutY="381.0" text="Roles Parents">
-                           <styleClass>
-                              <String fx:value="FontSize-21" />
-                              <String fx:value="RobotoBoldItalic" />
-                           </styleClass>
-                        </Label>
-                        <ComboBox fx:id="RoleParComboFilter" layoutX="824.0" layoutY="477.0" onAction="#filterByRolePar" prefHeight="31.0" prefWidth="213.0" />
                      </children></AnchorPane>
                </content>
             </Tab>
