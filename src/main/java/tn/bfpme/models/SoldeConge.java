@@ -12,14 +12,14 @@ public class SoldeConge {
 
     private String Designation;
     private String Type;
-    private double Pas;
+    private int Pas;
     private int Periode;
 
 
 
     public SoldeConge(){}
 
-    public SoldeConge(int idSolde, String designation, String type, double pas, int periode) {
+    public SoldeConge(int idSolde, String designation, String type, int pas, int periode) {
         this.idSolde = idSolde;
         this.Designation = designation;
         this.Type = type;
@@ -44,7 +44,7 @@ public class SoldeConge {
         Type = type;
     }
 
-    public double getPas() {
+    public int getPas() {
         return Pas;
     }
 

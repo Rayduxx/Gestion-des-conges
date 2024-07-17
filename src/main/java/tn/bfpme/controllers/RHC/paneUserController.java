@@ -576,7 +576,6 @@ public class paneUserController implements Initializable {
                 MDP_A.setText(selectedUser.getMdp());
                 image_A.setText(selectedUser.getImage());
 
-                // Assuming you need to set the image as well
                 if (selectedUser.getImage() != null) {
                     File file = new File(selectedUser.getImage());
                     if (file.exists()) {
@@ -600,19 +599,7 @@ public class paneUserController implements Initializable {
                     Role_field.clear();
                 }
 
-                SoldeConge soldeConge = getSoldeCongeByUserId(selectedUser.getIdUser());
-
-                if (soldeConge != null) {
-                    S_Ann.setText(String.valueOf(soldeConge.getSoldeAnn()));
-                    S_exc.setText(String.valueOf(soldeConge.getSoldeExc()));
-                    S_mal.setText(String.valueOf(soldeConge.getSoldeMal()));
-                    S_mat.setText(String.valueOf(soldeConge.getSoldeMat()));
-                } else {
-                    S_Ann.clear();
-                    S_exc.clear();
-                    S_mal.clear();
-                    S_mat.clear();
-                }
+                // Removed the logic for setting solde fields
 
                 System.out.println("Selected User in Listener: " + selectedUser);
 
@@ -622,6 +609,7 @@ public class paneUserController implements Initializable {
             }
         }
     }
+
 
     private SoldeConge getSoldeCongeByUserId(int userId) {
         SoldeConge soldeConge = null;
@@ -633,15 +621,6 @@ public class paneUserController implements Initializable {
             PreparedStatement stm = cnx.prepareStatement(query);
             stm.setInt(1, userId);
             ResultSet rs = stm.executeQuery();
-            if (rs.next()) {
-                soldeConge = new SoldeConge(
-                        rs.getInt("idSolde"),
-                        rs.getDouble("SoldeAnn"),
-                        rs.getDouble("SoldeMat"),
-                        rs.getDouble("SoldeExc"),
-                        rs.getDouble("SoldeMal")
-                );
-            }
         } catch (SQLException e) {
             e.printStackTrace();
         }
@@ -699,6 +678,7 @@ public class paneUserController implements Initializable {
         }
         loadUsers3();
     }
+
 
 
     @FXML
@@ -763,17 +743,11 @@ public class paneUserController implements Initializable {
         String mdp = MDP_A.getText();
         String image = image_A.getText();
 
-        SoldeConge defaultSolde = getDefaultSolde();
-
-        double soldeAnnuel = defaultSolde.getSoldeAnn();
-        double soldeMaladie = defaultSolde.getSoldeMal();
-        double soldeExceptionnel = defaultSolde.getSoldeExc();
-        double soldeMaternite = defaultSolde.getSoldeMat();
-
         if (email.matches("^[_A-Za-z0-9-\\+]+(\\.[_A-Za-z0-9-]+)*@(bfpme\\.tn|gmail\\.com)$")) {
             try {
                 if (!emailExists(email)) {
-                    UserS.Add(new User(0, nom, prenom, email, mdp, image, soldeAnnuel, soldeMaladie, soldeExceptionnel, soldeMaternite, LocalDate.now(), 0, 0));
+                    User newUser = new User(0, nom, prenom, email, mdp, image, LocalDate.now(), 0, 0);
+                    UserS.Add(newUser);
                     infolabel.setText("Ajout Effectué");
                 } else {
                     infolabel.setText("Email déjà existe");
@@ -785,6 +759,7 @@ public class paneUserController implements Initializable {
             infolabel.setText("Email est invalide");
         }
     }
+
 
     private int parseIntOrZero(String text) {
         if (text == null || text.trim().isEmpty()) {
@@ -804,16 +779,12 @@ public class paneUserController implements Initializable {
         String Email = email_A.getText();
         String Mdp = MDP_A.getText();
         String Image = image_A.getText();
-        int solde_annuel = parseIntOrZero(S_Ann.getText());
-        int solde_maladie = parseIntOrZero(S_mal.getText());
-        int solde_exceptionnel = parseIntOrZero(S_exc.getText());
-        int solde_maternite = parseIntOrZero(S_mat.getText());
 
         if (Email.matches("^[_A-Za-z0-9-\\+]+(\\.[_A-Za-z0-9-]+)*@(bfpme\\.tn|gmail\\.com)$")) {
             int IdUser = Integer.parseInt(ID_A.getText());
             try {
                 if (!emailExistss(Email, IdUser) || isCurrentUser(IdUser, Email)) {
-                    User user = new User(IdUser, Nom, Prenom, Email, Mdp, Image, solde_annuel, solde_maladie, solde_exceptionnel, solde_maternite, 0, 0);
+                    User user = new User(IdUser, Nom, Prenom, Email, Mdp, Image, LocalDate.now(), 0, 0);
                     UserS.Update(user);
                     infolabel.setText("Modification Effectuée");
                     System.out.println("User updated: " + user);
@@ -828,6 +799,7 @@ public class paneUserController implements Initializable {
             infolabel.setText("Email est invalide");
         }
     }
+
 
     @FXML
     void supprimer_user(ActionEvent event) {

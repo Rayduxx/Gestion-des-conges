@@ -57,7 +57,7 @@ public interface IUtilisateur {
 
     void Delete(User user) throws SQLException;
 
-    void DeleteByID(int id);
+    void DeleteByID(int id) throws SQLException;
 
     List<User> SortDepart();
 

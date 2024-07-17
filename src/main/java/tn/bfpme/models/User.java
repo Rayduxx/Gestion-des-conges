@@ -1,7 +1,5 @@
 package tn.bfpme.models;
 
-import tn.bfpme.controllers.SoldeLogicController;
-
 import java.time.LocalDate;
 import java.util.Objects;
 
@@ -13,11 +11,6 @@ public class User {
     private String mdp;
     private String image;
     private LocalDate creationDate;
-    private double soldeMaternite;
-    private double soldeAnnuel;
-    private double soldeAnnuelle;
-    private double soldeExceptionnel;
-    private double soldeMaladie;
     private int idManager;
     private int idDepartement;
     private int idRole;
@@ -29,56 +22,47 @@ public class User {
 
     public User() {}
 
-    public User(int idUser, String nom, String prenom, String email, String mdp, String image, double soldeAnnuel, double soldeMaladie, double soldeExceptionnel, double soldeMaternite, int idDepartement, int idManager) {
+    public User(int idUser, String nom, String prenom, String email, String mdp, String image, int idDepartement, int idManager, int idRole, int idSolde) {
         this.idUser = idUser;
         this.nom = nom;
         this.prenom = prenom;
         this.email = email;
         this.mdp = mdp;
         this.image = image;
-        this.soldeAnnuel = soldeAnnuel;
-        this.soldeMaladie = soldeMaladie;
-        this.soldeExceptionnel = soldeExceptionnel;
-        this.soldeMaternite = soldeMaternite;
+        this.idDepartement = idDepartement;
         this.idManager = idManager;
-        this.creationDate = creationDate;
+        this.idRole = idRole;
         this.idSolde = idSolde;
-        this.idDepartement = idDepartement;
-        this.idRole = idRole;
+        this.creationDate = LocalDate.now(); // Default creation date
     }
 
-    public User(int idUser, String nom, String prenom, String email, String mdp, String image, int soldeAnnuel, int soldeMaladie, int soldeExceptionnel, int soldeMaternite, int idDepartement, int idRole) {
+    public User(int idUser, String nom, String prenom, String email, String mdp, String image, int idDepartement, int idRole) {
         this.idUser = idUser;
         this.nom = nom;
         this.prenom = prenom;
         this.email = email;
         this.mdp = mdp;
         this.image = image;
-        this.soldeAnnuel = soldeAnnuel;
-        this.soldeMaladie = soldeMaladie;
-        this.soldeExceptionnel = soldeExceptionnel;
-        this.soldeMaternite = soldeMaternite;
         this.idDepartement = idDepartement;
         this.idRole = idRole;
+        this.creationDate = LocalDate.now(); // Default creation date
     }
 
-    public User(int idUser, String nom, String prenom, String email, String mdp, String image, int soldeAnnuel, int soldeMaladie, int soldeExceptionnel, int soldeMaternite, int idDepartement, int idManager, int idRole) {
+    public User(int idUser, String nom, String prenom, String email, String mdp, String image, int idDepartement, int idManager, int idRole, LocalDate creationDate, int idSolde) {
         this.idUser = idUser;
         this.nom = nom;
         this.prenom = prenom;
         this.email = email;
         this.mdp = mdp;
         this.image = image;
-        this.soldeAnnuel = soldeAnnuel;
-        this.soldeMaladie = soldeMaladie;
-        this.soldeExceptionnel = soldeExceptionnel;
-        this.soldeMaternite = soldeMaternite;
         this.idDepartement = idDepartement;
         this.idManager = idManager;
         this.idRole = idRole;
+        this.creationDate = (creationDate != null) ? creationDate : LocalDate.now();
+        this.idSolde = idSolde;
     }
 
-    public User(int idUser, String nom, String prenom, String email, String mdp, String image, LocalDate creationDate, int departement, int idDepartement) {
+    public User(int idUser, String nom, String prenom, String email, String mdp, String image, LocalDate creationDate, int idDepartement, int idRole) {
         this.idUser = idUser;
         this.nom = nom;
         this.prenom = prenom;
@@ -86,11 +70,8 @@ public class User {
         this.mdp = mdp;
         this.image = image;
         this.creationDate = (creationDate != null) ? creationDate : LocalDate.now();
-        this.soldeAnnuelle = SoldeLogicController.calculateSoldeAnnuelle(this.creationDate);
-        this.soldeMaladie = SoldeLogicController.calculateSoldeMaladie(this.creationDate);
-        this.soldeExceptionnel = SoldeLogicController.calculateSoldeExceptionnel(this.creationDate);
-        this.soldeMaternite = SoldeLogicController.calculateSoldeMaternite(this.creationDate);
         this.idDepartement = idDepartement;
+        this.idRole = idRole;
     }
 
     public User(String string, String s, String nom, String prenom, String email, LocalDate now, int idManager, int idDepartement) {
@@ -102,51 +83,17 @@ public class User {
         this.idRole = idRole;
     }
 
-    public User(int idUser, String nom, String prenom, String email, String mdp, String image, Double soldeAnnuel, LocalDate creationDate, int idDepartement, int idRole) {
+    public User(int idUser, String nom, String prenom, String email, String mdp, String image, LocalDate creationDate, int idDepartement, int idRole, int idSolde) {
         this.idUser = idUser;
         this.nom = nom;
         this.prenom = prenom;
         this.email = email;
         this.mdp = mdp;
         this.image = image;
-        this.soldeAnnuel = soldeAnnuel;
         this.creationDate = (creationDate != null) ? creationDate : LocalDate.now();
         this.idDepartement = idDepartement;
         this.idRole = idRole;
-    }
-
-    public User(int idUser, String nom, String prenom, String email, String mdp, String image, double soldeAnnuel, double soldeMaladie, double soldeExceptionnel, double soldeMaternité, int idDepartement, int idManager, LocalDate creationDate, int idSolde) {
-        this.idUser = idUser;
-        this.nom = nom;
-        this.prenom = prenom;
-        this.email = email;
-        this.mdp = mdp;
-        this.image = image;
-        this.soldeAnnuel = soldeAnnuel;
-        this.soldeMaladie = soldeMaladie;
-        this.soldeExceptionnel = soldeExceptionnel;
-        this.soldeMaternite = soldeMaternite;
-        this.idManager = idManager;
-        this.creationDate = creationDate;
         this.idSolde = idSolde;
-        this.idDepartement = idDepartement;
-        this.idRole = idRole;
-    }
-
-    public User(int idUser, String nom, String prenom, String email, String mdp, String image, double soldeAnnuel, double soldeMaladie, double soldeExceptionnel, double soldeMaternite, LocalDate creationDate, int idManager, int idRole) {
-        this.idUser = idUser;
-        this.nom = nom;
-        this.prenom = prenom;
-        this.email = email;
-        this.mdp = mdp;
-        this.image = image;
-        this.soldeAnnuel = soldeAnnuel;
-        this.soldeMaladie = soldeMaladie;
-        this.soldeExceptionnel = soldeExceptionnel;
-        this.soldeMaternite = soldeMaternite;
-        this.creationDate = (creationDate != null) ? creationDate : LocalDate.now();
-        this.idManager = idManager;
-        this.idRole = idRole;
     }
 
     public int getIdUser() {
@@ -197,38 +144,6 @@ public class User {
         this.image = image;
     }
 
-    public double getSoldeAnnuel() {
-        return soldeAnnuel;
-    }
-
-    public void setSoldeAnnuel(double soldeAnnuel) {
-        this.soldeAnnuel = soldeAnnuel;
-    }
-
-    public double getSoldeMaladie() {
-        return soldeMaladie;
-    }
-
-    public void setSoldeMaladie(double soldeMaladie) {
-        this.soldeMaladie = soldeMaladie;
-    }
-
-    public double getSoldeExceptionnel() {
-        return soldeExceptionnel;
-    }
-
-    public void setSoldeExceptionnel(double soldeExceptionnel) {
-        this.soldeExceptionnel = soldeExceptionnel;
-    }
-
-    public double getSoldeMaternite() {
-        return soldeMaternite;
-    }
-
-    public void setSoldeMaternite(double soldeMaternite) {
-        this.soldeMaternite = soldeMaternite;
-    }
-
     public int getIdManager() {
         return idManager;
     }
@@ -251,6 +166,14 @@ public class User {
 
     public void setIdRole(int idRole) {
         this.idRole = idRole;
+    }
+
+    public int getIdSolde() {
+        return idSolde;
+    }
+
+    public void setIdSolde(int idSolde) {
+        this.idSolde = idSolde;
     }
 
     public String getDepartementNom() {
@@ -294,16 +217,14 @@ public class User {
                 ", email='" + email + '\'' +
                 ", mdp='" + mdp + '\'' +
                 ", image='" + image + '\'' +
-                ", soldeAnnuel=" + soldeAnnuel +
-                ", soldeMaladie=" + soldeMaladie +
-                ", soldeExceptionnel=" + soldeExceptionnel +
-                ", soldeMaternite=" + soldeMaternite +
                 ", idManager=" + idManager +
                 ", idDepartement=" + idDepartement +
                 ", idRole=" + idRole +
+                ", idSolde=" + idSolde +
                 ", departementNom='" + departementNom + '\'' +
                 ", roleNom='" + roleNom + '\'' +
                 ", managerName='" + managerName + '\'' +
+                ", creationDate=" + creationDate +
                 '}';
     }
 

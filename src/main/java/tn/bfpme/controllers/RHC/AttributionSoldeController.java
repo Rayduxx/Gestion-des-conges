@@ -6,13 +6,12 @@ import javafx.scene.control.ListView;
 import javafx.scene.control.TextField;
 import javafx.scene.control.Label;
 import tn.bfpme.models.SoldeConge;
-import tn.bfpme.services.ServiceConge;
+import tn.bfpme.services.ServiceSoldeConge;
 import tn.bfpme.services.ServiceUtilisateur;
 import tn.bfpme.utils.MyDataBase;
 
 import java.sql.Connection;
 import java.sql.PreparedStatement;
-import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.List;
 
@@ -107,17 +106,11 @@ public class AttributionSoldeController {
         double pas = serviceSoldeConge.getPasBySoldeId(idSolde);
 
         try (Connection conn = MyDataBase.getInstance().getCnx()) {
-            String distributeQuery = "INSERT INTO user_Solde (ID_User, idSolde) SELECT ID_User, ? FROM user";
+            String distributeQuery = "INSERT INTO user_Solde (ID_User, idSolde, Solde) SELECT ID_User, ?, ? FROM user";
             try (PreparedStatement distributeStmt = conn.prepareStatement(distributeQuery)) {
                 distributeStmt.setInt(1, idSolde);
+                distributeStmt.setDouble(2, pas);
                 distributeStmt.executeUpdate();
-            }
-
-            String updateUserSoldeQuery = "UPDATE user_Solde SET Solde = Solde + ? WHERE idSolde = ?";
-            try (PreparedStatement updateUserSoldeStmt = conn.prepareStatement(updateUserSoldeQuery)) {
-                updateUserSoldeStmt.setDouble(1, pas);
-                updateUserSoldeStmt.setInt(2, idSolde);
-                updateUserSoldeStmt.executeUpdate();
             }
         } catch (SQLException e) {
             e.printStackTrace();
