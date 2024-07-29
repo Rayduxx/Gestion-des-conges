@@ -14,7 +14,7 @@ public class User {
     private int idManager;
     private int idDepartement;
     private int idRole;
-    private int idSolde; // Add this field
+    private int idUserSolde; // Add this field
 
     private String departementNom; // New field for department name
     private String roleNom; // New field for role name
@@ -22,7 +22,7 @@ public class User {
 
     public User() {}
 
-    public User(int idUser, String nom, String prenom, String email, String mdp, String image, int idDepartement, int idManager, int idRole, int idSolde) {
+    public User(int idUser, String nom, String prenom, String email, String mdp, String image, int idDepartement, int idManager, int idRole, int idUserSolde) {
         this.idUser = idUser;
         this.nom = nom;
         this.prenom = prenom;
@@ -32,7 +32,7 @@ public class User {
         this.idDepartement = idDepartement;
         this.idManager = idManager;
         this.idRole = idRole;
-        this.idSolde = idSolde;
+        this.idUserSolde = idUserSolde;
         this.creationDate = LocalDate.now(); // Default creation date
     }
 
@@ -48,7 +48,7 @@ public class User {
         this.creationDate = LocalDate.now(); // Default creation date
     }
 
-    public User(int idUser, String nom, String prenom, String email, String mdp, String image, int idDepartement, int idManager, int idRole, LocalDate creationDate, int idSolde) {
+    public User(int idUser, String nom, String prenom, String email, String mdp, String image, int idDepartement, int idManager, int idRole, LocalDate creationDate, int idUserSolde) {
         this.idUser = idUser;
         this.nom = nom;
         this.prenom = prenom;
@@ -59,7 +59,7 @@ public class User {
         this.idManager = idManager;
         this.idRole = idRole;
         this.creationDate = (creationDate != null) ? creationDate : LocalDate.now();
-        this.idSolde = idSolde;
+        this.idUserSolde = idUserSolde;
     }
 
     public User(int idUser, String nom, String prenom, String email, String mdp, String image, LocalDate creationDate, int idDepartement, int idRole) {
@@ -83,7 +83,7 @@ public class User {
         this.idRole = idRole;
     }
 
-    public User(int idUser, String nom, String prenom, String email, String mdp, String image, LocalDate creationDate, int idDepartement, int idRole, int idSolde) {
+    public User(int idUser, String nom, String prenom, String email, String mdp, String image, LocalDate creationDate, int idDepartement, int idRole, int idUserSolde) {
         this.idUser = idUser;
         this.nom = nom;
         this.prenom = prenom;
@@ -93,7 +93,7 @@ public class User {
         this.creationDate = (creationDate != null) ? creationDate : LocalDate.now();
         this.idDepartement = idDepartement;
         this.idRole = idRole;
-        this.idSolde = idSolde;
+        this.idUserSolde = idUserSolde;
     }
 
     public int getIdUser() {
@@ -169,11 +169,11 @@ public class User {
     }
 
     public int getIdSolde() {
-        return idSolde;
+        return idUserSolde;
     }
 
-    public void setIdSolde(int idSolde) {
-        this.idSolde = idSolde;
+    public void setIdSolde(int idUserSolde) {
+        this.idUserSolde = idUserSolde;
     }
 
     public String getDepartementNom() {
@@ -220,7 +220,7 @@ public class User {
                 ", idManager=" + idManager +
                 ", idDepartement=" + idDepartement +
                 ", idRole=" + idRole +
-                ", idSolde=" + idSolde +
+                ", idUserSolde=" + idUserSolde +
                 ", departementNom='" + departementNom + '\'' +
                 ", roleNom='" + roleNom + '\'' +
                 ", managerName='" + managerName + '\'' +

@@ -5,7 +5,7 @@ import javafx.scene.control.Button;
 import javafx.scene.control.ListView;
 import javafx.scene.control.TextField;
 import javafx.scene.control.Label;
-import tn.bfpme.models.SoldeConge;
+import tn.bfpme.models.TypeConge;
 import tn.bfpme.services.ServiceSoldeConge;
 import tn.bfpme.services.ServiceUtilisateur;
 import tn.bfpme.utils.MyDataBase;
@@ -18,7 +18,7 @@ import java.util.List;
 public class AttributionSoldeController {
 
     @FXML
-    private ListView<SoldeConge> Liste_Solde;
+    private ListView<TypeConge> Liste_Solde;
     @FXML
     private TextField RechercheSol;
     @FXML
@@ -55,14 +55,14 @@ public class AttributionSoldeController {
 
     @FXML
     private void loadSoldeConge() {
-        List<SoldeConge> soldeCongeList = serviceSoldeConge.getAllSoldeConges();
-        Liste_Solde.getItems().setAll(soldeCongeList);
+        List<TypeConge> typeCongeList = serviceSoldeConge.getAllSoldeConges();
+        Liste_Solde.getItems().setAll(typeCongeList);
     }
 
     @FXML
     public void Recherche_Solde() {
         String searchText = RechercheSol.getText().trim().toLowerCase();
-        List<SoldeConge> filteredList = serviceSoldeConge.searchSoldeConges(searchText);
+        List<TypeConge> filteredList = serviceSoldeConge.searchSoldeConges(searchText);
         Liste_Solde.getItems().setAll(filteredList);
     }
 

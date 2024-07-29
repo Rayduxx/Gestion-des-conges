@@ -14,7 +14,6 @@ import javafx.scene.layout.HBox;
 import javafx.stage.Stage;
 import tn.bfpme.models.Conge;
 import tn.bfpme.models.Statut;
-import tn.bfpme.models.TypeConge;
 import tn.bfpme.models.User;
 import tn.bfpme.services.ServiceConge;
 import tn.bfpme.services.ServiceUtilisateur;

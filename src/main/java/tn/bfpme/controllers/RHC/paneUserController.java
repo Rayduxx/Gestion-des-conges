@@ -16,17 +16,14 @@ import javafx.scene.layout.GridPane;
 import javafx.scene.layout.Pane;
 import javafx.stage.FileChooser;
 import javafx.stage.Stage;
-import org.jetbrains.annotations.NotNull;
-import tn.bfpme.controllers.UserCardController;
 import tn.bfpme.models.Departement;
 import tn.bfpme.models.Role;
-import tn.bfpme.models.SoldeConge;
+import tn.bfpme.models.TypeConge;
 import tn.bfpme.models.User;
 import tn.bfpme.services.ServiceDepartement;
 import tn.bfpme.services.ServiceRole;
 import tn.bfpme.services.ServiceUtilisateur;
 import tn.bfpme.utils.MyDataBase;
-import javafx.util.StringConverter;
 import tn.bfpme.utils.SessionManager;
 
 
@@ -597,13 +594,13 @@ public class paneUserController implements Initializable {
                     Role_field.clear();
                 }
 
-                SoldeConge soldeConge = getSoldeCongeByUserId(selectedUser.getIdUser());
+                TypeConge typeConge = getSoldeCongeByUserId(selectedUser.getIdUser());
 
-                if (soldeConge != null) {
-                    S_Ann.setText(String.valueOf(soldeConge.getSoldeAnn()));
-                    S_exc.setText(String.valueOf(soldeConge.getSoldeExc()));
-                    S_mal.setText(String.valueOf(soldeConge.getSoldeMal()));
-                    S_mat.setText(String.valueOf(soldeConge.getSoldeMat()));
+                if (typeConge != null) {
+                    S_Ann.setText(String.valueOf(typeConge.getSoldeAnn()));
+                    S_exc.setText(String.valueOf(typeConge.getSoldeExc()));
+                    S_mal.setText(String.valueOf(typeConge.getSoldeMal()));
+                    S_mat.setText(String.valueOf(typeConge.getSoldeMat()));
                 } else {
                     S_Ann.clear();
                     S_exc.clear();
@@ -620,8 +617,8 @@ public class paneUserController implements Initializable {
         }
     }
 
-    private SoldeConge getSoldeCongeByUserId(int userId) {
-        SoldeConge soldeConge = null;
+    private TypeConge getSoldeCongeByUserId(int userId) {
+        TypeConge typeConge = null;
         String query = "SELECT sc.* FROM soldeconge sc JOIN user u ON sc.idSolde = u.idSolde WHERE u.ID_User = ?";
         try {
             if (cnx == null || cnx.isClosed()) {
@@ -631,7 +628,7 @@ public class paneUserController implements Initializable {
             stm.setInt(1, userId);
             ResultSet rs = stm.executeQuery();
             if (rs.next()) {
-                soldeConge = new SoldeConge(
+                typeConge = new TypeConge(
                         rs.getInt("idSolde"),
                         rs.getDouble("SoldeAnn"),
                         rs.getDouble("SoldeMat"),
@@ -642,7 +639,7 @@ public class paneUserController implements Initializable {
         } catch (SQLException e) {
             e.printStackTrace();
         }
-        return soldeConge;
+        return typeConge;
     }
 
     @FXML
@@ -661,7 +658,7 @@ public class paneUserController implements Initializable {
                     // First, check for role department uniqueness and potential manager assignment issues
                     userService.checkRoleDepartmentUniqueness(selectedUser.getIdUser(), selectedRole.getIdRole(), selectedDepartement.getIdDepartement());
                     userService.updateUserRoleAndDepartment(selectedUser.getIdUser(), selectedRole.getIdRole(), selectedDepartement.getIdDepartement());
-                    userService.setUserManager(selectedUser.getIdUser());
+                        userService.setUserManager(selectedUser.getIdUser());
                     isUpdated = true;
                 } else if (selectedRole != null) {
                     System.out.println("Updating role for user: " + selectedUser);
@@ -759,7 +756,7 @@ public class paneUserController implements Initializable {
         String mdp = MDP_A.getText();
         String image = image_A.getText();
 
-        SoldeConge defaultSolde = getDefaultSolde();
+        TypeConge defaultSolde = getDefaultSolde();
 
         double soldeAnnuel = defaultSolde.getSoldeAnn();
         double soldeMaladie = defaultSolde.getSoldeMal();
@@ -903,13 +900,13 @@ public class paneUserController implements Initializable {
         }
     }
 
-    private SoldeConge getDefaultSolde() {
+    private TypeConge getDefaultSolde() {
         String query = "SELECT SoldeAnn, SoldeMal, SoldeExc, SoldeMat FROM soldeconge LIMIT 1";
         try (Connection cnx = MyDataBase.getInstance().getCnx();
              PreparedStatement stm = cnx.prepareStatement(query);
              ResultSet rs = stm.executeQuery()) {
             if (rs.next()) {
-                return new SoldeConge(
+                return new TypeConge(
                         rs.getDouble("SoldeAnn"),
                         rs.getDouble("SoldeMal"),
                         rs.getDouble("SoldeExc"),
@@ -920,7 +917,7 @@ public class paneUserController implements Initializable {
             }
         } catch (SQLException e) {
             e.printStackTrace();
-            return new SoldeConge(0, 0, 0, 0);
+            return new TypeConge(0, 0, 0, 0);
         }
     }
 

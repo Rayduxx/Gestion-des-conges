@@ -1,6 +1,6 @@
 package tn.bfpme.services;
-
-import tn.bfpme.models.SoldeConge;
+/*
+import tn.bfpme.models.TypeConge;
 import tn.bfpme.utils.MyDataBase;
 
 import java.sql.Connection;
@@ -14,14 +14,14 @@ public class ServiceSoldeConge {
 
     private final Connection cnx = MyDataBase.getInstance().getCnx();
 
-    public void updateSoldeConge(SoldeConge soldeConge, int id) {
+    public void updateSoldeConge(TypeConge typeConge, int id) {
         try (Connection connection = MyDataBase.getInstance().getCnx()) {
             String query = "UPDATE soldeconge SET Designation = ?, Type = ?, Pas = ?, Periode = ? WHERE idSolde = ?";
             PreparedStatement preparedStatement = connection.prepareStatement(query);
-            preparedStatement.setString(1, soldeConge.getDesignation());
-            preparedStatement.setString(2, soldeConge.getType());
-            preparedStatement.setDouble(3, soldeConge.getPas());
-            preparedStatement.setInt(4, soldeConge.getPeriode());
+            preparedStatement.setString(1, typeConge.getDesignation());
+            preparedStatement.setString(2, typeConge.getType());
+            preparedStatement.setDouble(3, typeConge.getPas());
+            preparedStatement.setInt(4, typeConge.getPeriode());
             preparedStatement.setInt(5, id);
             preparedStatement.executeUpdate();
         } catch (SQLException e) {
@@ -29,49 +29,49 @@ public class ServiceSoldeConge {
         }
     }
 
-    public SoldeConge getSoldeConge(int id) {
-        SoldeConge soldeConge = null;
+    public TypeConge getSoldeConge(int id) {
+        TypeConge typeConge = null;
         try (Connection connection = MyDataBase.getInstance().getCnx()) {
             String query = "SELECT Designation, Type, Pas, Periode FROM soldeconge WHERE idSolde = ?";
             PreparedStatement preparedStatement = connection.prepareStatement(query);
             preparedStatement.setInt(1, id);
             ResultSet resultSet = preparedStatement.executeQuery();
             if (resultSet.next()) {
-                soldeConge = new SoldeConge();
-                soldeConge.setDesignation(resultSet.getString("Designation"));
-                soldeConge.setType(resultSet.getString("Type"));
-                soldeConge.setPas(resultSet.getInt("Pas"));
-                soldeConge.setPeriode(resultSet.getInt("Periode"));
+                typeConge = new TypeConge();
+                typeConge.setDesignation(resultSet.getString("Designation"));
+                typeConge.setType(resultSet.getString("Type"));
+                typeConge.setPas(resultSet.getInt("Pas"));
+                typeConge.setPeriode(resultSet.getInt("Periode"));
             }
         } catch (SQLException e) {
             e.printStackTrace();
         }
-        return soldeConge;
+        return typeConge;
     }
 
-    public List<SoldeConge> getAllSoldeConges() {
-        List<SoldeConge> soldeConges = new ArrayList<>();
+    public List<TypeConge> getAllSoldeConges() {
+        List<TypeConge> typeConges = new ArrayList<>();
         String query = "SELECT idSolde, Designation, Type, Pas, Periode FROM soldeconge";
         try (Connection connection = MyDataBase.getInstance().getCnx();
              PreparedStatement preparedStatement = connection.prepareStatement(query);
              ResultSet resultSet = preparedStatement.executeQuery()) {
             while (resultSet.next()) {
-                SoldeConge soldeConge = new SoldeConge();
-                soldeConge.setIdSolde(resultSet.getInt("idSolde"));
-                soldeConge.setDesignation(resultSet.getString("Designation"));
-                soldeConge.setType(resultSet.getString("Type"));
-                soldeConge.setPas(resultSet.getInt("Pas"));
-                soldeConge.setPeriode(resultSet.getInt("Periode"));
-                soldeConges.add(soldeConge);
+                TypeConge typeConge = new TypeConge();
+                typeConge.setIdSolde(resultSet.getInt("idSolde"));
+                typeConge.setDesignation(resultSet.getString("Designation"));
+                typeConge.setType(resultSet.getString("Type"));
+                typeConge.setPas(resultSet.getInt("Pas"));
+                typeConge.setPeriode(resultSet.getInt("Periode"));
+                typeConges.add(typeConge);
             }
         } catch (SQLException e) {
             e.printStackTrace();
         }
-        return soldeConges;
+        return typeConges;
     }
 
-    public List<SoldeConge> searchSoldeConges(String searchText) {
-        List<SoldeConge> soldeConges = new ArrayList<>();
+    public List<TypeConge> searchSoldeConges(String searchText) {
+        List<TypeConge> typeConges = new ArrayList<>();
         String query = "SELECT idSolde, Designation, Type, Pas, Periode FROM soldeconge WHERE LOWER(Designation) LIKE ? OR LOWER(Type) LIKE ?";
         try (Connection connection = MyDataBase.getInstance().getCnx();
              PreparedStatement preparedStatement = connection.prepareStatement(query)) {
@@ -80,18 +80,18 @@ public class ServiceSoldeConge {
             preparedStatement.setString(2, searchPattern);
             ResultSet resultSet = preparedStatement.executeQuery();
             while (resultSet.next()) {
-                SoldeConge soldeConge = new SoldeConge();
-                soldeConge.setIdSolde(resultSet.getInt("idSolde"));
-                soldeConge.setDesignation(resultSet.getString("Designation"));
-                soldeConge.setType(resultSet.getString("Type"));
-                soldeConge.setPas(resultSet.getInt("Pas"));
-                soldeConge.setPeriode(resultSet.getInt("Periode"));
-                soldeConges.add(soldeConge);
+                TypeConge typeConge = new TypeConge();
+                typeConge.setIdSolde(resultSet.getInt("idSolde"));
+                typeConge.setDesignation(resultSet.getString("Designation"));
+                typeConge.setType(resultSet.getString("Type"));
+                typeConge.setPas(resultSet.getInt("Pas"));
+                typeConge.setPeriode(resultSet.getInt("Periode"));
+                typeConges.add(typeConge);
             }
         } catch (SQLException e) {
             e.printStackTrace();
         }
-        return soldeConges;
+        return typeConges;
     }
 
     public void addSoldeConge(String designation, String type, double pas, int periode) {
@@ -165,4 +165,4 @@ public class ServiceSoldeConge {
         }
         return pas;
     }
-}
+}*/
